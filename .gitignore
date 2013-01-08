@@ -1,2 +1,6 @@
+*.cfg
+*.gz
+*.pyc
 .project
 .pydevproject
+ref

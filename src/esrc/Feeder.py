@@ -4,42 +4,102 @@ This file is subject to the terms and conditions defined in the
 '''
 
 import argparse
+import logging
 import sys
+import ConfigParser
+from Cleaner import Cleaner
+from Crawler import Crawler
+from Factor import Factor
+from Poster import Poster
+from Reporter import Reporter
+from Transformer import Transformer
 
-class Feeder():
+class Feeder(object):
     '''
     Harvests metadata from a file system or the web, processes it and then 
     posts that data to an Apache Solr/Lucene index.
     '''
     
-    # configuration options
-    options = {}
-    
-    # configure command line options
-    parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to Apache Solr/Lucene index.")
-    parser.add_argument('config', help="Read configuration file from specified path")
-    parser.add_argument('-s','--scrub', help="Clean XML files of common errors before further processing", action="store_true", default=False)
-    parser.add_argument('-i','--infer', help="Infer concepts, entities, location, date ranges from data")
-    parser.add_argument('-l','--log', help="Write log data to specified path")
-    parser.add_argument('-o','--output', help="Write Solr Input Document to specified path")
-    parser.add_argument('-r','--report', help="Write a report on indexing activity and quality of data to the specified path")
-    parser.add_argument('-t','--test', help="Execute actions without posting data to Solr", action="store_true", default=False)
-    parser.add_argument('-v','--verbose', help="Write logging messages to standard output", action="store_true", default=False)
-    
-    args = parser.parse_args()
- 
-    def load(self):
+    def __init__(self):
         '''
-        Load and parse configuration file
+        Set logging options, parse the command line arguments, load the 
+        configuration file.
         '''
-        pass
+        # logging default
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.logger = logging.getLogger('feeder')
+        self.logger.setLevel(level=logging.INFO)
+        sh = logging.StreamHandler()
+        sh.setLevel(logging.DEBUG)
+        sh.setFormatter(formatter)
+        self.logger.addHandler(sh)
+        # configure command line options
+        self.parser = argparse.ArgumentParser(description="Harvest, process, and post EAC-CPF metadata to Apache Solr/Lucene index.")
+        self.parser.add_argument('config', help="Path to configuration file")
+        self.parser.add_argument('--clean', help="Clean input files of common errors before further processing", action='store_true')
+        self.parser.add_argument('--crawl', help="Crawl file system or web site for metadata files", action='store_true')
+        self.parser.add_argument('--infer', help="Infer concepts, entities, locations from free text fields", action='store_true')
+        self.parser.add_argument('--post', help="Post Solr Input Documents to Apache Solr index", action='store_true')
+        self.parser.add_argument('--report', help="Generate a report and write to specified path", action='store_true')
+        self.parser.add_argument('--transform', help="Transform EAC, EAC-CPF files to Solr Input Document format", action='store_true')
+        # parse the command line arguments
+        try:
+            self.args = self.parser.parse_args()
+            self.logger.info('Started Feeder with ' + ' '.join(sys.argv[1:]))
+        except Exception, e:
+            self.parser.print_help()
+            sys.exit(e)
+        # load the specified configuration file
+        try:
+            self.config = ConfigParser.SafeConfigParser()
+            self.config.readfp(open(self.args.config))
+        except Exception, e:
+            self.logger.critical("Could not load the specified configuration file")
+            sys.exit(e)
+        
+        # print config data
+#        for section in self.config.sections():
+#            print section
+#            for option in self.config.options(section):
+#                print option, "=", self.config.get(section, option)
  
     def run(self):
         '''
+        Start processing.
         '''
-        pass
+        try:
+            # if crawl
+            if (self.args.crawl):
+                crawler = Crawler()
+                crawler.run(self.config)
+            # if clean
+            if (self.args.clean):
+                cleaner = Cleaner()
+                cleaner.run(self.config)
+            # if infer
+            if (self.args.infer):
+                factor = Factor()
+                factor.run(self.config)
+            # if transform
+            if (self.args.transform):
+                transformer = Transformer()
+                transformer.run(self.config)
+            # if post
+            if (self.args.post):
+                poster = Poster()
+                poster.run()
+            # if report
+            if (self.args.report):
+                reporter = Reporter()
+                reporter.run(self.config)
+        except Exception, e:
+            self.logger.critical(e)
+        finally:
+            self.logger.info("Finished job")
 
-
+# entry point
 if __name__ == '__main__':
-    main = Feeder()
-    main.run()
+    feeder = Feeder()
+    feeder.run()
+    
+    

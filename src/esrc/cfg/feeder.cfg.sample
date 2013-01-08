@@ -1,0 +1,28 @@
+# Configuration values
+ALCHEMY_API_KEY=
+GOOGLE_MAPS_API_KEY=
+
+# IAEA: solr feeder config
+---
+general:
+ url: http://127.0.0.1:8080/TEST
+ path: [/srv/ha/web/DPIV/LIVE] || [http://www.adav.esrc.unimelb.edu.au]
+ frequency: daily
+
+ validation_schema = "/etc/solr-feeder/conf/schema.yml"
+
+html:
+ transform: /home/mlarosa/src/solr-feeder/conf/transform.xsl
+ eac-transform: /home/mlarosa/src/solr-feeder/conf/transform-eac.xsl 
+ exclude: 
+  - browse
+ boost-docs:
+  E000: 10000
+  D000: 100
+  P000: 10
+  A000: 1
+ boost-fields:
+  title: 436
+  keywords: -10
+
+pdf:
