@@ -107,6 +107,8 @@ class Crawler(object):
         self.logger.info("Crawling file system from " + root)
         # create a output for our eac
         self._makeCache(output)
+        # if the path does not exist, return
+        assert os.path.exists(root), self.logger.warning("Specified path does not exist: " + root)
         # walk file system and look for html, htm files
         for path, _, files in os.walk(root):
             for filename in files:
@@ -129,33 +131,36 @@ class Crawler(object):
                                 f.write(eac)
                                 f.close()
                                 self.logger.info("Stored " + url)
-                    except Exception, e:
-                        self.logger.critical("Could not complete processing for " + filename + "\n" + e)
+                    except Exception:
+                        self.logger.warning("Could not complete processing for " + filename)
                     finally:
                         time.sleep(sleep)
     
-    def crawlWebSite(self, baseurl='http://localhost', cache='data', report=None, sleep=0.):
+    def crawlWebSite(self, source='http://localhost', output='data', report=None, sleep=0.):
         '''
         Crawl web site for HTML pages that have EAC, EAC-CPF alternate 
         representations.  When such a page is found, copy the referenced EAC 
         data file to a local cache for processing. If no cache is specified, 
-        it creates a default local in the current working directory. Sleep
+        it creates a local cache in the current working directory. Sleep
         for the specified number of seconds after fetching data.
         '''
-        self.logger.info("Crawling web site", baseurl)
+        self.logger.critical("Web site crawling not implemented yet")
+        return 
+
+        self.logger.info("Crawling web site", source)
         # create the cache if it does not exist
-        self._makeCache(cache)
+        self._makeCache(output)
         # start crawling operation
         try:
             pass
         except Exception:
-            self.logger.critical("Could not complete processing for")
+            self.logger.critical("Could not complete processing for " + source)
         finally:
             time.sleep(sleep)
         
     def run(self, params):
         '''
-        Execute crawl operation.
+        Execute crawl operation using specified parameters.
         '''
         self.logger.info("Starting crawl operation")
         # determine the type of crawl operation to be executed

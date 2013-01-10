@@ -9,7 +9,7 @@ import sys
 import ConfigParser
 from Cleaner import Cleaner
 from Crawler import Crawler
-from Factor import Factor
+from Facter import Facter
 from Poster import Poster
 from Reporter import Reporter
 from Transformer import Transformer
@@ -26,7 +26,7 @@ class Feeder(object):
         configuration file.
         '''
         # logging default
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger('feeder')
         self.logger.setLevel(level=logging.INFO)
         sh = logging.StreamHandler()
@@ -67,35 +67,32 @@ class Feeder(object):
         '''
         Start processing.
         '''
-        try:
-            # if crawl
-            if (self.args.crawl):
-                crawler = Crawler()
-                crawler.run(self.config)
-            # if clean
-            if (self.args.clean):
-                cleaner = Cleaner()
-                cleaner.run(self.config)
-            # if infer
-            if (self.args.infer):
-                factor = Factor()
-                factor.run(self.config)
-            # if transform
-            if (self.args.transform):
-                transformer = Transformer()
-                transformer.run(self.config)
-            # if post
-            if (self.args.post):
-                poster = Poster()
-                poster.run()
-            # if report
-            if (self.args.report):
-                reporter = Reporter()
-                reporter.run(self.config)
-        except Exception, e:
-            self.logger.critical(e)
-        finally:
-            self.logger.info("Finished job")
+        # if crawl
+        if (self.args.crawl):
+            crawler = Crawler()
+            crawler.run(self.config)
+        # if clean
+        if (self.args.clean):
+            cleaner = Cleaner()
+            cleaner.run(self.config)
+        # if infer
+        if (self.args.infer):
+            factor = Facter()
+            factor.run(self.config)
+        # if transform
+        if (self.args.transform):
+            transformer = Transformer()
+            transformer.run(self.config)
+        # if post
+        if (self.args.post):
+            poster = Poster()
+            poster.run()
+        # if report
+        if (self.args.report):
+            reporter = Reporter()
+            reporter.run(self.config)
+        # done
+        self.logger.info("Finished job")
 
 # entry point
 if __name__ == '__main__':

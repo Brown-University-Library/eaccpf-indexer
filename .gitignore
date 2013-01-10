@@ -1,6 +1,8 @@
+*~
 *.cfg
 *.gz
 *.pyc
 .project
 .pydevproject
 ref
+src/esrc/data
