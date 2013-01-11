@@ -2,6 +2,7 @@
 *.cfg
 *.gz
 *.pyc
+*.pyo
 .project
 .pydevproject
 ref

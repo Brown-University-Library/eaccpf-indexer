@@ -5,9 +5,11 @@ This file is subject to the terms and conditions defined in the
 
 from BeautifulSoup import BeautifulSoup as soup
 from geopy import geocoders
+import AlchemyAPI
 import logging
 import os
-import AlchemyAPI
+import traceback
+import yaml 
 
 class Facter(object):
     '''
@@ -18,7 +20,48 @@ class Facter(object):
         '''
         Initialize class
         '''
-        self.logger = logging.getLogger('Facter')
+        self.logger = logging.getLogger('feeder')
+
+    def _cleanList(self, alist):
+        '''
+        Fix yaml encoding issues for list items.
+        '''
+        for item in alist:
+            item = self._cleanText(item)
+        return list
+
+    def _cleanText(self, val):
+        '''
+        Fix yaml encoding issues for string items.
+        '''
+        clean = str(val)
+        clean = clean.strip()
+        # clean = clean.replace('\n','')
+        return clean
+
+    def _getRecord(self, path, filename):
+        '''
+        Try to load the entity record. If it does not already exist, return a
+        default dictionary record structure. The record is encoded in YAML 
+        format.
+        '''
+        if os.path.exists(path + os.sep + filename):
+            # load the existing record file as yaml
+            infile = open(path + os.sep + filename, 'r')
+            record = yaml.load(infile)
+            infile.close()
+            return record
+        else:
+            # create a default record structure and return it
+            return {'entities':[], 'locations':[]}
+    
+    def _getYamlFilename(self, filename):
+        '''
+        Takes a file name 
+        and returns a name with .yml appended
+        '''
+        name, _ = os.path.splitext(filename)
+        return name + ".yml"
         
     def _makeCache(self, path):
         '''
@@ -59,9 +102,9 @@ class Facter(object):
         result = self.alchemyObj.HTMLGetRankedNamedEntities(htmlFile, "http://www.test.com/");
         self.logger.info(result)
         
-    def inferLocations(self, source, output, report, geocoder=geocoders.Google(domain='maps.google.com.au'), api_key):
+    def inferLocations(self, source, output, report, geocoder, api_key):
         '''
-        For each input file, extract the location name or address and attempt 
+        For each input file, extract the locationName name or address and attempt 
         to resolve its geographic coordinates.
         '''
         # create output folder
@@ -71,29 +114,42 @@ class Facter(object):
         # process files
         files = os.listdir(source)
         for filename in files:
-            # read xml
+            # read source data
             infile = open(source + os.sep + filename, 'r')
-            data = infile.read()
-            xml = soup(data)
+            lines = infile.readlines()
+            xml = soup(''.join(lines))
             infile.close()
-            locations = []
+            # get the output record
+            yamlFilename = self._getYamlFilename(filename)
+            record = self._getRecord(output,yamlFilename)
+            # clear the existing locations section before populating
+            record['locations'] = []
             # for each chronItem
-            for chronItem in xml.findAll('chronItem'):
-                date = chronItem.find('date')
-                place = chronItem.find('place')
-                event = chronItem.find('event')
-                # if the item does not contain a GIS location value then
-                # attempt to infer the geographic coordinates
-                if not place.getAttr('GIS'):
-                    coordinates = self.geocoder.geocode(place)
-                    locations.append(date + ";" + event + ";" + place + ";" + coordinates)
-            # write output 
-            outfile = open(output + os.sep + filename, 'a')
-            outfile.write("## Location data inferred from entity record " + filename)
-            for location in locations:
-                outfile.write(location)
+            for chronItem in xml.findAll('chronitem'):
+                try:
+                    if 'GIS' in chronItem.place.attrs:
+                        # populate the record with the existing GIS data
+                        self.logger.warning("Section not implemented")
+                    else:
+                        # try to resolve the location
+                        locationName, coordinates = geocoder.geocode(chronItem.place.string)
+                        # if we got data back
+                        if locationName and coordinates:
+                            location = {}
+                            # location['xyz'] = ['abc','123','456']
+                            location['date']  = self._cleanText(chronItem.date.string)
+                            location['event'] = self._cleanText(chronItem.event.string)
+                            location['place'] = self._cleanText(chronItem.place.string)
+                            location['address'] = self._cleanText(locationName)
+                            location['coordinates'] = [coordinates[0], coordinates[1]]
+                            record['locations'].append(location)
+                except Exception:
+                    self.logger.warning("Could not resolve location record for " + filename)
+            # write output record
+            outfile = open(output + os.sep + yamlFilename, 'w')
+            yaml.dump(record,outfile)
             outfile.close()
-            self.logger.info("Wrote location information to " + filename)
+            self.logger.info("Wrote inferred location information to " + filename)
 
     def run(self, params):
         '''
@@ -105,10 +161,11 @@ class Facter(object):
         source = params.get("infer","input")
         output = params.get("infer","output")
         report = params.get("infer","report")
-        alchemy_api_key = params.get("infer","alchemy_api_key")
+        #alchemy_api_key = params.get("infer","alchemy_api_key")
         google_api_key = params.get("infer","google_api_key")
         # infer location
-        self.inferLocations(source,output,report,api_key=google_api_key)
+        geocoder = geocoders.Google(domain='maps.google.com.au')
+        self.inferLocations(source,output,report,geocoder,google_api_key)
         # infer entities
         # self.inferEntities(source,output,report,alchemy_api_key)
     

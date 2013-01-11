@@ -62,7 +62,7 @@ class Cleaner():
                 outfile.write(data.prettify())
                 outfile.close()
                 self.logger.info("Cleaned " + filename)
-            except Exception, e:
+            except Exception:
                 import traceback
                 traceback.print_stack()
                 self.logger.warning("Could not complete processing on " + filename)

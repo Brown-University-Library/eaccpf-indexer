@@ -16,7 +16,7 @@ from Transformer import Transformer
 
 class Feeder(object):
     '''
-    Harvests metadata from a file system or the web, processes it and then 
+    Harvests EAC files from a file system or the web, processes them and then 
     posts that data to an Apache Solr/Lucene index.
     '''
     
@@ -42,6 +42,7 @@ class Feeder(object):
         self.parser.add_argument('--post', help="Post Solr Input Documents to Apache Solr index", action='store_true')
         self.parser.add_argument('--report', help="Generate a report and write to specified path", action='store_true')
         self.parser.add_argument('--transform', help="Transform EAC, EAC-CPF files to Solr Input Document format", action='store_true')
+        ## self.parser.add_argument('--fix', help="Fix common errors in HTML or XML source files and update the source files where possible.", action='store_true')
         # parse the command line arguments
         try:
             self.args = self.parser.parse_args()
@@ -56,12 +57,6 @@ class Feeder(object):
         except Exception, e:
             self.logger.critical("Could not load the specified configuration file")
             sys.exit(e)
-        
-        # print config data
-#        for section in self.config.sections():
-#            print section
-#            for option in self.config.options(section):
-#                print option, "=", self.config.get(section, option)
  
     def run(self):
         '''

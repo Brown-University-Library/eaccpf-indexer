@@ -62,8 +62,8 @@ report on the quality of the EAC that is indexed.
 Revision History
 ----------------
 
-
 1.1.3
+? Consider fixing broken source HTML, etc. files in place
 ? Posts Solr Input Documents to Solr core
 ? Writes processing messages to report log
 ? Analyzes EAC data for quality indicators
