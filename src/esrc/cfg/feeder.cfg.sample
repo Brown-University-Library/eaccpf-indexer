@@ -1,28 +1,37 @@
-# Configuration values
-ALCHEMY_API_KEY=
-GOOGLE_MAPS_API_KEY=
+[crawl]
+input=/home/davis/Documents/eac-feeder-0.2.0/src/esrc/data
+output=/var/lib/feeder/PROJ/crawl
+report=/var/lib/feeder/PROJ/report
+sleep=0
 
-# IAEA: solr feeder config
----
-general:
- url: http://127.0.0.1:8080/TEST
- path: [/srv/ha/web/DPIV/LIVE] || [http://www.adav.esrc.unimelb.edu.au]
- frequency: daily
+[clean]
+input=/var/lib/feeder/PROJ/crawl
+output=/var/lib/feeder/PROJ/clean
+report=/var/lib/feeder/PROJ/report
 
- validation_schema = "/etc/solr-feeder/conf/schema.yml"
+[infer]
+alchemy_api_key=
+google_api_key=
+input=/var/lib/feeder/PROJ/clean
+output=/var/lib/feeder/PROJ/infer
+report=/var/lib/feeder/PROJ/report
+sleep=0
 
-html:
- transform: /home/mlarosa/src/solr-feeder/conf/transform.xsl
- eac-transform: /home/mlarosa/src/solr-feeder/conf/transform-eac.xsl 
- exclude: 
-  - browse
- boost-docs:
-  E000: 10000
-  D000: 100
-  P000: 10
-  A000: 1
- boost-fields:
-  title: 436
-  keywords: -10
+[transform]
+input=/var/lib/feeder/PROJ/infer
+output=/var/lib/feeder/PROJ/post
+report=/var/lib/feeder/PROJ/report
+transform=/home/davis/Documents/eac-feeder-0.2.0/src/esrc/cfg/eac-to-solr.xslt
 
-pdf:
+[post]
+add=true
+commit=true
+flush=false
+index=http://idx-master:8080/FACP/
+input=/var/lib/feeder/PROJ/post
+optimize=true
+report=/var/lib/feeder/PROJ/report
+
+[report]
+input=/var/lib/feeder/PROJ/report
+output=/var/lib/feeder/PROJ/report

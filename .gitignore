@@ -1,6 +1,7 @@
 *~
 *.cfg
 *.gz
+*.old
 *.pyc
 *.pyo
 .project

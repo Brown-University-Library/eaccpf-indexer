@@ -1,6 +1,6 @@
 '''
 This file is subject to the terms and conditions defined in the
-'LICENSE.txt' file, which is part of this source code package.
+LICENSE file, which is part of this source code package.
 '''
 
 import argparse
@@ -70,6 +70,9 @@ class Feeder(object):
         if (self.args.clean):
             cleaner = Cleaner()
             cleaner.run(self.config)
+        # if fix
+        #if (self.args.fix):
+        #    self.logger.warning("Fix option not implemented yet")
         # if infer
         if (self.args.infer):
             factor = Facter()
@@ -93,5 +96,5 @@ class Feeder(object):
 if __name__ == '__main__':
     feeder = Feeder()
     feeder.run()
-    
+   
     
