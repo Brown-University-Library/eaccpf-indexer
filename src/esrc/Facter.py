@@ -5,7 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from AlchemyAPI import AlchemyAPI
 from BeautifulSoup import BeautifulSoup as soup
-#from geopy import geocoders
+from geopy import geocoders
 from pythoncalais import Calais
 import logging
 import os
@@ -25,6 +25,15 @@ class Facter(object):
         '''
         self.logger = logging.getLogger('feeder')
 
+    def _addValueToDictionary(self,dic,key,value):
+        '''
+        For dictionaries that hold multiple values for each key.
+        '''
+        if not dic.has_key(key):
+            dic[key] = []
+        items = dic[key]
+        items.append(value)
+
     def _cleanList(self, alist):
         '''
         Fix yaml encoding issues for list items.
@@ -37,6 +46,8 @@ class Facter(object):
         '''
         Fix yaml encoding issues for string items.
         '''
+        if val == None:
+            return ''
         clean = str(val)
         clean = clean.strip()
         # clean = clean.replace('\n','')
@@ -53,25 +64,25 @@ class Facter(object):
             parts = nameentry.findAll('part')
             if parts:
                 for p in parts:
-                    freetext += p.getString()
+                    freetext += self._cleanText(p.getString())
         # /eac-cpf/description/biogHist/abstract
         # /eac-cpf/description/biogHist/p
         bioghist = xml.find('bioghist')
         if bioghist:
             abstract = bioghist.find('abstract')
             if abstract:
-                freetext += abstract.getText()
+                freetext += self._cleanText(abstract.getText())
             ps = bioghist.findAll('p')
             if ps:
                 for p in ps:
-                    freetext += p.getString()
+                    freetext += self._cleanText(p.getString())
         # /eac-cpf/description/function/descNote/p
         function = xml.find('function')
         if function:
             functions = function.findAll('p')
             if functions:
                 for f in functions:
-                    freetext += f.getString()
+                    freetext += self._cleanText(f.getString())
         # return
         return freetext
 
@@ -82,35 +93,53 @@ class Facter(object):
         format.
         '''
         if os.path.exists(path + os.sep + filename):
-            # load the existing record file as yaml
+            # load the existing record file as yaml  
             infile = open(path + os.sep + filename, 'r')
             record = yaml.load(infile)
             infile.close()
             return record
         else:
             # create a default record structure and return it
-            return {'entities':[], 'locations':[], 'other':[]}
+            return {'comment':'Inferred entity and location data extracted from ' + filename}
         
     def _getResultAsDictionary(self, result):
         '''
         Get Calais result as a dictionary.
         '''
-        entities = result.entities
-        for key in entities.keys():
-            entity = entities[key]
-            _type = entity['_type']
-            _typeReference = entity['_typeReference']
-            _name = entity['name']
-            _reference = entity['__reference']
-            _instances = entity['instances']
-            _relevance = entity['relevance']
-            _resolutions = entity['resolutions']
-        return {}
+        out = {}
+        # entities
+        try:
+            for e in result.entities:
+                entity = {}
+                #entity['typeReference'] = self._cleanText(e['_typeReference'])
+                entity['type'] = self._cleanText(e['_type'])
+                entity['name'] = self._cleanText(e['name'])
+                self._addValueToDictionary(out, "entities", entity)
+        except:
+            pass
+        # relations
+        try:
+            for r in result.relations:
+                relation = {}
+                #relation['typeReference'] = self._cleanText(r['_typeReference'])
+                relation['type'] = self._cleanText(r['_type'])
+                self._addValueToDictionary(out, "relations", relation)
+        except:
+            pass
+        # topics
+        try:
+            for t in result.topics:
+                top = {}
+                #top['category'] = self._cleanText(t['category'])
+                top['categoryName'] = self._cleanText(t['categoryName'])
+                self._addValueToDictionary(out, "topics", top)
+        except:
+            pass
+        return out
     
     def _getYamlFilename(self, filename):
         '''
-        Takes a file name 
-        and returns a name with .yml appended
+        Takes a file name and returns a name with .yml appended.
         '''
         name, _ = os.path.splitext(filename)
         return name + ".yml"
@@ -138,8 +167,6 @@ class Facter(object):
         # Create an AlchemyAPI object, load API key
         alchemy = AlchemyAPI.AlchemyAPI() 
         alchemy.setAPIKey(api_key)
-        # create output folder
-        self._makeCache(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
@@ -154,7 +181,7 @@ class Facter(object):
             yamlFilename = self._getYamlFilename(filename)
             record = self._getRecord(output,yamlFilename)
             # clear the existing entities section before populating
-            record['entities'] = []
+            record['inferred_alchemy'] = []
             # get the free text fields from the record
             freetext = self._getFreeTextFields(xml)
             # extract a ranked list of named entities
@@ -165,7 +192,7 @@ class Facter(object):
             outfile = open(output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)
             outfile.close()
-            self.logger.info("Wrote inferred entities to " + filename)
+            self.logger.info("Wrote inferred entities to " + yamlFilename)
             # sleep between requests
             time.sleep(sleep)
         
@@ -173,8 +200,6 @@ class Facter(object):
         # create an OpenCalais object, load API key
         calais = Calais.Calais(api_key, submitter="University of Melbourne, eScholarship Research Centre")
         #calais.user_directives["allowDistribution"] = "false"
-        # create output folder
-        self._makeCache(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
@@ -191,14 +216,17 @@ class Facter(object):
             # clear the existing entities section before populating
             # get free text fields from the record
             freetext = self._getFreeTextFields(xml)
-            # extract entities
-            result = calais.analyze(freetext)
-            record['entities'] = self._getResultAsDictionary(result)
-            # write output record
-            outfile = open(output + os.sep + yamlFilename, 'w')
-            yaml.dump(record,outfile)
-            outfile.close()
-            self.logger.info("Wrote inferred entities to " + filename)
+            try:
+                # extract entities
+                result = calais.analyze(freetext)
+                record['inferred_calais'] = self._getResultAsDictionary(result)
+                # write output record
+                outfile = open(output + os.sep + yamlFilename, 'w')
+                yaml.dump(record,outfile)
+                outfile.close()
+                self.logger.info("Wrote inferred entities to " + yamlFilename)
+            except Exception:
+                self.logger.warning("Could not complete inference operation for " + filename, exc_info=True)
             # sleep between requests
             time.sleep(sleep)
     
@@ -223,7 +251,7 @@ class Facter(object):
             yamlFilename = self._getYamlFilename(filename)
             record = self._getRecord(output,yamlFilename)
             # clear the existing entities section before populating
-            record['entities'] = []
+            record['inferred_nltk'] = []
             # get the free text fields from the record
             freetext = self._getFreeTextFields(xml)
             self.logger.info(freetext)
@@ -232,7 +260,7 @@ class Facter(object):
             outfile = open(output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)
             outfile.close()
-            self.logger.info("Wrote inferred entities to " + filename)
+            self.logger.info("Wrote inferred entities to " + yamlFilename)
         
     def inferLocations(self, source, output, report, geocoder, api_key, sleep=0.):
         '''
@@ -240,8 +268,6 @@ class Facter(object):
         attempt to resolve its geographic coordinates. Sleep for the 
         specified number of seconds between requests.
         '''
-        # create output folder
-        self._makeCache(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
@@ -276,12 +302,12 @@ class Facter(object):
                             location['coordinates'] = [coordinates[0], coordinates[1]]
                             record['locations'].append(location)
                 except Exception:
-                    self.logger.warning("Could not resolve location record for " + filename)
+                    self.logger.warning("Could not resolve location record for " + filename, exc_info=True)
             # write output record
             outfile = open(output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)
             outfile.close()
-            self.logger.info("Wrote inferred locations to " + filename)
+            self.logger.info("Wrote inferred locations to " + yamlFilename)
             # sleep between requests
             time.sleep(sleep)
 
@@ -296,17 +322,19 @@ class Facter(object):
         output = params.get("infer","output")
         report = params.get("infer","report")
         sleep = float(params.get("infer","sleep"))
-        #alchemy_api_key = params.get("infer","alchemy_api_key")
-        calais_api_key = params.get("infer","calais_api_key")
-        # google_api_key = params.get("infer","google_api_key")
+        # create output folder
+        self._makeCache(output)
         # infer location
-        # geocoder = geocoders.Google(domain='maps.google.com.au')
-        # self.inferLocations(source,output,report,geocoder,google_api_key,sleep)
+        google_api_key = params.get("infer","google_api_key")
+        geocoder = geocoders.Google(domain='maps.google.com.au')
+        self.inferLocations(source,output,report,geocoder,google_api_key,sleep)
         # infer entities with Alchemy
+        #alchemy_api_key = params.get("infer","alchemy_api_key")
         #self.inferEntitiesWithAlchemy(source,output,report,alchemy_api_key,sleep)
         # infer entities with NLTK
         # self.inferEntitiesWithNLTK(source, output, report)
         # infer entities with Open Calais
+        calais_api_key = params.get("infer","calais_api_key")
         self.inferEntitiesWithCalais(source,output,report,calais_api_key,sleep)
 
     

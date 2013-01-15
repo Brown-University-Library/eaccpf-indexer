@@ -3,29 +3,36 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from lxml import etree
 import logging
-import os 
-import re
-import sys
+import os
+import re 
+import yaml
 
 class Transformer(object):
     '''
-    Transforms an XML file using an external XSLT transform.
+    Transforms an EAC file into a Solr Input Document.
     '''
 
-    def __init__(self,params):
+    def __init__(self):
         '''
         Constructor
         '''
         self.logger = logging.getLogger('feeder')
 
     def _apply_doc_boost(self, doc, boost):
+        '''
+        Apply document boost value.
+        '''
         if boost is not None:
             for b in boost:
                 if re.search(b, self.document):
                     doc.xpath('//add/doc')[0].set("boost", str(boost[b]))
 
     def _apply_field_boosts(self, doc, boost):
+        '''
+        Apply field boost value.
+        '''
         if boost is not None:
             for b in boost:
                 searchfor = "//add/doc/field[@name='" + b + "']"
@@ -33,88 +40,111 @@ class Transformer(object):
                 doc.xpath(searchfor)[0].set("boost", str(boost[b]))
             except:
                 pass
-        
-    def _load_HTML(self, file):
-        """ Take a file arg, load it, then use etree.HTML to process it.
-            Returns a tree suitable for use in a transform
-        """
-        # is it a file, can we read it?
-        if os.path.isfile(file):
-            try:
-                f = open(file)
-                tree = etree.HTML(f.read())
-                f.close()
-                return tree
-            except IOError:
-                print "Can't seem to read: " + file
-                sys.exit(0)
 
-    def _load_transform(self, file):
-        """ Load a transform and return it to the caller
-        """
-        # is it a file, can we read it?
-        if os.path.isfile(file):
-            try:
-                xslt = etree.parse(file,self.parser)
-                return etree.XSLT(xslt)
-            except:
-                print "Can't seem to read: " + file
-                sys.exit(0)
+    def _getXMLFileName(self, filename):
+        '''
+        Takes a file name and returns a name with .yml appended.
+        '''
+        name, _ = os.path.splitext(filename)
+        return name + ".xml"
 
-    def _merge(self, doc, eac):
-        for field in eac.xpath('/doc')[0].iterchildren():
-            # then cycle through each element adding it to the other doc
-            #print etree.tostring(field)
-            etree.SubElement(doc.xpath('/add/doc')[0], field.tag, name=field.attrib['name']).text = field.text
-        
+    def _makeCache(self, path):
+        '''
+        Create a cache folder at the specified path if none exists.
+        If the path already exists, delete all files.
+        '''
+        if not os.path.exists(path):
+            os.makedirs(path)
+            self.logger.info("Created output folder at " + path)
+        else:
+            files = os.listdir(path)
+            for afile in files:
+                os.remove(path + os.sep + afile)
+            self.logger.info("Cleared output folder at " + path)
+
+    def mergeInferredDataIntoSID(self, source, output, report=None):
+        '''
+        Merge inference data into Solr Input Document.
+        '''
+        # confirm that the source_eac and output directories exist
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        # process files
+        files = os.listdir(source)
+        for filename in files:
+            try:
+                # read inferred data file
+                infile = open(source + os.sep + filename,'r')
+                data = yaml.load(infile)
+                infile.close()
+                # read output Solr document
+                xmlFileName = self._getXMLFileName(filename)
+                outfile = open(output + os.sep + xmlFileName, 'r+')
+                xml = outfile.read()
+                sid = etree.XML(xml)
+                # add inferred fields
+                
+                # close the output file
+                outfile.close()
+                self.logger.info("Inferred data added to Solr Input Document " + filename)
+            except Exception:
+                self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
+    
     def run(self, params):
-        
-        pass
+        '''
+        Execute transformation on EAC source document, then merge in inferred data.
+        Write a valid Solr Input Document.
+        '''
+        self.logger.info("Starting transform operation")
+        # get parameters
+        output = params.get("transform","output")
+        report = params.get("transform","report")
+        source_eac = params.get("transform","input_eac")
+        source_inferred = params.get("transform","input_inferred")
+        transform = params.get("transform","transform")
+        # create output folder
+        self._makeCache(output)
+        # execute initial transformation
+        self.transformEACtoSID(source_eac, output, transform, report)
+        self.mergeInferredDataIntoSID(source_inferred, output, report)
     
-    def transform(self, source, output, report=None):
-        #print config['transform']
-
-        # read in the XSL transform for the HTML file we've just been given
-        #  and produce the transformer
-        transform = self._load_transform(config['transform'])
-
-        # read the document to be transformed
-        tree = self._load_HTML(self.document)
-
-        # transform the document
-        solr_doc = transform(tree)
-        if self._check_HTML_transform(solr_doc):
-            sys.exit(0)
-
-        # see if an EAC file is ref'ed
+    def transformEACtoSID(self, source, output, xslt, report=None):
+        '''
+        Transform EAC document to Solr Input Document format using the
+        specified XSLT transform file.
+        '''
+        # read the XSLT file
         try:
-           eac_file = solr_doc.xpath("//add/doc/field[@name='EAC']")[0].text
+            xslt_file = open(xslt,'r')
+            xslt_data = xslt_file.read()
+            xslt_root = etree.XML(xslt_data)
+            xslt_file.close()
+            transform = etree.XSLT(xslt_root)
         except:
-           eac_file = None
-        #print eac_file
-        if eac_file is not None:
-            # load and prepare the transform for the EAC file
-            transform = self._load_transform(config['eac-transform'])
-
-            # get the eac file
-            resp, content  = Http().request(eac_file, "GET")
-            if resp['status'] == '200' and resp['content-type'] == "application/xml":
-                # if it loaded ok - and it looks like an xml file (which it should be)
-                #  parse it and transform it
-                tree = etree.parse(StringIO(content), self.parser)
-                #print etree.tostring(xml, pretty_print=True)
-                eac_doc = transform(tree)
-                if self._check_EAC_transform(eac_doc):
-                    sys.exit(0)
-                self._merge(solr_doc, eac_doc)
-
-        self._apply_doc_boost(solr_doc, config['boost-docs'])
-        self._apply_field_boosts(solr_doc, config['boost-fields'])
-
-        # and store the document 
-        self.doc = solr_doc
-    
-    def validate(self, source, output, schema, report=None):
-        pass
-    
+            self.logger.critical("Could not load XSLT file " + xslt)
+        # confirm that the source and output directories exist
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        # process files
+        files = os.listdir(source)
+        for filename in files:
+            try:
+                # read source data
+                infile = open(source + os.sep + filename, 'r')
+                data = infile.read()
+                infile.close()
+                # create xml tree
+                xml = etree.XML(data)
+                # transform the source file
+                result = transform(xml)
+                # self._merge(solr_doc, eac_doc)
+                # self._apply_doc_boost(solr_doc, config['boost-docs'])
+                # self._apply_field_boosts(solr_doc, config['boost-fields'])
+                # write the output file
+                outfile = open(output + os.sep + filename, 'w')
+                result.write(outfile, pretty_print=True, xml_declaration=True)
+                outfile.close()
+                self.logger.info("Transformed EAC to Solr Input Document " + filename)
+            except Exception:
+                self.logger.warning("Could not complete XSLT processing for " + filename, exc_info=True)
     

@@ -29,12 +29,14 @@ Thanks:
 
  * Alchemy API - http://www.alchemy.com
  * Beautiful Soup - http://www.crummy.com/software/BeautifulSoup
- * GeoPy - http://code.google.com/p/geopy/
+ * GeoPy - http://code.google.com/p/geopy
  * Google Maps API - http://maps.google.com
- * lxml
+ * lxml - http://lxml.de
  * Natural Language Toolkit - http://nltk.org
  * Python - http://www.python.org
- * PyYAML - http://pyyaml.org/
+ * Python Calais - http://code.google.com/p/python-calais
+ * PyYAML - http://pyyaml.org
+ * Simple JSON - https://github.com/simplejson/simplejson
 
 
 License
@@ -46,7 +48,7 @@ Please see the LICENSE file for licence information.
 Installation
 ------------
 
-Requires Python 2.7.x
+Requires Python 2.7.x, BeautifulSoup, Lxml, pyJSON, pyYAML
 
 
 Usage
@@ -59,28 +61,43 @@ will fetch, parse and transform the EAC document into a Solr Input Document,
 then insert the record into Solr.  In addition, the crawler can generate a 
 report on the quality of the EAC that is indexed.
 
+  python feeder.py config [OPTIONS]
+	
+  --clean 	   Clean input files of common errors before further processing
+  --crawl	   Crawl file system or web site for metadata files
+  --infer	   Infer concepts, entities, locations from free text fields
+  --post	   Post Solr Input Documents to Apache Solr index
+  --report	   Generate a report and write to specified path
+  --transform  Transform EAC, EAC-CPF files to Solr Input Document format
+
 
 Revision History
 ----------------
 
-1.1.4
+1.3.1
 ? Consider fixing broken source HTML, etc. files in place
+? Improve extracted relations data
+? Implement entity extraction with Alchemy API
+? Transform operation should optionally exclude inferred data
+? Updates should optionally be executed only on changed files
+? Need to handle the presence of GIS attribute appropriately
 
-1.1.3
+1.2.2
 ? Posts Solr Input Documents to Solr core
 ? Writes processing messages to report log
 ? Analyzes EAC data for quality indicators
 ? Merges individual reports into a single report file
 
-1.1.2
-? Transforms EAC to Solr Input Document format using an external XSLT file
+1.2.1
+- Transforms EAC to Solr Input Document format using an external XSLT file
 ? Merges inferred data with Solr Input Documents
 ? Requires update to the Solr index configuration
+? Handles case where geocoding returns multiple locations
 
 1.1.1
 - Converts place names in structured fields into geographic coordinates for mapping
 - Writes inferred data to cache folder
-? Extracts entities (people, places, things, concepts) from free text fields
+- Extracts entities (people, places, things, concepts) from free text fields
 
 1.1.0
 - Revised application architecture
@@ -89,4 +106,4 @@ Revision History
 - Cleans input data to resolve common XML errors
 
 1.0.0
-- Initial production release
+- Initial solr-feeder release

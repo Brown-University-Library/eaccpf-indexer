@@ -167,7 +167,7 @@ class Crawler(object):
         source = params.get("crawl","input")
         output = params.get("crawl","output")
         report = params.get("crawl","report")
-        sleep = int(params.get("crawl","sleep"))
+        sleep = float(params.get("crawl","sleep"))
         # start operation if source is specified
         if (self._isUrl(source)):
             self.crawlWebSite(source,output,report,sleep)
