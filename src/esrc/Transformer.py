@@ -136,8 +136,8 @@ class Transformer(object):
                 # create xml tree
                 xml = etree.XML(data)
                 # extract the @source and @referrer values
-                source = 'http://example.com'
-                referrer = 'http://example.com'
+                src = 'http://example.com'
+                ref= 'http://example.com'
                 # transform the source file
                 result = transform(xml)
                 # self._merge(solr_doc, eac_doc)

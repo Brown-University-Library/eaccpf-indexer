@@ -29,7 +29,6 @@ Authors:
 Thanks:
 
  * Alchemy API - http://www.alchemy.com
- * Beautiful Soup - http://www.crummy.com/software/BeautifulSoup
  * GeoPy - http://code.google.com/p/geopy
  * Google Maps API - http://maps.google.com
  * lxml - http://lxml.de
@@ -49,7 +48,7 @@ Please see the LICENSE file for licence information.
 Installation
 ------------
 
-Requires Python 2.7.x, BeautifulSoup, Lxml, pyJSON, pyYAML
+Requires Python 2.7.x, lxml, pyYAML, Simple JSON.
 
 
 Usage
@@ -93,7 +92,7 @@ Revision History
 1.2.1
 - Transforms EAC to Solr Input Document format using an external XSLT file
 - Crawler appends comment to EAC xml to record store source and referrer URLs
-- Crawler download and save operation must always succeed
+- Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
 ? Merges inferred data with Solr Input Documents
 ? Requires update to the Solr index configuration
 ? Handles case where geocoding returns multiple locations

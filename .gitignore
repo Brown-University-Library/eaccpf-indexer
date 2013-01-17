@@ -4,7 +4,9 @@
 *.old
 *.pyc
 *.pyo
+*.sh
 .project
 .pydevproject
+data
 ref
-src/esrc/data
+

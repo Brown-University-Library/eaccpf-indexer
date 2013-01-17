@@ -4,7 +4,6 @@ LICENSE file, which is part of this source code package.
 '''
 
 from BeautifulSoup import BeautifulSoup 
-from lxml import etree
 import fnmatch
 import logging
 import os
@@ -24,7 +23,6 @@ class Crawler(object):
         Initialize the crawler
         '''
         self.logger = logging.getLogger('feeder')
-        #self.parser = EACMetaRefParser()
     
     def _clearFiles(self, path):
         '''
@@ -99,7 +97,7 @@ class Crawler(object):
         '''
         Crawl file system for HTML files, starting from the file root, and 
         looking for those files which have EAC, EAC-CPF alternate 
-        representations. Mirror EAC eac files to the specified output. If no 
+        representations. Mirror EAC files to the specified output. If no 
         output is specified, it creates a default local in the current working 
         directory. Sleep for the specified number of seconds after fetching 
         data.
@@ -108,7 +106,8 @@ class Crawler(object):
         # create a output for our eac
         self._makeCache(output)
         # if the path does not exist, return
-        assert os.path.exists(root), self.logger.warning("Specified path does not exist: " + root)
+        assert os.path.exists(root), self.logger.critical("Specified path does not exist: " + root)
+        assert os.path.exists(output), self.logger.critical("Specified path does not exist: " + output)
         # walk file system and look for html, htm files
         for path, _, files in os.walk(root):
             for filename in files:
@@ -136,8 +135,6 @@ class Crawler(object):
                                 outfile.write(eac)
                                 outfile.close()
                                 self.logger.info("Stored " + source)
-                    except etree.XMLSyntaxError:
-                        self.logger.warning("Could not parse EAC due to XML syntax error in " + source)
                     except urllib2.HTTPError:
                         self.logger.warning("Could not fetch EAC file " + source)
                     except Exception:
@@ -159,7 +156,6 @@ class Crawler(object):
         '''
         Execute crawl operation using specified parameters.
         '''
-        self.logger.info("Starting crawl operation")
         # determine the type of crawl operation to be executed
         source = params.get("crawl","input")
         output = params.get("crawl","output")

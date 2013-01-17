@@ -197,6 +197,7 @@ class Facter(object):
             time.sleep(sleep)
         
     def inferEntitiesWithCalais(self, source, output, report, api_key, sleep=0.):
+        self.logger.info("Inferring entities for " + source)
         # create an OpenCalais object, load API key
         calais = Calais.Calais(api_key, submitter="University of Melbourne, eScholarship Research Centre")
         #calais.user_directives["allowDistribution"] = "false"
@@ -268,6 +269,7 @@ class Facter(object):
         attempt to resolve its geographic coordinates. Sleep for the 
         specified number of seconds between requests.
         '''
+        self.logger.info("Inferring locations for " + source)
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
@@ -301,6 +303,8 @@ class Facter(object):
                             location['address'] = self._cleanText(locationName)
                             location['coordinates'] = [coordinates[0], coordinates[1]]
                             record['locations'].append(location)
+                except AttributeError:
+                    self.logger.warning("Place tag not found in record " + filename)
                 except Exception:
                     self.logger.warning("Could not resolve location record for " + filename, exc_info=True)
             # write output record
@@ -316,7 +320,6 @@ class Facter(object):
         Execute semantic analysis and information extraction using the 
         specified parameters.
         '''
-        self.logger.info("Starting inference operation")
         # get parameters
         source = params.get("infer","input")
         output = params.get("infer","output")
