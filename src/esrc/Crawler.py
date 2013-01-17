@@ -3,42 +3,13 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-from HTMLParser import HTMLParser
+from BeautifulSoup import BeautifulSoup 
+from lxml import etree
 import fnmatch
 import logging
 import os
 import time
 import urllib2
-
-class EACMetaRefParser(HTMLParser,object):
-    '''
-    Parser for extracting references to EAC alternate representations.
-    '''
-    
-    def __init__(self):
-        '''
-        Constructor
-        '''
-        super(EACMetaRefParser,self).__init__()
-        self.eac = None
-        
-    def getEacRef(self):
-        '''
-        '''
-        return self.eac
-
-    def handle_starttag(self, tag, attributes):
-        '''
-        If the tag is of type 'meta', contains a name value of 'EAC' or 
-        'EAC-CPF' then return the value of the 'content' attribute.
-        '''
-        if tag != 'meta':
-            return
-        attr = dict(attributes)
-        if attr.has_key('name'):
-            if attr.get('name') == 'EAC' or attr.get('name') == 'EAC-CPF':
-                if (attr.has_key('content')):
-                    self.eac = attr.get('content')
         
 class Crawler(object):
     '''
@@ -53,7 +24,26 @@ class Crawler(object):
         Initialize the crawler
         '''
         self.logger = logging.getLogger('feeder')
-        self.parser = EACMetaRefParser()
+        #self.parser = EACMetaRefParser()
+    
+    def _clearFiles(self, path):
+        '''
+        Delete all files within the specified path.
+        '''
+        files = os.listdir(path)
+        for filename in files:
+            os.remove(path + os.sep + filename)
+    
+    def _getEACSource(self, html):
+        '''
+        Extract EAC value from HTML meta tag. Return None if nothing found.
+        '''
+        soup = BeautifulSoup(html)
+        meta = soup.findAll('meta', {'name':'EAC'})
+        try:
+            return meta[0].get('content')
+        except:
+            return None
     
     def _getFileName(self, url):
         '''
@@ -65,6 +55,18 @@ class Crawler(object):
             return last
         return None
     
+    def _getHTMLReferrer(self, html):
+        '''
+        Extract DC.Identifier value from HTML meta tag. Return None if nothing 
+        found.
+        '''
+        soup = BeautifulSoup(html)
+        meta = soup.findAll('meta', {'name':'DC.Identifier'})
+        try:
+            return meta[0].get('content')
+        except:
+            return None
+    
     def _isHTML(self, filename):
         '''
         Determine if a file is an *.htm or *.html file.
@@ -75,7 +77,7 @@ class Crawler(object):
     
     def _isUrl(self, uri):
         ''' 
-        Determine if a URI is an URL.
+        Determine if URI is a URL.
         '''
         if 'http://' in uri:
             return True
@@ -90,9 +92,7 @@ class Crawler(object):
             os.makedirs(path)
             self.logger.info("Created output folder at " + path)
         else:
-            files = os.listdir(path)
-            for afile in files:
-                os.remove(path + os.sep + afile)
+            self._clearFiles(path)
             self.logger.info("Cleared output folder at " + path)
     
     def crawlFileSystem(self, root='.', output='output', report=None, sleep=0.):
@@ -116,23 +116,32 @@ class Crawler(object):
                     self.logger.debug("Found " + path + os.sep + filename)
                     try:
                         # if the file has an EAC alternate representation
-                        html = open((path + os.sep + filename),'r').read()
-                        self.parser.reset()
-                        self.parser.feed(html)
-                        url = self.parser.getEacRef() 
-                        if url:
-                            self.logger.debug("Found " + url)
-                            # download the file
-                            eac = urllib2.urlopen(url).read()
-                            # write the file to the output
-                            datafilename = self._getFileName(url)
+                        infile = open((path + os.sep + filename),'r')
+                        html = infile.read()
+                        source = self._getEACSource(html) 
+                        infile.close()
+                        if source:
+                            self.logger.debug("Found " + source)
+                            # record the URL of the referring document
+                            referrer = self._getHTMLReferrer(html) 
+                            # download the EAC file
+                            response = urllib2.urlopen(source)
+                            eac = response.read()
+                            # append source and referrer URLs into a comment at the end
+                            eac += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":source, "referrer":referrer}
+                            # write EAC file to output
+                            datafilename = self._getFileName(source)
                             if datafilename:
-                                f = open((output + os.sep + datafilename),'w')
-                                f.write(eac)
-                                f.close()
-                                self.logger.info("Stored " + url)
+                                outfile = open(output + os.sep + datafilename,'w')
+                                outfile.write(eac)
+                                outfile.close()
+                                self.logger.info("Stored " + source)
+                    except etree.XMLSyntaxError:
+                        self.logger.warning("Could not parse EAC due to XML syntax error in " + source)
+                    except urllib2.HTTPError:
+                        self.logger.warning("Could not fetch EAC file " + source)
                     except Exception:
-                        self.logger.warning("Could not complete processing for " + filename)
+                        self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
                         time.sleep(sleep)
     
@@ -145,18 +154,6 @@ class Crawler(object):
         for the specified number of seconds after fetching data.
         '''
         self.logger.critical("Web site crawling not implemented yet")
-        return 
-
-        self.logger.info("Crawling web site", source)
-        # create the cache if it does not exist
-        self._makeCache(output)
-        # start crawling operation
-        try:
-            pass
-        except Exception:
-            self.logger.critical("Could not complete processing for " + source)
-        finally:
-            time.sleep(sleep)
         
     def run(self, params):
         '''

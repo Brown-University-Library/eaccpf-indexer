@@ -1,11 +1,12 @@
-EAC, EAC-CPF Web Crawler and Data Processing Utility
-====================================================
+EAC-CPF Web Crawler and Data Processing Utility
+===============================================
 
-EAC-Crawler is a utility for harvesting EAC, EAC-CPF from a file system or the 
-Internet, and post-processing it for applications such as search indexing, and
+EAC-Crawler is a utility for harvesting EAC-CPF from a file system or the 
+Internet, and post-processing it for applications such as search and
 visualization in maps or timelines. The utility is able to extract concepts, 
-people and locations from free text or structured data fields. Inferred data 
-is written to disk to enable various usages.
+people and locations from free text or structured data fields. Source and 
+processed data are written to disk for each stage of processing, to enable
+an open workflow and alternative uses.
 
 
 Credits
@@ -81,6 +82,7 @@ Revision History
 ? Transform operation should optionally exclude inferred data
 ? Updates should optionally be executed only on changed files
 ? Need to handle the presence of GIS attribute appropriately
+? Add stopwatch function to time the duration of processing
 
 1.2.2
 ? Posts Solr Input Documents to Solr core
@@ -90,6 +92,8 @@ Revision History
 
 1.2.1
 - Transforms EAC to Solr Input Document format using an external XSLT file
+- Crawler appends comment to EAC xml to record store source and referrer URLs
+- Crawler download and save operation must always succeed
 ? Merges inferred data with Solr Input Documents
 ? Requires update to the Solr index configuration
 ? Handles case where geocoding returns multiple locations

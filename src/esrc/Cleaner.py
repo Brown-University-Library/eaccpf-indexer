@@ -23,7 +23,7 @@ class Cleaner():
         '''
         Convert HTML entities into XML entities.
         '''
-        return soup(content,convertEntities=soup.HTML_ENTITIES)
+        return soup(content,convertEntities=soup.HTML_ENTITIES).prettify()
 
     def _makeCache(self, path):
         '''
@@ -45,7 +45,7 @@ class Cleaner():
         directory. If the source and output are the same directory, the
         source files will be overwritten.  
         '''
-        self.logger.info("Cleaning files from " + source)
+        self.logger.info("Cleaning files in " + source)
         # make output directory
         self._makeCache(output)
         # process files
@@ -59,7 +59,7 @@ class Cleaner():
                 infile.close()
                 # write data
                 outfile = open(output + os.sep + filename, 'w')
-                outfile.write(data.prettify())
+                outfile.write(data)
                 outfile.close()
                 self.logger.info("Cleaned " + filename)
             except Exception:
@@ -71,7 +71,6 @@ class Cleaner():
         '''
         Execute the clean operation using specified parameters.
         '''
-        self.logger.info("Starting clean operation")
         # get parameters
         source = params.get("clean","input")
         output = params.get("clean","output")
@@ -86,9 +85,11 @@ class Cleaner():
         '''
         Validate a collection of files against an XML schema.
         '''
+        self.logger.info("Validating files in " + source)
         # load the schema
         try:
             pass
+            self.logger.info("Loaded schema file " + schema)
         except Exception:
             self.logger.critical("Could not load schema file " + schema)
         # validate files against schema
