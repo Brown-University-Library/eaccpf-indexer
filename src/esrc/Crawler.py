@@ -93,23 +93,22 @@ class Crawler(object):
             self._clearFiles(path)
             self.logger.info("Cleared output folder at " + path)
     
-    def crawlFileSystem(self, root='.', output='output', report=None, sleep=0.):
+    def crawlFileSystem(self, source='.', output='output', report=None, sleep=0.):
         '''
-        Crawl file system for HTML files, starting from the file root, and 
+        Crawl file system for HTML files, starting from the file source, and 
         looking for those files which have EAC, EAC-CPF alternate 
         representations. Mirror EAC files to the specified output. If no 
         output is specified, it creates a default local in the current working 
         directory. Sleep for the specified number of seconds after fetching 
         data.
         '''
-        self.logger.info("Crawling file system from " + root)
-        # create a output for our eac
-        self._makeCache(output)
-        # if the path does not exist, return
-        assert os.path.exists(root), self.logger.critical("Specified path does not exist: " + root)
-        assert os.path.exists(output), self.logger.critical("Specified path does not exist: " + output)
+        # check state
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # walk file system and look for html, htm files
-        for path, _, files in os.walk(root):
+        for path, _, files in os.walk(source):
             for filename in files:
                 if self._isHTML(filename):
                     self.logger.debug("Found " + path + os.sep + filename)
@@ -117,26 +116,26 @@ class Crawler(object):
                         # if the file has an EAC alternate representation
                         infile = open((path + os.sep + filename),'r')
                         html = infile.read()
-                        source = self._getEACSource(html) 
                         infile.close()
-                        if source:
-                            self.logger.debug("Found " + source)
+                        src = self._getEACSource(html) 
+                        if src:
+                            self.logger.debug("Found " + src)
                             # record the URL of the referring document
-                            referrer = self._getHTMLReferrer(html) 
+                            ref = self._getHTMLReferrer(html) 
                             # download the EAC file
-                            response = urllib2.urlopen(source)
+                            response = urllib2.urlopen(src)
                             eac = response.read()
-                            # append source and referrer URLs into a comment at the end
-                            eac += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":source, "referrer":referrer}
-                            # write EAC file to output
-                            datafilename = self._getFileName(source)
-                            if datafilename:
-                                outfile = open(output + os.sep + datafilename,'w')
+                            # append source and referrer URLs into a comment at the end of the eac
+                            eac += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
+                            # write eac file to output
+                            outfile = self._getFileName(src)
+                            if outfile:
+                                outfile = open(output + os.sep + outfile,'w')
                                 outfile.write(eac)
                                 outfile.close()
-                                self.logger.info("Stored " + source)
+                                self.logger.info("Stored " + src)
                     except urllib2.HTTPError:
-                        self.logger.warning("Could not fetch EAC file " + source)
+                        self.logger.warning("Could not fetch EAC file " + src)
                     except Exception:
                         self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
@@ -161,6 +160,10 @@ class Crawler(object):
         output = params.get("crawl","output")
         report = params.get("crawl","report")
         sleep = float(params.get("crawl","sleep"))
+        # create output folders
+        self._makeCache(output)
+        if not os.path.exists(report):
+            os.makedirs(report)
         # start operation if source is specified
         if (self._isUrl(source)):
             self.crawlWebSite(source,output,report,sleep)

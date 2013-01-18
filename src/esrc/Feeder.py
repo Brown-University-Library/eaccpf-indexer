@@ -3,16 +3,17 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-import argparse
-import logging
-import sys
-import ConfigParser
 from Cleaner import Cleaner
 from Crawler import Crawler
 from Facter import Facter
 from Poster import Poster
 from Reporter import Reporter
 from Transformer import Transformer
+import ConfigParser
+import argparse
+import datetime
+import logging
+import sys
 
 class Feeder(object):
     '''
@@ -62,6 +63,8 @@ class Feeder(object):
         '''
         Start processing.
         '''
+        # start clock
+        start = datetime.datetime.now()
         # if crawl
         if (self.args.crawl):
             crawler = Crawler()
@@ -71,8 +74,6 @@ class Feeder(object):
             cleaner = Cleaner()
             cleaner.run(self.config)
         # if fix
-        #if (self.args.fix):
-        #    self.logger.warning("Fix option not implemented yet")
         # if infer
         if (self.args.infer):
             factor = Facter()
@@ -84,13 +85,18 @@ class Feeder(object):
         # if post
         if (self.args.post):
             poster = Poster()
-            poster.run()
+            poster.run(self.config)
         # if report
         if (self.args.report):
             reporter = Reporter()
             reporter.run(self.config)
-        # done
-        self.logger.info("Finished job")
+        # stop clock
+        delta = datetime.datetime.now() - start
+        s = delta.seconds
+        hours, remainder = divmod(s, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        msg = 'Job finished in %s:%s:%s' % (hours, minutes, seconds)
+        self.logger.info(msg)    
 
 # entry point
 if __name__ == '__main__':

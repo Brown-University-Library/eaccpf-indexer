@@ -3,27 +3,29 @@
 
     <!-- Transform EAC XML document to Apache Solr XML injest format -->
     <xsl:template match="/">
-        <doc>
-            <field name="id"><xsl:value-of select="/eac/control/id" /></field>
-            <field name="title"><xsl:value-of select="/eac/identity/nameEntry/part" /></field>
-            <field name="entityType"><xsl:value-of select="/eac/identity/entityType" /></field>
-            <field name="abstract"><xsl:value-of select="/eac/description/biogHist/abstract" /></field>
-            <xsl:if test="/eac/description/existDates/fromDate/@standardForm != ''">
-                <field name="fromDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/fromDate/@standardForm"/></field>
-            </xsl:if>
-            <xsl:if test="/eac/description/existDates/toDate/@standardForm != ''">
-                <field name="toDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/toDate/@standardForm"/></field>
-            </xsl:if>
-            <field name="function"><xsl:value-of select="/eac/description/function/descNote"/></field>            
-            <xsl:for-each select="/eac/relations/cpfRelation"><field name="cpfRelation_relationLink"><xsl:value-of select="relationLink"/></field></xsl:for-each>
-            <xsl:for-each select="/eac/relations/resourceRelation">
-                <field name="resourceRelation_natureOfRelation"><xsl:value-of select="natureOfRelation" /></field>
-                <field name="resourceRelation_name"><xsl:value-of select="relationXMLWrap/bib/name" /></field>
-                <field name="resourceRelation_title"><xsl:value-of select="relationXMLWrap/bib/title" /></field>
-                <field name="resourceRelation_publisher"><xsl:value-of select="relationXMLWrap/bib/imprint/publisher"/></field>
-                <!-- <xsl:if test="relationXMLWrap/bib/imprint/date != ''"><xsl:apply-templates select="relationXMLWrap/bib/imprint/date"/></xsl:if> -->
-            </xsl:for-each>
-        </doc>
+        <add>
+	        <doc>
+	            <field name="id"><xsl:value-of select="/eac/control/id" /></field>
+	            <field name="title"><xsl:value-of select="/eac/identity/nameEntry/part" /></field>
+	            <field name="entityType"><xsl:value-of select="/eac/identity/entityType" /></field>
+	            <field name="abstract"><xsl:value-of select="/eac/description/biogHist/abstract" /></field>
+	            <xsl:if test="/eac/description/existDates/fromDate/@standardForm != ''">
+	                <field name="fromDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/fromDate/@standardForm"/></field>
+	            </xsl:if>
+	            <xsl:if test="/eac/description/existDates/toDate/@standardForm != ''">
+	                <field name="toDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/toDate/@standardForm"/></field>
+	            </xsl:if>
+	            <field name="function"><xsl:value-of select="/eac/description/function/descNote"/></field>            
+	            <xsl:for-each select="/eac/relations/cpfRelation"><field name="cpfRelation_relationLink"><xsl:value-of select="relationLink"/></field></xsl:for-each>
+	            <xsl:for-each select="/eac/relations/resourceRelation">
+	                <field name="resourceRelation_natureOfRelation"><xsl:value-of select="natureOfRelation" /></field>
+	                <field name="resourceRelation_name"><xsl:value-of select="relationXMLWrap/bib/name" /></field>
+	                <field name="resourceRelation_title"><xsl:value-of select="relationXMLWrap/bib/title" /></field>
+	                <field name="resourceRelation_publisher"><xsl:value-of select="relationXMLWrap/bib/imprint/publisher"/></field>
+	                <!-- <xsl:if test="relationXMLWrap/bib/imprint/date != ''"><xsl:apply-templates select="relationXMLWrap/bib/imprint/date"/></xsl:if> -->
+	            </xsl:for-each>
+	        </doc>                
+        </add>
     </xsl:template>
     
     <!-- Transform EAC StandardForm date from YYYYMMDD format to Solr compatible YYYY-MM-DDThh:mm:ssZ format -->

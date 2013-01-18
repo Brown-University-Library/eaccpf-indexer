@@ -158,17 +158,20 @@ class Facter(object):
                 os.remove(path + os.sep + afile)
             self.logger.info("Cleared output folder at " + path)
     
-    def inferEntitiesWithAlchemy(self, source, output, report, api_key, sleep=0.):
+    def inferEntitiesWithAlchemy(self, source, output, api_key, sleep=0., report=None):
         '''
         For each input file, attempt to extract people, things, concepts and 
         place names from free text fields. Sleep for the specified number of 
         seconds between requests.
         '''
+        # check state
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # Create an AlchemyAPI object, load API key
         alchemy = AlchemyAPI.AlchemyAPI() 
         alchemy.setAPIKey(api_key)
-        # check state
-        assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
         files = os.listdir(source)
         for filename in files:
@@ -196,13 +199,15 @@ class Facter(object):
             # sleep between requests
             time.sleep(sleep)
         
-    def inferEntitiesWithCalais(self, source, output, report, api_key, sleep=0.):
-        self.logger.info("Inferring entities for " + source)
+    def inferEntitiesWithCalais(self, source, output, api_key, sleep=0., report=None):
         # create an OpenCalais object, load API key
         calais = Calais.Calais(api_key, submitter="University of Melbourne, eScholarship Research Centre")
         #calais.user_directives["allowDistribution"] = "false"
         # check state
-        assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # process files
         files = os.listdir(source)
         for filename in files:
@@ -231,7 +236,7 @@ class Facter(object):
             # sleep between requests
             time.sleep(sleep)
     
-    def inferEntitiesWithNLTK(self, source, output, report):
+    def inferEntitiesWithNLTK(self, source, output, report=None):
         '''
         Infer entities from free text using Natural Language Toolkit.
         Attempt to identify people and things.
@@ -239,7 +244,10 @@ class Facter(object):
         # create output folder
         self._makeCache(output)
         # check state
-        assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # process files
         files = os.listdir(source)
         for filename in files:
@@ -263,13 +271,12 @@ class Facter(object):
             outfile.close()
             self.logger.info("Wrote inferred entities to " + yamlFilename)
         
-    def inferLocations(self, source, output, report, geocoder, api_key, sleep=0.):
+    def inferLocations(self, source, output, geocoder, api_key, sleep=0., report=None):
         '''
         For each input file, extract the locationName name or address and 
         attempt to resolve its geographic coordinates. Sleep for the 
         specified number of seconds between requests.
         '''
-        self.logger.info("Inferring locations for " + source)
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
@@ -330,14 +337,13 @@ class Facter(object):
         # infer location
         google_api_key = params.get("infer","google_api_key")
         geocoder = geocoders.Google(domain='maps.google.com.au')
-        self.inferLocations(source,output,report,geocoder,google_api_key,sleep)
+        self.inferLocations(source,output,geocoder,google_api_key,sleep,report)
         # infer entities with Alchemy
         #alchemy_api_key = params.get("infer","alchemy_api_key")
-        #self.inferEntitiesWithAlchemy(source,output,report,alchemy_api_key,sleep)
+        #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)
         # infer entities with NLTK
         # self.inferEntitiesWithNLTK(source, output, report)
         # infer entities with Open Calais
         calais_api_key = params.get("infer","calais_api_key")
-        self.inferEntitiesWithCalais(source,output,report,calais_api_key,sleep)
-
+        self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
     

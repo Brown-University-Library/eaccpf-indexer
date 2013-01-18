@@ -41,12 +41,12 @@ class Transformer(object):
             except:
                 pass
 
-    def _getXMLFileName(self, filename):
+    def _getInferredDataFileName(self, filename):
         '''
         Takes a file name and returns a name with .yml appended.
         '''
         name, _ = os.path.splitext(filename)
-        return name + ".xml"
+        return name + ".yml"
 
     def _makeCache(self, path):
         '''
@@ -66,25 +66,47 @@ class Transformer(object):
         '''
         Merge inference data into Solr Input Document.
         '''
-        # confirm that the source_eac and output directories exist
+        # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        # process files
-        files = os.listdir(source)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        # for each solr input document
+        files = os.listdir(output)
         for filename in files:
             try:
+                # read Solr Input Document
+                xml = etree.parse(output + os.sep + filename)
+                root = xml.getroot()
+                doc = root.getchildren()
                 # read inferred data file
-                infile = open(source + os.sep + filename,'r')
-                data = yaml.load(infile)
+                inferredFileName = self._getInferredDataFileName(filename)
+                infile = open(source + os.sep + inferredFileName,'r+')
+                data = infile.read()
+                inferred = yaml.load(data)
                 infile.close()
-                # read output Solr document
-                xmlFileName = self._getXMLFileName(filename)
-                outfile = open(output + os.sep + xmlFileName, 'r+')
-                xml = outfile.read()
-                sid = etree.XML(xml)
-                # add inferred fields
-                
-                # close the output file
+                # add inferred locations
+                if inferred['locations']:
+                    for location in inferred['locations']:
+                        # address
+                        address = etree.Element('field', name='address')
+                        address.text = location['address']
+                        # coordinates
+                        lat = location['coordinates'][0]
+                        lng = location['coordinates'][1]
+                        latlng = str(lat) + "," + str(lng)
+                        coordinates = etree.Element('field', name='coordinates')
+                        coordinates.text = latlng
+                        # add to document
+                        #doc.append(address)
+                        #doc.append(coordinates)
+                        root.append(address)
+                        root.append(coordinates)
+                # add inferred entities
+                # write the updated file
+                outfile = open(output + os.sep + filename,'w')
+                updated = etree.tostring(xml, pretty_print=True, xml_declaration=True)
+                outfile.write(updated)
                 outfile.close()
                 self.logger.info("Inferred data added to Solr Input Document " + filename)
             except Exception:
@@ -95,24 +117,35 @@ class Transformer(object):
         Execute transformation on EAC source document, then merge in inferred data.
         Write a valid Solr Input Document.
         '''
-        self.logger.info("Starting transform operation")
         # get parameters
+        merge = params.get("transform","merge")
         output = params.get("transform","output")
         report = params.get("transform","report")
         source_eac = params.get("transform","input_eac")
         source_inferred = params.get("transform","input_inferred")
-        transform = params.get("transform","transform")
+        xslt = params.get("transform","xslt")
+        schema = params.get("transform","schema")
         # create output folder
         self._makeCache(output)
-        # execute initial transformation
-        self.transformEACtoSID(source_eac, output, transform, report)
-        self.mergeInferredDataIntoSID(source_inferred, output, report)
+        # transform EAC to SID
+        self.transformEACtoSID(source_eac, output, xslt, report)
+        # merge inferred data
+        if merge.lower() == "true":
+            self.mergeInferredDataIntoSID(source_inferred, output, report)
+        # validate results
+        # self.validate(output, schema, report)
     
     def transformEACtoSID(self, source, output, xslt, report=None):
         '''
         Transform EAC document to Solr Input Document format using the
         specified XSLT transform file.
         '''
+        # check state
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        assert os.path.exists(xslt), self.logger.warning("XSLT file does not exist: " + xslt)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # read the XSLT file
         try:
             xslt_file = open(xslt,'r')
@@ -122,9 +155,6 @@ class Transformer(object):
             transform = etree.XSLT(xslt_root)
         except:
             self.logger.critical("Could not load XSLT file " + xslt)
-        # confirm that the source and output directories exist
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # process files
         files = os.listdir(source)
         for filename in files:
@@ -143,6 +173,7 @@ class Transformer(object):
                 # self._merge(solr_doc, eac_doc)
                 # self._apply_doc_boost(solr_doc, config['boost-docs'])
                 # self._apply_field_boosts(solr_doc, config['boost-fields'])
+                # insert the source and referrer values into the solr input document
                 # write the output file
                 outfile = open(output + os.sep + filename, 'w')
                 result.write(outfile, pretty_print=True, xml_declaration=True)
@@ -150,4 +181,37 @@ class Transformer(object):
                 self.logger.info("Transformed EAC to Solr Input Document " + filename)
             except Exception:
                 self.logger.warning("Could not complete XSLT processing for " + filename, exc_info=True)
-    
+                
+    def validate(self, source, schema, report=None):
+        '''
+        Validate a collection of files against an XML schema.
+        '''
+        self.logger.info("Validating files in " + source)
+        # check state
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        # load schema 
+        try:
+            infile = open(schema, 'r')
+            schema_data = infile.read()
+            schema_root = etree.XML(schema_data) 
+            schema = etree.XMLSchema(schema_root)
+            infile.close()
+            self.logger.info("Loaded schema file " + schema)
+        except Exception:
+            self.logger.critical("Could not load schema file " + schema)
+        # create validating parser
+        parser = etree.XMLParser(schema=schema)
+        # validate files against schema
+        files = os.listdir(source)
+        for filename in files:
+            infile = open(source + os.sep + filename,'r')
+            data = infile.read()
+            infile.close()
+            try:
+                etree.fromstring(data, parser)
+            except Exception:
+                self.logger.warning("Document does not conform to solr Input Document schema " + filename)        
+        
