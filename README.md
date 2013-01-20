@@ -37,6 +37,7 @@ Thanks:
  * Python Calais - http://code.google.com/p/python-calais
  * PyYAML - http://pyyaml.org
  * Simple JSON - https://github.com/simplejson/simplejson
+ * Sunburnt - https://github.com/tow/sunburnt
 
 
 License
@@ -48,7 +49,7 @@ Please see the LICENSE file for licence information.
 Installation
 ------------
 
-Requires Python 2.7.x, lxml, pyYAML, Simple JSON.
+Requires Python 2.7.x and lxml, pyYAML, Simple JSON, Sunburt libraries.
 
 
 Usage
