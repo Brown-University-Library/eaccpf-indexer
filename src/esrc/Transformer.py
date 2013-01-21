@@ -48,6 +48,29 @@ class Transformer(object):
         name, _ = os.path.splitext(filename)
         return name + ".yml"
 
+    def _getSourceAndReferrerValues(self, filename):
+        '''
+        Get EAC document source and referrer URI values from 
+        comment embedded in the EAC document.
+        '''
+        infile = open(filename,'r')
+        lines = infile.readlines()
+        infile.close()
+        # process lines
+        for line in lines:
+            try:
+                src = line.index("@source")
+                ref = line.index("@referrer")
+                source = line[src+len("@source="):ref-1]
+                referrer = line[ref+len("@referrer="):-4]
+                if not referrer.startswith("http"):
+                    referrer = None
+                return (source, referrer)
+            except:
+                pass
+        # default case
+        return ('', '')
+
     def _makeCache(self, path):
         '''
         Create a cache folder at the specified path if none exists.
@@ -160,20 +183,23 @@ class Transformer(object):
         for filename in files:
             try:
                 # read source data
-                infile = open(source + os.sep + filename, 'r')
-                data = infile.read()
-                infile.close()
-                # create xml tree
-                xml = etree.XML(data)
-                # extract the @source and @referrer values
-                src = 'http://example.com'
-                ref= 'http://example.com'
+                xml = etree.parse(source + os.sep + filename)
                 # transform the source file
                 result = transform(xml)
-                # self._merge(solr_doc, eac_doc)
-                # self._apply_doc_boost(solr_doc, config['boost-docs'])
-                # self._apply_field_boosts(solr_doc, config['boost-fields'])
-                # insert the source and referrer values into the solr input document
+                # get the doc element
+                doc = result.find('doc')
+                # get the EAC document source and referrer values
+                # from the comment embedded at the end of the EAC
+                src_val, ref_val = self._getSourceAndReferrerValues(source + os.sep + filename)
+                # append the source and referrer values to the SID
+                if src_val:
+                    src_field = etree.Element('field',name='source_uri')
+                    src_field.text = src_val
+                    doc.append(src_field)
+                if ref_val:
+                    ref_field = etree.Element('field',name='referrer_uri')
+                    ref_field.text = ref_val
+                    doc.append(ref_field)
                 # write the output file
                 outfile = open(output + os.sep + filename, 'w')
                 result.write(outfile, pretty_print=True, xml_declaration=True)

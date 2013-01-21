@@ -4,11 +4,8 @@ LICENSE file, which is part of this source code package.
 '''
 
 from httplib2 import Http
-from lxml import etree
 import logging
 import os 
-import urllib
-import urllib2
 
 class IndexingError(Exception):
     def __init__(self, resp, content):
@@ -43,21 +40,15 @@ class Poster(object):
         # check state
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # commit
+        # send command
         msg = '<commit waitFlush="false" waitSearcher="false" expungeDeletes="true"/>'
         url = solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
-        self.logger.info("Committed data to Solr core " + solr)
-        #commit_xml = etree.Element('commit')
-        #commit_xml.set('waitFlush', str(waitflush))
-        #commit_xml.set('waitSearcher', str(waitsearcher))
-        #url = solr + '/update'
-        #request = urllib2.Request(url)
-        #request.add_header('Content-Type', 'text/xml; charset=utf-8')
-        #request.add_data(etree.tostring(commit_xml, pretty_print=True))
-        #response = urllib2.urlopen(request).read()
-        #status = etree.XML(response).findtext('lst/int')
-        #return url, status
+        if resp['status'] != '200':
+            raise IndexingError(resp, content)
+        self.logger.info("Commited staged data to " + solr)
+        return resp, content
+
             
     def flush(self, solr, report=None):
         """
@@ -66,16 +57,14 @@ class Poster(object):
         # check state
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # flush data
-        params = {}
-        params['commit'] = 'true'
-        url = solr + '/update?' + urllib.urlencode(params)
-        request = urllib2.Request(url)
-        request.add_header('Content-Type', 'text/xml; charset=utf-8')
-        request.add_data('<delete><query>*:*</query></delete>')
-        response = urllib2.urlopen(request).read()
-        status = etree.XML(response).findtext('lst/int')
-        return url, status
+        # send command
+        msg = "<delete><query>*</query></delete>"
+        url = solr + '/update'
+        (resp, content) = Http().request(url, "POST", msg)
+        if resp['status'] != '200':
+            raise IndexingError(resp, content)
+        self.logger.info("Flushed data from " + solr)
+        return (resp, content)
         
     def optimize(self, solr, report=None, waitsearcher=False):
         '''
@@ -84,15 +73,14 @@ class Poster(object):
         # check state
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # optimize
+        # send command
         msg = '<optimize waitSearcher="false"/>'
-        try:
-            (resp, content) = Http().request(solr, "POST", msg)
-            if resp['status'] != '200':
-                raise IndexingError(resp, content)
-            self.logger.info("Optimized data in " + solr)
-        except Exception:
-            self.logger.critical("Optimize operation failed", exc_info=True)
+        url = solr + '/update'
+        (resp, content) = Http().request(url, "POST", msg)
+        if resp['status'] != '200':
+            raise IndexingError(resp, content)
+        self.logger.info("Optimized " + solr)
+        return (resp, content)
         
     def post(self, source, solr, report=None):
         '''
@@ -103,58 +91,34 @@ class Poster(object):
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # get file list
+        # post documents
+        url = solr + '/update'
         files = os.listdir(source)
         for filename in files:
             # read file
             infile = open(source + os.sep + filename, 'r')
             data = infile.read()
             infile.close()
+            # remove xml declaration
+            data = data.replace("<?xml version='1.0' encoding='ASCII'?>",'')
             # post file
             try:
-#                url = solr + '/update'
-#                print url
-#                request = urllib2.Request(url)
-#                request.add_header('Content-Type', 'text/xml; charset=utf-8')
-#                request.add_data(data)
-#                response = urllib2.urlopen(request).read()
-#                status = etree.XML(response).findtext('lst/int')
-#                return url, status
-#            except Exception:
-#                self.logger.warning("Could not post " + filename, exc_info=True)
-                (resp, content) = Http().request(solr, "POST", data)
+                (resp, content) = Http().request(url, "POST", data)
                 if resp['status'] != '200':
-                    raise IndexingError(resp, content)        
-                self.logger.info("Posted data from " + filename)
+                    raise IndexingError(resp, content)
             except IOError:
-                self.logger.warning("Can't connect to " + solr)
+                self.logger.warning("Can't connect to Solr" + url, exc_info=True)
+                print resp
+                print content
+            except IndexingError:
+                self.logger.warning("Could not post " + filename + " Error: " + resp['status'], exc_info=True)
+                print resp
+                print content
             except Exception:
-                self.logger.warning("Could not post" + filename, exc_info=True) 
-    
-    def update(self, solr, docs, commitwithin=None):
-        """
-        Post list of docs to Solr, return URL and status. Option to tell Solr 
-        to "commit within" that many milliseconds.
-        """
-        url = self.url + '/update'
-        add_xml = etree.Element('add')
-        if commitwithin is not None:
-            add_xml.set('commitWithin', str(commitwithin))
-        for doc in docs:
-            xdoc = etree.SubElement(add_xml, 'doc')
-            for key, value in doc.iteritems():
-                if value:
-                    field = etree.Element('field', name=key)
-                    field.text = (value if isinstance(value, unicode)
-                                  else str(value))
-                    xdoc.append(field)
-        request = urllib2.Request(url)
-        request.add_header('Content-Type', 'text/xml; charset=utf-8')
-        request.add_data(etree.tostring(add_xml, pretty_print=True))
-        response = urllib2.urlopen(request).read()
-        status = etree.XML(response).findtext('lst/int')
-        return url, status
-    
+                self.logger.warning("Could not complete post operation for " + filename, exc_info=True)
+                print resp
+                print content
+                    
     def run(self, params):
         '''
         Post Solr Input Documents to Solr core and perform index maintenance 

@@ -53,6 +53,41 @@ class Facter(object):
         # clean = clean.replace('\n','')
         return clean
     
+    def _getCalaisResultAsDictionary(self, result):
+        '''
+        Get Calais result as a dictionary.
+        '''
+        out = {}
+        # entities
+        try:
+            for e in result.entities:
+                entity = {}
+                #entity['typeReference'] = self._cleanText(e['_typeReference'])
+                entity['type'] = self._cleanText(e['_type'])
+                entity['name'] = self._cleanText(e['name'])
+                self._addValueToDictionary(out, "entities", entity)
+        except:
+            pass
+        # relations
+        try:
+            for r in result.relations:
+                relation = {}
+                #relation['typeReference'] = self._cleanText(r['_typeReference'])
+                relation['type'] = self._cleanText(r['_type'])
+                self._addValueToDictionary(out, "relations", relation)
+        except:
+            pass
+        # topics
+        try:
+            for t in result.topics:
+                top = {}
+                #top['category'] = self._cleanText(t['category'])
+                top['categoryName'] = self._cleanText(t['categoryName'])
+                self._addValueToDictionary(out, "topics", top)
+        except:
+            pass
+        return out
+    
     def _getFreeTextFields(self, xml):
         '''
         Get content from free text fields.
@@ -102,41 +137,6 @@ class Facter(object):
             # create a default record structure and return it
             return {'comment':'Inferred entity and location data extracted from ' + filename}
         
-    def _getResultAsDictionary(self, result):
-        '''
-        Get Calais result as a dictionary.
-        '''
-        out = {}
-        # entities
-        try:
-            for e in result.entities:
-                entity = {}
-                #entity['typeReference'] = self._cleanText(e['_typeReference'])
-                entity['type'] = self._cleanText(e['_type'])
-                entity['name'] = self._cleanText(e['name'])
-                self._addValueToDictionary(out, "entities", entity)
-        except:
-            pass
-        # relations
-        try:
-            for r in result.relations:
-                relation = {}
-                #relation['typeReference'] = self._cleanText(r['_typeReference'])
-                relation['type'] = self._cleanText(r['_type'])
-                self._addValueToDictionary(out, "relations", relation)
-        except:
-            pass
-        # topics
-        try:
-            for t in result.topics:
-                top = {}
-                #top['category'] = self._cleanText(t['category'])
-                top['categoryName'] = self._cleanText(t['categoryName'])
-                self._addValueToDictionary(out, "topics", top)
-        except:
-            pass
-        return out
-    
     def _getYamlFilename(self, filename):
         '''
         Takes a file name and returns a name with .yml appended.
@@ -157,6 +157,14 @@ class Facter(object):
             for afile in files:
                 os.remove(path + os.sep + afile)
             self.logger.info("Cleared output folder at " + path)
+            
+    def _mergeResultWithRecord(self, record, result):
+        '''
+        Merge the result dictionary with the record dictionary.
+        '''
+        for key in result.keys():
+            record[key] = result[key]
+        return record
     
     def inferEntitiesWithAlchemy(self, source, output, api_key, sleep=0., report=None):
         '''
@@ -202,7 +210,7 @@ class Facter(object):
     def inferEntitiesWithCalais(self, source, output, api_key, sleep=0., report=None):
         # create an OpenCalais object, load API key
         calais = Calais.Calais(api_key, submitter="University of Melbourne, eScholarship Research Centre")
-        #calais.user_directives["allowDistribution"] = "false"
+        calais.user_directives["allowDistribution"] = "false"
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
@@ -224,8 +232,10 @@ class Facter(object):
             freetext = self._getFreeTextFields(xml)
             try:
                 # extract entities
-                result = calais.analyze(freetext)
-                record['inferred_calais'] = self._getResultAsDictionary(result)
+                calais_result = calais.analyze(freetext)
+                # merge the existing record with the new results
+                result = self._getCalaisResultAsDictionary(calais_result)
+                record = self._mergeResultWithRecord(record, result)
                 # write output record
                 outfile = open(output + os.sep + yamlFilename, 'w')
                 yaml.dump(record,outfile)

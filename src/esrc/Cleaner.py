@@ -106,7 +106,8 @@ class Cleaner():
                 outfile = open(output + os.sep + filename, 'w')
                 outfile.write(data)
                 outfile.close()
-                self.logger.info("Cleaned " + filename)
+                self.logger.info("Wrote cleaned XML to " + filename)
+                
             except Exception:
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
         

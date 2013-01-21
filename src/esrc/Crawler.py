@@ -55,15 +55,15 @@ class Crawler(object):
     
     def _getHTMLReferrer(self, html):
         '''
-        Extract DC.Identifier value from HTML meta tag. Return None if nothing 
-        found.
+        Extract DC.Identifier value from HTML meta tag. Return an empty string 
+        if nothing is found.
         '''
         soup = BeautifulSoup(html)
         meta = soup.findAll('meta', {'name':'DC.Identifier'})
         try:
             return meta[0].get('content')
         except:
-            return None
+            return ''
     
     def _isHTML(self, filename):
         '''

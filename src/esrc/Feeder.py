@@ -27,7 +27,7 @@ class Feeder(object):
         configuration file.
         '''
         # logging default
-        formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
         self.logger = logging.getLogger('feeder')
         self.logger.setLevel(level=logging.INFO)
         sh = logging.StreamHandler()

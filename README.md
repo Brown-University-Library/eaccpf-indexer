@@ -49,7 +49,16 @@ Please see the LICENSE file for licence information.
 Installation
 ------------
 
-Requires Python 2.7.x and lxml, pyYAML, Simple JSON, Sunburt libraries.
+Requires Python 2.7.x and lxml, pyYAML, Simple JSON, Sunburnt libraries.
+To infer data from EAC files, a (typically free) account and associated
+API key is required for the following services:
+
+ * Alchemy - http://www.alchemyapi.com/
+ * Google Maps - https://code.google.com/apis/console/
+ * OpenCalais - http://www.opencalais.com/
+
+Optionally, you may use Natural Language Toolkit for extended processing
+of free text fields.
 
 
 Usage
@@ -76,38 +85,43 @@ Revision History
 ----------------
 
 1.3.1
-? Consider fixing broken source HTML, etc. files in place
-? Improve extracted relations data
-? Implement entity extraction with Alchemy API
-? Transform operation should optionally exclude inferred data
-? Updates should optionally be executed only on changed files
-? Need to handle the presence of GIS attribute appropriately
-? Add stopwatch function to time the duration of processing
+- Consider fixing broken source HTML, etc. files in place
+- Improve extracted relations data
+- Implement entity extraction with Alchemy API
+- Transform operation should optionally exclude inferred data
+- Updates should optionally be executed only on changed files
+- Need to handle the presence of GIS attribute appropriately
+- Add stopwatch function to time the duration of processing
+
+1.2.4
+- Implemented Alchemy interface
+
+1.2.3
+- Handles case where geocoding returns multiple locations
 
 1.2.2
-? Posts Solr Input Documents to Solr core
-? Writes processing messages to report log
-? Analyzes EAC data for quality indicators
-? Merges individual reports into a single report file
+- Writes processing messages to report log
+- Analyzes EAC data for quality indicators
+- Merges individual reports into a single report file
+- Check for API keys before executing inference processing?
 
 1.2.1
-- Transforms EAC to Solr Input Document format using an external XSLT file
-- Crawler appends comment to EAC xml to record store source and referrer URLs
-- Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
-? Merges inferred data with Solr Input Documents
-? Requires update to the Solr index configuration
-? Handles case where geocoding returns multiple locations
+ * Transforms EAC to Solr Input Document format using an external XSLT file
+ * Crawler appends comment to EAC xml to record store source and referrer URLs
+ * Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
+ * Merges inferred data with Solr Input Documents
+- Posts Solr Input Documents to Solr core
 
 1.1.1
-- Converts place names in structured fields into geographic coordinates for mapping
-- Writes inferred data to cache folder
-- Extracts entities (people, places, things, concepts) from free text fields
+ * Converts place names in structured fields into geographic coordinates for mapping
+ * Writes inferred data to cache folder
+ * Extracts entities (people, places, things, concepts) from free text fields
 
 1.1.0
-- Revised application architecture
-- Reads configuration from file
-- Crawls file system for EAC, EAC-CPF files
-- Cleans input data to resolve common XML errors
+ * Revised application architecture
+ * Reads configuration from file
+ * Crawls file system for EAC, EAC-CPF files
+ * Cleans input data to resolve common XML errors
 
 1.0.0
-- Initial solr-feeder release
+ * Initial solr-feeder release
