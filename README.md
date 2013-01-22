@@ -103,14 +103,13 @@ Revision History
 - Writes processing messages to report log
 - Analyzes EAC data for quality indicators
 - Merges individual reports into a single report file
-- Check for API keys before executing inference processing?
 
 1.2.1
  * Transforms EAC to Solr Input Document format using an external XSLT file
  * Crawler appends comment to EAC xml to record store source and referrer URLs
  * Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
  * Merges inferred data with Solr Input Documents
-- Posts Solr Input Documents to Solr core
+ * Posts Solr Input Documents to Solr core
 
 1.1.1
  * Converts place names in structured fields into geographic coordinates for mapping

@@ -101,7 +101,7 @@ class Transformer(object):
                 # read Solr Input Document
                 xml = etree.parse(output + os.sep + filename)
                 root = xml.getroot()
-                doc = root.getchildren()
+                doc = root.getchildren()[0]
                 # read inferred data file
                 inferredFileName = self._getInferredDataFileName(filename)
                 infile = open(source + os.sep + inferredFileName,'r+')
@@ -114,24 +114,46 @@ class Transformer(object):
                         # address
                         address = etree.Element('field', name='address')
                         address.text = location['address']
+                        doc.append(address)
                         # coordinates
                         lat = location['coordinates'][0]
                         lng = location['coordinates'][1]
                         latlng = str(lat) + "," + str(lng)
-                        coordinates = etree.Element('field', name='coordinates')
+                        coordinates = etree.Element('field', name='location')
                         coordinates.text = latlng
-                        # add to document
-                        #doc.append(address)
-                        #doc.append(coordinates)
-                        root.append(address)
-                        root.append(coordinates)
-                # add inferred entities
+                        doc.append(coordinates)
+                        # latitude
+                        location_0 = etree.Element('field', name='location_0_coordinate')
+                        location_0.text = str(lat)
+                        # longitude
+                        doc.append(location_0)
+                        location_1 = etree.Element('field', name='location_1_coordinate')
+                        location_1.text = str(lng)
+                        doc.append(location_1)
+                # @todo: add inferred entities
+                if inferred['entities']:
+                    for entity in inferred['entities']:
+                        if entity['type'] == 'City':
+                            pass
+                        elif entity['type'] == 'Concept':
+                            pass
+                        elif entity['type'] == 'Organization':
+                            pass
+                        elif entity['type'] == 'Person':
+                            pass
+                        elif entity['type'] == 'Region':
+                            pass
+                # @todo: add inferred relationships
+                if inferred['relationship']:
+                    pass
+                # @todo: add inferred topics
+                if inferred['topic']:
+                    pass
                 # write the updated file
                 outfile = open(output + os.sep + filename,'w')
-                updated = etree.tostring(xml, pretty_print=True, xml_declaration=True)
-                outfile.write(updated)
+                xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.logger.info("Inferred data added to Solr Input Document " + filename)
+                self.logger.info("Merged inferred data into " + filename)
             except Exception:
                 self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
     
@@ -212,7 +234,6 @@ class Transformer(object):
         '''
         Validate a collection of files against an XML schema.
         '''
-        self.logger.info("Validating files in " + source)
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
