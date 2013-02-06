@@ -7,6 +7,8 @@
 *.sh
 .project
 .pydevproject
+
+bin
 data
 ref
 

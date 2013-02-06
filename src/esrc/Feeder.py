@@ -36,13 +36,13 @@ class Feeder(object):
         self.logger.addHandler(sh)
         # configure command line options
         self.parser = argparse.ArgumentParser(description="Harvest, process, and post EAC-CPF metadata to Apache Solr/Lucene index.")
-        self.parser.add_argument('config', help="Path to configuration file")
-        self.parser.add_argument('--clean', help="Clean input files of common errors before further processing", action='store_true')
-        self.parser.add_argument('--crawl', help="Crawl file system or web site for metadata files", action='store_true')
-        self.parser.add_argument('--infer', help="Infer concepts, entities, locations from free text fields", action='store_true')
-        self.parser.add_argument('--post', help="Post Solr Input Documents to Apache Solr index", action='store_true')
-        self.parser.add_argument('--report', help="Generate a report and write to specified path", action='store_true')
-        self.parser.add_argument('--transform', help="Transform EAC, EAC-CPF files to Solr Input Document format", action='store_true')
+        self.parser.add_argument('config', help="path to configuration file")
+        self.parser.add_argument('--clean', help="clean input files of common errors before further processing", action='store_true')
+        self.parser.add_argument('--crawl', help="crawl file system or web site for metadata files", action='store_true')
+        self.parser.add_argument('--infer', help="infer concepts, entities, locations from free text fields", action='store_true')
+        self.parser.add_argument('--post', help="post Solr Input Documents to Apache Solr index", action='store_true')
+        self.parser.add_argument('--report', help="generate a report and write to specified path", action='store_true')
+        self.parser.add_argument('--transform', help="transform EAC, EAC-CPF files to Solr Input Document format", action='store_true')
         ## self.parser.add_argument('--fix', help="Fix common errors in HTML or XML source files and update the source files where possible.", action='store_true')
         # parse the command line arguments
         try:

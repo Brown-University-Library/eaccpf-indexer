@@ -99,13 +99,14 @@ class Poster(object):
             infile = open(source + os.sep + filename, 'r')
             data = infile.read()
             infile.close()
-            # remove xml declaration
+            # remove xml declaration before posting to server
             data = data.replace("<?xml version='1.0' encoding='ASCII'?>",'')
             # post file
             try:
                 (resp, content) = Http().request(url, "POST", data)
                 if resp['status'] != '200':
                     raise IndexingError(resp, content)
+                self.logger.info("Posted " + filename + " to Apache Solr")
             except IOError:
                 self.logger.warning("Can't connect to Solr" + url, exc_info=True)
                 print resp

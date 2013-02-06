@@ -73,11 +73,11 @@ report on the quality of the EAC that is indexed.
 
   python feeder.py config [OPTIONS]
 	
-  --clean 	   Clean input files of common errors before further processing
-  --crawl	   Crawl file system or web site for metadata files
-  --infer	   Infer concepts, entities, locations from free text fields
-  --post	   Post Solr Input Documents to Apache Solr index
-  --report	   Generate a report and write to specified path
+  --clean      Clean input files of common errors before further processing
+  --crawl      Crawl file system or web site for metadata files
+  --infer      Infer concepts, entities, locations from free text fields
+  --post       Post Solr Input Documents to Apache Solr index
+  --report     Generate a report and write to specified path
   --transform  Transform EAC, EAC-CPF files to Solr Input Document format
 
 
@@ -102,7 +102,8 @@ Revision History
 1.2.2
 - Writes processing messages to report log
 - Analyzes EAC data for quality indicators
-- Merges individual reports into a single report file
+- Merge individual reports into a single report file
+* Moved third party libraries into esrc package
 
 1.2.1
  * Transforms EAC to Solr Input Document format using an external XSLT file

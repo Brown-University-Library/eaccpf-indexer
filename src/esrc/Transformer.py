@@ -109,7 +109,7 @@ class Transformer(object):
                 inferred = yaml.load(data)
                 infile.close()
                 # add inferred locations
-                if inferred['locations']:
+                if 'locations' in inferred:
                     for location in inferred['locations']:
                         # address
                         address = etree.Element('field', name='address')
@@ -131,7 +131,7 @@ class Transformer(object):
                         location_1.text = str(lng)
                         doc.append(location_1)
                 # @todo: add inferred entities
-                if inferred['entities']:
+                if 'entities' in inferred:
                     for entity in inferred['entities']:
                         if entity['type'] == 'City':
                             pass
@@ -144,10 +144,10 @@ class Transformer(object):
                         elif entity['type'] == 'Region':
                             pass
                 # @todo: add inferred relationships
-                if inferred['relationship']:
+                if 'relationship' in inferred:
                     pass
                 # @todo: add inferred topics
-                if inferred['topic']:
+                if 'topic' in inferred:
                     pass
                 # write the updated file
                 outfile = open(output + os.sep + filename,'w')
