@@ -7,6 +7,8 @@
 *.sh
 .project
 .pydevproject
+feeder.cfg
+NOTES.txt
 
 bin
 data

@@ -1,37 +1,43 @@
 [crawl]
-input=/home/davis/Documents/eac-feeder-0.2.0/src/esrc/data
+input=/home/davis/Documents/projects/eac-feeder-0.2.0/data
 output=/var/lib/feeder/PROJ/crawl
 report=/var/lib/feeder/PROJ/report
-sleep=0
+sleep=0.0
 
 [clean]
 input=/var/lib/feeder/PROJ/crawl
 output=/var/lib/feeder/PROJ/clean
 report=/var/lib/feeder/PROJ/report
+schema=/home/davis/Documents/projects/eac-feeder-0.2.0/src/esrc/cfg/eac.dtd
 
 [infer]
 alchemy_api_key=
+calais_api_key=
 google_api_key=
 input=/var/lib/feeder/PROJ/clean
 output=/var/lib/feeder/PROJ/infer
 report=/var/lib/feeder/PROJ/report
-sleep=0
+sleep=1.0
 
 [transform]
-input=/var/lib/feeder/PROJ/infer
+input_eac=/var/lib/feeder/PROJ/clean
+input_inferred=/var/lib/feeder/PROJ/infer
+merge=true
 output=/var/lib/feeder/PROJ/post
 report=/var/lib/feeder/PROJ/report
-transform=/home/davis/Documents/eac-feeder-0.2.0/src/esrc/cfg/eac-to-solr.xslt
+schema=/home/davis/Documents/projects/eac-feeder-0.2.0/src/esrc/cfg/solr-input-document.dtd
+xslt=/home/davis/Documents/projects/eac-feeder-0.2.0/src/esrc/cfg/eaccpf-to-solr.xsl
 
 [post]
-add=true
 commit=true
-flush=false
-index=http://idx-master:8080/FACP/
+flush=true
+index=http://dev02.internal:8080/EOAS/
 input=/var/lib/feeder/PROJ/post
 optimize=true
+post=true
 report=/var/lib/feeder/PROJ/report
 
 [report]
 input=/var/lib/feeder/PROJ/report
 output=/var/lib/feeder/PROJ/report
+

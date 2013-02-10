@@ -169,7 +169,7 @@ class Transformer(object):
         source_eac = params.get("transform","input_eac")
         source_inferred = params.get("transform","input_inferred")
         xslt = params.get("transform","xslt")
-        schema = params.get("transform","schema")
+        #schema = params.get("transform","schema")
         # create output folder
         self._makeCache(output)
         # transform EAC to SID
@@ -205,8 +205,24 @@ class Transformer(object):
         for filename in files:
             try:
                 # read source data
-                xml = etree.parse(source + os.sep + filename)
-                # transform the source file
+                #xml = etree.parse(source + os.sep + filename)
+                infile = open(source + os.sep + filename,'r')
+                data = infile.read()
+                infile.close()
+                ''' 
+                ISSUE #4: When the XSLT parser encounters a problem, it fails 
+                silently and does not return any results. We've found that the 
+                problem stems from namespace declarations in the XML data file. 
+                Because these are not important in the transformation to SID 
+                format, we strip them out here before processing.
+                '''
+                for ns in re.findall("\w*:\w*=\".*\"", data):
+                    data = data.replace(ns,'')
+                for ns in re.findall("xmlns=\".*\"", data):
+                    data = data.replace(ns,'')
+                # convert text to xml tree
+                xml = etree.XML(data)
+                # transform the document
                 result = transform(xml)
                 # get the doc element
                 doc = result.find('doc')

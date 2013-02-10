@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	EAC to Apache Solr Input Document Format Transform
+	Copyright 2013 eScholarship Research Centre, University of Melbourne
+	
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	    http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-
-    <!-- Transform EAC XML document to Apache Solr XML injest format -->
     <xsl:template match="/">
-        <doc>
-            <field name="id"><xsl:value-of select="/eac/control/id" /></field>
-            <field name="title"><xsl:value-of select="/eac/identity/nameEntry/part" /></field>
-            <field name="entityType"><xsl:value-of select="/eac/identity/entityType" /></field>
-            <field name="abstract"><xsl:value-of select="/eac/description/biogHist/abstract" /></field>
-            <xsl:if test="/eac/description/existDates/fromDate/@standardForm != ''">
-                <field name="fromDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/fromDate/@standardForm"/></field>
-            </xsl:if>
-            <xsl:if test="/eac/description/existDates/toDate/@standardForm != ''">
-                <field name="toDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/toDate/@standardForm"/></field>
-            </xsl:if>
-            <field name="function"><xsl:value-of select="/eac/description/function/descNote"/></field>            
-            <xsl:for-each select="/eac/relations/cpfRelation"><field name="cpfRelation_relationLink"><xsl:value-of select="relationLink"/></field></xsl:for-each>
-            <xsl:for-each select="/eac/relations/resourceRelation">
-                <field name="resourceRelation_natureOfRelation"><xsl:value-of select="natureOfRelation" /></field>
-                <field name="resourceRelation_name"><xsl:value-of select="relationXMLWrap/bib/name" /></field>
-                <field name="resourceRelation_title"><xsl:value-of select="relationXMLWrap/bib/title" /></field>
-                <field name="resourceRelation_publisher"><xsl:value-of select="relationXMLWrap/bib/imprint/publisher"/></field>
-                <!-- <xsl:if test="relationXMLWrap/bib/imprint/date != ''"><xsl:apply-templates select="relationXMLWrap/bib/imprint/date"/></xsl:if> -->
-            </xsl:for-each>
-        </doc>
+        <add>
+	        <doc>
+	        	<!-- control -->
+	            <field name="id"><xsl:value-of select="/eac/control/id" /></field>
+	        	<!-- identity -->
+	            <field name="title"><xsl:value-of select="/eac/identity/nameEntry/part" /></field>
+	            <field name="type"><xsl:value-of select="/eac/identity/entityType" /></field>
+	        	<!-- description -->
+	            <field name="abstract"><xsl:value-of select="/eac/description/biogHist/abstract" /></field>
+	            <xsl:if test="/eac/description/existDates/fromDate/@standardForm != ''">
+	                <field name="fromDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/fromDate/@standardForm"/></field>
+	            </xsl:if>
+	            <xsl:if test="/eac/description/existDates/toDate/@standardForm != ''">
+	                <field name="toDate_StandardForm"><xsl:apply-templates select="/eac/description/existDates/toDate/@standardForm"/></field>
+	            </xsl:if>
+	            <field name="function"><xsl:value-of select="/eac/description/function/descNote"/></field>            
+	        	<!-- relations -->
+	            <xsl:for-each select="/eac/relations/cpfRelation"><field name="cpfRelation_relationLink"><xsl:value-of select="relationLink"/></field></xsl:for-each>
+	            <xsl:for-each select="/eac/relations/resourceRelation">
+	                <field name="resourceRelation_natureOfRelation"><xsl:value-of select="natureOfRelation" /></field>
+	                <field name="resourceRelation_name"><xsl:value-of select="relationXMLWrap/bib/name" /></field>
+	                <field name="resourceRelation_title"><xsl:value-of select="relationXMLWrap/bib/title" /></field>
+	                <field name="resourceRelation_publisher"><xsl:value-of select="relationXMLWrap/bib/imprint/publisher"/></field>
+	            </xsl:for-each>
+	        </doc>                
+        </add>
     </xsl:template>
     
     <!-- Transform EAC StandardForm date from YYYYMMDD format to Solr compatible YYYY-MM-DDThh:mm:ssZ format -->

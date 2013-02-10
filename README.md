@@ -32,12 +32,10 @@ Thanks:
  * GeoPy - http://code.google.com/p/geopy
  * Google Maps API - http://maps.google.com
  * lxml - http://lxml.de
- * Natural Language Toolkit - http://nltk.org
  * Python - http://www.python.org
  * Python Calais - http://code.google.com/p/python-calais
  * PyYAML - http://pyyaml.org
  * Simple JSON - https://github.com/simplejson/simplejson
- * Sunburnt - https://github.com/tow/sunburnt
 
 
 License
@@ -49,16 +47,13 @@ Please see the LICENSE file for licence information.
 Installation
 ------------
 
-Requires Python 2.7.x and lxml, pyYAML, Simple JSON, Sunburnt libraries.
-To infer data from EAC files, a (typically free) account and associated
-API key is required for the following services:
+Requires Python 2.7.x and lxml, pyYAML, Simple JSON. To infer data from EAC 
+files, a free account and associated API key is required for the following 
+services:
 
  * Alchemy - http://www.alchemyapi.com/
  * Google Maps - https://code.google.com/apis/console/
  * OpenCalais - http://www.opencalais.com/
-
-Optionally, you may use Natural Language Toolkit for extended processing
-of free text fields.
 
 
 Usage
@@ -80,6 +75,8 @@ report on the quality of the EAC that is indexed.
   --report     Generate a report and write to specified path
   --transform  Transform EAC, EAC-CPF files to Solr Input Document format
 
+Copy feeder.cfg.example into a new configuration file and edit as needed.
+
 
 Revision History
 ----------------
@@ -90,19 +87,25 @@ Revision History
 - Implement entity extraction with Alchemy API
 - Transform operation should optionally exclude inferred data
 - Updates should optionally be executed only on changed files
-- Need to handle the presence of GIS attribute appropriately
 - Add stopwatch function to time the duration of processing
 
+1.2.5
+- Clean, infer, transform differences only
+- Keep hash of files to track changes since last run
+
 1.2.4
-- Implemented Alchemy interface
+- Skip geolocation if GIS attribute is present on the record
 
 1.2.3
-- Handles case where geocoding returns multiple locations
-
-1.2.2
 - Writes processing messages to report log
 - Analyzes EAC data for quality indicators
-- Merge individual reports into a single report file
+- Merges individual reports into a single report file
+- Add 'update' option to process only files that have changed
+
+1.2.2
+- Handles case where geocoding returns multiple locations
+- Purged configuration files from repository, added them to .gitignore 
+- Store hash and timestamp of all files in a hidden file, to be used with update option
 * Moved third party libraries into esrc package
 
 1.2.1
@@ -125,3 +128,14 @@ Revision History
 
 1.0.0
  * Initial solr-feeder release
+
+
+Known Issues
+------------
+
+- Namespace declarations in the EAC, EAC-CPF document cause the XML parser
+  to fail when transforming the document to Solr Input Document format.
+  We now load the XML input data as text, strip all namespace references in
+  memory, and then convert the data to XML and execute the transform.
+  @see Transformer.py transformEACtoSID
+
