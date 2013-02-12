@@ -134,8 +134,9 @@ Known Issues
 ------------
 
 - Namespace declarations in the EAC, EAC-CPF document cause the XML parser
-  to fail when transforming the document to Solr Input Document format.
-  We now load the XML input data as text, strip all namespace references in
-  memory, and then convert the data to XML and execute the transform.
+  to fail while transforming the document to Solr Input Document format.
+  As a workaround, we now load the XML input data as text, strip all namespace 
+  references in memory, and then convert the data to XML and execute the 
+  transform.
   @see Transformer.py transformEACtoSID
 

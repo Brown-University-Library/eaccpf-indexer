@@ -284,8 +284,8 @@ class Facter(object):
     def inferLocations(self, source, output, geocoder, api_key, sleep=0., report=None):
         '''
         For each input file, extract the locationName name or address and 
-        attempt to resolve its geographic coordinates. Sleep for the 
-        specified number of seconds between requests.
+        attempt to resolve its geographic coordinates. Sleep for the specified 
+        number of seconds between requests.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
