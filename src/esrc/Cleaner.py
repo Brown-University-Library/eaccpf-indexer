@@ -39,39 +39,52 @@ class Cleaner():
         '''
         return xml
    
-    def _fixEntityReferences(self, text):
+    def _fixEntityReferences(self, Text):
         '''
         Convert HTML entities into XML entities.
         @see http://effbot.org/zone/re-sub.htm#unescape-html
         '''
         def fixup(m):
-            text = m.group(0)
-            if text[:2] == "&#":
+            Text = m.group(0)
+            if Text[:2] == "&#":
                 # character reference
                 try:
-                    if text[:3] == "&#x":
-                        return unichr(int(text[3:-1], 16))
+                    if Text[:3] == "&#x":
+                        return unichr(int(Text[3:-1], 16))
                     else:
-                        return unichr(int(text[2:-1]))
+                        return unichr(int(Text[2:-1]))
                 except ValueError:
                     pass
             else:
                 # named entity
                 try:
-                    text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+                    Text = unichr(htmlentitydefs.name2codepoint[Text[1:-1]])
                 except KeyError:
                     pass
-            return text # leave as is
-        return re.sub("&#?\w+;", fixup, text)
+            return Text # leave as is
+        return re.sub("&#?\w+;", fixup, Text)
 
-    def _fixHTML(self, Html):
+    def _getSourceAndReferrerValues(self, filename):
         '''
-        Clean up bad HTML.
-        @todo: Consider removing this 
-        @todo: Need to replace BeautifulSoup in any kind of write situation because it changes the case of tag names and attributes
+        Get source and referrer URI values from comment embedded in the document.
         '''
-        tree = BeautifulSoup(Html)
-        return tree.prettify()
+        infile = open(filename,'r')
+        lines = infile.readlines()
+        infile.close()
+        # process lines
+        for line in lines:
+            try:
+                src = line.index("@source")
+                ref = line.index("@referrer")
+                source = line[src+len("@source="):ref-1]
+                referrer = line[ref+len("@referrer="):-4]
+                if not referrer.startswith("http"):
+                    referrer = None
+                return (source, referrer)
+            except:
+                pass
+        # default case
+        return ('', '')
 
     def _makeCache(self, path):
         '''
@@ -86,6 +99,48 @@ class Cleaner():
             for afile in files:
                 os.remove(path + os.sep + afile)
             self.logger.info("Cleared output folder at " + path)
+    
+    def _removeEmptyDateFields(self, Text):
+        '''
+        Remove any empty fromDate or toDate tags.
+        '''
+        xml = etree.XML(Text)
+        tree = etree.ElementTree(xml)
+        for item in tree.findall('//fromDate'):
+            if item.text is None or item.text == '':
+                item.getparent().remove(item)
+        for item in tree.findall('//toDate'):
+            if item.text is None or item.text == '':
+                item.getparent().remove(item)
+        return etree.tostring(xml,pretty_print=True)
+    
+    def _removeEmptyStandardDateFields(self, Text):
+        '''
+        Remove any fromDate or toDate tags that have empty standardDate attributes.
+        '''
+        xml = etree.XML(Text)
+        tree = etree.ElementTree(xml)
+        for item in tree.findall('//fromDate'):
+            date = item.attrib['standardDate']
+            if date is None or date == '':
+                item.attrib.pop('standardDate')
+        for item in tree.findall('//toDate'):
+            date = item.attrib['standardDate']
+            if date is None or date == '':
+                item.attrib.pop('standardDate')
+        return etree.tostring(xml,pretty_print=True)
+    
+    def _removeSpanTags(self, Text):
+        '''
+        Remove all <span> and </span> tags from the markup.
+        '''
+        # replace simple cases first
+        Text = Text.replace("<span>","")
+        Text = Text.replace("</span>","")
+        # replace spans with attributes
+        for span in re.findall("<span \w*=\".*\">",Text):
+            Text = Text.replace(span,'')
+        return Text
 
     def clean(self, source, output, report=None):
         '''
@@ -102,14 +157,23 @@ class Cleaner():
         for filename in files:
             try:
                 # read data
-                infile = open(source + os.sep + filename,'r')
+                path = source + os.sep + filename
+                infile = open(path,'r')
                 data = infile.read()
                 infile.close()
+                # the source/referrer values comment gets deleted by the XML 
+                # parser, so we'll save it here temporarily while we do our cleanup
+                src, ref = self._getSourceAndReferrerValues(path)
                 # fix common errors
-                data = self._fixEntityReferences(data)
+                # data = self._fixEntityReferences(data)
                 data = self._fixAttributeURLEncoding(data)
                 data = self._fixDateFields(data)
-                # Write data to specified file in the output directory.
+                data = self._removeSpanTags(data)
+                data = self._removeEmptyDateFields(data)
+                data = self._removeEmptyStandardDateFields(data) # XML needs to be valid before we can do this
+                # put source/referrer comment back at the end of the file
+                data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
+                # write data to specified file in the output directory.
                 outfile = open(output + os.sep + filename, 'w')
                 outfile.write(data)
                 outfile.close()
@@ -149,15 +213,16 @@ class Cleaner():
         try:
             infile = open(schema, 'r')
             schema_data = infile.read()
-            schema_root = etree.XML(schema_data) 
-            schema = etree.XMLSchema(schema_root)
+            schema_root = etree.XML(schema_data)
+            xmlschema = etree.XMLSchema(schema_root)
             infile.close()
             self.logger.info("Loaded schema file " + schema)
         except Exception:
             self.logger.critical("Could not load schema file " + schema)
         # create validating parser
-        parser = etree.XMLParser(schema=schema)
+        parser = etree.XMLParser(schema=xmlschema)
         # validate files against schema
+        self.logger.info("Validating documents against schema")
         files = os.listdir(source)
         for filename in files:
             infile = open(source + os.sep + filename,'r')
@@ -166,4 +231,4 @@ class Cleaner():
             try:
                 etree.fromstring(data, parser)
             except Exception:
-                self.logger.warning("Document does not conform to schema " + filename)
+                self.logger.warning("Document " + filename + " does not conform to schema")

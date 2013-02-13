@@ -4,11 +4,11 @@ LICENSE file, which is part of this source code package.
 '''
 
 import unittest
-from Document import Document
+from Facter import Facter
 
-class DocumentUnitTests(unittest.TestCase):
+class FacterUnitTests(unittest.TestCase):
     '''
-    Test cases for the Cleaner module
+    Test cases for the Transformer module
     '''
     
     def setUp(self):

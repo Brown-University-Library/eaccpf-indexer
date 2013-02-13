@@ -4,11 +4,11 @@ LICENSE file, which is part of this source code package.
 '''
 
 import unittest
-from Cleaner import Cleaner
+from Transformer import Transformer
 
-class CleanerUnitTests(unittest.TestCase):
+class TransformerUnitTests(unittest.TestCase):
     '''
-    Test cases for the Cleaner module
+    Test cases for the Transformer module
     '''
     
     def setUp(self):

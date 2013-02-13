@@ -94,6 +94,20 @@ class Transformer(object):
             for afile in files:
                 os.remove(path + os.sep + afile)
             self.logger.info("Cleared output folder at " + path)
+            
+    def _removeNameSpaces(self, Text):
+        '''
+        ISSUE #4: When the XML/XSLT parser encounters a problem, it fails 
+        silently and does not return any results. We've found that the 
+        problem occurs due to namespace declarations in EACCPF files. 
+        Because these are not important in the transformation to SID 
+        format, we strip them out here before processing.
+        '''
+        for ns in re.findall("\w*:\w*=\".*\"", Text):
+            Text = Text.replace(ns,'')
+        for ns in re.findall("xmlns=\".*\"", Text):
+            Text = Text.replace(ns,'')
+        return Text
 
     def mergeInferredDataIntoSID(self, source, output, report=None):
         '''
@@ -120,26 +134,38 @@ class Transformer(object):
                 infile.close()
                 # add inferred locations
                 if 'locations' in inferred:
+                    count = 0
                     for location in inferred['locations']:
-                        # address
-                        address = etree.Element('field', name='address')
-                        address.text = location['address']
-                        doc.append(address)
-                        # coordinates
-                        lat = location['coordinates'][0]
-                        lng = location['coordinates'][1]
-                        latlng = str(lat) + "," + str(lng)
-                        coordinates = etree.Element('field', name='location')
-                        coordinates.text = latlng
-                        doc.append(coordinates)
-                        # latitude
-                        location_0 = etree.Element('field', name='location_0_coordinate')
-                        location_0.text = str(lat)
-                        # longitude
-                        doc.append(location_0)
-                        location_1 = etree.Element('field', name='location_1_coordinate')
-                        location_1.text = str(lng)
-                        doc.append(location_1)
+                        if count == 0:
+                            # address
+                            address = etree.Element('field', name='address')
+                            address.text = location['address']
+                            doc.append(address)
+                            # coordinates
+                            lat = location['coordinates'][0]
+                            lng = location['coordinates'][1]
+                            latlng = str(lat) + "," + str(lng)
+                            coordinates = etree.Element('field', name='location')
+                            coordinates.text = latlng
+                            doc.append(coordinates)
+                            # latitude
+                            location_0 = etree.Element('field', name='location_0_coordinate')
+                            location_0.text = str(lat)
+                            # longitude
+                            doc.append(location_0)
+                            location_1 = etree.Element('field', name='location_1_coordinate')
+                            location_1.text = str(lng)
+                            doc.append(location_1)
+                        else:
+                            # add the remainder to the loocation_geohash field
+                            lat = location['coordinates'][0]
+                            lng = location['coordinates'][1]
+                            latlng = str(lat) + "," + str(lng)
+                            coordinates = etree.Element('field', name='location_geohash')
+                            coordinates.text = latlng
+                            doc.append(coordinates)
+                        # increment count
+                        count = count + 1
                 # @todo: add inferred entities
                 if 'entities' in inferred:
                     for entity in inferred['entities']:
@@ -178,7 +204,7 @@ class Transformer(object):
         report = params.get("transform","report")
         source_inferred = params.get("transform","input_inferred")
         source_xml = params.get("transform","input_xml")
-        xslt = params.get("transform","transform")
+        xslt = params.get("transform","xslt")
         #schema = params.get("transform","schema")
         # create output folder
         self._makeCache(output)
@@ -187,8 +213,13 @@ class Transformer(object):
         # merge inferred data
         if merge.lower() == "true":
             self.mergeInferredDataIntoSID(source_inferred, output, report)
-        # validate results
-        # self.validate(output, schema, report)
+        # boost fields
+        # validate output
+        try:
+            schema = params.get("transform","schema")
+            self.validate(output, schema, report)
+        except:
+            self.logger.debug("No schema file specified")
     
     def transformToSolrInputDocument(self, source, output, xslt, report=None):
         '''
@@ -213,23 +244,15 @@ class Transformer(object):
                 infile = open(source + os.sep + filename,'r')
                 data = infile.read()
                 infile.close()
+                # ISSUE #4: remove namespaces in the XML document before transforming
+                data = self._removeNameSpaces(data)
+                # create document tree
                 xml = etree.XML(data)
                 # transform the document
-                # ISSUE #4: When the XSLT parser encounters a problem, it fails 
-                # silently and does not return any results. We've found that the 
-                # problem occurs due to namespace declarations in EACCPF files. 
-                # Because these are not important in the transformation to SID 
-                # format, we strip them out here before processing.
-                for ns in re.findall("\w*:\w*=\".*\"", data):
-                    data = data.replace(ns,'')
-                for ns in re.findall("xmlns=\".*\"", data):
-                    data = data.replace(ns,'')
-                # end of issue
                 result = transform(xml)
                 # get the doc element
                 sid = result.find('doc')
-                # get the document source and referrer values
-                # from the comment embedded at the end of the EACCPF
+                # get the document source and referrer values from the embedded comment
                 src_val, ref_val = self._getSourceAndReferrerValues(source + os.sep + filename)
                 # append the source and referrer values to the SID
                 if src_val:
@@ -278,5 +301,5 @@ class Transformer(object):
             try:
                 etree.fromstring(data, parser)
             except Exception:
-                self.logger.warning("Document does not conform to solr Input Document schema " + filename)        
+                self.logger.warning("Document does not conform to schema " + filename)        
         

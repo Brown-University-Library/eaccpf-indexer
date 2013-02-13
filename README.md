@@ -106,10 +106,11 @@ Revision History
 - Add 'update' option to process only files that have changed
 - Add document and field boosts before posting
 - Store hash and timestamp of all files in a hidden file, to be used with update option
+- Added unit tests for Cleaner, Transformer
 
 1.2.2
 
- - Purged configuration files from repository, added them to .gitignore 
+ * Purged configuration files from repository, added them to .gitignore 
  * Processes only EAC-CPF now, and ignores EAC when found
  * Added type option to [infer] to specify inference types to be executed
  * Skips geolocation if GIS attribute is present on the place tag

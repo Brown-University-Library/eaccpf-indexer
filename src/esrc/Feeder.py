@@ -17,8 +17,8 @@ import sys
 
 class Feeder(object):
     '''
-    Harvests EAC files from a file system or the web, processes them and then 
-    posts that data to an Apache Solr/Lucene index.
+    Harvests EAC-CPF files from a file system or the web, processes them and 
+    then posts that data to an Apache Solr/Lucene index.
     '''
     
     def __init__(self):
@@ -42,8 +42,8 @@ class Feeder(object):
         self.parser.add_argument('--infer', help="infer concepts, entities, locations from free text fields", action='store_true')
         self.parser.add_argument('--post', help="post Solr Input Documents to Apache Solr index", action='store_true')
         self.parser.add_argument('--report', help="generate a report and write to specified path", action='store_true')
-        self.parser.add_argument('--transform', help="transform EAC, EAC-CPF files to Solr Input Document format", action='store_true')
-        ## self.parser.add_argument('--fix', help="Fix common errors in HTML or XML source files and update the source files where possible.", action='store_true')
+        self.parser.add_argument('--transform', help="transform EAC-CPF files to Solr Input Document format", action='store_true')
+        #self.parser.add_argument('--update', help="process only those files that have changed since the last run", action='store_true')
         # parse the command line arguments
         try:
             self.args = self.parser.parse_args()

@@ -21,6 +21,8 @@ sleep=1.0
 type=location,entity
 
 [transform]
+boostDocs=
+boostFields=
 input_inferred=/path/to/feeder/PROJ/infer
 input_xml=/path/to/feeder/PROJ/clean
 merge=true
@@ -30,8 +32,6 @@ schema=/path/to/solr-input-document.dtd
 xslt=/path/to/feeder/PROJ/infer
 
 [post]
-boostDocs=
-boostFields=
 commit=true
 flush=true
 index=http://solr.server.com:8080/PROJ/

@@ -53,6 +53,14 @@ class Facter(object):
         # clean = clean.replace('\n','')
         return clean
     
+    def _fixDate(self, date):
+        '''
+        Fix date string to make it conform to ISO standard.
+        '''
+        if 'T00:00:00Z' in date:
+            return date
+        return date + "T00:00:00Z"
+    
     def _getCalaisResultAsDictionary(self, result):
         '''
         Get Calais result as a dictionary.
@@ -165,6 +173,28 @@ class Facter(object):
         for key in result.keys():
             record[key] = result[key]
         return record
+    
+    def _setDateField(self, target, fieldname, source):
+        '''
+        Try to set the named field with the specified date string.
+        '''
+        try:
+            if source is not None:
+                if hasattr(source,'standarddate'):
+                    date = self._cleanText(source['standarddate'])
+                    target[fieldname] = self._fixDate(date)
+        except:
+            pass
+    
+    def _setStringField(self, target, fieldname, source):
+        '''
+        Try to set the named field with the specified source object.
+        '''
+        try:
+            if source is not None:
+                target[fieldname] = self._cleanText(source.string)
+        except:
+            pass
     
     def inferEntitiesWithAlchemy(self, source, output, api_key, sleep=0., report=None):
         '''
@@ -305,36 +335,31 @@ class Facter(object):
                 inferred['locations'] = []
                 # for each chronitem
                 for item in xml.findAll('chronitem'):
-                    # build the place record
-                    place = {}
-                    if hasattr(item,'place'):
-                        place['place'] = self._cleanText(item.placeentry.string)
-                    if hasattr(item,'event'):
-                        place['event'] = self._cleanText(item.event.string)
-                    if hasattr(item,'daterange'):
-                        if hasattr(item.daterange,'fromdate'):
-                            date = self._cleanText(item.daterange.fromdate['standarddate'])
-                            place['eventStart'] = self._fixDate(date)
-                        if hasattr(item.daterange,'todate'):
-                            date = self._cleanText(item.daterange.todate['standarddate'])
-                            place['eventEnd'] = self._fixDate(date)
-                    # if there is an existing GIS attribute attached to the record, don't process it
-                    if 'place' in place and place['place'] is not None:
-                        if 'GIS' in place or 'gis' in place:
-                            inferred['locations'].append(place)
-                            self.logger.warning("Record has existing location data")
-                        else:
-                            # infer the location
-                            for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False):
-                                location = {}
-                                location['address'] = self._cleanText(address)
-                                location['coordinates'] = [lat, lng]
-                                location['event'] = self._cleanText(place['event'])
-                                location['eventEnd']  = self._cleanText(place['eventEnd'])
-                                location['eventStart']  = self._cleanText(place['eventStart'])
-                                location['place'] = self._cleanText(place['place'])
-                                # add the location record
-                                inferred['locations'].append(location)
+                    try:
+                        # build the place record
+                        place = {}
+                        self._setStringField(place,'place',item.find('placeentry'))
+                        self._setStringField(place,'event',item.find('event'))
+                        if item.find('fromdate') is not None:
+                            self._setDateField(place,'eventFrom',item.find('fromdate','standarddate'))
+                        if item.find('todate') is not None:
+                            self._setDateField(place,'eventTo',item.find('todate','standarddate'))
+                        # if there is an existing GIS attribute attached to the record, don't process it
+                        if 'place' in place and place['place'] is not None:
+                            if 'GIS' in place or 'gis' in place:
+                                inferred['locations'].append(place)
+                                self.logger.warning("Record has existing location data")
+                            else:
+                                # infer the location
+                                for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False):
+                                    location = place.copy()
+                                    location['address'] = self._cleanText(address)
+                                    location['coordinates'] = [lat, lng]
+                                    # add the location record
+                                    inferred['locations'].append(location)
+                    except Exception:
+                        self.logger.warning("Could not complete processing on place record in " + filename, exc_info=True)
+                        continue
                 # write output inferred
                 outfile = open(output + os.sep + yamlFilename, 'w')
                 yaml.dump(inferred,outfile)
@@ -342,17 +367,13 @@ class Facter(object):
                 self.logger.info("Wrote inferred locations to " + yamlFilename)
                 # sleep between requests
                 time.sleep(sleep)
-            except AttributeError:
-                self.logger.warning("Place data not found in record " + filename)
-            except TypeError:
-                self.logger.warning("Parsing error on record " + filename)
             except Exception:
                 self.logger.warning("Could not resolve location for " + filename, exc_info=True)
+                continue
 
     def run(self, params):
         '''
-        Execute semantic analysis and information extraction using the 
-        specified parameters.
+        Execute analysis using the specified parameters.
         '''
         # get parameters
         output = params.get("infer","output")
