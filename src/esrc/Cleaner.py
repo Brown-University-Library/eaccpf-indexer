@@ -3,18 +3,17 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-from lxml import etree
 import htmlentitydefs
 import logging
 import os
 import re
+from BeautifulSoup import BeautifulSoup
+from lxml import etree
 
 class Cleaner():
     '''
     Corrects common errors in XML files and validates the file against an 
     external schema.
-    
-    @todo: Need to replace BeautifulSoup in any kind of write situation because it changes the case of tag names and attributes
     '''
 
     def __init__(self):
@@ -65,6 +64,15 @@ class Cleaner():
             return text # leave as is
         return re.sub("&#?\w+;", fixup, text)
 
+    def _fixHTML(self, Html):
+        '''
+        Clean up bad HTML.
+        @todo: Consider removing this 
+        @todo: Need to replace BeautifulSoup in any kind of write situation because it changes the case of tag names and attributes
+        '''
+        tree = BeautifulSoup(Html)
+        return tree.prettify()
+
     def _makeCache(self, path):
         '''
         Create a cache folder at the specified path if none exists.
@@ -81,9 +89,8 @@ class Cleaner():
 
     def clean(self, source, output, report=None):
         '''
-        Clean all files in source directory and write them to the output 
-        directory. If the source and output are the same directory, the
-        source files will be overwritten.  
+        Read all files from source directory, apply fixes to common errors in 
+        EACCPF documents. Write cleaned files to the output directory.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -102,12 +109,11 @@ class Cleaner():
                 data = self._fixEntityReferences(data)
                 data = self._fixAttributeURLEncoding(data)
                 data = self._fixDateFields(data)
-                # write data
+                # Write data to specified file in the output directory.
                 outfile = open(output + os.sep + filename, 'w')
                 outfile.write(data)
                 outfile.close()
-                self.logger.info("Wrote cleaned XML to " + filename)
-                
+                self.logger.info("Wrote cleaned data to " + filename)                
             except Exception:
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
         
@@ -139,7 +145,7 @@ class Cleaner():
         assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # load schema file
+        # load schema files
         try:
             infile = open(schema, 'r')
             schema_data = infile.read()
@@ -160,4 +166,4 @@ class Cleaner():
             try:
                 etree.fromstring(data, parser)
             except Exception:
-                self.logger.warning("Document does not conform to schema " + filename)        
+                self.logger.warning("Document does not conform to schema " + filename)

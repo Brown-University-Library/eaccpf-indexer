@@ -283,7 +283,7 @@ class Facter(object):
         
     def inferLocations(self, source, output, geocoder, api_key, sleep=0., report=None):
         '''
-        For each input file, extract the locationName name or address and 
+        For each input file, extract the address name or address and 
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
         '''
@@ -292,45 +292,62 @@ class Facter(object):
         # process files
         files = os.listdir(source)
         for filename in files:
-            # read source data
-            infile = open(source + os.sep + filename, 'r')
-            lines = infile.readlines()
-            xml = soup(''.join(lines))
-            infile.close()
-            # get the output record
-            yamlFilename = self._getYamlFilename(filename)
-            record = self._getRecord(output,yamlFilename)
-            # clear the existing locations section before populating
-            record['locations'] = []
-            # for each chronItem
-            for chronItem in xml.findAll('chronitem'):
-                try:
-                    if 'GIS' in chronItem.place.attrs:
-                        # populate the record with the existing GIS data
-                        self.logger.warning("Section not implemented")
-                    else:
-                        # try to resolve the location
-                        locationName, coordinates = geocoder.geocode(chronItem.place.string)
-                        # if we got data back
-                        if locationName and coordinates:
-                            location = {}
-                            location['date']  = self._cleanText(chronItem.date.string)
-                            location['event'] = self._cleanText(chronItem.event.string)
-                            location['place'] = self._cleanText(chronItem.place.string)
-                            location['address'] = self._cleanText(locationName)
-                            location['coordinates'] = [coordinates[0], coordinates[1]]
-                            record['locations'].append(location)
-                except AttributeError:
-                    self.logger.warning("Place tag not found in record " + filename)
-                except Exception:
-                    self.logger.warning("Could not resolve location record for " + filename, exc_info=True)
-            # write output record
-            outfile = open(output + os.sep + yamlFilename, 'w')
-            yaml.dump(record,outfile)
-            outfile.close()
-            self.logger.info("Wrote inferred locations to " + yamlFilename)
-            # sleep between requests
-            time.sleep(sleep)
+            try:
+                # read source data
+                infile = open(source + os.sep + filename,'r')
+                infile_data = infile.read()
+                infile.close()
+                xml = soup(infile_data)
+                # get the output inferred
+                yamlFilename = self._getYamlFilename(filename)
+                inferred = self._getRecord(output,yamlFilename)
+                # clear the existing locations section before populating
+                inferred['locations'] = []
+                # for each chronitem
+                for item in xml.findAll('chronitem'):
+                    # build the place record
+                    place = {}
+                    if hasattr(item,'place'):
+                        place['place'] = self._cleanText(item.placeentry.string)
+                    if hasattr(item,'event'):
+                        place['event'] = self._cleanText(item.event.string)
+                    if hasattr(item,'daterange'):
+                        if hasattr(item.daterange,'fromdate'):
+                            date = self._cleanText(item.daterange.fromdate['standarddate'])
+                            place['eventStart'] = self._fixDate(date)
+                        if hasattr(item.daterange,'todate'):
+                            date = self._cleanText(item.daterange.todate['standarddate'])
+                            place['eventEnd'] = self._fixDate(date)
+                    # if there is an existing GIS attribute attached to the record, don't process it
+                    if 'place' in place and place['place'] is not None:
+                        if 'GIS' in place or 'gis' in place:
+                            inferred['locations'].append(place)
+                            self.logger.warning("Record has existing location data")
+                        else:
+                            # infer the location
+                            for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False):
+                                location = {}
+                                location['address'] = self._cleanText(address)
+                                location['coordinates'] = [lat, lng]
+                                location['event'] = self._cleanText(place['event'])
+                                location['eventEnd']  = self._cleanText(place['eventEnd'])
+                                location['eventStart']  = self._cleanText(place['eventStart'])
+                                location['place'] = self._cleanText(place['place'])
+                                # add the location record
+                                inferred['locations'].append(location)
+                # write output inferred
+                outfile = open(output + os.sep + yamlFilename, 'w')
+                yaml.dump(inferred,outfile)
+                outfile.close()
+                self.logger.info("Wrote inferred locations to " + yamlFilename)
+                # sleep between requests
+                time.sleep(sleep)
+            except AttributeError:
+                self.logger.warning("Place data not found in record " + filename)
+            except TypeError:
+                self.logger.warning("Parsing error on record " + filename)
+            except Exception:
+                self.logger.warning("Could not resolve location for " + filename, exc_info=True)
 
     def run(self, params):
         '''
@@ -338,22 +355,25 @@ class Facter(object):
         specified parameters.
         '''
         # get parameters
-        source = params.get("infer","input")
         output = params.get("infer","output")
         report = params.get("infer","report")
         sleep = float(params.get("infer","sleep"))
+        source = params.get("infer","input")
+        types = params.get("infer","type")
         # create output folder
         self._makeCache(output)
-        # infer location
-        google_api_key = params.get("infer","google_api_key")
-        geocoder = geocoders.Google(domain='maps.google.com.au')
-        self.inferLocations(source,output,geocoder,google_api_key,sleep,report)
-        # infer entities with Alchemy
-        #alchemy_api_key = params.get("infer","alchemy_api_key")
-        #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)
-        # infer entities with NLTK
-        # self.inferEntitiesWithNLTK(source, output, report)
-        # infer entities with Open Calais
-        calais_api_key = params.get("infer","calais_api_key")
-        self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
+        # execute inferences for each selected type
+        if 'location' in types:
+            google_api_key = params.get("infer","google_api_key")
+            geocoder = geocoders.Google(domain='maps.google.com.au')
+            self.inferLocations(source,output,geocoder,google_api_key,sleep,report)
+        if 'entity' in types:
+            # infer entities with Alchemy
+            #alchemy_api_key = params.get("infer","alchemy_api_key")
+            #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)
+            # infer entities with NLTK
+            # self.inferEntitiesWithNLTK(source, output, report)
+            # infer entities with Open Calais
+            calais_api_key = params.get("infer","calais_api_key")
+            self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
     

@@ -70,6 +70,16 @@ class Transformer(object):
                 pass
         # default case
         return ('', '')
+    
+    def _loadTransform(self, Filename):
+        '''
+        Load the named XSL transform from the specified file.
+        '''
+        xslt_file = open(Filename,'r')
+        xslt_data = xslt_file.read()
+        xslt_root = etree.XML(xslt_data)
+        xslt_file.close()
+        return etree.XSLT(xslt_root)
 
     def _makeCache(self, path):
         '''
@@ -166,83 +176,75 @@ class Transformer(object):
         merge = params.get("transform","merge")
         output = params.get("transform","output")
         report = params.get("transform","report")
-        source_eac = params.get("transform","input_eac")
         source_inferred = params.get("transform","input_inferred")
-        xslt = params.get("transform","xslt")
+        source_xml = params.get("transform","input_xml")
+        xslt = params.get("transform","transform")
         #schema = params.get("transform","schema")
         # create output folder
         self._makeCache(output)
         # transform EAC to SID
-        self.transformEACtoSID(source_eac, output, xslt, report)
+        self.transformToSolrInputDocument(source_xml, output, xslt, report)
         # merge inferred data
         if merge.lower() == "true":
             self.mergeInferredDataIntoSID(source_inferred, output, report)
         # validate results
         # self.validate(output, schema, report)
     
-    def transformEACtoSID(self, source, output, xslt, report=None):
+    def transformToSolrInputDocument(self, source, output, xslt, report=None):
         '''
-        Transform EAC document to Solr Input Document format using the
+        Transform EAC, EACCPF document to Solr Input Document format using the
         specified XSLT transform file.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        assert os.path.exists(xslt), self.logger.warning("XSLT file does not exist: " + xslt)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # read the XSLT file
+        # load XSLT files
         try:
-            xslt_file = open(xslt,'r')
-            xslt_data = xslt_file.read()
-            xslt_root = etree.XML(xslt_data)
-            xslt_file.close()
-            transform = etree.XSLT(xslt_root)
+            transform = self._loadTransform(xslt)
         except:
-            self.logger.critical("Could not load XSLT file " + xslt)
+            self.logger.critical("Could not load XSLT file ")
         # process files
         files = os.listdir(source)
         for filename in files:
             try:
                 # read source data
-                #xml = etree.parse(source + os.sep + filename)
                 infile = open(source + os.sep + filename,'r')
                 data = infile.read()
                 infile.close()
-                ''' 
-                ISSUE #4: When the XSLT parser encounters a problem, it fails 
-                silently and does not return any results. We've found that the 
-                problem stems from namespace declarations in the XML data file. 
-                Because these are not important in the transformation to SID 
-                format, we strip them out here before processing.
-                '''
+                xml = etree.XML(data)
+                # transform the document
+                # ISSUE #4: When the XSLT parser encounters a problem, it fails 
+                # silently and does not return any results. We've found that the 
+                # problem occurs due to namespace declarations in EACCPF files. 
+                # Because these are not important in the transformation to SID 
+                # format, we strip them out here before processing.
                 for ns in re.findall("\w*:\w*=\".*\"", data):
                     data = data.replace(ns,'')
                 for ns in re.findall("xmlns=\".*\"", data):
                     data = data.replace(ns,'')
-                # convert text to xml tree
-                xml = etree.XML(data)
-                # transform the document
+                # end of issue
                 result = transform(xml)
                 # get the doc element
-                doc = result.find('doc')
-                # get the EAC document source and referrer values
-                # from the comment embedded at the end of the EAC
+                sid = result.find('doc')
+                # get the document source and referrer values
+                # from the comment embedded at the end of the EACCPF
                 src_val, ref_val = self._getSourceAndReferrerValues(source + os.sep + filename)
                 # append the source and referrer values to the SID
                 if src_val:
                     src_field = etree.Element('field',name='source_uri')
                     src_field.text = src_val
-                    doc.append(src_field)
+                    sid.append(src_field)
                 if ref_val:
                     ref_field = etree.Element('field',name='referrer_uri')
                     ref_field.text = ref_val
-                    doc.append(ref_field)
+                    sid.append(ref_field)
                 # write the output file
                 outfile = open(output + os.sep + filename, 'w')
                 result.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.logger.info("Transformed EAC to Solr Input Document " + filename)
+                self.logger.info("Transformed document to Solr Input Document " + filename)
             except Exception:
                 self.logger.warning("Could not complete XSLT processing for " + filename, exc_info=True)
                 
@@ -255,7 +257,7 @@ class Transformer(object):
         assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # load schema 
+        # load schemas
         try:
             infile = open(schema, 'r')
             schema_data = infile.read()

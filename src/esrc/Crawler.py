@@ -3,19 +3,19 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-from BeautifulSoup import BeautifulSoup 
 import fnmatch
 import logging
 import os
 import time
 import urllib2
+from BeautifulSoup import BeautifulSoup 
+from hashlib import sha1
         
 class Crawler(object):
     '''
-    File system and web site crawler. Locates EAC metadata files either 
-    directly or when specified as an alternate representation to an HTML file. 
-    Downloads a copy of the discovered files to a local file system cache for 
-    future processing.
+    File system and web site crawler. Locates EAC, EACCPF metadata files 
+    specified as an alternate representation to an HTML file. Downloads a copy 
+    of the discovered files to a local file system cache.
     '''
 
     def __init__(self):
@@ -32,9 +32,9 @@ class Crawler(object):
         for filename in files:
             os.remove(path + os.sep + filename)
     
-    def _getEACSource(self, html):
+    def _getAlternateRepresentation(self, html):
         '''
-        Extract EAC value from HTML meta tag. Return None if nothing found.
+        Extract EAC, EACCPF URL from HTML meta tag. Return None if nothing found.
         '''
         soup = BeautifulSoup(html)
         meta = soup.findAll('meta', {'name':'EAC'})
@@ -53,6 +53,21 @@ class Crawler(object):
             return last
         return None
     
+    def _getFileHash(self, path):
+        '''
+        Get the SHA1 hash for a file.
+        '''
+        # read the file
+        infile = open(path,'r')
+        data = infile.read()
+        infile.close()
+        # generate hash
+        s = sha1()
+        s.update("blob %u\0" % len(data))
+        s.update(data)
+        # return result
+        return s.hexdigest()
+    
     def _getHTMLReferrer(self, html):
         '''
         Extract DC.Identifier value from HTML meta tag. Return an empty string 
@@ -64,6 +79,16 @@ class Crawler(object):
             return meta[0].get('content')
         except:
             return ''
+    
+    def _isEACCPF(self, data):
+        '''
+        Determine if the data represents an EAC-CPF document.
+        '''
+        xml = BeautifulSoup(data)
+        items = xml.find("eac-cpf")
+        if items is not None:
+            return True
+        return False
     
     def _isHTML(self, filename):
         '''
@@ -97,10 +122,8 @@ class Crawler(object):
         '''
         Crawl file system for HTML files, starting from the file source, and 
         looking for those files which have EAC, EAC-CPF alternate 
-        representations. Mirror EAC files to the specified output. If no 
-        output is specified, it creates a default local in the current working 
-        directory. Sleep for the specified number of seconds after fetching 
-        data.
+        representations. Mirror alternate files to the specified output. Sleep 
+        for a specified period between requests.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -113,11 +136,12 @@ class Crawler(object):
                 if self._isHTML(filename):
                     self.logger.debug("Found " + path + os.sep + filename)
                     try:
-                        # if the file has an EAC alternate representation
+                        # read the file
                         infile = open((path + os.sep + filename),'r')
                         html = infile.read()
                         infile.close()
-                        src = self._getEACSource(html) 
+                        src = self._getAlternateRepresentation(html) 
+                        # if it has an EAC or EACCPF alternate representation
                         if src:
                             self.logger.debug("Found " + src)
                             # record the URL of the referring document
@@ -127,15 +151,15 @@ class Crawler(object):
                             eac = response.read()
                             # append source and referrer URLs into a comment at the end of the eac
                             eac += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
-                            # write eac file to output
+                            # write file to output if it is EAC-CPF
                             outfile = self._getFileName(src)
-                            if outfile:
+                            if outfile and self._isEACCPF(eac):
                                 outfile = open(output + os.sep + outfile,'w')
                                 outfile.write(eac)
                                 outfile.close()
                                 self.logger.info("Stored " + src)
                     except urllib2.HTTPError:
-                        self.logger.warning("Could not fetch EAC file " + src)
+                        self.logger.warning("Could not fetch alternate representation " + src)
                     except Exception:
                         self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:

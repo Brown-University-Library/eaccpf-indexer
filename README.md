@@ -97,27 +97,30 @@ Revision History
 
 1.2.4
 
-- Skip geolocation if GIS attribute is present on the record
+- Writes processing messages to report log
+- Analyzes EAC-CPF data for quality indicators
+- Merges individual reports into a single report file
 
 1.2.3
 
-- Writes processing messages to report log
-- Analyzes EAC data for quality indicators
-- Merges individual reports into a single report file
 - Add 'update' option to process only files that have changed
+- Add document and field boosts before posting
+- Store hash and timestamp of all files in a hidden file, to be used with update option
 
 1.2.2
 
  - Purged configuration files from repository, added them to .gitignore 
- - Store hash and timestamp of all files in a hidden file, to be used with update option
-
+ * Processes only EAC-CPF now, and ignores EAC when found
+ * Added type option to [infer] to specify inference types to be executed
+ * Skips geolocation if GIS attribute is present on the place tag
+ * Added scaffolding for unit tests
  * Handles case where geocoding returns multiple locations
  * Moved third party libraries into esrc package
 
 1.2.1
 
- * Transforms EAC to Solr Input Document format using an external XSLT file
- * Crawler appends comment to EAC xml to record store source and referrer URLs
+ * Transforms EAC-CPF to Solr Input Document format using an external XSLT file
+ * Crawler appends comment to EAC-CPF xml to record store source and referrer URLs
  * Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
  * Merges inferred data with Solr Input Documents
  * Posts Solr Input Documents to Solr core
@@ -143,10 +146,10 @@ Revision History
 Known Issues
 ------------
 
-- Namespace declarations in the EAC, EAC-CPF document cause the XML parser
+- Namespace declarations in the EAC-CPF document cause the XML parser
   to fail while transforming the document to Solr Input Document format.
   As a workaround, we now load the XML input data as text, strip all namespace 
-  references in memory, and then convert the data to XML and execute the 
+  references in memory, and then convert the data to XML before executing the 
   transform.
-  @see Transformer.py transformEACtoSID
+  @see Transformer.py
 
