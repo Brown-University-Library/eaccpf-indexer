@@ -13,9 +13,9 @@ from hashlib import sha1
         
 class Crawler(object):
     '''
-    File system and web site crawler. Locates EAC, EACCPF metadata files 
-    specified as an alternate representation to an HTML file. Downloads a copy 
-    of the discovered files to a local file system cache.
+    File system and web site crawler. Locates EACCPF metadata files specified 
+    as an alternate representation to an HTML file. Downloads a copy of the 
+    discovered files to a local file system cache.
     '''
 
     def __init__(self):
@@ -34,7 +34,8 @@ class Crawler(object):
     
     def _getAlternateRepresentation(self, html):
         '''
-        Extract EAC, EACCPF URL from HTML meta tag. Return None if nothing found.
+        Extract URL for alternate data representation HTML meta tag. Return 
+        None if nothing found.
         '''
         soup = BeautifulSoup(html)
         meta = soup.findAll('meta', {'name':'EAC'})
@@ -121,9 +122,9 @@ class Crawler(object):
     def crawlFileSystem(self, source='.', output='output', report=None, sleep=0.):
         '''
         Crawl file system for HTML files, starting from the file source, and 
-        looking for those files which have EAC, EAC-CPF alternate 
-        representations. Mirror alternate files to the specified output. Sleep 
-        for a specified period between requests.
+        looking for those files which have EAC-CPF alternate representations. 
+        Mirror alternate files to the specified output. Sleep for a specified 
+        period between requests.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -141,21 +142,21 @@ class Crawler(object):
                         html = infile.read()
                         infile.close()
                         src = self._getAlternateRepresentation(html) 
-                        # if it has an EAC or EACCPF alternate representation
+                        # if it has an EACCPF alternate representation
                         if src:
                             self.logger.debug("Found " + src)
                             # record the URL of the referring document
                             ref = self._getHTMLReferrer(html) 
-                            # download the EAC file
+                            # download the file
                             response = urllib2.urlopen(src)
-                            eac = response.read()
-                            # append source and referrer URLs into a comment at the end of the eac
-                            eac += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
+                            xml = response.read()
+                            # append source and referrer URLs into a comment at the end of the document
+                            xml += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
                             # write file to output if it is EAC-CPF
                             outfile = self._getFileName(src)
-                            if outfile and self._isEACCPF(eac):
+                            if outfile and self._isEACCPF(xml):
                                 outfile = open(output + os.sep + outfile,'w')
-                                outfile.write(eac)
+                                outfile.write(xml)
                                 outfile.close()
                                 self.logger.info("Stored " + src)
                     except urllib2.HTTPError:
@@ -167,8 +168,8 @@ class Crawler(object):
     
     def crawlWebSite(self, source='http://localhost', output='data', report=None, sleep=0.):
         '''
-        Crawl web site for HTML pages that have EAC, EAC-CPF alternate 
-        representations.  When such a page is found, copy the referenced EAC 
+        Crawl web site for HTML pages that have EAC-CPF alternate 
+        representations.  When such a page is found, copy the referenced  
         data file to a local cache for processing. If no cache is specified, 
         it creates a local cache in the current working directory. Sleep
         for the specified number of seconds after fetching data.

@@ -7,7 +7,6 @@ import htmlentitydefs
 import logging
 import os
 import re
-from BeautifulSoup import BeautifulSoup
 from lxml import etree
 
 class Cleaner():

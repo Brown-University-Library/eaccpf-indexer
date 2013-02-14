@@ -14,7 +14,7 @@ import yaml
 
 class Facter(object):
     '''
-    Takes an EAC record, executes a semantic analysis of the contents and 
+    Takes an EACCPF record, executes a semantic analysis of the contents and 
     attempts to extract people, places, things, concepts from free text or 
     structured fields.
     '''
@@ -350,7 +350,10 @@ class Facter(object):
                                 inferred['locations'].append(place)
                                 self.logger.warning("Record has existing location data")
                             else:
-                                # infer the location
+                                # ISSUE #5 the geocoder can return multiple locations when an address is
+                                # not specific enough. We create a record for each address, with the intent
+                                # that an archivist review the inferred data at a later date and then
+                                # manually select the appropriate address to retain for the record.
                                 for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False):
                                     location = place.copy()
                                     location['address'] = self._cleanText(address)

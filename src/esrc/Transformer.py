@@ -11,7 +11,7 @@ import yaml
 
 class Transformer(object):
     '''
-    Transforms an EAC file into a Solr Input Document.
+    Merge and transform source data to Solr Input Document format.
     '''
 
     def __init__(self):
@@ -50,8 +50,8 @@ class Transformer(object):
 
     def _getSourceAndReferrerValues(self, filename):
         '''
-        Get EAC document source and referrer URI values from 
-        comment embedded in the EAC document.
+        Get document source and referrer URI values from 
+        comment embedded in the document.
         '''
         infile = open(filename,'r')
         lines = infile.readlines()
@@ -70,16 +70,6 @@ class Transformer(object):
                 pass
         # default case
         return ('', '')
-    
-    def _loadTransform(self, Filename):
-        '''
-        Load the named XSL transform from the specified file.
-        '''
-        xslt_file = open(Filename,'r')
-        xslt_data = xslt_file.read()
-        xslt_root = etree.XML(xslt_data)
-        xslt_file.close()
-        return etree.XSLT(xslt_root)
 
     def _makeCache(self, path):
         '''
@@ -99,7 +89,7 @@ class Transformer(object):
         '''
         ISSUE #4: When the XML/XSLT parser encounters a problem, it fails 
         silently and does not return any results. We've found that the 
-        problem occurs due to namespace declarations in EACCPF files. 
+        problem occurs due to namespace declarations in source files. 
         Because these are not important in the transformation to SID 
         format, we strip them out here before processing.
         '''
@@ -133,9 +123,16 @@ class Transformer(object):
                 inferred = yaml.load(data)
                 infile.close()
                 # add inferred locations
+                # ISSUE #5 the geocoder can return multiple locations when an address is
+                # not specific enough. Or, in some cases, a record has multiple events and
+                # associated locations.  The Solr index allows for one location field entry, 
+                # and multiple geohash entries.  Here, we use the first location as the 
+                # primary record location, then make all subsequent locations geohashes.
                 if 'locations' in inferred:
                     count = 0
                     for location in inferred['locations']:
+                        # the first location in the list will become the 
+                        # primary entity locaion
                         if count == 0:
                             # address
                             address = etree.Element('field', name='address')
@@ -157,7 +154,7 @@ class Transformer(object):
                             location_1.text = str(lng)
                             doc.append(location_1)
                         else:
-                            # add the remainder to the loocation_geohash field
+                            # all subsequent locations will be added to the loocation_geohash field
                             lat = location['coordinates'][0]
                             lng = location['coordinates'][1]
                             latlng = str(lat) + "," + str(lng)
@@ -195,7 +192,7 @@ class Transformer(object):
     
     def run(self, params):
         '''
-        Execute transformation on EAC source document, then merge in inferred data.
+        Execute transformation on source document, then merge in inferred data.
         Write a valid Solr Input Document.
         '''
         # get parameters
@@ -208,7 +205,7 @@ class Transformer(object):
         #schema = params.get("transform","schema")
         # create output folder
         self._makeCache(output)
-        # transform EAC to SID
+        # transform to SID
         self.transformToSolrInputDocument(source_xml, output, xslt, report)
         # merge inferred data
         if merge.lower() == "true":
@@ -223,17 +220,22 @@ class Transformer(object):
     
     def transformToSolrInputDocument(self, source, output, xslt, report=None):
         '''
-        Transform EAC, EACCPF document to Solr Input Document format using the
+        Transform document to Solr Input Document format using the
         specified XSLT transform file.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        assert os.path.exists(xslt), self.logger.warning("Transform file does not exist: " + xslt)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # load XSLT files
         try:
-            transform = self._loadTransform(xslt)
+            xslt_file = open(xslt,'r')
+            xslt_data = xslt_file.read()
+            xslt_root = etree.XML(xslt_data)
+            xslt_file.close()
+            transform = etree.XSLT(xslt_root)
         except:
             self.logger.critical("Could not load XSLT file ")
         # process files

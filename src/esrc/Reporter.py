@@ -8,7 +8,7 @@ import logging
 class Reporter():
     '''
     Generates an HTML report on the correctness and quality of a collection of 
-    EAC, EAC-CPF files.
+    EAC-CPF files.
     '''
 
     def __init__(self,params):
