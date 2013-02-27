@@ -138,6 +138,18 @@ class Transformer(object):
                             address = etree.Element('field', name='address')
                             address.text = location['address']
                             doc.append(address)
+                            # city
+                            city = etree.Element('field', name='city')
+                            city.text = location['primary_city']
+                            doc.append(city)
+                            # state
+                            region = etree.Element('field', name='region')
+                            region.text = location['primary_region']
+                            doc.append(region)
+                            # region
+                            country = etree.Element('field', name='country')
+                            country.text = location['primary_country']
+                            doc.append(country)
                             # coordinates
                             lat = location['coordinates'][0]
                             lng = location['coordinates'][1]

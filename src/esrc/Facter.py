@@ -358,6 +358,11 @@ class Facter(object):
                                     location = place.copy()
                                     location['address'] = self._cleanText(address)
                                     location['coordinates'] = [lat, lng]
+                                    # split the address into city, region, country
+                                    parts = address.split(',')
+                                    location['country'] = self._cleanText(parts[len(parts)-1])
+                                    location['region'] = self._cleanText(parts[len(parts)-2])
+                                    location['city'] = self._cleanText(parts[len(parts)-3])
                                     # add the location record
                                     inferred['locations'].append(location)
                     except Exception:
