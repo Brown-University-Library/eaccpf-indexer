@@ -4,20 +4,17 @@ LICENSE file, which is part of this source code package.
 '''
 
 import unittest
-from Cleaner import *
+import Cleaner
 
 class CleanerUnitTests(unittest.TestCase):
     '''
-    Test cases for the Cleaner module
+    Test cases for the Cleaner module.
     '''
     
     def setUp(self):
         '''
         Setup the test environment.
         '''
-        # load schemas
-        # load test data
-        # create a temporary directory
         pass
     
     def tearDown(self):
@@ -26,6 +23,14 @@ class CleanerUnitTests(unittest.TestCase):
         '''
         pass
 
-    def test(self):
-        pass
-        # should 
+    def test_init(self):
+        '''
+        It should create an object instance.
+        '''
+        cleaner = Cleaner()
+        self.assertNotEqual(cleaner, None)
+    
+if __name__ == '__main__':
+    unittest.main()
+
+    

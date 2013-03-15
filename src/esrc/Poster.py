@@ -126,23 +126,21 @@ class Poster(object):
         operations.
         '''
         # get parameters
-        source = params.get("post","input")
-        report = params.get("post","report")
-        post = params.get("post","post")
-        flush = params.get("post","flush")
-        commit = params.get("post","commit")
-        optimize = params.get("post","optimize")
+        actions = params.get("post","actions").split(",")
         index = params.get("post","index")
-        # delete
-        if flush.lower() == "true":
-            self.flush(index,report)
-        # post
-        if post.lower() == "true":
-            self.post(source,index,report)
-        # commit
-        if commit.lower() == "true":
-            self.commit(index,report)
-        # optimize
-        if optimize.lower() == "true":
-            self.optimize(index,report)
+        report = params.get("post","report")
+        source = params.get("post","input")
+        # execute actions
+        for action in actions:
+            if action == "flush":
+                self.flush(index,report)
+            # post
+            elif action == "post":
+                self.post(source,index,report)
+            # commit
+            elif action == "commit":
+                self.commit(index,report)
+            # optimize
+            elif action == "optimize":
+                self.optimize(index,report)
         

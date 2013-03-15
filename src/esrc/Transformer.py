@@ -3,6 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from HtmlPage import HtmlPage
 from lxml import etree
 import logging
 import os
@@ -18,20 +19,11 @@ class Transformer(object):
         '''
         Constructor
         '''
-        self.logger = logging.getLogger('feeder')
+        self.logger = logging.getLogger('Transformer')
 
-    def _apply_doc_boost(self, doc, boost):
+    def _applyFieldBoost(self, doc, boost):
         '''
-        Apply document boost value.
-        '''
-        if boost is not None:
-            for b in boost:
-                if re.search(b, self.document):
-                    doc.xpath('//add/doc')[0].set("boost", str(boost[b]))
-
-    def _apply_field_boosts(self, doc, boost):
-        '''
-        Apply field boost value.
+        Apply field boost on the specified document.
         '''
         if boost is not None:
             for b in boost:
@@ -41,17 +33,30 @@ class Transformer(object):
             except:
                 pass
 
-    def _getInferredDataFileName(self, filename):
+    def _boostFields(self, Path, FieldName, BoostValue):
         '''
-        Takes a file name and returns a name with .yml appended.
+        Boost the specified field for all Solr Input Document in the specified 
+        path.
         '''
-        name, _ = os.path.splitext(filename)
-        return name + ".yml"
+        assert os.path.exists(Path), self.logger.warning("Source documents path does not exist: " + Path)
+        files = os.listdir(Path)
+        for filename in files:
+            if self._isSolrInputDocument(Path + os.sep + filename):
+                pass
+
+    def _getFileName(self, Filename):
+        '''
+        Get the filename from the specified URI or path.
+        '''
+        if "/" in Filename:
+            parts = Filename.split("/")
+            return parts[-1]
+        return Filename
 
     def _getSourceAndReferrerValues(self, filename):
         '''
-        Get document source and referrer URI values from 
-        comment embedded in the document.
+        Get document source and referrer URI values from the comment embedded 
+        at the end of the document.
         '''
         infile = open(filename,'r')
         lines = infile.readlines()
@@ -70,23 +75,76 @@ class Transformer(object):
                 pass
         # default case
         return ('', '')
+    
+    def _isDigitalObjectYaml(self, Path):
+        '''
+        Determines if the file at the specified path is an image record in
+        YAML format.
+        '''
+        if Path.endswith("yml"):
+            infile = open(Path,'r')
+            data = infile.read()
+            infile.close()
+            if "DIGITAL OBJECT record" in data:
+                return True
+        return False
 
-    def _makeCache(self, path):
+    def _isEACCPF(self, Path):
         '''
-        Create a cache folder at the specified path if none exists.
-        If the path already exists, delete all files.
+        Determines if the file at the specified path is EAC-CPF. 
         '''
-        if not os.path.exists(path):
-            os.makedirs(path)
-            self.logger.info("Created output folder at " + path)
+        if Path.endswith("xml"):
+            infile = open(Path,'r')
+            data = infile.read()
+            infile.close()
+            if "<eac-cpf" in data and "</eac-cpf>" in data:
+                return True
+        return False
+    
+    def _isInferredYaml(self, Path):
+        '''
+        Determines if the file at the specified path is an inferred data
+        record in YAML format.
+        '''
+        if Path.endswith("yml"):
+            infile = open(Path,'r')
+            data = infile.read()
+            infile.close()
+            if "INFERRED DATA record" in data:
+                return True
+        return False
+    
+    def _isSolrInputDocument(self, Path):
+        '''
+        Determines if the file at the specified path is a Solr Input
+        Document.
+        '''
+        if Path.endswith("xml"):
+            infile = open(Path,'r')
+            data = infile.read()
+            infile.close()
+            if "<add>" in data and "<doc>" in data:
+                return True
+        return False
+
+    def _makeCache(self, Path):
+        '''
+        Create a cache folder at the specified Path if none exists.
+        If the Path already exists, delete all files.
+        '''
+        if not os.path.exists(Path):
+            os.makedirs(Path)
+            self.logger.info("Created output folder at " + Path)
         else:
-            files = os.listdir(path)
+            files = os.listdir(Path)
             for afile in files:
-                os.remove(path + os.sep + afile)
-            self.logger.info("Cleared output folder at " + path)
+                os.remove(Path + os.sep + afile)
+            self.logger.info("Cleared output folder at " + Path)
             
     def _removeNameSpaces(self, Text):
         '''
+        Remove namespace references from XML data.
+        
         ISSUE #4: When the XML/XSLT parser encounters a problem, it fails 
         silently and does not return any results. We've found that the 
         problem occurs due to namespace declarations in source files. 
@@ -99,29 +157,25 @@ class Transformer(object):
             Text = Text.replace(ns,'')
         return Text
 
-    def mergeInferredDataIntoSID(self, source, output, report=None):
+    def mergeInferredRecordIntoSID(self, source, output, report=None):
         '''
-        Merge inference data into Solr Input Document.
+        Merge inferred data into Solr Input Document. Write merged data to 
+        output.
         '''
-        # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # for each solr input document
-        files = os.listdir(output)
-        for filename in files:
-            try:
-                # read Solr Input Document
-                xml = etree.parse(output + os.sep + filename)
+        try:
+            # read input (inferred) data file
+            infile = open(source,'r')
+            data = infile.read()
+            inferred = yaml.load(data)
+            infile.close()
+            if not os.path.exists(output):
+                self.logger.warning("Output path does not exist " + output)
+            else:
+                # read output (Solr Input Document) data file
+                xml = etree.parse(output)
                 root = xml.getroot()
                 doc = root.getchildren()[0]
-                # read inferred data file
-                inferredFileName = self._getInferredDataFileName(filename)
-                infile = open(source + os.sep + inferredFileName,'r+')
-                data = infile.read()
-                inferred = yaml.load(data)
-                infile.close()
+                filename = self._getFileName(output)
                 # add inferred locations
                 # ISSUE #5 the geocoder can return multiple locations when an address is
                 # not specific enough. Or, in some cases, a record has multiple events and
@@ -199,30 +253,67 @@ class Transformer(object):
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
                 self.logger.info("Merged inferred data into " + filename)
-            except Exception:
-                self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
+        except Exception:
+            self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
+    
+    def mergeInferredRecordsIntoSID(self, sources, output, report=None):
+        '''
+        Transform zero or more paths with inferred object records to Solr Input 
+        Document format.
+        '''
+        for source in sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isInferredYaml(source + os.sep + filename):
+                    # get the name of the output record
+                    self.mergeInferredRecordIntoSID(filename, output, report)
     
     def run(self, params):
         '''
-        Execute transformation on source document, then merge in inferred data.
-        Write a valid Solr Input Document.
+        Execute transformations on source documents as specified. Write results 
+        to the output path.
         '''
         # get parameters
-        merge = params.get("transform","merge")
+        actions = params.get("transform","actions").split(',')
+        boosts = params.get("transform","boost").split(',')
         output = params.get("transform","output")
         report = params.get("transform","report")
-        source_inferred = params.get("transform","input_inferred")
-        source_xml = params.get("transform","input_xml")
+        sources = params.get("transform","sources").split(',')
         xslt = params.get("transform","xslt")
-        #schema = params.get("transform","schema")
+        # check state
+        for source in sources:
+            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # create output folder
         self._makeCache(output)
-        # transform to SID
-        self.transformToSolrInputDocument(source_xml, output, xslt, report)
-        # merge inferred data
-        if merge.lower() == "true":
-            self.mergeInferredDataIntoSID(source_inferred, output, report)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        # execute actions
+        for action in actions:
+            if action == "html-to-sid":
+                self.transformHtmlsToSid(sources, output, report)
+            elif action == "eaccpf-to-sid":
+                # create document transform
+                assert os.path.exists(xslt), self.logger.warning("Transform path does not exist: " + xslt)
+                try:
+                    xslt_file = open(xslt,'r')
+                    xslt_data = xslt_file.read()
+                    xslt_root = etree.XML(xslt_data)
+                    xslt_file.close()
+                    transform = etree.XSLT(xslt_root)
+                except:
+                    self.logger.critical("Could not load XSLT file ")
+                self.transformEACCPFsToSID(sources, output, transform, report)
+            elif action == "digitalobject-to-sid":
+                self.transformDigitalObjectsToSIDamlToSID(sources, output, report)
+            elif action == "merge-inferred-into-sid":
+                self.mergeInferredRecordsIntoSID(sources, output, report)
+            else:
+                self.logger.warning("Transform action is not available: " + action)
         # boost fields
+        for boost in boosts:
+            fieldname, boostval = boost.split(':')
+            self._boostFields(output, fieldname, boostval)
         # validate output
         try:
             schema = params.get("transform","schema")
@@ -230,32 +321,57 @@ class Transformer(object):
         except:
             self.logger.debug("No schema file specified")
     
-    def transformToSolrInputDocument(self, source, output, xslt, report=None):
+    def transformDigitalObjectsToSID(self, sources, output, report=None):
+        '''
+        Transform zero or more paths with digital object YAML records to Solr 
+        Input Document format.
+        '''
+        for source in sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isDigitalObjectYaml(source + os.sep + filename):
+                    self.transformDigitalObjectToSID(filename, output, report)
+    
+    def transformDigitalObjectToSID(self, source, output, report=None):
+        '''
+        Transform a single digital object YAML record to Solr Input Document 
+        format.
+        '''
+        if self._isDigitalObjectYaml(source):
+            # read input file
+            infile = open(source,'r')
+            data = yaml.load(infile.read())
+            infile.close()
+            # create a new XML output file
+            outfilename = "outfilename.xml"
+            outpath = output + os.sep + outfilename
+            outfile = open(outpath,'w')
+            # transform
+            len(data)
+            # close
+            outfile.close()
+            self.logger.info("Wrote digital object YAML to SID " + outfilename)
+            
+    def transformEACCPFsToSid(self, sources, output, transform, report=None):
+        '''
+        Transform zero or more paths containing EAC-CPF documents to Solr Input
+        Document format. 
+        '''
+        for source in sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isEACCPF(source + os.sep + filename):
+                    self.transformEACCPFToSID(filename, output, transform, report)
+    
+    def transformEACCPFToSID(self, source, output, transform, report=None):
         '''
         Transform document to Solr Input Document format using the
         specified XSLT transform file.
         '''
-        # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        assert os.path.exists(xslt), self.logger.warning("Transform file does not exist: " + xslt)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # load XSLT files
-        try:
-            xslt_file = open(xslt,'r')
-            xslt_data = xslt_file.read()
-            xslt_root = etree.XML(xslt_data)
-            xslt_file.close()
-            transform = etree.XSLT(xslt_root)
-        except:
-            self.logger.critical("Could not load XSLT file ")
-        # process files
-        files = os.listdir(source)
-        for filename in files:
+        if self._isEACCPF(source):
             try:
                 # read source data
-                infile = open(source + os.sep + filename,'r')
+                infile = open(source,'r')
                 data = infile.read()
                 infile.close()
                 # ISSUE #4: remove namespaces in the XML document before transforming
@@ -267,7 +383,7 @@ class Transformer(object):
                 # get the doc element
                 sid = result.find('doc')
                 # get the document source and referrer values from the embedded comment
-                src_val, ref_val = self._getSourceAndReferrerValues(source + os.sep + filename)
+                src_val, ref_val = self._getSourceAndReferrerValues(source)
                 # append the source and referrer values to the SID
                 if src_val:
                     src_field = etree.Element('field',name='source_uri')
@@ -278,22 +394,60 @@ class Transformer(object):
                     ref_field.text = ref_val
                     sid.append(ref_field)
                 # write the output file
+                filename = self._getFileName(source)
                 outfile = open(output + os.sep + filename, 'w')
                 result.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.logger.info("Transformed document to Solr Input Document " + filename)
+                self.logger.info("Transformed EAC-CPF to Solr Input Document " + filename)
             except Exception:
-                self.logger.warning("Could not complete XSLT processing for " + filename, exc_info=True)
-                
+                self.logger.warning("Could not transform EAC-CPF " + filename, exc_info=True)
+
+    def transformHtmlsToSid(self, sources, output, report):
+        '''
+        Transform HTML documents to Solr Input Document format.
+        '''
+        for source in sources:
+            files = os.listdir(source)
+            for filename in files:
+                path = source + os.sep + filename
+                html = HtmlPage(path)
+                self.transformHtmlToSid(html, output, report)
+
+    def transformHtmlToSid(self, html, output, report):
+        '''
+        Transform HTML to Solr Input Document format.
+        '''
+        data = html.getHtmlIndexContent()
+        if 'body' in data:
+            body = data['body']
+        if 'text' in data:
+            text = data['text']
+        else:
+            text = ""
+        if 'title' in data:
+            title = data['title']
+        else:
+            title = ""
+        if 'uri' in data:
+            uri = data['uri']
+        else:
+            uri = ""        
+        outfile_path = output + os.sep + html.getRecordId() + ".xml"
+        outfile = open(outfile_path,'w')
+        outfile.write("<?xml version='1.0' encoding='UTF-8'?>\n")
+        outfile.write("<add>\n\t<doc>\n")
+        outfile.write("\t\t<field name='abstract'>" + body + "</field>\n")
+        outfile.write("\t\t<field name='text'>" + text + "</field>\n")
+        outfile.write("\t\t<field name='title'>" + title + "</field>\n")
+        outfile.write("\t\t<field name='uri'>" + uri + "</field>\n")
+        outfile.write("\t</doc>\n</add>")
+        outfile.close()
+        self.logger.info("Transformed HTML to SID " + html.getUri())
+
     def validate(self, source, schema, report=None):
         '''
         Validate a collection of files against an XML schema.
         '''
-        # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # load schemas
         try:
             infile = open(schema, 'r')
@@ -315,5 +469,4 @@ class Transformer(object):
             try:
                 etree.fromstring(data, parser)
             except Exception:
-                self.logger.warning("Document does not conform to schema " + filename)        
-        
+                self.logger.warning("Document does not conform to schema " + filename)

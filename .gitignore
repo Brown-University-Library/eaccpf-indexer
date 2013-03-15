@@ -5,6 +5,7 @@
 *.pyc
 *.pyo
 *.sh
+*.test
 .project
 .pydevproject
 feeder.cfg

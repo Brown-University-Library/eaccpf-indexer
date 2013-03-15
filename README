@@ -1,8 +1,8 @@
-EAC-CPF Web Crawler and Data Processing Utility
-===============================================
+EAC-CPF Data Processing Utility
+===============================
 
-EAC-Crawler is a utility for harvesting EAC-CPF from a file system or the 
-Internet, and post-processing it for applications such as search and
+EAC-Indexer is a utility for collecting EAC-CPF from a file system or a 
+web site, and post-processing it for applications such as search and
 visualization in maps or timelines. The utility is able to extract concepts, 
 people and locations from free text or structured data fields. Source and 
 processed data are written to disk for each stage of processing, to enable
@@ -12,7 +12,7 @@ an open workflow and alternative uses.
 Credits
 -------
 
-EAC-Crawler is a project of the eScholarship Research Center at the University 
+EAC-Indexer is a project of the eScholarship Research Center at the University 
 of Melbourne. For more information about the project, please contact us at:
 
   eScholarship Research Center
@@ -32,6 +32,7 @@ Thanks:
  * GeoPy - http://code.google.com/p/geopy
  * Google Maps API - http://maps.google.com
  * lxml - http://lxml.de
+ * Pairtree - https://pypi.python.org/pypi/Pairtree
  * Python - http://www.python.org
  * Python Calais - http://code.google.com/p/python-calais
  * PyYAML - http://pyyaml.org
@@ -47,9 +48,15 @@ Please see the LICENSE file for licence information.
 Installation
 ------------
 
-Requires Python 2.7.x and lxml, pyYAML, Simple JSON. To infer data from EAC 
-files, a free account and associated API key is required for the following 
-services:
+Requires Python 2.7.x and lxml, pyYAML, Pairtree, Simple JSON libraries. 
+
+ * pip install lxml
+ * pip install pairtree
+ * pip install pyyaml
+ * pip install simplejson
+
+To infer data from EACCPF files, a free account and associated API key is 
+required for the following services:
 
  * Alchemy - http://www.alchemyapi.com/
  * Google Maps - https://code.google.com/apis/console/
@@ -59,12 +66,12 @@ services:
 Usage
 -----
 
-The crawler is run from the command line. Starting at the seed page or pages, it 
+The tool is run from the command line. Starting at the seed page or pages, it 
 will visit all pages within the seed domain that are linked to that starting 
-page. Where an HTML page provides an EAC alternate representation, the crawler 
-will fetch, parse and transform the EAC document into a Solr Input Document, 
+page. Where an HTML page provides an EACCPF alternate representation, the crawler 
+will fetch, parse and transform the EACCPF document into a Solr Input Document, 
 then insert the record into Solr.  In addition, the crawler can generate a 
-report on the quality of the EAC that is indexed.
+report on the quality of the EACCPF that is indexed.
 
   python feeder.py config [OPTIONS]
 	
@@ -81,32 +88,40 @@ Copy feeder.cfg.example into a new configuration file and edit as needed.
 Revision History
 ----------------
 
+1.3.3
+
+> Consider fixing broken source HTML, etc. files in place
+> Improve extracted relations data
+> Transform operation should optionally exclude inferred data
+> Updates should optionally be executed only on changed files
+> Add stopwatch function to time the duration of processing
+
+1.3.2
+
+> Clean, infer, transform differences only
+> Keep hash of files to track changes since last run
+
 1.3.1
 
-- Consider fixing broken source HTML, etc. files in place
-- Improve extracted relations data
-- Implement entity extraction with Alchemy API
-- Transform operation should optionally exclude inferred data
-- Updates should optionally be executed only on changed files
-- Add stopwatch function to time the duration of processing
+> Writes processing messages to report log
+> Analyzes EAC-CPF data for quality indicators
+> Merges individual reports into a single report file
+> Implement entity extraction with Alchemy API
 
-1.2.5
+1.3.0
 
-- Clean, infer, transform differences only
-- Keep hash of files to track changes since last run
+> Add 'update' option to process only files that have changed
+> Add document and field boosts before posting
+> Store hash and timestamp of all files in a hidden file, to be used with update option
 
-1.2.4
+> Fixed unicode handling issues -- some_unicode_string.encode('utf-8')
 
-- Writes processing messages to report log
-- Analyzes EAC-CPF data for quality indicators
-- Merges individual reports into a single report file
+> Added unit tests for application modules -- Cleaner, Transformer, etc.
 
-1.2.3
+> Image indexing, caching setup
+> Start implementation of EACCPF document 'unit' tests and reporting
 
-- Add 'update' option to process only files that have changed
-- Add document and field boosts before posting
-- Store hash and timestamp of all files in a hidden file, to be used with update option
-- Added unit tests for Cleaner, Transformer
+ * Renamed to EACCPF-Indexer
 
 1.2.2
 

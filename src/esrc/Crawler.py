@@ -7,22 +7,23 @@ import fnmatch
 import logging
 import os
 import time
-import urllib2
-from BeautifulSoup import BeautifulSoup 
-from hashlib import sha1
+import yaml
+from HtmlPage import HtmlPage
+from ImageCache import ImageCache
         
 class Crawler(object):
     '''
-    File system and web site crawler. Locates EACCPF metadata files specified 
-    as an alternate representation to an HTML file. Downloads a copy of the 
-    discovered files to a local file system cache.
+    File system and web site crawler. Locates HTML files with embedded DObject
+    representations, extracts their metadata and URL to related image file.
+    It stores the metadata in an intermediary file, and the image in a file 
+    system image cache.
     '''
 
     def __init__(self):
         '''
         Initialize the crawler
         '''
-        self.logger = logging.getLogger('feeder')
+        self.logger = logging.getLogger('Crawler')
     
     def _clearFiles(self, path):
         '''
@@ -32,65 +33,6 @@ class Crawler(object):
         for filename in files:
             os.remove(path + os.sep + filename)
     
-    def _getAlternateRepresentation(self, html):
-        '''
-        Extract URL for alternate data representation HTML meta tag. Return 
-        None if nothing found.
-        '''
-        soup = BeautifulSoup(html)
-        meta = soup.findAll('meta', {'name':'EAC'})
-        try:
-            return meta[0].get('content')
-        except:
-            return None
-    
-    def _getFileName(self, url):
-        '''
-        Get the filename portion of a URL. If no filename is present within the 
-        URL, return None. 
-        '''
-        last = (url.split('/')[-1])
-        if (last):
-            return last
-        return None
-    
-    def _getFileHash(self, path):
-        '''
-        Get the SHA1 hash for a file.
-        '''
-        # read the file
-        infile = open(path,'r')
-        data = infile.read()
-        infile.close()
-        # generate hash
-        s = sha1()
-        s.update("blob %u\0" % len(data))
-        s.update(data)
-        # return result
-        return s.hexdigest()
-    
-    def _getHTMLReferrer(self, html):
-        '''
-        Extract DC.Identifier value from HTML meta tag. Return an empty string 
-        if nothing is found.
-        '''
-        soup = BeautifulSoup(html)
-        meta = soup.findAll('meta', {'name':'DC.Identifier'})
-        try:
-            return meta[0].get('content')
-        except:
-            return ''
-    
-    def _isEACCPF(self, data):
-        '''
-        Determine if the data represents an EAC-CPF document.
-        '''
-        xml = BeautifulSoup(data)
-        items = xml.find("eac-cpf")
-        if items is not None:
-            return True
-        return False
-    
     def _isHTML(self, filename):
         '''
         Determine if a file is an *.htm or *.html file.
@@ -98,75 +40,65 @@ class Crawler(object):
         if fnmatch.fnmatch(filename,'*.html') or fnmatch.fnmatch(filename,'*.htm'):
             return True
         return False
-    
+
     def _isUrl(self, uri):
         ''' 
         Determine if URI is a URL.
         '''
-        if 'http://' in uri:
+        if 'http://' in uri or 'https://' in uri:
             return True
         return False
 
-    def _makeCache(self, path):
+    def _makeCache(self, Path):
         '''
         Create a cache folder at the specified path if none exists.
         If the path already exists, delete all files.
         '''
-        if not os.path.exists(path):
-            os.makedirs(path)
-            self.logger.info("Created output folder at " + path)
+        if not os.path.exists(Path):
+            os.makedirs(Path)
+            self.logger.info("Created output folder at " + Path)
         else:
-            self._clearFiles(path)
-            self.logger.info("Cleared output folder at " + path)
+            self._clearFiles(Path)
+            self.logger.info("Cleared output folder at " + Path)
     
-    def crawlFileSystem(self, source='.', output='output', report=None, sleep=0.):
+    def crawlFileSystem(self, source, output, actions=['html'], base=None, report=None, sleep=0.):
         '''
-        Crawl file system for HTML files, starting from the file source, and 
-        looking for those files which have EAC-CPF alternate representations. 
-        Mirror alternate files to the specified output. Sleep for a specified 
-        period between requests.
+        Crawl file system for HTML files. Execute the specified indexing 
+        actions on files that contain or are related to an EAC-CPF record. 
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        # strip the trailing / from the base url
+        if base.endswith('/'):
+            base = base[:-1]
         # walk file system and look for html, htm files
         for path, _, files in os.walk(source):
+            # construct the public url for the file
+            url = base + path.replace(source,'')
             for filename in files:
                 if self._isHTML(filename):
-                    self.logger.debug("Found " + path + os.sep + filename)
+                    self.logger.debug("Found document " + path + os.sep + filename)
+                    fileurl = url + '/' + filename
                     try:
-                        # read the file
-                        infile = open((path + os.sep + filename),'r')
-                        html = infile.read()
-                        infile.close()
-                        src = self._getAlternateRepresentation(html) 
-                        # if it has an EACCPF alternate representation
-                        if src:
-                            self.logger.debug("Found " + src)
-                            # record the URL of the referring document
-                            ref = self._getHTMLReferrer(html) 
-                            # download the file
-                            response = urllib2.urlopen(src)
-                            xml = response.read()
-                            # append source and referrer URLs into a comment at the end of the document
-                            xml += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
-                            # write file to output if it is EAC-CPF
-                            outfile = self._getFileName(src)
-                            if outfile and self._isEACCPF(xml):
-                                outfile = open(output + os.sep + outfile,'w')
-                                outfile.write(xml)
-                                outfile.close()
-                                self.logger.info("Stored " + src)
-                    except urllib2.HTTPError:
-                        self.logger.warning("Could not fetch alternate representation " + src)
+                        html = HtmlPage(path + os.sep + filename, fileurl)
+                        if html.getRecordId():
+                            if 'eaccpf' in actions and html.hasEacCpfAlternate():
+                                self.logger.debug("Storing EAC-CPF document " + filename)
+                                # this should save the file to the local storage, not index it!
+                                # self.indexEACCPF(html, output, report)
+                            if 'digitalobject' in actions and html.hasDigitalObject():
+                                self.storeDigitalObject(html, output, report)
+                            if 'html' in actions:
+                                html.write(output + os.sep + filename)
                     except Exception:
                         self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
                         time.sleep(sleep)
     
-    def crawlWebSite(self, source='http://localhost', output='data', report=None, sleep=0.):
+    def crawlWebSite(self, source, output, actions=['html'], report=None, sleep=0.):
         '''
         Crawl web site for HTML pages that have EAC-CPF alternate 
         representations.  When such a page is found, copy the referenced  
@@ -174,17 +106,31 @@ class Crawler(object):
         it creates a local cache in the current working directory. Sleep
         for the specified number of seconds after fetching data.
         '''
-        self.logger.critical("Web site crawling not implemented yet")
-        
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        # crawl web site and look for html files
+
+    def indexEACCPF(self, html, output, report):
+        '''
+        Index EAC-CPF content contained in the HTML document.
+        '''
+        pass
+    
     def run(self, params):
         '''
         Execute crawl operation using specified parameters.
         '''
         # determine the type of crawl operation to be executed
+        actions = params.get("crawl","actions")
+        base = params.get("crawl","base")
+        cache = params.get("crawl","cache")
         source = params.get("crawl","input")
         output = params.get("crawl","output")
         report = params.get("crawl","report")
         sleep = float(params.get("crawl","sleep"))
+        # set image cache
+        self.cache = ImageCache(cache)
         # create output folders
         self._makeCache(output)
         if not os.path.exists(report):
@@ -193,4 +139,29 @@ class Crawler(object):
         if (self._isUrl(source)):
             self.crawlWebSite(source,output,report,sleep)
         else:
-            self.crawlFileSystem(source,output,report,sleep)
+            self.crawlFileSystem(source,output,actions,base,report,sleep)
+
+    def storeDigitalObject(self, html, output, report):
+        '''
+        Store the digital object contained in the referenced HTML file to an
+        intermediate YML representation.
+        '''
+        dobj = html.getDigitalObject()
+        recordId = html.getRecordId()
+        dobj['id'] = recordId
+        dobj['source'] = html.getUri()
+        if dobj:
+            # cache the object at the referenced url
+            cache_id, cache_path = self.cache.store(dobj['url'])
+            dobj['cache_id'] = cache_id
+            dobj['cache_path'] = cache_path
+        else:
+            # append skeleton outfile_path and note about absence of dobj info
+            pass
+        # write metadata outfile_path to output
+        outfile_path = output + os.sep + recordId + ".yml"
+        outfile = open(outfile_path,'w')
+        yaml.dump(dobj, outfile, default_flow_style=False, indent=4)
+        outfile.close()
+        self.logger.info("Stored digital object from " + html.getUri())
+        
