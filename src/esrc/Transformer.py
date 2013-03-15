@@ -418,12 +418,10 @@ class Transformer(object):
         Transform HTML to Solr Input Document format.
         '''
         data = html.getHtmlIndexContent()
-        if 'body' in data:
-            body = data['body']
-        if 'text' in data:
-            text = data['text']
+        if 'abstract' in data:
+            abstract = data['abstract']
         else:
-            text = ""
+            abstract = ""
         if 'title' in data:
             title = data['title']
         else:
@@ -436,10 +434,9 @@ class Transformer(object):
         outfile = open(outfile_path,'w')
         outfile.write("<?xml version='1.0' encoding='UTF-8'?>\n")
         outfile.write("<add>\n\t<doc>\n")
-        outfile.write("\t\t<field name='abstract'>" + body + "</field>\n")
-        outfile.write("\t\t<field name='text'>" + text + "</field>\n")
+        outfile.write("\t\t<field name='abstract'>" + abstract + "</field>\n")
         outfile.write("\t\t<field name='title'>" + title + "</field>\n")
-        outfile.write("\t\t<field name='uri'>" + uri + "</field>\n")
+        outfile.write("\t\t<field name='referrer_uri'>" + uri + "</field>\n")
         outfile.write("\t</doc>\n</add>")
         outfile.close()
         self.logger.info("Transformed HTML to SID " + html.getUri())

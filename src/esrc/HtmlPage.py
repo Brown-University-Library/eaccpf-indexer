@@ -174,13 +174,10 @@ class HtmlPage(object):
         dctype = soup.find('meta',{'name':'DC.Type'})
         if dctype:
             data['type'] = dctype.text.encode("utf-8")
-        body = soup.find('body')
-        if body:
-            data['body'] = body.text.encode("utf-8")
         # text
         texts = soup.findAll(text=True)
         visible_elements = [self._getVisibleText(elem) for elem in texts]
-        data['text'] = ' '.join(visible_elements)
+        data['abstract'] = ' '.join(visible_elements)
         return data
     
     def getRecordId(self):

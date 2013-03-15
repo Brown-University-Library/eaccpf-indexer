@@ -42,7 +42,10 @@ class Poster(object):
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # send command
         msg = '<commit waitFlush="false" waitSearcher="false" expungeDeletes="true"/>'
-        url = solr + '/update'
+        if solr.endswith('/'):
+            url = solr + 'update'
+        else:
+            url = solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
         if resp['status'] != '200':
             raise IndexingError(resp, content)
@@ -59,9 +62,13 @@ class Poster(object):
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # send command
         msg = "<delete><query>*</query></delete>"
-        url = solr + '/update'
+        if solr.endswith('/'):
+            url = solr + 'update'
+        else:
+            url = solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
         if resp['status'] != '200':
+            print content
             raise IndexingError(resp, content)
         self.logger.info("Flushed data from " + solr)
         return (resp, content)
@@ -75,7 +82,10 @@ class Poster(object):
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # send command
         msg = '<optimize waitSearcher="false"/>'
-        url = solr + '/update'
+        if solr.endswith('/'):
+            url = solr + 'update'
+        else:
+            url = solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
         if resp['status'] != '200':
             raise IndexingError(resp, content)
@@ -92,7 +102,10 @@ class Poster(object):
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # post documents
-        url = solr + '/update'
+        if solr.endswith('/'):
+            url = solr + 'update'
+        else:
+            url = solr + '/update'
         files = os.listdir(source)
         for filename in files:
             # read file
