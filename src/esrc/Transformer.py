@@ -422,6 +422,10 @@ class Transformer(object):
             abstract = data['abstract']
         else:
             abstract = ""
+        if 'id' in data:
+            recordid = data['id']
+        else:
+            recordid = "unknown"
         if 'title' in data:
             title = data['title']
         else:
@@ -429,14 +433,15 @@ class Transformer(object):
         if 'uri' in data:
             uri = data['uri']
         else:
-            uri = ""        
+            uri = ""
         outfile_path = output + os.sep + html.getRecordId() + ".xml"
         outfile = open(outfile_path,'w')
         outfile.write("<?xml version='1.0' encoding='UTF-8'?>\n")
         outfile.write("<add>\n\t<doc>\n")
         outfile.write("\t\t<field name='abstract'>" + abstract + "</field>\n")
+        outfile.write("\t\t<field name='id'>" + recordid + "</field>\n")
         outfile.write("\t\t<field name='title'>" + title + "</field>\n")
-        outfile.write("\t\t<field name='referrer_uri'>" + uri + "</field>\n")
+        outfile.write("\t\t<field name='source_uri'>" + uri + "</field>\n")
         outfile.write("\t</doc>\n</add>")
         outfile.close()
         self.logger.info("Transformed HTML to SID " + html.getUri())
