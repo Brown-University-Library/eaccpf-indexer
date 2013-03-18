@@ -7,6 +7,7 @@ import htmlentitydefs
 import logging
 import os
 import re
+from BeautifulSoup import BeautifulSoup
 from lxml import etree
 
 class Cleaner():
@@ -19,8 +20,15 @@ class Cleaner():
         '''
         Initialize the class
         '''
-        self.logger = logging.getLogger('feeder')
-
+        self.logger = logging.getLogger('cleaner')
+        
+    def _convertHTMLEntitiesToUnicode(self, text):
+        '''
+        Converts HTML entities to unicode.  For example '&amp;' becomes '&'.
+        '''
+        text = unicode(BeautifulSoup(text, convertEntities=BeautifulSoup.ALL_ENTITIES))
+        return text    
+    
     def _fixAttributeURLEncoding(self,xml):
         '''
         Where an XML tag contains an attribute with a URL in it, any 
@@ -84,6 +92,30 @@ class Cleaner():
                 pass
         # default case
         return ('', '')
+    
+    def _isEacCpf(self, Path):
+        '''
+        Determines if the file at the specified path is EAC-CPF. 
+        '''
+        if Path.endswith("xml"):
+            infile = open(Path,'r')
+            data = infile.read()
+            infile.close()
+            if "<eac-cpf" in data and "</eac-cpf>" in data:
+                return True
+        return False
+    
+    def _isHtml(self, Path):
+        '''
+        Determine if the file at the specified path is HTML.
+        '''
+        if Path.endswith("htm") or Path.endswith("html"):
+            infile = open(Path,'r')
+            data = infile.read()
+            infile.close()
+            if "<html" in data.lower():
+                return True
+        return False
 
     def _makeCache(self, path):
         '''
@@ -144,7 +176,8 @@ class Cleaner():
     def clean(self, source, output, report=None):
         '''
         Read all files from source directory, apply fixes to common errors in 
-        EACCPF documents. Write cleaned files to the output directory.
+        EAC-CPF and HTML documents. Write cleaned files to the output 
+        directory.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -159,19 +192,17 @@ class Cleaner():
                 path = source + os.sep + filename
                 infile = open(path,'r')
                 data = infile.read()
-                infile.close()
-                # the source/referrer values comment gets deleted by the XML 
-                # parser, so we'll save it here temporarily while we do our cleanup
-                src, ref = self._getSourceAndReferrerValues(path)
-                # fix common errors
-                # data = self._fixEntityReferences(data)
-                data = self._fixAttributeURLEncoding(data)
-                data = self._fixDateFields(data)
-                data = self._removeSpanTags(data)
-                data = self._removeEmptyDateFields(data)
-                data = self._removeEmptyStandardDateFields(data) # XML needs to be valid before we can do this
-                # put source/referrer comment back at the end of the file
-                data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
+                infile.close()        
+                # fix problems
+                if self._isEacCpf(source + os.sep + filename):
+                    # the source/referrer values comment gets deleted by the XML 
+                    # parser, so we'll save it here temporarily while we do our cleanup
+                    src, ref = self._getSourceAndReferrerValues(path)
+                    data = self.cleanEacCpf(data)
+                    # put source/referrer comment back at the end of the file
+                    data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
+                if self._isHtml(source + os.sep + filename):
+                    data = self.cleanHtml(data)
                 # write data to specified file in the output directory.
                 outfile = open(output + os.sep + filename, 'w')
                 outfile.write(data)
@@ -180,6 +211,25 @@ class Cleaner():
             except Exception:
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
         
+    def cleanEacCpf(self, Data):
+        '''
+        Clean problems that are typical of EAC-CPF files.
+        '''
+        # data = self._fixEntityReferences(data)
+        data = self._fixAttributeURLEncoding(Data)
+        data = self._fixDateFields(data)
+        data = self._removeSpanTags(data)
+        data = self._removeEmptyDateFields(data)
+        data = self._removeEmptyStandardDateFields(data) # XML needs to be valid before we can do this
+        return data
+    
+    def cleanHtml(self, Data):
+        '''
+        Clean typical problems found in HTML files.
+        '''
+        data = self._convertHTMLEntitiesToUnicode(Data)
+        return data
+    
     def run(self, params):
         '''
         Execute the clean operation using specified parameters.

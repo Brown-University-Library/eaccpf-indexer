@@ -29,6 +29,20 @@ class CleanerUnitTests(unittest.TestCase):
         '''
         cleaner = Cleaner()
         self.assertNotEqual(cleaner, None)
+        
+    def test_clean_eaccpf(self):
+        '''
+        It should replace HTML encoded entities and other problems typical of
+        free text fields.
+        '''
+        pass
+    
+    def test_clean_html(self):
+        '''
+        It should fix errors and common problems found in HTML files, then 
+        write a cleaned file to the specified location.
+        '''
+        pass
     
 if __name__ == '__main__':
     unittest.main()
