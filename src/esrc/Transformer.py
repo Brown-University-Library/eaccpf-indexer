@@ -53,12 +53,12 @@ class Transformer(object):
             return parts[-1]
         return Filename
 
-    def _getSourceAndReferrerValues(self, filename):
+    def _getSourceAndReferrerValues(self, Path):
         '''
         Get document source and referrer URI values from the comment embedded 
         at the end of the document.
         '''
-        infile = open(filename,'r')
+        infile = open(Path,'r')
         lines = infile.readlines()
         infile.close()
         # process lines
@@ -287,23 +287,23 @@ class Transformer(object):
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # create output folder
         self._makeCache(output)
+        # check state
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # execute actions
         for action in actions:
             if action == "html-to-sid":
                 self.transformHtmlsToSid(sources, output, report)
             elif action == "eaccpf-to-sid":
-                # create document transform
-                assert os.path.exists(xslt), self.logger.warning("Transform path does not exist: " + xslt)
+                # load schema
+                xslt_file = open(xslt,'r')
+                xslt_data = xslt_file.read()
+                xslt_root = etree.XML(xslt_data)
+                xslt_file.close()
                 try:
-                    xslt_file = open(xslt,'r')
-                    xslt_data = xslt_file.read()
-                    xslt_root = etree.XML(xslt_data)
-                    xslt_file.close()
                     transform = etree.XSLT(xslt_root)
                 except:
-                    self.logger.critical("Could not load XSLT file ")
-                self.transformEACCPFsToSID(sources, output, transform, report)
+                    self.logger.critical("Could not load XSLT file " + xslt)
+                self.transformEacCpfsToSID(sources, output, transform, report)
             elif action == "digitalobject-to-sid":
                 self.transformDigitalObjectsToSIDamlToSID(sources, output, report)
             elif action == "merge-inferred-into-sid":
@@ -352,7 +352,7 @@ class Transformer(object):
             outfile.close()
             self.logger.info("Wrote digital object YAML to SID " + outfilename)
             
-    def transformEACCPFsToSid(self, sources, output, transform, report=None):
+    def transformEacCpfsToSID(self, sources, output, transform, report=None):
         '''
         Transform zero or more paths containing EAC-CPF documents to Solr Input
         Document format. 
@@ -361,46 +361,45 @@ class Transformer(object):
             files = os.listdir(source)
             for filename in files:
                 if self._isEACCPF(source + os.sep + filename):
-                    self.transformEACCPFToSID(filename, output, transform, report)
+                    self.transformEACCPFToSID(source + os.sep + filename, output, transform, report)
     
     def transformEACCPFToSID(self, source, output, transform, report=None):
         '''
         Transform document to Solr Input Document format using the
         specified XSLT transform file.
         '''
-        if self._isEACCPF(source):
-            try:
-                # read source data
-                infile = open(source,'r')
-                data = infile.read()
-                infile.close()
-                # ISSUE #4: remove namespaces in the XML document before transforming
-                data = self._removeNameSpaces(data)
-                # create document tree
-                xml = etree.XML(data)
-                # transform the document
-                result = transform(xml)
-                # get the doc element
-                sid = result.find('doc')
-                # get the document source and referrer values from the embedded comment
-                src_val, ref_val = self._getSourceAndReferrerValues(source)
-                # append the source and referrer values to the SID
-                if src_val:
-                    src_field = etree.Element('field',name='source_uri')
-                    src_field.text = src_val
-                    sid.append(src_field)
-                if ref_val:
-                    ref_field = etree.Element('field',name='referrer_uri')
-                    ref_field.text = ref_val
-                    sid.append(ref_field)
-                # write the output file
-                filename = self._getFileName(source)
-                outfile = open(output + os.sep + filename, 'w')
-                result.write(outfile, pretty_print=True, xml_declaration=True)
-                outfile.close()
-                self.logger.info("Transformed EAC-CPF to Solr Input Document " + filename)
-            except Exception:
-                self.logger.warning("Could not transform EAC-CPF " + filename, exc_info=True)
+        try:
+            # read source data
+            infile = open(source,'r')
+            data = infile.read()
+            infile.close()
+            # ISSUE #4: remove namespaces in the XML document before transforming
+            data = self._removeNameSpaces(data)
+            # create document tree
+            xml = etree.XML(data)
+            # transform the document
+            result = transform(xml)
+            # get the doc element
+            sid = result.find('doc')
+            # get the document source and referrer values from the embedded comment
+            src_val, ref_val = self._getSourceAndReferrerValues(source)
+            # append the source and referrer values to the SID
+            if src_val:
+                src_field = etree.Element('field',name='source_uri')
+                src_field.text = src_val
+                sid.append(src_field)
+            if ref_val:
+                ref_field = etree.Element('field',name='referrer_uri')
+                ref_field.text = ref_val
+                sid.append(ref_field)
+            # write the output file
+            filename = self._getFileName(source)
+            outfile = open(output + os.sep + filename, 'w')
+            result.write(outfile, pretty_print=True, xml_declaration=True)
+            outfile.close()
+            self.logger.info("Transformed to Solr Input Document " + filename)
+        except Exception:
+            self.logger.warning("Could not transform EAC-CPF to Solr Input Document " + filename, exc_info=True)
 
     def transformHtmlsToSid(self, sources, output, report):
         '''
@@ -444,7 +443,7 @@ class Transformer(object):
         outfile.write("\t\t<field name='source_uri'>" + uri + "</field>\n")
         outfile.write("\t</doc>\n</add>")
         outfile.close()
-        self.logger.info("Transformed HTML to SID " + html.getUri())
+        self.logger.info("Transformed HTML to SID " + html.getUrl())
 
     def validate(self, source, schema, report=None):
         '''

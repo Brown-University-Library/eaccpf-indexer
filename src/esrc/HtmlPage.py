@@ -16,7 +16,7 @@ class HtmlPage(object):
     provides convenience methods for extracting required metadata.
     '''
 
-    def __init__(self, Source, Url=None):
+    def __init__(self, Source, BaseUrl=None):
         '''
         Source is a file system path or URL to the document. URL is an 
         optional argument specified when the document is being indexed from a 
@@ -25,8 +25,12 @@ class HtmlPage(object):
         '''
         self.logger = logging.getLogger('HtmlPage')
         self.source = Source
-        self.url = Url
         self._load()
+        if BaseUrl:
+            if not BaseUrl.endswith('/'):
+                BaseUrl = BaseUrl + '/'
+            filename = self._getFileName(Source)        
+            self.url = BaseUrl + filename
 
     def _getAbsoluteUrl(self,Base,Path):
         '''
@@ -47,7 +51,7 @@ class HtmlPage(object):
         Get the parent directory of the file in the specified URI.  Non / 
         terminated URIs are treated as representing files.
         '''
-        uri = self.getUri()
+        uri = self.getUrl()
         i = uri.rfind('/')
         url = uri[:i+1]
         return url.replace(' ','%20').encode("utf-8")
@@ -127,7 +131,13 @@ class HtmlPage(object):
             infile.close()
         self.logger.debug("Loaded HTML for " + self.source)
     
-    def getDigitalObject(self):
+    def getContent(self):
+        '''
+        Get the HTML content.
+        '''
+        return self.data
+    
+    def getDigitalObjectRecord(self):
         '''
         Extract metadata for digital object from HTML. Return None if nothing found.
         '''
@@ -151,7 +161,7 @@ class HtmlPage(object):
             obj['rights'] = self._getTagContentByClass(data_table_tags,'dd','dorights')
             obj['caption'] = self._getTagContentByClass(image_caption_tags,'p','caption')            
             # get the absolute URL to the image source
-            base = self.getUri()
+            base = self.getUrl()
             base = self._getDocumentParentUri(base)
             rel = self._getTagAttributeValueByName(image_caption_tags,'img','src')
             objurl = self._getAbsoluteUrl(base, rel)
@@ -159,6 +169,25 @@ class HtmlPage(object):
             return obj
         except:
             return None
+        
+    def getEACCPF(self):
+        '''
+        Get the EAC-CPF alternate representation for the page.
+        '''
+        url = self._getEacCpfReference()
+        if url:
+            filename = self._getFileName(url)
+            response = urllib2.urlopen(url)
+            eaccpf = response.read()
+            return eaccpf, filename
+        return None
+    
+    def getFilename(self):
+        '''
+        Get the filename.
+        '''
+        url = self.getUrl()
+        return self._getFileName(url)
     
     def getHtmlIndexContent(self):
         '''
@@ -167,7 +196,7 @@ class HtmlPage(object):
         soup = BeautifulSoup(self.data)
         data = {}
         data['id'] = self.getRecordId()
-        data['uri'] = self.getUri()
+        data['uri'] = self.getUrl()
         title = soup.find('title')
         if title:
             data['title'] = title.text.encode("utf-8")
@@ -186,20 +215,20 @@ class HtmlPage(object):
         If the page does not have an identifier ID then None is returned.
         '''
         if self.hasDigitalObject() or self.hasEacCpfAlternate():
-            uri = self.getUri()
+            uri = self.getUrl()
             filename = self._getFileName(uri)
             name = filename.split('.')
             return name[0]
         else: 
             return None
     
-    def getUri(self):
+    def getUrl(self):
         '''
         Get the document URI. If a URI has been assigned to the document, then 
         use that as the default. If not, attempt to extract the DC.Identifier 
         value from the HTML meta tag. Return None if nothing is found.
         '''
-        if self.url:
+        if hasattr(self, 'url'):
             return self.url
         else:
             soup = BeautifulSoup(self.data)
@@ -238,13 +267,3 @@ class HtmlPage(object):
             return False
         except:
             return False
-        
-    def write(self,Path):
-        '''
-        Write the HTML content to the specified path.
-        '''
-        outfile = open(Path,'w')
-        outfile.write(self.data)
-        outfile.close()
-        self.logger.info("Stored HTML document " + self.getRecordId())
-    

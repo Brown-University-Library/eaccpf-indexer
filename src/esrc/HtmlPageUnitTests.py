@@ -3,6 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+import os
 import unittest
 import HtmlPage
 
@@ -11,6 +12,12 @@ class HtmlPageUnitTests(unittest.TestCase):
     Test cases for the HTML Page module.
     @todo Need test cases for when the page contains relative URLs throughout
     '''
+    def _getParentPath(self, Path):
+        '''
+        Get the path to the parent of the specified directory.
+        '''
+        i = Path.rfind('/')
+        return Path[:i+1]
     
     def setUp(self):
         '''
@@ -165,7 +172,7 @@ class HtmlPageUnitTests(unittest.TestCase):
                  }
         for page in pages:
             html = HtmlPage.HtmlPage(page)
-            result = html.getDigitalObject()
+            result = html.getDigitalObjectRecord()
             self.assertNotEqual(result,pages[page])
             # the digital object must have a url property at minimum
             if result:
@@ -208,6 +215,7 @@ class HtmlPageUnitTests(unittest.TestCase):
     def test_getUri(self):
         '''
         It should return the document URI.
+        @todo this is not functioning correctly for the case where a base url is provided!!!
         '''
         pages = [
                  "http://www.findandconnect.gov.au/nsw/index.php",
@@ -217,10 +225,31 @@ class HtmlPageUnitTests(unittest.TestCase):
                  ]
         for page in pages:
             html = HtmlPage.HtmlPage(page)
-            result = html.getUri()
+            result = html.getUrl()
             self.assertEqual(result, page)
             # the url should not have any spaces in it
             self.assertEqual(result.count(' '), 0)
+        # path to the test data folder
+        parentpath = self._getParentPath(HtmlPage.__file__)
+        if not parentpath.endswith('/'):
+            parentpath = parentpath + '/'
+        path = parentpath + 'test' + os.sep + 'data' + os.sep + 'html'
+        # test cases for where a base url is provided
+        bases = [
+                 "http://www.example.com",
+                 "http://www.example.com/",
+                 "http://www.example.com/path",
+                 "http://www.example.com/path/",
+                 ]
+        files = os.listdir(path)
+        for base in bases:
+            if not base.endswith('/'):
+                myurl = base + '/'
+            for filename in files:
+                html = HtmlPage.HtmlPage(path + os.sep + filename, base)
+                url = html.getUrl()
+                fn = html.getFilename()
+                self.assertEqual(url, myurl + fn)
             
 if __name__ == '__main__':
     unittest.main()

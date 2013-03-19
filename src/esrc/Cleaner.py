@@ -20,7 +20,7 @@ class Cleaner():
         '''
         Initialize the class
         '''
-        self.logger = logging.getLogger('cleaner')
+        self.logger = logging.getLogger('Cleaner')
         
     def _convertHTMLEntitiesToUnicode(self, text):
         '''
@@ -71,11 +71,11 @@ class Cleaner():
             return Text # leave as is
         return re.sub("&#?\w+;", fixup, Text)
 
-    def _getSourceAndReferrerValues(self, filename):
+    def _getSourceAndReferrerValues(self, Path):
         '''
         Get source and referrer URI values from comment embedded in the document.
         '''
-        infile = open(filename,'r')
+        infile = open(Path,'r')
         lines = infile.readlines()
         infile.close()
         # process lines
@@ -176,42 +176,37 @@ class Cleaner():
     def clean(self, source, output, report=None):
         '''
         Read all files from source directory, apply fixes to common errors in 
-        EAC-CPF and HTML documents. Write cleaned files to the output 
-        directory.
+        documents. Write cleaned files to the output directory.
         '''
-        # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # process files
         files = os.listdir(source)
         for filename in files:
             try:
                 # read data
-                path = source + os.sep + filename
-                infile = open(path,'r')
+                infile = open(source + os.sep + filename,'r')
                 data = infile.read()
                 infile.close()        
                 # fix problems
                 if self._isEacCpf(source + os.sep + filename):
                     # the source/referrer values comment gets deleted by the XML 
                     # parser, so we'll save it here temporarily while we do our cleanup
-                    src, ref = self._getSourceAndReferrerValues(path)
-                    data = self.cleanEacCpf(data)
+                    src, ref = self._getSourceAndReferrerValues(source + os.sep + filename)
+                    data = self.fixEacCpf(data)
                     # put source/referrer comment back at the end of the file
                     data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
-                if self._isHtml(source + os.sep + filename):
-                    data = self.cleanHtml(data)
+                elif self._isHtml(source + os.sep + filename):
+                    data = self.fixHtml(data)
+                else:
+                    pass
                 # write data to specified file in the output directory.
-                outfile = open(output + os.sep + filename, 'w')
+                outfile_path = output + os.sep + filename
+                outfile = open(outfile_path,'w')
                 outfile.write(data)
                 outfile.close()
-                self.logger.info("Wrote cleaned data to " + filename)                
+                self.logger.info("Stored document " + filename)
             except Exception:
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
         
-    def cleanEacCpf(self, Data):
+    def fixEacCpf(self, Data):
         '''
         Clean problems that are typical of EAC-CPF files.
         '''
@@ -223,7 +218,7 @@ class Cleaner():
         data = self._removeEmptyStandardDateFields(data) # XML needs to be valid before we can do this
         return data
     
-    def cleanHtml(self, Data):
+    def fixHtml(self, Data):
         '''
         Clean typical problems found in HTML files.
         '''
@@ -240,6 +235,11 @@ class Cleaner():
         report = params.get("clean","report")
         # make output directory
         self._makeCache(output)
+        # check state
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        if report:
+            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # clean data
         self.clean(source,output,report)
         # validate cleaned data files
