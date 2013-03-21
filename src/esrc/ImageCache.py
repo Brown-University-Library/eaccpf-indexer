@@ -16,12 +16,13 @@ class ImageCache(object):
     Storage for thumbnails and alternate sized representations of an image.
     '''
 
-    def __init__(self, Path, init=False):
+    def __init__(self, Path, BaseUrl=None, init=False):
         '''
         Constructor
         '''
         self.logger = logging.getLogger('feeder')
         self.path = Path
+        self.base = BaseUrl
         factory = PairtreeStorageFactory()
         try:
             self.storage = factory.get_store(store_dir=self.path, uri_base="http://")
@@ -188,7 +189,11 @@ class ImageCache(object):
             # log results
             path = self.storage._id_to_dirpath(key) + os.sep + thumbnail_filename
             path = self._getPathRelativeToCacheRoot(path)
+            if self.base:
+                uri = self.base + path
+            else:
+                uri = path
             # return the object id
-            return key, path
+            return key, uri
         except:
             self.logger.warning("Could not store %s" % Source)

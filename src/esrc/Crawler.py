@@ -73,9 +73,11 @@ class Crawler(object):
         # walk file system and look for html, htm files
         for path, _, files in os.walk(source):
             # construct the public url for the file
-            baseurl = base + path.replace(source,'')
-            if '//' in baseurl:
-                baseurl = baseurl.replace('//','/')
+            if path.startswith('/'):
+                baseurl = base + path.replace(source,'')[1:]
+            else:
+                baseurl = base + path.replace(source,'')
+            self.logger.debug('Current path is ' + baseurl)
             # for each file in the current path
             for filename in files:
                 if self._isHTML(filename):
@@ -92,7 +94,7 @@ class Crawler(object):
                                 data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
                                 self.store(output, filename, data, report)
                             if 'digitalobject' in actions and html.hasDigitalObject():
-                                data, filename = self.getDigitalObjectRecord(html)
+                                data, filename = self.getDigitalObjectRecord(html,output,report)
                                 self.store(output, filename, data, report)
                             if 'html' in actions:
                                 data = html.getContent()
@@ -141,12 +143,13 @@ class Crawler(object):
         actions = params.get("crawl","actions")
         base = params.get("crawl","base")
         cache = params.get("crawl","cache")
+        cacheurl = params.get("crawl","cache-url")
         source = params.get("crawl","input")
         output = params.get("crawl","output")
         report = params.get("crawl","report")
         sleep = float(params.get("crawl","sleep"))
         # set image cache
-        self.cache = ImageCache(cache)
+        self.cache = ImageCache(cache,cacheurl)
         # create output folders
         self._makeCache(output)
         if not os.path.exists(report):

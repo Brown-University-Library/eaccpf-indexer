@@ -305,7 +305,7 @@ class Transformer(object):
                     self.logger.critical("Could not load XSLT file " + xslt)
                 self.transformEacCpfsToSID(sources, output, transform, report)
             elif action == "digitalobject-to-sid":
-                self.transformDigitalObjectsToSIDamlToSID(sources, output, report)
+                self.transformDigitalObjectsToSID(sources, output, report)
             elif action == "merge-inferred-into-sid":
                 self.mergeInferredRecordsIntoSID(sources, output, report)
             else:
@@ -330,27 +330,34 @@ class Transformer(object):
             files = os.listdir(source)
             for filename in files:
                 if self._isDigitalObjectYaml(source + os.sep + filename):
-                    self.transformDigitalObjectToSID(filename, output, report)
+                    path = source + os.sep + filename
+                    self.transformDigitalObjectToSID(path, output, report)
     
     def transformDigitalObjectToSID(self, source, output, report=None):
         '''
         Transform a single digital object YAML record to Solr Input Document 
         format.
         '''
-        if self._isDigitalObjectYaml(source):
-            # read input file
-            infile = open(source,'r')
-            data = yaml.load(infile.read())
-            infile.close()
-            # create a new XML output file
-            outfilename = "outfilename.xml"
-            outpath = output + os.sep + outfilename
-            outfile = open(outpath,'w')
-            # transform
-            len(data)
-            # close
-            outfile.close()
-            self.logger.info("Wrote digital object YAML to SID " + outfilename)
+        # read input file
+        infile = open(source,'r')
+        data = yaml.load(infile.read())
+        infile.close()
+        # create a new XML output file
+        filename = data['id'] + ".xml"
+        outpath = output + os.sep + filename
+        outfile = open(outpath,'w')
+        outfile.write("<?xml version='1.0' encoding='ASCII'?>")
+        outfile.write("\n<add>\n\t<doc>")
+        outfile.write("\n\t\t<field name='id'>" + data['id'] + "</field>\n")
+        outfile.write("\n\t\t<field name='source_uri'>" + data['source'] + "</field>\n")
+        outfile.write("\n\t\t<field name='title'>" + data['title'] + "</field>\n")
+        outfile.write("\n\t\t<field name='abstract'>" + data['caption'] + "</field>\n")
+        outfile.write("\n\t\t<field name='dobject_uri'>" + data['url'] + "</field>\n")
+        outfile.write("\n\t\t<field name='dobject_type'>image</field>\n")
+        outfile.write("\n\t\t<field name='dobject_proxy'>" + data['cache_path'] + "</field>\n")
+        outfile.write("\n\t</doc>\n</add>")
+        outfile.close()
+        self.logger.info("Wrote digital object YAML to SID " + filename)
             
     def transformEacCpfsToSID(self, sources, output, transform, report=None):
         '''
