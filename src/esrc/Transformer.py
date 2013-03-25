@@ -349,7 +349,7 @@ class Transformer(object):
         outfile.write("<?xml version='1.0' encoding='ASCII'?>")
         outfile.write("\n<add>\n\t<doc>")
         outfile.write("\n\t\t<field name='id'>" + data['id'] + "</field>\n")
-        outfile.write("\n\t\t<field name='source_uri'>" + data['source'] + "</field>\n")
+        outfile.write("\n\t\t<field name='html_uri'>" + data['source'] + "</field>\n")
         outfile.write("\n\t\t<field name='title'>" + data['title'] + "</field>\n")
         outfile.write("\n\t\t<field name='abstract'>" + data['caption'] + "</field>\n")
         outfile.write("\n\t\t<field name='dobject_uri'>" + data['url'] + "</field>\n")

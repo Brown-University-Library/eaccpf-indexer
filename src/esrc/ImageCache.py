@@ -23,6 +23,14 @@ class ImageCache(object):
         self.logger = logging.getLogger('feeder')
         self.path = Path
         self.base = BaseUrl
+        # Create the parent directories for the storage path if they don't 
+        # exist. If you create the pairtree folder itself, it requires the 
+        # pairtree metadata files in it before getting the store. Otherwise, it 
+        # will throw a pairtree.storage_exceptions.NotAPairtreeStoreException
+        parent = os.path.dirname(self.path)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+        # create the pairtree storage
         factory = PairtreeStorageFactory()
         try:
             self.storage = factory.get_store(store_dir=self.path, uri_base="http://")
