@@ -33,17 +33,6 @@ class Transformer(object):
             except:
                 pass
 
-    def _boostFields(self, Path, FieldName, BoostValue):
-        '''
-        Boost the specified field for all Solr Input Document in the specified 
-        path.
-        '''
-        assert os.path.exists(Path), self.logger.warning("Source documents path does not exist: " + Path)
-        files = os.listdir(Path)
-        for filename in files:
-            if self._isSolrInputDocument(Path + os.sep + filename):
-                pass
-
     def _getFileName(self, Filename):
         '''
         Get the filename from the specified URI or path.
@@ -156,6 +145,27 @@ class Transformer(object):
         for ns in re.findall("xmlns=\".*\"", Text):
             Text = Text.replace(ns,'')
         return Text
+
+    def boostFields(self, Path, FieldName, BoostValue):
+        '''
+        Boost the specified field for all Solr Input Document in the path.
+        '''
+        assert os.path.exists(Path), self.logger.warning("Source documents path does not exist: " + Path)
+        files = os.listdir(Path)
+        for filename in files:
+            if self._isSolrInputDocument(Path + os.sep + filename):
+                # parse the document
+                xml = etree.parse(Path + os.sep + filename)
+                fields = xml.findall('//field[@name="' + FieldName + '"]')
+                for field in fields:
+                    # add the boost value
+                    field.attrib['boost']=BoostValue
+                    # save the updated document
+                    outfile = open(Path + os.sep + filename,'w')
+                    data = etree.tostring(xml, pretty_print=True)
+                    outfile.write(data)
+                    outfile.close()
+                    self.logger.info("Added " + FieldName + " boost to " + filename)
 
     def mergeInferredRecordIntoSID(self, source, output, report=None):
         '''
@@ -313,7 +323,7 @@ class Transformer(object):
         # boost fields
         for boost in boosts:
             fieldname, boostval = boost.split(':')
-            self._boostFields(output, fieldname, boostval)
+            self.boostFields(output, fieldname, boostval)
         # validate output
         try:
             schema = params.get("transform","schema")

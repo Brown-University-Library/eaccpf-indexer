@@ -107,20 +107,17 @@ Revision History
 > Analyzes EAC-CPF data for quality indicators
 > Merges individual reports into a single report file
 > Implement entity extraction with Alchemy API
+> Add 'update' option to process only files that have changed
+> Store hash and timestamp of all files in a hidden file, to be used with update option
+> Start implementation of EACCPF document 'unit' tests and reporting
+
 
 1.3.0
 
-> Add 'update' option to process only files that have changed
-> Add document and field boosts before posting
-> Store hash and timestamp of all files in a hidden file, to be used with update option
-
-> Fixed unicode handling issues -- some_unicode_string.encode('utf-8')
-
-> Added unit tests for application modules -- Cleaner, Transformer, etc.
-
-> Image indexing, caching setup
-> Start implementation of EACCPF document 'unit' tests and reporting
-
+ * Fixed unicode handling issues -- some_unicode_string.encode('utf-8')
+ * Field boost
+ * Image indexing and thumbnail caching
+ * HTML indexing
  * Renamed to EACCPF-Indexer
 
 1.2.2
