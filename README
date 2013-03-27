@@ -1,5 +1,5 @@
-EAC-CPF Data Processing Utility
-===============================
+EAC-CPF Indexer Data Processing Utility
+=======================================
 
 EAC-Indexer is a utility for collecting EAC-CPF from a file system or a 
 web site, and post-processing it for applications such as search and
@@ -73,7 +73,7 @@ will fetch, parse and transform the EACCPF document into a Solr Input Document,
 then insert the record into Solr.  In addition, the crawler can generate a 
 report on the quality of the EACCPF that is indexed.
 
-  python feeder.py config [OPTIONS]
+  python indexer.py config [OPTIONS]
 	
   --clean      Clean input files of common errors before further processing
   --crawl      Crawl file system or web site for metadata files
@@ -82,35 +82,42 @@ report on the quality of the EACCPF that is indexed.
   --report     Generate a report and write to specified path
   --transform  Transform EAC, EAC-CPF files to Solr Input Document format
 
-Copy feeder.cfg.example into a new configuration file and edit as needed.
+Copy indexer.cfg.example into a new configuration file and edit as needed.
 
 
 Revision History
 ----------------
 
+1.4.0
+
+> Histogram module
+
+1.3.4
+
+> Puppet deployment module
+
 1.3.3
 
 > Consider fixing broken source HTML, etc. files in place
 > Improve extracted relations data
-> Transform operation should optionally exclude inferred data
-> Updates should optionally be executed only on changed files
-> Add stopwatch function to time the duration of processing
+> Add update option to process only changed files
 
 1.3.2
 
 > Clean, infer, transform differences only
-> Keep hash of files to track changes since last run
+> Store hash and timestamp of all files in a hidden file, to be used with update option
+> Implement entity extraction with Alchemy API
+> Start implementation of EACCPF document 'unit' tests and reporting
 
 1.3.1
 
-> Writes processing messages to report log
 > Analyzes EAC-CPF data for quality indicators
+> Writes processing messages to report log
 > Merges individual reports into a single report file
-> Implement entity extraction with Alchemy API
-> Add 'update' option to process only files that have changed
-> Store hash and timestamp of all files in a hidden file, to be used with update option
-> Start implementation of EACCPF document 'unit' tests and reporting
 
+1.3.1
+
+> Revision of image indexing to work from EAC-CPF records than by scraping HTML
 
 1.3.0
 
@@ -119,6 +126,7 @@ Revision History
  * Image indexing and thumbnail caching
  * HTML indexing
  * Renamed to EACCPF-Indexer
+ * Unit tests for various modules
 
 1.2.2
 

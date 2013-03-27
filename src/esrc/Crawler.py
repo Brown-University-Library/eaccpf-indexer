@@ -13,15 +13,15 @@ from ImageCache import ImageCache
         
 class Crawler(object):
     '''
-    File system and web site crawler. Locates HTML files with embedded DObject
-    representations, extracts their metadata and URL to related image file.
-    It stores the metadata in an intermediary file, and the image in a file 
-    system image cache.
+    File system and web site crawler. Locates HTML files with embedded digital
+    object representations, extracts their metadata and URL to related image 
+    file. It stores metadata in an intermediary file, and digital objects in a 
+    file system image cache.
     '''
 
     def __init__(self):
         '''
-        Initialize the crawler
+        Initialize the crawler.
         '''
         self.logger = logging.getLogger('Crawler')
     
@@ -61,22 +61,22 @@ class Crawler(object):
             self._clearFiles(Path)
             self.logger.info("Cleared output folder at " + Path)
     
-    def crawlFileSystem(self, source, output, actions=['html'], base=None, report=None, sleep=0.):
+    def crawlFileSystem(self, Source, Output, Actions=['html'], Base=None, Report=None, Sleep=0.):
         '''
         Crawl file system for HTML files. Execute the specified indexing 
-        actions on each file. Store files to the output path. Sleep for the 
+        Actions on each file. Store files to the Output path. Sleep for the 
         specified number of seconds after fetching data.
         '''
-        # add a trailing / to the base url if it doesn't exist
-        if not base.endswith('/'):
-            base = base + '/'
+        # add a trailing / to the Base url if it doesn't exist
+        if not Base.endswith('/'):
+            Base = Base + '/'
         # walk file system and look for html, htm files
-        for path, _, files in os.walk(source):
+        for path, _, files in os.walk(Source):
             # construct the public url for the file
             if path.startswith('/'):
-                baseurl = base + path.replace(source,'')[1:]
+                baseurl = Base + path.replace(Source,'')[1:]
             else:
-                baseurl = base + path.replace(source,'')
+                baseurl = Base + path.replace(Source,'')
             self.logger.debug('Current path is ' + baseurl)
             # for each file in the current path
             for filename in files:
@@ -86,23 +86,25 @@ class Crawler(object):
                         html = HtmlPage(path + os.sep + filename, baseurl)
                         # if the page represents an entity
                         if html.getRecordId():
-                            if 'eaccpf' in actions and html.hasEacCpfAlternate():
+                            if 'eaccpf' in Actions and html.hasEacCpfAlternate():
                                 data, filename = html.getEACCPF()
-                                # append source and referrer values in comment
+                                # append Source and referrer values in comment
                                 src = html._getEacCpfReference()
                                 ref = html.getUrl()
-                                data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
-                                self.store(output, filename, data, report)
-                            if 'digitalobject' in actions and html.hasDigitalObject():
-                                data, filename = self.getDigitalObjectRecord(html,output,report)
-                                self.store(output, filename, data, report)
-                            if 'html' in actions:
+                                data += '\n<!-- @Source=%(Source)s @referrer=%(referrer)s -->' % {"Source":src, "referrer":ref}
+                                self.store(Output, filename, data, Report)
+                            if 'digitalobject' in Actions and html.hasEacCpfAlternate():
+                                eaccpf = html.getEACCPF()
+                                for digitalobject in eaccpf.getDigitalObjects():
+                                    data, filename = self.getDigitalObjectRecord(html,Output,Report)
+                                    self.store(Output, filename, data, Report)
+                            if 'html' in Actions:
                                 data = html.getContent()
-                                self.store(output, filename, data, report)
+                                self.store(Output, filename, data, Report)
                     except Exception:
                         self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
-                        time.sleep(sleep)
+                        time.sleep(Sleep)
     
     def crawlWebSite(self, source, output, actions=['html'], report=None, sleep=0.):
         '''

@@ -28,7 +28,7 @@ class Cleaner():
         '''
         text = unicode(BeautifulSoup(text, convertEntities=BeautifulSoup.ALL_ENTITIES))
         return text    
-    
+
     def _fixAttributeURLEncoding(self,xml):
         '''
         Where an XML tag contains an attribute with a URL in it, any 
@@ -258,7 +258,7 @@ class Cleaner():
         assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # load schema files
+        # load schema file
         try:
             infile = open(schema, 'r')
             schema_data = infile.read()

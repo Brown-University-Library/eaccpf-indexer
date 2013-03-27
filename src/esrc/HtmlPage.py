@@ -110,17 +110,17 @@ class HtmlPage(object):
         result = re.sub('\s{2,}|&nbsp;', ' ', result)
         return result
 
-    def _isUrl(self, Path):
+    def _isUrl(self, Source):
         '''
         Determine if the source is a URL or a file system path.
         '''
-        if Path != None and ("http:" in Path or "https:" in Path):
+        if Source != None and ("http://" in Source or "https://" in Source):
             return True
         return False
     
     def _load(self):
         '''
-        Load the document HTML
+        Load the document content.
         '''
         if (self._isUrl(self.source)):
             response = urllib2.urlopen(self.source)
@@ -129,7 +129,7 @@ class HtmlPage(object):
             infile = open(self.source)
             self.data = infile.read()
             infile.close()
-        self.logger.debug("Loaded HTML for " + self.source)
+        self.logger.debug("Loaded content for " + self.source)
     
     def getContent(self):
         '''

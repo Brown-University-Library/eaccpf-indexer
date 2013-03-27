@@ -89,7 +89,7 @@ class Transformer(object):
             if "<eac-cpf" in data and "</eac-cpf>" in data:
                 return True
         return False
-    
+
     def _isInferredYaml(self, Path):
         '''
         Determines if the file at the specified path is an inferred data
