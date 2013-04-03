@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>E000007</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-02-05">2009-02-05</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-12-04">2012-12-04</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000007b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Sutherland Homes for Children</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>Sutherland Homes for Neglected Children</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1908-01-01">1908</fromDate>
+<toDate standardDate="1991-12-31">1991</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Children's Home</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Non-denominational</term>
+</function>
+</functions>
+<biogHist>
+<abstract>In 1908, Selina Sutherland founded Sutherland Homes for Neglected and Destitute Children, following her departure from the Victorian Neglected Children's Aid Society, which she had established in 1893.
+Sutherland Homes started in Latrobe Street, Melbourne. Later, it had a 'receiving home' in Drummond Street, Carlton and a 'country home' in Diamond Creek. Sutherland Homes accommodated boys and girls, aged between 6 and 14.</abstract>
+<p>Sutherland Homes for Children was established in 1909 by Selina Sutherland.</p>
+<p>Sutherland was sometimes known as 'New Zealand's Florence Nightingale', and in 1888 she became Victoria's first licensed 'child rescuer'.</p>
+<p>Previously, Sutherland had served as Agent and Superintendent with the Victorian Neglected Children's Aid Society for many years, until health problems and disagreements with the Committee of Management led to her removal from the position in 1908.</p>
+<p>Subsequently, Sutherland founded a new organisation, Sutherland Homes for Neglected and Destitute Children.</p>
+<p>Initially, the organisation was based at 68 Latrobe Street, Melbourne, a building leased by Selina Sutherland for many years previously.</p>
+<p>A year after the establishment of Sutherland Homes for Neglected Children, a gentlewoman named Miss Auguste Elsie Marie Meglin donated her 40 acre property in Diamond Creek to Sutherland Homes. Neither woman lived to see their dreams of a children's home at Diamond Creek become a reality - Meglin died in July 1909, and Sutherland died in October 1909.</p>
+<p>A few days after Sutherland's passing, the Management Committee of Sutherland Homes resolved to 'enthusiastically carry on with the work she has now left behind'.</p>
+<p>In November 1910, the transfer of the Meglin property was finalised. At that time, around 60 children were being accommodated by Sutherland Homes. Sister Sanderson was the matron at Latrobe Street, and a Miss Riley was matron at Diamond Creek, which was sometimes known as 'the holiday home'.</p>
+<p>The Committee soon judged the Latrobe Street building as unsuitable for Sutherland Homes and managed to raise money to build on land at 28 Drummond Street, Carlton. The foundation stone at the Sutherland Home in Carlton was laid on 9 December 1911. The Carlton property was used as a receiving home, with many children subsequently entering the home at Diamond Creek.</p>
+<p>In 1915, Sister Sanderson moved to the Diamond Creek property to become matron. Mrs Ada Wenborn replaced Sanderson as the new Agent and Superintendent of Sutherland Homes.</p>
+<p>In the five years following Sister Sanderson's death in 1921, there were five different matrons at Diamond Creek: Mrs Kurrle, Mrs Meere, Mrs Garfield, Miss McKenzie, and Miss Tolmie. Miss Tolmie only lasted 18 months, and was replaced by Miss Kerr.</p>
+<p>The Diamond Creek Home established its own state school. Although it was a state school, it only educated children from Sutherland Homes until 1947. On 9 May 1934, the Sutherland Homes School burned to the ground. The cause was never established, but lessons took place the next day in the Doctor's Cottage. The new school building opened on 4 April 1935.</p>
+<p>In 1936, Sutherland Homes established a Young Farmers' Club. The farmers won prizes at the Royal Agricultural Show for their efforts.</p>
+<p>Miss Evans was the Matron from 1933, for a 16 year period. During the 1930s period, the Homes provided practical, 'life skills' education, including farming and horticulture, domestic duties, and carpentry. Sutherland Homes introduced a house system with the school divided into Wenborn House and Edmanson House. Physical education was an important part of the school's curriculum in the 1930s and 1940s.</p>
+<p>In 1929, a new brick dormitory building had been completed at Diamond Creek. Groll writes of how the children responded to their new accommodation:</p>
+<p>'The separation between brothers and sisters was felt more in the new Home as the girls' and boys' dormitories were now at opposite ends of the building. Although the nursery was adjacent to the girls' dormitory, older sisters have recalled feeling helpless to their infant siblings' cries as they were forbidden from attending them in the nursery. They could hear them but they couldn't help them. On a more positive note, there was also a smaller six-bed dorm room for the oldest girls which gave them an opportunity to escape the noise and antics of the younger ones. But there were still no chests of drawers beside the beds. Each child had only a small locker - not more than a foot wide and a foot and a half deep - in which to keep personal belongings.'</p>
+<p>World War Two saw an increase in admissions at the Sutherland Homes, with fathers serving in the military and mothers struggling to combine paid work and looking after children. The Homes experienced overcrowding in the post-war years.</p>
+<p>In 1941, the Commonwealth Government's new Child Endowment Scheme meant that the Sutherland Homes received regular payments towards the upkeep of children. However, fundraising remained the Homes' main source of income.</p>
+<p>During the 1940s and 1950s, Sutherland Homes began to receive greater numbers of wards of state. The Victorian government made regular maintenance payments towards the upkeep of these children.</p>
+<p>In 1943, the President of the Committee was Lady Angliss, who was also involved in the Children's Welfare Association. Sutherland Homes took an interest in international trends in child welfare, including the move from institutional, dormitory-style accommodation, towards the cottage system.</p>
+<p>During the 1950s, Sutherland Homes began the transition from dormitories to cottage-style units at Diamond Creek. The property in Drummond Street, Carlton was sold. Staff began to attend professional training sessions arranged by the Victorian Council for Social Services.</p>
+<p>The site at Diamond Creek was vulnerable in bushfire season, and had been threatened several times since fires in the district in 1914. The Homes were evacuated during bushfires in 1962. These fires destroyed buildings on the property, but not the residential homes. Happily, not one pet or farm animal was lost. (Tragically, Sutherland could not escape a bushfire in 1995 which destroyed a cottage and killed a staff member.)</p>
+<p>Sutherland Homes' first two 'ultra-modern cottages' were officially opened in June 1958. Children lived in the cottage with cottage parents. More cottages were opened in 1961, along with a new hall.</p>
+<p>Mrs Dawn Roscholler became matron in 1954, and she was the first matron to be a wife and mother and live with her family at Sutherland Homes.</p>
+<p>In January 1956, Sutherland Homes for Children was declared an approved children's home under the Children's Welfare Act 1954.</p>
+<p>The last person to be employed as matron was Mrs Ross, who had been a house mother since 1959. She became matron in 1961, remaining in the job until she retired in 1977.</p>
+<p>Another long-serving staff member at Sutherland Homes was Mrs Ada Wenborn, who was Superintendent-Secretary for a period of 45 years. She retired in 1964 after a total of 49 years' service.</p>
+<p>John Cecil Jessop was another prominent member of the Committee. Mr Jessop was at Sutherland Homes for 26 years. In 1959, the Committee gave him permission to build, at his own expense, a cottage on the property, for his wife and himself. This home later accommodated the Home's Superintendent. Mr Jessop died in 1968.</p>
+<p>The Angliss family played an important role in the Sutherland Homes. Lady Bena Angliss was President of the Committee for many years and her daughter May Angliss also worked for the Homes, and the Children's Welfare Association.</p>
+<p>The 1970s saw Sutherland Homes changing in line with new policies of de-institutionalisation and the involvement of family in the care of children and young people.</p>
+<p>It established the Diamond Valley Youth Hostel in 1979. Sutherland Homes had long recognised the need for accommodation for young people making the transition from Sutherland into the world outside. The Hostel moved from Diamond Creek to Greensborough in 1986, and the former hostel was remodelled as a residential unit.</p>
+<p>Sutherland Homes' 75th anniversary was celebrated in 1983. There was an Open Day Reunion in October, and a 'Back to 1908 Open Day/Country Fair' in November.</p>
+<p>Following a review in 1984, Sutherland Homes embarked on a five-year program of diversification, that was based on the delivery of multiple services in a clearly defined locality. Sutherland Homes became increasingly involved in family support services, as well as residential care.</p>
+<p>Part of the property at Diamond Creek was sold off in 1990 to raise more funds for Sutherland Homes' services.</p>
+<p>In 1991, the organisation became known as Sutherland Child Youth and Family Services. Legislation had required Sutherland Homes to develop a new constitution and the Committee of Management took the opportunity to change the name, in line with changes made to Sutherland's services in recent years.</p>
+<p>Other changes made in 1991 were the auspicing of North East Foster Care and the decision to review Sutherland's campus residential services.</p>
+<p>In 1994, it amalgamated with Berry Street.</p>
+<p>In 1999, the site at Diamond Creek, which had been 'home' for thousands of people, was sold.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1909-01-01">1909</fromDate>
+</dateRange>
+<placeEntry>La Trobe Street, Melbourne</placeEntry>
+<event>Sutherland Homes for Neglected Children was situated at 68 Latrobe Street, Melbourne</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1910-01-01">1910</fromDate>
+</dateRange>
+<placeEntry>Yan Yean Road, Diamond Creek</placeEntry>
+<event>Sutherland Homes for Children was situated in Diamond Creek</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1911-01-01">1911</fromDate>
+<toDate standardDate="1955-12-31">1955</toDate>
+</dateRange>
+<placeEntry>Drummond Street, Carlton</placeEntry>
+<event>Sutherland Homes for Neglected Children was situated at 28 Drummond Street, Carlton</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000361b.htm">
+<relationEntry localType="Organisation">
+Heritage and Background Information Service, Berry Street
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000748b.htm">
+<relationEntry localType="Organisation">
+Diamond Valley Youth Hostel (1979 - ?)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000693b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Berry Street (c. 1877 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000008b.htm">
+<relationEntry localType="Person">
+Sutherland, Selina Murray MacDonald (1839 - 1909)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1908-01-01">1908</fromDate>
+<toDate standardDate="1908-12-31">1908</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland founded Sutherland Homes for Children in 1908.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000041b.htm">
+<relationEntry localType="Organisation">
+Sutherland Child Youth and Family Services (1991 - 1994)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1991-01-01">1991</fromDate>
+<toDate standardDate="1991-12-31">1991</toDate>
+</dateRange>
+<descriptiveNote>
+<p>In 1991 Sutherland Homes for Children changed its name to Sutherland Child, Youth and Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Sutherland Homes for Children', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Sutherland Homes for Children</title>
+<bibseries>
+<title render="italic">Find &amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000007b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000538.htm">
+<relationEntry localType="published">Book: Sutherland Home School 3660: June 3, 1910 -1975</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Hardy, Gwen</name>
+<title render="italic">Sutherland Home School 3660: June 3, 1910 -1975</title>
+<imprint>
+<date>2000</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000515.htm">
+<relationEntry localType="published">Resource Section: Submission no 183</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Submission no 183</title>
+<imprint>
+<publisher>Commonwealth of Australia</publisher>
+<date>2005</date>
+</imprint>
+<bibseries>
+<title render="italic">Inquiry into Children in Institutional Care: Submissions received by the committee as at 17/3/05</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.aph.gov.au/Parliamentary_Business/Committees/Senate_Committees?url=clac_ctte/completed_inquiries/2004-07/inst_care/submissions/sublist.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000184.htm">
+<relationEntry localType="published">Resource Section: Sutherland Homes for Children and Selina Sutherland</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Sutherland Homes for Children and Selina Sutherland</title>
+<imprint>
+<publisher>Wikinorthia</publisher>
+<date>2009</date>
+</imprint>
+<bibseries>
+<title render="italic">Wikinorthia: documenting life in Melbourne's north</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.wikinorthia.net.au/index.php/Sutherland_Homes_for_Children_and_Selina_Sutherland"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000211.htm">
+<relationEntry localType="published">Resource: Victoria Government Gazette Online Archive 1836-1997</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Victoria Government Gazette Online Archive 1836-1997</title>
+<imprint>
+<publisher>State Library of Victoria</publisher>
+<date>2009</date>
+</imprint>
+<extptr linktype="simple" href="http://gazette.slv.vic.gov.au/"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000135.htm">
+<relationEntry localType="published">Newspaper Article: Christmas Appeals: special need for help</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Christmas Appeals: special need for help</title>
+<imprint>
+<date>1916</date>
+</imprint>
+<bibseries>
+<title render="italic">The Argus</title>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000093.htm">
+<relationEntry localType="published">Book: The Sutherland Story: a century of caring for children</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Groll, Nancy</name>
+<title render="italic">The Sutherland Story: a century of caring for children</title>
+<imprint>
+<publisher>Berry Street Victoria</publisher>
+<date>2000</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000013.htm">
+<relationEntry localType="published">Resource Section: Sutherland, Sulina Murray MacDonald (1839 - 1909)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Hoban, Ruth</name>
+<title render="quoted">Sutherland, Sulina Murray MacDonald (1839 - 1909)</title>
+<imprint>
+<publisher>Australian National University</publisher>
+<date>2006</date>
+</imprint>
+<bibseries>
+<title render="italic">Australian Dictionary of Biography Online Edition</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.adb.online.anu.edu.au/biogs/A060243b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000395.htm">
+<relationEntry localType="digitalObject">Freckle-faced Philanthropist : Please Let Me Help</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia</repository>
+<unittitle>Freckle-faced Philanthropist : Please Let Me Help</unittitle>
+<unitdate>10 December 1954</unitdate>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000394.htm">
+<relationEntry localType="digitalObject">The Sutherland Homes: New Buildings to be Opened</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia</repository>
+<unittitle>The Sutherland Homes: New Buildings to be Opened</unittitle>
+<unitdate>8 March 1929</unitdate>
+<abstract>Caption reads,' New buildings, Sutherland Home at Diamond Creek.' Includes ground floor and elevation to Yan Yean Road.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000393.htm">
+<relationEntry localType="digitalObject">It's Home for 50 Little Children</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia</repository>
+<unittitle>It's Home for 50 Little Children</unittitle>
+<unitdate>18 April 1950</unitdate>
+<abstract>Caption reads, 'The baby of the Home, Geoffery, looks very pensive as he takes his turn in the rocker in the nursery.'</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000391.htm">
+<relationEntry localType="digitalObject">Sutherland Homes for Children</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia</repository>
+<unittitle>Sutherland Homes for Children</unittitle>
+<unitdate>25 March 1929</unitdate>
+<abstract>Caption reads, 'A new building for the Sutherland Homes for Children was opened by His Excellency the Governor (Lord Somers) at Greensborough on Saturday afternoon.'</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000392.htm">
+<relationEntry localType="digitalObject">Happy Children at Play</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia</repository>
+<unittitle>Happy Children at Play</unittitle>
+<unitdate>6 August 1938</unitdate>
+<abstract>Caption reads, 'Everything is upside down to these children at the Sutherland Homes, Greensborough. They keep warm with their exercises on the parallel bars.'</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000060.htm">
+<relationEntry localType="digitalObject">Diamond Valley Hostel, Greensborough Unit, Admissions Register from 1 June 1979</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Berry Street</repository>
+<unittitle>Diamond Valley Hostel, Greensborough Unit, Admissions Register from 1 June 1979</unittitle>
+<abstract>This is a photograph of the front cover of an Admissions Register, used by the Diamond Valley Hostel (run by Sutherland Homes for Children) to record information about young people in its 'care'.</abstract>
+<note label="rights">Permission to use or reproduce part or all of this image must be sought from Berry Street</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000059.htm">
+<relationEntry localType="digitalObject">Sutherland Homes Register 1</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Berry Street</repository>
+<unittitle>Sutherland Homes Register 1</unittitle>
+<unitdate>1908 - 2009</unitdate>
+<abstract>This is an image of the front cover of a register from Sutherland Homes for Children. It was used to record details about children in its 'care'. Sutherland Homes used this recordkeeping system, with entries about children recorded in the register alphabetically from 1908 to 1929.</abstract>
+<note label="rights">Permission to use or reproduce part or all of this image must be sought from Berry Street</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000040.htm">
+<relationEntry localType="digitalObject">Participant at Special Open Day at Sutherland Homes on Sunday November 20, 1983</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Diamond Valley Local History Digitisation Project, Yarra Plenty Regional Library</repository>
+<unittitle>Participant at Special Open Day at Sutherland Homes on Sunday November 20, 1983</unittitle>
+<unitdate>20 November 1983</unitdate>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000039.htm">
+<relationEntry localType="digitalObject">Selina Sutherland, pictured with children at a Christmas party at Sutherland Homes in Carlton</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Diamond Valley Local History Digitisation Project, Yarra Plenty Regional Library</repository>
+<unittitle>Selina Sutherland, pictured with children at a Christmas party at Sutherland Homes in Carlton</unittitle>
+<unitdate>1908</unitdate>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

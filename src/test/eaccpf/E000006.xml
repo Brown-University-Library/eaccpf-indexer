@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>E000006</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-02-05">2009-02-05</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-06-13">2012-06-13</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000006b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Berry Street</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType="Legal name"><part>Berry Street Incorporated</part>
+</nameEntry>
+<nameEntry localType="Also known as"><part>Berry Street Victoria</part>
+<useDates>
+<dateRange>
+<fromDate standardDate=""></fromDate>
+<toDate standardDate="2007-12-31">2007</toDate>
+</dateRange>
+</useDates>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1994-01-01">1994</fromDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Community Service Organisation</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Non-denominational</term>
+</function>
+</functions>
+<biogHist>
+<abstract>Berry Street came into being in 1994, when Berry Street amalgamated with Sutherland Child, Youth and Family Services. In 2007, a decision was made to change the organisation to 'Berry Street', as this was how it was known by stakeholders (previously it was sometimes known as Berry Street Victoria). The heritage of Berry Street dates back to 1877 and the foundation of the Victorian Infant Asylum.</abstract>
+<p>Berry Street Incorporated came into being in 1994, when Berry Street amalgamated with Sutherland Child, Youth and Family Services. In 2009, Berry Street is the largest independent child and family welfare organisation in Victoria.</p>
+<p>The heritage of Berry Street dates back to 1877 and the foundation of the Victorian Infant Asylum.</p>
+<p>Sutherland Child, Youth and Family Services was formerly known as Sutherland Homes for Children, established in 1909.</p>
+<p>The early years of the new Berry Street saw changes at the former site of Sutherland Homes in Diamond Creek. The campus was known as 'Berry Street / Diamond Creek' from 1994.</p>
+<p>In 1995, one of its residential units, 'Meglin Cottage',was destroyed in a bushfire on 18 September. A staff member, Eddie Scoleri, was killed. A 16-year old resident was hospitalised for burns and smoke inhalation. A memorial plaque to Scoleri was placed in the Berry Street board room.</p>
+<p>Following the fires, the other residents of Meglin Cottage were relocated into the community. Then, residents of Callaway Cottage were relocated. The last residents left the campus in January 1997.</p>
+<p>The Diamond Creek property, which was used for office space from 1997, was finally sold in March 1999. The site at Diamond Creek had been 'home' for thousands of people. Former residents, staff and community members attended an open weekend to 'Say Farewell to Sutherland Homes' on 26 and 27 February, 2000.</p>
+<p>In 2006, following the Inquiry into Children in Institutional Care, Berry Street issued an unreserved apology 'for any physical, psychological, sexual or social harm that may have occurred to children and young people in our care'.</p>
+<p>Berry Street is the custodian of records from its predecessor institutions and agencies, and those of Sutherland Child, Youth and Family Services. Former residents can contact its Heritage &amp; Background Information Service to access personal information about themselves held by Berry Street.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1994-01-01">1994</fromDate>
+<toDate standardDate="2000-12-31">2000</toDate>
+</dateRange>
+<placeEntry>Berry Street, East Melbourne</placeEntry>
+<event>Berry Street was situated in East Melbourne</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="2000-01-01">2000</fromDate>
+</dateRange>
+<placeEntry>Salisbury Street, Richmond</placeEntry>
+<event>Berry Street is situated in Richmond</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000662b.htm">
+<relationEntry localType="Organisation">
+Family Information, Networks and Discovery, Department of Human Services (DHS) (2010 - )
+</relationEntry>
+<descriptiveNote>
+<p>FIND manages adoption records for adoptions arranged through Berry Street, all other records are held by Berry Street.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000361b.htm">
+<relationEntry localType="Organisation">
+Heritage and Background Information Service, Berry Street
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000041b.htm">
+<relationEntry localType="Organisation">
+Sutherland Child Youth and Family Services (1991 - 1994)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1991-01-01">1991</fromDate>
+<toDate standardDate="1994-12-31">1994</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Berry Street was formed in 1994, with the amalgamation of Berry Street Incorporated and Sutherland Child Youth and Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000405b.htm">
+<relationEntry localType="Organisation">
+Berry Street Incorporated (1992 - 1994)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1994-01-01">1994</fromDate>
+<toDate standardDate="1994-12-31">1994</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Berry Street was formed in 1994, with the amalgamation of Berry Street Incorporated and Sutherland Child Youth and Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000693b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Berry Street (c. 1877 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
+<relationEntry localType="Organisation">
+The Who Am I? Project (2009 - 2012)
+</relationEntry>
+<descriptiveNote>
+<p>Berry Street is a Linkage Partner to the Who Am I? project.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000486b.htm">
+<relationEntry localType="Organisation">
+Open Place: Support Service for Victoria's Forgotten Australians (2010 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2009-09-01">September 2009</fromDate>
+<toDate standardDate="2009-09-30">September 2009</toDate>
+</dateRange>
+<descriptiveNote>
+<p>The contract to run the new Support Service was awarded to Berry Street and Relationships Australia in September 2009.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Berry Street', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Berry Street</title>
+<bibseries>
+<title render="italic">Find &amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000006b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000014.htm">
+<relationEntry localType="published">Book: Looking Back, Looking Forward: the story of 'Berry Street' Child and Family Care</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Penwill, Beryl</name>
+<title render="italic">Looking Back, Looking Forward: the story of 'Berry Street' Child and Family Care</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Berry Street Child and Family Care</publisher>
+<date>1979</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000041.htm">
+<relationEntry localType="digitalObject">Foundling Hospital and Infants' Home, Foundation Stone</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Foundling Hospital and Infants' Home, Foundation Stone</unittitle>
+<unitdate>1905</unitdate>
+<abstract>The inscription reads: Foundling Hospital and Infants Home. This stone was laid by Lady Talbot, wife of the Governor of Victoria, to commemorate the opening of the Foundling Wing, 14th September 1905.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000055.htm">
+<relationEntry localType="digitalObject">Foundling Hospital and Infants' Home, Blank Admittance Form</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Berry Street</repository>
+<unittitle>Foundling Hospital and Infants' Home, Blank Admittance Form</unittitle>
+<abstract>This image shows a blank Admittance Form, used by the Foundling Hospital and Infants' Home. Typical information recorded about an infant in its Admittance Form included: Name of child; Date of admission; Details of parents or guardian. The institution used this format, with Admittance Forms bound in a 'red book', from 1940 to 1974.
+
+Typical information recorded about an infant included: Name of child; Date of admission; Name of infant's mother and/or father; Religion and 'legitimacy' status of infant. This blank form dates from the 1940s - it included a field to provide details about the father's military service, if applicable.</abstract>
+<note label="rights">Permission to use or reproduce part or all of this image must be sought from Berry Street</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000003.htm">
+<relationEntry localType="digitalObject">Sketches at the Victorian Infant Asylum</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>State Library of Victoria</repository>
+<unittitle>Sketches at the Victorian Infant Asylum</unittitle>
+<unitid>Accession No: IAN06/08/84/117, Image No: mp005203</unitid>
+<unitdate>6 August 1884</unitdate>
+<abstract>This engraving appeared in the <span style="font-style:italic">Illustrated Australian News</span>.</abstract>
+<note label="rights">Reproduction rights owned by the State Library of Victoria</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

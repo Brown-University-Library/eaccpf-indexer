@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>E000008</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Person</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-02-05">2009-02-05</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-12-04">2012-12-04</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000008b.htm</entityId>
+<entityType>person</entityType>
+<nameEntry><part localType="familyname">Sutherland</part>
+<part localType="givenname">Selina Murray MacDonald</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType="Alternate spelling"><part>Sutherland, Sulina</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1839-12-26">26 December 1839</fromDate>
+<toDate standardDate="1909-12-31">1909</toDate>
+</dateRange>
+</existDates>
+<places>
+<place>
+<placeRole>Place of Birth</placeRole>
+<placeEntry>Scotland</placeEntry>
+</place>
+</places>
+<occupations>
+<occupation>
+<term>Philanthropist</term>
+</occupation>
+</occupations>
+<biogHist>
+<abstract>Selina Murray MacDonald Sutherland was born in Scotland in 1839, and came to Melbourne in 1881. Sutherland was a key figure in child rescue activities in Victoria, and the founder of the Victorian Neglected Children's Aid Society, and Sutherland Homes for Neglected and Destitute Children.</abstract>
+<p>Selina Murray MacDonald Sutherland was born in Scotland in 1839, and migrated to New Zealand in 1862, where she worked as a nurse. Sutherland was sometimes known as 'New Zealand's Florence Nightingale'.</p>
+<p>In 1881, Sutherland embarked on a voyage with a planned itinerary of Fiji, Sydney, Melbourne and back to New Zealand. The steamer was shipwrecked off the Victorian coast, and Sutherland found herself in Melbourne.</p>
+<p>In 1888, Sutherland became Victoria's first licensed 'child rescuer', under the terms of the Neglected Children's Act 1887.</p>
+<p>Since the early 1880s, Sutherland had been a key figure in the child rescue activities of the Scots' Church. Along with Mrs Maria Armour, she founded the Scots' Church Neglected Children's Aid Society.</p>
+<p>As a result of a rift with the Scots' Church, Sutherland formed another organisation in 1893, the Presbyterian Society for Neglected and Destitute Children.</p>
+<p>In late 1893, there was public disagreement between Sutherland and the General Assembly of the Presbyterian Church, leading to her resignation in November. In December 1893, Sutherland founded a new, non-denominational organisation, the Victorian Neglected Children's Aid Society.</p>
+<p>Years before, Sutherland had been involved in a carriage accident in New Zealand which left her with a shoulder injury. In the early 1900s, Sutherland was still suffering from the effects of this injury, however she continued to work as Agent and Superintendent of the Victorian Neglected Children's Aid Society.</p>
+<p>According to biographer Nancy Groll, by 1906 Sutherland was in great pain, 'requiring daily massage treatment and medication. She also began to suffer dizzy spells, reportedly caused by a "slight cerebral problem"'.</p>
+<p>The Society's Committee of Management called on Sutherland to resign, or take an enforced leave of absence. When she refused, they took the step of standing her down from the Neglected Children's Aid Society.</p>
+<p>Sutherland, with some supporters who left the Society with her, formed a new organisation called the 'Sutherland Committee', based at 68 Latrobe Street, Melbourne. Soon after, they registered a new organisation, 'Sutherland Homes for Neglected and Destitute Children'.</p>
+<p>In 1909, Miss Auguste Meglin donated a property at Diamond Creek to Sutherland Homes. It turned out that Miss Meglin and Miss Sutherland would never see Sutherland Homes for Neglected Children at the Diamond Creek site - Meglin passed away in July 1909 and Sutherland died on 8 October 1909.</p>
+<p>Hundreds of people attended Sutherland's funeral at the Melbourne General Cemetery. Her gravestone, funded by a public appeal, is inscribed:</p>
+<p>'For twenty-eight years an unwearied friend of Melbourne's poor, the truest helper of its fallen, and the devoted foster mother of all destitute ones, for whom she taught Victoria how to care, having rescued 3,000 waifs from its streets and slums. She hath done what she could.'</p>
+
+</biogHist>
+</description>
+<relations>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000704b.htm">
+<relationEntry localType="Archival Collection">
+Victorian Government Records relating to Wardship and Adoption, Department of Human Services, State Government of Victoria (1864 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000021b.htm">
+<relationEntry localType="Organisation">
+Kildonan Child and Family Services (c. 1993 - 2007)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000153b.htm">
+<relationEntry localType="Person">
+Armour, Maria Lord ( - 1893)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1881-01-01">1881</fromDate>
+<toDate standardDate="1893-12-31">1893</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Maria Armour worked with Selina Sutherland from 1881.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000114b.htm">
+<relationEntry localType="Glossary Term">
+Child Rescue (c. 1880 - c. 1910)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1881-01-01">1881</fromDate>
+<toDate standardDate="1909-12-31">1909</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland was a prominent child rescuer in Victoria.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000022b.htm">
+<relationEntry localType="Organisation">
+Scots' Church Neglected Children's Aid Society (1881 - 1895)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1881-01-01">1881</fromDate>
+<toDate standardDate="1881-12-31">1881</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland was one of the founders of the Scots' Church Neglected Children's Aid Society.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000147b.htm">
+<relationEntry localType="Organisation">
+Kildonan, North Melbourne (1890 - c. 1937)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1890-01-01">1890</fromDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland was an important figure in the foundation of Kildonan.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000277b.htm">
+<relationEntry localType="Organisation">
+Victorian Neglected Children's Aid Society (1894 - 1920)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1893-01-01">1893</fromDate>
+<toDate standardDate="1908-12-31">1908</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland founded the Victorian Neglected Children's Aid Society in 1893.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000145b.htm">
+<relationEntry localType="Organisation">
+The Presbyterian Society for Neglected and Destitute Children (1893 - 1895)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1893-01-01">1893</fromDate>
+<toDate standardDate="1893-12-31">1893</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland formed the Presbyterian Society for Neglected and Destitute Children in 1893.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000007b.htm">
+<relationEntry localType="Organisation">
+Sutherland Homes for Children (1908 - 1991)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1908-01-01">1908</fromDate>
+<toDate standardDate="1908-12-31">1908</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Selina Sutherland founded Sutherland Homes for Children in 1908.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Sutherland, Selina Murray MacDonald', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Sutherland, Selina Murray MacDonald</title>
+<bibseries>
+<title render="italic">Find &amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000008b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000754.htm">
+<relationEntry localType="published">Article: Law and norm: justice administration and the human sciences in early juvenile justice in Victoria</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">McCallum, David</name>
+<title render="quoted">Law and norm: justice administration and the human sciences in early juvenile justice in Victoria</title>
+<imprint>
+<date>2004</date>
+</imprint>
+<bibseries>
+<title render="italic">Newcastle Law Review</title>
+<num type="volume">7</num>
+<num type="issue">2</num>
+<num type="pages">62-71</num>
+</bibseries>
+<extptr linktype="simple" href="http://eprints.vu.edu.au/1521/2/Newcastle_Law_Review.doc_%28R%29.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000746.htm">
+<relationEntry localType="published">Book: Selina's legacy: from VCAS to Oz Child</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Hilton, Della</name>
+<title render="italic">Selina's legacy: from VCAS to Oz Child</title>
+<imprint>
+<place>Oakleigh, Vic.</place>
+<publisher>OzChild/Children Australia</publisher>
+<date>1993</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000654.htm">
+<relationEntry localType="published">Book Section: Selina Sutherland, Licensed child rescuer</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Swain, Shurlee</name>
+<title render="quoted">Selina Sutherland, Licensed child rescuer</title>
+<imprint>
+<place>Ringwood</place>
+<publisher>Penguin</publisher>
+<date>1985</date>
+</imprint>
+<bibseries>
+<title render="italic">Double Time: women in Victoria, 150 years</title>
+<name type="author">M.Lake and F.Kelly</name>
+<num type="pages">126-131</num>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000093.htm">
+<relationEntry localType="published">Book: The Sutherland Story: a century of caring for children</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Groll, Nancy</name>
+<title render="italic">The Sutherland Story: a century of caring for children</title>
+<imprint>
+<publisher>Berry Street Victoria</publisher>
+<date>2000</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000013.htm">
+<relationEntry localType="published">Resource Section: Sutherland, Sulina Murray MacDonald (1839 - 1909)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Hoban, Ruth</name>
+<title render="quoted">Sutherland, Sulina Murray MacDonald (1839 - 1909)</title>
+<imprint>
+<publisher>Australian National University</publisher>
+<date>2006</date>
+</imprint>
+<bibseries>
+<title render="italic">Australian Dictionary of Biography Online Edition</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.adb.online.anu.edu.au/biogs/A060243b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000134.htm">
+<relationEntry localType="digitalObject">23/11/1901 Miss Sutherland's Orphanage</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Picture Victoria</repository>
+<unittitle>23/11/1901 Miss Sutherland's Orphanage</unittitle>
+<unitid>ID: 20246</unitid>
+<unitdate>1901</unitdate>
+<abstract>Caption: opening of Miss Sutherland's new home for neglected children at Royal Park</abstract>
+<note label="rights">Melbourne Library Service</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000057.htm">
+<relationEntry localType="digitalObject">Bible presented to Selina Sutherland</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Berry Street</repository>
+<unittitle>Bible presented to Selina Sutherland</unittitle>
+<abstract>The inscription reads: Presented to Miss Sutherland, by a few of the girls whose lives have been blessed through her loving labours in connection with the Scots' Church Children's Aid Society as a small token of their heartfelt gratitude and esteem. Melbourne, August 23rd 1886. The bible contains some press clippings, presumably kept there by Selina Sutherland.</abstract>
+<note label="rights">Permission to use or reproduce part or all of this image must be sought from Berry Street</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000039.htm">
+<relationEntry localType="digitalObject">Selina Sutherland, pictured with children at a Christmas party at Sutherland Homes in Carlton</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Diamond Valley Local History Digitisation Project, Yarra Plenty Regional Library</repository>
+<unittitle>Selina Sutherland, pictured with children at a Christmas party at Sutherland Homes in Carlton</unittitle>
+<unitdate>1908</unitdate>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000038.htm">
+<relationEntry localType="digitalObject">Selina Sutherland</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Australian Christian Lobby website</repository>
+<unittitle>Selina Sutherland</unittitle>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>E000005</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-01-30">2009-01-30</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-12-06">2012-12-06</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000005b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Child and Family Services Ballarat</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType="Acronym"><part>CAFS</part>
+</nameEntry>
+<nameEntry localType="Legal name"><part>Child and Family Services Ballarat Incorporated</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1998-01-01">1998</fromDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Community Service Organisation</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Adoption Agency</term>
+</function>
+<function>
+<term>Non-denominational</term>
+</function>
+</functions>
+<biogHist>
+<abstract>Child and Family Services Ballarat (CAFS) came into being in 1998. Previously, it was known as Ballarat Children's Homes and Family Services. The heritage of the organisation dates back to 1865, when the Ballarat District Orphan Asylum was established, amid great concern for the children affected by the rapid social changes of the gold rush era.</abstract>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1998-01-01">1998</fromDate>
+</dateRange>
+<placeEntry>Lydiard Street, North Ballarat</placeEntry>
+<event>Child and Family Services Ballarat is situated in Ballarat</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000362b.htm">
+<relationEntry localType="Organisation">
+Past Residents Support Service, Child and Family Services Ballarat (2000 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2000-07-01">July 2000</fromDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000033b.htm">
+<relationEntry localType="Organisation">
+Ballarat Children's Homes and Family Services (1984 - 1998)
+</relationEntry>
+<descriptiveNote>
+<p>In 1998 Ballarat Children's Homes and Family Services changed its name to Child and Family Services Ballarat Incorporated.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000695b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Child and Family Services Ballarat (c. 1865 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
+<relationEntry localType="Organisation">
+The Who Am I? Project (2009 - 2012)
+</relationEntry>
+<descriptiveNote>
+<p>Child and Family Services Ballarat Incorporated is a partner CSO in the Who Am I? project.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000032b.htm">
+<relationEntry localType="Organisation">
+Ballarat Children's Homes (1968 - 1984)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000031b.htm">
+<relationEntry localType="Organisation">
+Ballarat Orphanage (1909 - 1968)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Child and Family Services Ballarat', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Child and Family Services Ballarat</title>
+<bibseries>
+<title render="italic">Find &amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000005b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000010.htm">
+<relationEntry localType="published">Report: A Century of Child Care: the story of Ballarat Orphanage, 1865-1965</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Morris, Miss Ethel</name>
+<title render="italic">A Century of Child Care: the story of Ballarat Orphanage, 1865-1965</title>
+<imprint>
+<publisher>Ballarat Orphanage</publisher>
+<date>c.1965</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000008.htm">
+<relationEntry localType="published">Resource: Child and Family Services Ballarat</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Child and Family Services Ballarat</title>
+<imprint>
+<publisher>Child and Family Services Ballarat</publisher>
+</imprint>
+<extptr linktype="simple" href="http://www.cafs.org.au/"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000009.htm">
+<relationEntry localType="published">Resource Section: Ballarat Orphanage and Children's Homes</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Ballarat Orphanage and Children's Homes</title>
+<imprint>
+<publisher>Child and Family Services Ballarat</publisher>
+</imprint>
+<bibseries>
+<title render="italic">Child and Family Services Ballarat Website</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.cafs.org.au/?id=ballaratorphanagebal"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000002.htm">
+<relationEntry localType="digitalObject">Ballarat Orphanage Interments</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Child and Family Services Ballarat</repository>
+<unittitle>Ballarat Orphanage Interments</unittitle>
+<abstract>In February 2008, a memorial service commemorated children formerly residing at Ballarat Orphanage who now rested at a grave site in the Ballarat New Cemetery, Private F Section. The names of these children are displayed on a memorial plaque at the grave site. This document shows the names of the children, their ages at the date of death and the cause of death.</abstract>
+<note label="rights">Permission to use or reproduce part or all of this image must be sought from Child and Family Services Ballarat</note>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

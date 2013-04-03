@@ -97,7 +97,6 @@ class HtmlPageUnitTests(unittest.TestCase):
         </html>
         """
 
-    
     def tearDown(self):
         '''
         Tear down the test environment.

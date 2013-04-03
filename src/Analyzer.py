@@ -3,8 +3,10 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 from lxml import etree
+import inspect
 import logging
 import os
 import yaml
@@ -17,14 +19,15 @@ class Analyzer(object):
     state or quality of a single document in relation to a whole collection.
     '''
 
-    def __init__(self, params):
+    def __init__(self):
         '''
         Constructor
         '''
         # logger
         self.logger = logging.getLogger('Analyzer')
         # load validation schema
-        path = os.path.dirname(Analyzer.__file__)
+        modpath = os.path.abspath(inspect.getfile(self.__class__))
+        path = os.path.dirname(modpath)
         try:
             schema = path + os.sep + 'schema' + os.sep + 'eaccpf.xsd'
             infile = open(schema, 'r')
@@ -41,14 +44,27 @@ class Analyzer(object):
     def _getEntityType(self, Data):
         '''
         Get the entity type.
+        ex. <entityType>type</entityType>
         '''
-        return 'type'
-
+        soup = BeautifulSoup(Data)
+        tag = soup.find("entitytype")
+        return str(tag.string)
+        
     def _getEntityLocalType(self, Data):
         '''
         Get the entity local type.
+        <localControl localType="typeOfEntity">
+        <term>Organisation</term>
+        </localControl>
         '''
-        return 'localtype'
+        soup = BeautifulSoup(Data)
+        tag = soup.find("localcontrol",{'localtype':'typeOfEntity'})
+        if tag:
+            thetype = tag.find("term")
+            if thetype:
+                return str(thetype.string)
+            return tag.string
+        return None
 
     def _getExistDates(self, Data):
         '''
@@ -61,7 +77,9 @@ class Analyzer(object):
         '''
         Get a list of resource relations.
         '''
-        pass
+        soup = BeautifulSoup(Data)
+        relations = soup.find('relations')
+        return relations.findChildren()
     
     def _getResourceRelationsCount(self, Data):
         '''
@@ -69,19 +87,33 @@ class Analyzer(object):
         '''
         return len(self._getResourceRelations(Data))
     
+    def _getSectionContentCount(self, Tag, Data):
+        '''
+        Get the number of characters between the open and closing section tags.
+        '''
+        starttag = "<" + Tag + ">"
+        endtag = "</" + Tag + ">"
+        start = Data.index(starttag)
+        end = Data.index(endtag)
+        return end - start - len(starttag)
+
     def _getSectionContentCounts(self, Data):
         '''
         Get a dictionary with content length counts for each section of the 
         document.
         '''
         counts = {}
+        counts['control'] = self._getSectionContentCount("control", Data)
+        counts['identity'] = self._getSectionContentCount("identity", Data)
+        counts['description'] = self._getSectionContentCount("description", Data)
+        counts['relations'] = self._getSectionContentCount("relations", Data)
         return counts
 
     def _getTotalContentCount(self, Data):
         '''
         Get the total number of characters comprising the EAC-CPF document.
         '''
-        return 0
+        return len(Data)
 
     def _hasMaintenanceRecord(self, Data):
         '''
@@ -93,7 +125,13 @@ class Analyzer(object):
         '''
         Determine if the document has a record Id.
         '''
-        return True
+        soup = BeautifulSoup(Data)
+        tag = soup.find("recordid")
+        if tag:
+            recordid = tag.string
+            if recordid and len(recordid) > 0:
+                return True
+        return False
 
     def _hasResourceRelations(self, Data):
         '''
@@ -109,7 +147,7 @@ class Analyzer(object):
         Determine if the document is conformant to the EAC-CPF schema.
         '''
         try:
-            etree.fromstring(Data, self.parser)
+            etree.XML(Data, self.parser)
             return True
         except Exception:
             return False
@@ -126,19 +164,21 @@ class Analyzer(object):
                 return True
         return False
 
-    def analyzeFile(self, Path, Filename, Report):    
+    def analyzeFile(self, Source, Filename, Report):    
         '''
         Analyze EAC-CPF file for quality indicators and changes.
-        @todo Report should be the output path, not a file. The output file 
-        name can be inferred from the input filename.
         '''
         # read the input file
-        infile = open(Path,'r')
+        infile = open(Source + os.sep + Filename,'r')
         data = infile.read()
         infile.close()
         # read the existing report file
-        reportfile = open(Report,'r+')
-        report = yaml.load(reportfile.read())
+        if os.path.exists(Report + os.sep + Filename):
+            infile = open(Report + os.sep + Filename,'r')
+            report = yaml.load(infile.read())
+            infile.close()
+        else:
+            report = {}
         try:
             # the analysis
             analysis = {}
@@ -157,21 +197,22 @@ class Analyzer(object):
             # field level quality checks
             # update the report file
             report['analysis'] = analysis
-            reportfile.write(yaml.dump(report, default_flow_style=False, indent=4))
+            outfile = open(Report + os.sep + Filename, 'w')
+            outfile.write(yaml.dump(report, default_flow_style=False, indent=4))
+            outfile.close()
+            self.logger.info("Wrote analysis for " + Filename)
         except:
             self.logger.warning("Could not complete analysis for " + Filename)
-        finally:
-            reportfile.close()
-            self.logger.info("Wrote analysis for " + Filename)
     
-    def analyzeFiles(self, Path, Output):
+    def analyzeFiles(self, Source, Report):
         '''
-        Analyze EAC-CPF files in the specified path.
+        Analyze EAC-CPF files in the specified path. Write a report file to the
+        report path.
         '''
-        files = os.listdir(Path)
+        files = os.listdir(Source)
         for filename in files:
-            if self._isEacCpfFile(Path + os.sep + filename):
-                self.analyzeFile(Path, filename, Output + os.sep + filename)
+            if self._isEacCpfFile(Source + os.sep + filename):
+                self.analyzeFile(Source, filename, Report)
                 
     def run(self, params):
         '''
