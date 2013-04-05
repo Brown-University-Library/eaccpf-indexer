@@ -84,7 +84,7 @@
 <p>Following the fires, the other residents of Meglin Cottage were relocated into the community. Then, residents of Callaway Cottage were relocated. The last residents left the campus in January 1997.</p>
 <p>The Diamond Creek property, which was used for office space from 1997, was finally sold in March 1999. The site at Diamond Creek had been 'home' for thousands of people. Former residents, staff and community members attended an open weekend to 'Say Farewell to Sutherland Homes' on 26 and 27 February, 2000.</p>
 <p>In 2006, following the Inquiry into Children in Institutional Care, Berry Street issued an unreserved apology 'for any physical, psychological, sexual or social harm that may have occurred to children and young people in our care'.</p>
-<p>Berry Street is the custodian of records from its predecessor institutions and agencies, and those of Sutherland Child, Youth and Family Services. Former residents can contact its Heritage &amp; Background Information Service to access personal information about themselves held by Berry Street.</p>
+<p>Berry Street is the custodian of records from its predecessor institutions and agencies, and those of Sutherland Child, Youth and Family Services. Former residents can contact its Heritage &amp;amp; Background Information Service to access personal information about themselves held by Berry Street.</p>
 <chronList><chronItem>
 <dateRange><fromDate standardDate="1994-01-01">1994</fromDate>
 <toDate standardDate="2000-12-31">2000</toDate>
@@ -139,11 +139,6 @@ Berry Street Incorporated (1992 - 1994)
 <p>Berry Street was formed in 1994, with the amalgamation of Berry Street Incorporated and Sutherland Child Youth and Family Services.</p>
 </descriptiveNote>
 </cpfRelation>
-<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000693b.htm">
-<relationEntry localType="Archival Collection">
-Records held by Berry Street (c. 1877 - )
-</relationEntry>
-</cpfRelation>
 <cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
 <relationEntry localType="Organisation">
 The Who Am I? Project (2009 - 2012)
@@ -151,6 +146,11 @@ The Who Am I? Project (2009 - 2012)
 <descriptiveNote>
 <p>Berry Street is a Linkage Partner to the Who Am I? project.</p>
 </descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000693b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Berry Street (c. 1877 - )
+</relationEntry>
 </cpfRelation>
 <cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000486b.htm">
 <relationEntry localType="Organisation">
@@ -165,13 +165,13 @@ Open Place: Support Service for Victoria's Forgotten Australians (2010 - )
 </descriptiveNote>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Berry Street', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Berry Street', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Berry Street</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000006b.htm"></extptr>
 </bibref>
@@ -179,6 +179,7 @@ Open Place: Support Service for Victoria's Forgotten Australians (2010 - )
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000014.htm">
 <relationEntry localType="published">Book: Looking Back, Looking Forward: the story of 'Berry Street' Child and Family Care</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -195,6 +196,7 @@ Open Place: Support Service for Victoria's Forgotten Australians (2010 - )
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000041.htm">
 <relationEntry localType="digitalObject">Foundling Hospital and Infants' Home, Foundation Stone</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <unittitle>Foundling Hospital and Infants' Home, Foundation Stone</unittitle>
@@ -205,6 +207,7 @@ Open Place: Support Service for Victoria's Forgotten Australians (2010 - )
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000055.htm">
 <relationEntry localType="digitalObject">Foundling Hospital and Infants' Home, Blank Admittance Form</relationEntry>
+
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
@@ -219,6 +222,10 @@ Typical information recorded about an infant included: Name of child; Date of ad
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000003.htm">
 <relationEntry localType="digitalObject">Sketches at the Victorian Infant Asylum</relationEntry>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">

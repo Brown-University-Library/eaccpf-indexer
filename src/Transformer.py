@@ -5,6 +5,8 @@ LICENSE file, which is part of this source code package.
 
 from HtmlPage import HtmlPage
 from lxml import etree
+
+import inspect
 import logging
 import os
 import re 
@@ -166,7 +168,7 @@ class Transformer(object):
                     outfile.write(data)
                     outfile.close()
                     self.logger.info("Added " + FieldName + " boost to " + filename)
-
+                    
     def mergeInferredRecordIntoSID(self, source, output, report=None):
         '''
         Merge inferred data into Solr Input Document. Write merged data to 
@@ -258,7 +260,7 @@ class Transformer(object):
                 # @todo: add inferred topics
                 if 'topic' in inferred:
                     pass
-                # write the updated file
+                # put the updated file
                 outfile = open(output + os.sep + filename,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
@@ -289,7 +291,6 @@ class Transformer(object):
         output = params.get("transform","output")
         report = params.get("transform","report")
         sources = params.get("transform","sources").split(',')
-        xslt = params.get("transform","xslt")
         # check state
         for source in sources:
             assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -305,6 +306,8 @@ class Transformer(object):
                 self.transformHtmlsToSid(sources, output, report)
             elif action == "eaccpf-to-sid":
                 # load schema
+                modpath = os.path.abspath(inspect.getfile(self.__class__))
+                xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + "eaccpf-to-solr.xsl"
                 xslt_file = open(xslt,'r')
                 xslt_data = xslt_file.read()
                 xslt_root = etree.XML(xslt_data)
@@ -343,28 +346,24 @@ class Transformer(object):
                     path = source + os.sep + filename
                     self.transformDigitalObjectToSID(path, output, report)
     
-    def transformDigitalObjectToSID(self, source, output, report=None):
+    def transformDigitalObjectToSID(self, Source, Output, Report=None):
         '''
         Transform a single digital object YAML record to Solr Input Document 
         format.
         '''
         # read input file
-        infile = open(source,'r')
+        infile = open(Source,'r')
         data = yaml.load(infile.read())
         infile.close()
-        # create a new XML output file
+        # create a new XML Output file
         filename = data['id'] + ".xml"
-        outpath = output + os.sep + filename
+        outpath = Output + os.sep + filename
         outfile = open(outpath,'w')
         outfile.write("<?xml version='1.0' encoding='ASCII'?>")
         outfile.write("\n<add>\n\t<doc>")
-        outfile.write("\n\t\t<field name='id'>" + data['id'] + "</field>\n")
-        outfile.write("\n\t\t<field name='html_uri'>" + data['source'] + "</field>\n")
-        outfile.write("\n\t\t<field name='title'>" + data['title'] + "</field>\n")
-        outfile.write("\n\t\t<field name='abstract'>" + data['caption'] + "</field>\n")
-        outfile.write("\n\t\t<field name='dobject_uri'>" + data['url'] + "</field>\n")
-        outfile.write("\n\t\t<field name='dobject_type'>image</field>\n")
-        outfile.write("\n\t\t<field name='dobject_proxy'>" + data['cache_path'] + "</field>\n")
+        for key in data.keys():
+            if data[key]:
+                outfile.write("\n\t\t<field name='" + key + "'>" + data[key] + "</field>\n")
         outfile.write("\n\t</doc>\n</add>")
         outfile.close()
         self.logger.info("Wrote digital object YAML to SID " + filename)

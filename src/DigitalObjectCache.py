@@ -7,25 +7,31 @@ import Image
 import hashlib
 import logging
 import os
+import shutil
 import tempfile
+import urllib
 import urllib2
 from pairtree import PairtreeStorageFactory
 
-class ImageCache(object):
+class DigitalObjectCache(object):
     '''
-    Storage for thumbnails and alternate sized representations of an image.
+    Storage for source and alternate sized representations of a digital 
+    object.
     '''
 
-    def __init__(self, Path, BaseUrl=None, init=False):
+    def __init__(self, Path, BaseUrl='', init=False):
         '''
         Constructor
         '''
-        self.logger = logging.getLogger('feeder')
+        self.logger = logging.getLogger('DigitalObjectCache')
         self.path = Path
-        self.base = BaseUrl
+        if BaseUrl.endswith('/'):
+            self.base = BaseUrl
+        else:
+            self.base = BaseUrl + '/'
         # Create the parent directories for the storage path if they don't 
         # exist. If you create the pairtree folder itself, it requires the 
-        # pairtree metadata files in it before getting the store. Otherwise, it 
+        # pairtree metadata files in it before getting the put. Otherwise, it 
         # will throw a pairtree.storage_exceptions.NotAPairtreeStoreException
         parent = os.path.dirname(self.path)
         if not os.path.exists(parent):
@@ -145,63 +151,99 @@ class ImageCache(object):
                     os.unlink(path)
             os.rmdir(d)
 
-    def retrieve(self, Key):
-        '''
-        Retrieve the source URI, source filename and file data as identified by
+    def get(self, Id):
+        '''url
+        Get the source URI, source filename and file data as identified by
         the specified key. If no object is found, return None.
         '''
         try:
-            obj = self.storage.get_object(Key)
-            source = obj.get_bytestream("source")
-            filename = obj.get_bytestream("filename")
-            data = obj.get_bytestream(filename)
-            return source, filename, data
+            obj = self.storage.get_object(Id)
+            if obj:
+                record = {}
+                record['cache_id'] = Id
+                record['dobj_url'] = obj.get_bytestream("dobj_url")
+                record['dobj_file_name'] = obj.get_bytestream("dobj_file_name")
+                record['dobj_file_extension'] = obj.get_bytestream("dobj_file_extension")
+                record['dobj_proxy_large'] = obj.get_bytestream("dobj_proxy_large")
+                record['dobj_proxy_medium'] = obj.get_bytestream("dobj_proxy_medium")
+                record['dobj_proxy_small'] = obj.get_bytestream("dobj_proxy_small")
+                return record
         except:
             return None
 
-    def store(self, Source):
+    def put(self, Source):
         '''
-        Store image and metadata in the file store. Generate thumbnail image
-        representation. Return the id of the stored image thumbnail.
+        Store the digital object located at the specified Source location in 
+        the file storage. Generate alternate image representations of the 
+        digital object. Return a record with the cache identifier, object 
+        source URL, and URLs to the cached alternate representations.
         '''
-        # generate file names
-        source_filename = self._getFileName(Source)
-        source_extension = self._getFileNameExtension(source_filename)
-        tempfile_path = tempfile.mktemp(suffix="." + source_extension)
-        # retrieve the source data and write it to a temporary file
+        # source file name
+        filename = self._getFileName(Source)
+        ext = self._getFileNameExtension(filename)
+        # write source object to temporary file
+        digitalObject = tempfile.mktemp(suffix="." + ext)
         if (self._isUrl(Source)):
-            response = urllib2.urlopen(Source)
+            # replace spaces in URL before downloading
+            url = Source.replace(' ','%20')
+            # download file
+            response = urllib2.urlopen(url)
             data = response.read()
-            # write downloaded file
-            outfile = open(tempfile_path,'w')
+            outfile = open(digitalObject,'w')
             outfile.write(data)
             outfile.close()
         else:
-            tempfile_path = Source
-        # generate an id for the file
-        key = self._getHash(tempfile_path)
+            shutil.copyfile(Source, digitalObject)
+        # generate an id for the object
+        cacheid = self._getHash(digitalObject)
+        # determine the URL for the cache root
+        path = self.storage._id_to_dirpath(cacheid) + os.sep
+        path = self._getPathRelativeToCacheRoot(path)
+        if self.base:
+            url = self.base + path
+        else:
+            url = path
         try:
-            # create thumbnail image
-            thumbnail_path = self._resizeImageAndSaveToNewFile(tempfile_path, 260, 180)
-            thumbnail_filename = self._getFileName(thumbnail_path)
-            # put the thumbnail, source location, original filename into the storage
-            # obj = self.storage.create_object(key)
-            obj = self.storage.get_object(key, create_if_doesnt_exist=True)
-            obj.add_bytestream("source",Source)
-            obj.add_bytestream("filename",thumbnail_filename)
-            with open(tempfile_path,'rb') as stream:
-                obj.add_bytestream(thumbnail_filename,stream)
+            # create a new cache object
+            obj = self.storage.get_object(cacheid, create_if_doesnt_exist=True)
+            # set object source location, file name and extension 
+            obj.add_bytestream("dobj_url",Source)
+            obj.add_bytestream("dobj_file_name",filename)
+            obj.add_bytestream("dobj_file_extension",ext)
+            # create alternate representations
+            large = digitalObject # no change
+            medium = self._resizeImageAndSaveToNewFile(digitalObject, 260, 180)
+            small = self._resizeImageAndSaveToNewFile(digitalObject, 130, 90)
+            # create alternate representations for the object
+            large_filename = "large." + ext
+            medium_filename = "medium." + ext
+            small_filename = "small." + ext
+            with open(large,'rb') as stream:
+                obj.add_bytestream(large_filename,stream)
+            with open(medium,'rb') as stream:
+                obj.add_bytestream(medium_filename,stream)
+            with open(small,'rb') as stream:
+                obj.add_bytestream(small_filename,stream)
+            # store URLs to alternates
+            large_url = url + large_filename
+            medium_url = url + medium_filename
+            small_url = url + small_filename
+            obj.add_bytestream("dobj_proxy_large",large_url)
+            obj.add_bytestream("dobj_proxy_medium",medium_url)
+            obj.add_bytestream("dobj_proxy_small",small_url)
             # delete the temporary files
-            os.remove(tempfile_path)
-            os.remove(thumbnail_path)
-            # log results
-            path = self.storage._id_to_dirpath(key) + os.sep + thumbnail_filename
-            path = self._getPathRelativeToCacheRoot(path)
-            if self.base:
-                uri = self.base + path
-            else:
-                uri = path
-            # return the object id
-            return key, uri
+            os.remove(large)
+            os.remove(medium)
+            os.remove(small)
+            # return the object record
+            record = {}
+            record['cache_id'] = cacheid
+            record['dobj_url'] = Source
+            record['dobj_file_name'] = filename
+            record['dobj_file_extension'] = ext
+            record['dobj_proxy_large'] = large_url
+            record['dobj_proxy_medium'] = medium_url
+            record['dobj_proxy_small'] = small_url
+            return record
         except:
-            self.logger.warning("Could not store %s" % Source)
+            self.logger.warning("Could not write %s to the cache" % Source)

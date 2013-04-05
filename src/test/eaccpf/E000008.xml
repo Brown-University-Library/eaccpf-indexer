@@ -84,8 +84,7 @@
 
 </biogHist>
 </description>
-<relations>
-<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000704b.htm">
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000704b.htm">
 <relationEntry localType="Archival Collection">
 Victorian Government Records relating to Wardship and Adoption, Department of Human Services, State Government of Victoria (1864 - )
 </relationEntry>
@@ -179,13 +178,13 @@ Sutherland Homes for Children (1908 - 1991)
 </descriptiveNote>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Sutherland, Selina Murray MacDonald', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Sutherland, Selina Murray MacDonald', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Sutherland, Selina Murray MacDonald</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000008b.htm"></extptr>
 </bibref>
@@ -193,6 +192,10 @@ Sutherland Homes for Children (1908 - 1991)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000754.htm">
 <relationEntry localType="published">Article: Law and norm: justice administration and the human sciences in early juvenile justice in Victoria</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -214,6 +217,7 @@ Sutherland Homes for Children (1908 - 1991)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000746.htm">
 <relationEntry localType="published">Book: Selina's legacy: from VCAS to Oz Child</relationEntry>
 
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author">Hilton, Della</name>
@@ -228,6 +232,7 @@ Sutherland Homes for Children (1908 - 1991)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000654.htm">
 <relationEntry localType="published">Book Section: Selina Sutherland, Licensed child rescuer</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -249,6 +254,10 @@ Sutherland Homes for Children (1908 - 1991)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000093.htm">
 <relationEntry localType="published">Book: The Sutherland Story: a century of caring for children</relationEntry>
 
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author">Groll, Nancy</name>
@@ -262,6 +271,10 @@ Sutherland Homes for Children (1908 - 1991)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000013.htm">
 <relationEntry localType="published">Resource Section: Sutherland, Sulina Murray MacDonald (1839 - 1909)</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -281,6 +294,7 @@ Sutherland Homes for Children (1908 - 1991)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000134.htm">
 <relationEntry localType="digitalObject">23/11/1901 Miss Sutherland's Orphanage</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>Picture Victoria</repository>
@@ -295,6 +309,7 @@ Sutherland Homes for Children (1908 - 1991)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000057.htm">
 <relationEntry localType="digitalObject">Bible presented to Selina Sutherland</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>Berry Street</repository>
@@ -307,6 +322,7 @@ Sutherland Homes for Children (1908 - 1991)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000039.htm">
 <relationEntry localType="digitalObject">Selina Sutherland, pictured with children at a Christmas party at Sutherland Homes in Carlton</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>Diamond Valley Local History Digitisation Project, Yarra Plenty Regional Library</repository>
@@ -317,6 +333,10 @@ Sutherland Homes for Children (1908 - 1991)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000038.htm">
 <relationEntry localType="digitalObject">Selina Sutherland</relationEntry>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">

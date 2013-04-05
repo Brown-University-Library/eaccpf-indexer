@@ -26,10 +26,10 @@ class TransformerUnitTests(unittest.TestCase):
         Write a minimal digital object record to a file for testing.
         '''    
         outfile = open(Path,'w')
-        outfile.write('comment: DIGITAL OBJECT record from ????????.xml\n')
-        outfile.write('url: http://www.example.com/path/to/source/image.jpg\n')
-        outfile.write('path: /path/to/object/0000111100001111.jpg\n')
-        outfile.write('cache_id: 00001111000011110000111100001111\n')
+        outfile.put('comment: DIGITAL OBJECT record from ????????.xml\n')
+        outfile.put('url: http://www.example.com/path/to/source/image.jpg\n')
+        outfile.put('path: /path/to/object/0000111100001111.jpg\n')
+        outfile.put('cache_id: 00001111000011110000111100001111\n')
         outfile.close()
         return Path
     
@@ -38,13 +38,13 @@ class TransformerUnitTests(unittest.TestCase):
         Write a minimal EAC-CPF document for testing.
         '''
         outfile = open(Path,'w')
-        outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        outfile.write('<eac-cpf>\n')
-        outfile.write('<control></control>\n')
-        outfile.write('<identity></identity>\n')
-        outfile.write('<description></description>\n')
-        outfile.write('</eac-cpf>\n')
-        outfile.write('<!-- @source=http://www.example.com/NE00054.xml @referrer=http://www.example.com/NE00054b.htm -->')
+        outfile.put('<?xml version="1.0" encoding="UTF-8"?>\n')
+        outfile.put('<eac-cpf>\n')
+        outfile.put('<control></control>\n')
+        outfile.put('<identity></identity>\n')
+        outfile.put('<description></description>\n')
+        outfile.put('</eac-cpf>\n')
+        outfile.put('<!-- @source=http://www.example.com/NE00054.xml @referrer=http://www.example.com/NE00054b.htm -->')
         outfile.close()
         return Path
 
@@ -53,10 +53,10 @@ class TransformerUnitTests(unittest.TestCase):
         Write a minimal inferred record for testing.
         '''
         outfile = open(Path,'w')
-        outfile.write('comment: INFERRED DATA record for SOURCE\n')
-        outfile.write('locations: \n')
-        outfile.write('entities: \n')
-        outfile.write('topics: \n')
+        outfile.put('comment: INFERRED DATA record for SOURCE\n')
+        outfile.put('locations: \n')
+        outfile.put('entities: \n')
+        outfile.put('topics: \n')
         outfile.close()
         return Path
 
@@ -65,12 +65,12 @@ class TransformerUnitTests(unittest.TestCase):
         Write a minimal Solr Input Document for testing.
         '''
         outfile = open(Path,'w')
-        outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        outfile.write('<add>\n')
-        outfile.write('<doc>\n')
-        outfile.write('<field/>\n')
-        outfile.write('</doc></description>\n')
-        outfile.write('</add>\n')
+        outfile.put('<?xml version="1.0" encoding="UTF-8"?>\n')
+        outfile.put('<add>\n')
+        outfile.put('<doc>\n')
+        outfile.put('<field/>\n')
+        outfile.put('</doc></description>\n')
+        outfile.put('</add>\n')
         outfile.close()
         return Path
 
@@ -81,17 +81,17 @@ class TransformerUnitTests(unittest.TestCase):
         # a junk file
         self.junk = tempfile.mktemp()
         outfile = open(self.junk,'w')
-        outfile.write(self._generate(128))
+        outfile.put(self._generate(128))
         outfile.close()
         # a junk yml file
         self.yml = tempfile.mktemp(suffix=".yml")
         outfile = open(self.yml,'w')
-        outfile.write(self._generate(128))
+        outfile.put(self._generate(128))
         outfile.close()
         # a junk xml file
         self.xml = tempfile.mktemp(suffix=".xml")
         outfile = open(self.xml,'w')
-        outfile.write(self._generate(128))
+        outfile.put(self._generate(128))
         outfile.close()
         # some valid files
         self.digitalObject = self._writeDigitalObject(tempfile.mktemp(suffix=".yml"))

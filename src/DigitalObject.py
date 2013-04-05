@@ -23,7 +23,7 @@ class DigitalObject(object):
         '''
         return self.record
 
-    def store(self):
+    def put(self):
         '''
         Store the digital object proxy in the cache.
         '''

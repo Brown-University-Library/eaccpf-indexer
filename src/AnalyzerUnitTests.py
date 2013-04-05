@@ -147,12 +147,12 @@ class AnalyzerUnitTests(unittest.TestCase):
         cases = {
              'E000001.xml':8511,
              'E000002.xml':6852,
-             'E000003.xml':7455,
+             'E000003.xml':7553,
              'E000004.xml':2510,
              'E000005.xml':8576,
-             'E000006.xml':12519,
+             'E000006.xml':12605,
              'E000007.xml':26057,
-             'E000008.xml':16767,
+             'E000008.xml':17085,
              'E000009.xml':2988,
              }
         for filename in iter(cases.keys()):
@@ -236,8 +236,9 @@ class AnalyzerUnitTests(unittest.TestCase):
             infile = open(self.input + os.sep + filename,'r')
             data = infile.read()
             infile.close()
-            result = analyzer._isConformantToEacCpfSchema(data)
+            result, errors = analyzer._isConformantToEacCpfSchema(data)
             self.assertNotEqual(result, None)
+            self.assertNotEqual(errors, None)
             self.assertEqual(result, cases[filename])
 
     def test__isEacCpfFile(self):

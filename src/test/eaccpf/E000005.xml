@@ -99,11 +99,6 @@ Ballarat Children's Homes and Family Services (1984 - 1998)
 <p>In 1998 Ballarat Children's Homes and Family Services changed its name to Child and Family Services Ballarat Incorporated.</p>
 </descriptiveNote>
 </cpfRelation>
-<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000695b.htm">
-<relationEntry localType="Archival Collection">
-Records held by Child and Family Services Ballarat (c. 1865 - )
-</relationEntry>
-</cpfRelation>
 <cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
 <relationEntry localType="Organisation">
 The Who Am I? Project (2009 - 2012)
@@ -111,6 +106,11 @@ The Who Am I? Project (2009 - 2012)
 <descriptiveNote>
 <p>Child and Family Services Ballarat Incorporated is a partner CSO in the Who Am I? project.</p>
 </descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000695b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Child and Family Services Ballarat (c. 1865 - )
+</relationEntry>
 </cpfRelation>
 <cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000032b.htm">
 <relationEntry localType="Organisation">
@@ -123,13 +123,13 @@ Ballarat Orphanage (1909 - 1968)
 </relationEntry>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Child and Family Services Ballarat', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Child and Family Services Ballarat', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Child and Family Services Ballarat</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000005b.htm"></extptr>
 </bibref>
@@ -137,6 +137,7 @@ Ballarat Orphanage (1909 - 1968)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000010.htm">
 <relationEntry localType="published">Report: A Century of Child Care: the story of Ballarat Orphanage, 1865-1965</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -152,6 +153,7 @@ Ballarat Orphanage (1909 - 1968)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000008.htm">
 <relationEntry localType="published">Resource: Child and Family Services Ballarat</relationEntry>
 
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author"></name>
@@ -165,6 +167,10 @@ Ballarat Orphanage (1909 - 1968)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000009.htm">
 <relationEntry localType="published">Resource Section: Ballarat Orphanage and Children's Homes</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -182,6 +188,10 @@ Ballarat Orphanage (1909 - 1968)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000002.htm">
 <relationEntry localType="digitalObject">Ballarat Orphanage Interments</relationEntry>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">

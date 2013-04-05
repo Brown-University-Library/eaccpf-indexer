@@ -91,13 +91,13 @@ The Who Am I? Project (2009 - 2012)
 </descriptiveNote>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Centre for Excellence in Child and Family Welfare', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Centre for Excellence in Child and Family Welfare', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Centre for Excellence in Child and Family Welfare</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000002b.htm"></extptr>
 </bibref>
@@ -105,6 +105,7 @@ The Who Am I? Project (2009 - 2012)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000011.htm">
 <relationEntry localType="published">Report: It's Not Too Late To Care: report on the research into life outcomes for people brought up in institutional care in Victoria</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -120,6 +121,10 @@ The Who Am I? Project (2009 - 2012)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000013.htm">
 <relationEntry localType="digitalObject">CRISSP Forum for Senior Sector Managers and DHS, Notes</relationEntry>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">

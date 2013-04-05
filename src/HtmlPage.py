@@ -3,11 +3,11 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from BeautifulSoup import BeautifulSoup
 import logging
 import re
 import urllib2
 import urlparse
-from BeautifulSoup import BeautifulSoup
 
 class HtmlPage(object):
     '''
@@ -34,7 +34,7 @@ class HtmlPage(object):
 
     def _getAbsoluteUrl(self,Base,Path):
         '''
-        Get the absolute URL for a path..
+        Get the absolute URL for a path.
         '''
         url = urlparse.urljoin(Base,Path)
         return url.replace(' ','%20')
@@ -48,26 +48,13 @@ class HtmlPage(object):
 
     def _getDocumentParentUri(self, Uri):
         '''
-        Get the parent directory of the file in the specified URI.  Non / 
-        terminated URIs are treated as representing files.
+        Get the parent directory of the file in the specified URL.  Non / 
+        terminated URLs are treated as representing files.
         '''
         uri = self.getUrl()
         i = uri.rfind('/')
         url = uri[:i+1]
         return url.replace(' ','%20').encode("utf-8")
-
-    def _getEacCpfReference(self):
-        '''
-        Get the URL to the EAC-CPF alternate representation of this page.
-        '''
-        soup = BeautifulSoup(self.data)
-        meta = soup.findAll('meta', {'name':'EAC'})
-        try:
-            # we need to deal with relative URLs in this reference
-            # by appending the parent directory path
-            return meta[0].get('content')
-        except:
-            return None
 
     def _getFileName(self, Filename):
         '''
@@ -136,52 +123,39 @@ class HtmlPage(object):
         Get the HTML content.
         '''
         return self.data
-    
-    def getDigitalObjectRecord(self):
+        
+    def getDigitalObjectUrl(self):
         '''
-        Extract metadata for digital object from HTML. Return None if nothing found.
+        Get the URL to the digital object representation.
         '''
-        # the page is identified as being as digital object if it has
-        # 'image' or 'video' at the start of its title
         soup = BeautifulSoup(self.data)
-        title = soup.findAll('title')
         try:
-            if (title == None or not title[0].text.startswith("Image")):
-                return None
-        except:
-            return None
-        # build the digital object record here
-        data_table_tags = soup.findAll('dl', {'class':'content-summary'})
-        image_caption_tags = soup.findAll('div',{'class':'image-caption'})
-        try:
-            obj = {}
-            obj['comment'] = "DIGITAL OBJECT record for " + self.getRecordId()
-            obj['title'] = self._getTagContentByClass(data_table_tags,'dd','title')
-            obj['date'] = self._getTagContentByClass(data_table_tags,'dd','dodate')
-            obj['rights'] = self._getTagContentByClass(data_table_tags,'dd','dorights')
-            obj['caption'] = self._getTagContentByClass(image_caption_tags,'p','caption')            
-            # get the absolute URL to the image source
-            base = self.getUrl()
-            base = self._getDocumentParentUri(base)
-            rel = self._getTagAttributeValueByName(image_caption_tags,'img','src')
-            objurl = self._getAbsoluteUrl(base, rel)
-            obj['url'] = objurl
-            return obj
+            thumbnail = soup.find('div',{'class':'image-caption'}).find('a').find('img')
+            if thumbnail:
+                url = thumbnail['src']
+                if 'http' in url:
+                    # absolute url reference
+                    return url.encode("utf-8")
+                else:
+                    # relative url reference
+                    pageurl = self.getUrl()
+                    return urlparse.urljoin(pageurl,url).encode("utf-8")
         except:
             return None
         
-    def getEACCPF(self):
+    def getEacCpfUrl(self):
         '''
-        Get the EAC-CPF alternate representation for the page.
+        Get the URL to the EAC-CPF alternate representation of this page.
         '''
-        url = self._getEacCpfReference()
-        if url:
-            filename = self._getFileName(url)
-            response = urllib2.urlopen(url)
-            eaccpf = response.read()
-            return eaccpf, filename
-        return None
-    
+        soup = BeautifulSoup(self.data)
+        meta = soup.findAll('meta', {'name':'EAC'})
+        try:
+            # we need to deal with relative URLs in this reference
+            # by appending the parent directory path
+            return meta[0].get('content')
+        except:
+            return None
+
     def getFilename(self):
         '''
         Get the filename.
@@ -214,7 +188,7 @@ class HtmlPage(object):
         Get the record identifier for the record represented by the HTML page. 
         If the page does not have an identifier ID then None is returned.
         '''
-        if self.hasDigitalObject() or self.hasEacCpfAlternate():
+        if self.hasEacCpfAlternate():
             uri = self.getUrl()
             filename = self._getFileName(uri)
             name = filename.split('.')
@@ -239,21 +213,6 @@ class HtmlPage(object):
             except:
                 return None
     
-    def hasDigitalObject(self):
-        '''
-        Determine if this page has an embedded digital object.
-        '''
-        # the page is identified as being as digital object if it has
-        # 'image' or 'video' at the start of its title
-        soup = BeautifulSoup(self.data)
-        title = soup.findAll('title')
-        try:
-            if (title == None or not title[0].text.startswith("Image")):
-                return False
-            return True
-        except:
-            return False 
-
     def hasEacCpfAlternate(self):
         '''
         Determine if this page has an EAC-CPF alternate representation.

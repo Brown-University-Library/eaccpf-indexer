@@ -171,13 +171,13 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </descriptiveNote>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Sutherland Homes for Children', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Sutherland Homes for Children', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Sutherland Homes for Children</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000007b.htm"></extptr>
 </bibref>
@@ -185,6 +185,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000538.htm">
 <relationEntry localType="published">Book: Sutherland Home School 3660: June 3, 1910 -1975</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -198,6 +199,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000515.htm">
 <relationEntry localType="published">Resource Section: Submission no 183</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -217,6 +219,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000184.htm">
 <relationEntry localType="published">Resource Section: Sutherland Homes for Children and Selina Sutherland</relationEntry>
 
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author"></name>
@@ -235,6 +238,10 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000211.htm">
 <relationEntry localType="published">Resource: Victoria Government Gazette Online Archive 1836-1997</relationEntry>
 
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author"></name>
@@ -249,6 +256,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000135.htm">
 <relationEntry localType="published">Newspaper Article: Christmas Appeals: special need for help</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -266,6 +274,10 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000093.htm">
 <relationEntry localType="published">Book: The Sutherland Story: a century of caring for children</relationEntry>
 
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author">Groll, Nancy</name>
@@ -279,6 +291,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000013.htm">
 <relationEntry localType="published">Resource Section: Sutherland, Sulina Murray MacDonald (1839 - 1909)</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -298,6 +311,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000395.htm">
 <relationEntry localType="digitalObject">Freckle-faced Philanthropist : Please Let Me Help</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>National Library of Australia</repository>
@@ -308,6 +322,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000394.htm">
 <relationEntry localType="digitalObject">The Sutherland Homes: New Buildings to be Opened</relationEntry>
+
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
@@ -321,6 +336,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000393.htm">
 <relationEntry localType="digitalObject">It's Home for 50 Little Children</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>National Library of Australia</repository>
@@ -332,6 +348,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000391.htm">
 <relationEntry localType="digitalObject">Sutherland Homes for Children</relationEntry>
+
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
@@ -345,6 +362,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000392.htm">
 <relationEntry localType="digitalObject">Happy Children at Play</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>National Library of Australia</repository>
@@ -357,6 +375,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000060.htm">
 <relationEntry localType="digitalObject">Diamond Valley Hostel, Greensborough Unit, Admissions Register from 1 June 1979</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>Berry Street</repository>
@@ -368,6 +387,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000059.htm">
 <relationEntry localType="digitalObject">Sutherland Homes Register 1</relationEntry>
+
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
@@ -382,6 +402,7 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000040.htm">
 <relationEntry localType="digitalObject">Participant at Special Open Day at Sutherland Homes on Sunday November 20, 1983</relationEntry>
 
+
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
 <repository>Diamond Valley Local History Digitisation Project, Yarra Plenty Regional Library</repository>
@@ -392,6 +413,10 @@ Sutherland Child Youth and Family Services (1991 - 1994)
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000039.htm">
 <relationEntry localType="digitalObject">Selina Sutherland, pictured with children at a Christmas party at Sutherland Homes in Carlton</relationEntry>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">

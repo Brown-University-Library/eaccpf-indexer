@@ -10,11 +10,11 @@ import string
 import unittest
 import urllib2
 import tempfile
-from ImageCache import ImageCache
+from DigitalObjectCache import DigitalObjectCache
 
-class ImageCacheUnitTests(unittest.TestCase):
+class DigitalObjectCacheUnitTests(unittest.TestCase):
     '''
-    Executes unit tests against the image cache module.
+    Executes unit tests against the digital object cache module.
     '''
     
     def _generate(self, size=6, chars=string.ascii_uppercase + string.digits):
@@ -53,27 +53,32 @@ class ImageCacheUnitTests(unittest.TestCase):
 
     def test_init(self):
         '''
-        It should create an object instance and a concomitant file system store
+        It should create an object instance and a concomitant file system put
         for the image cache.
         '''
         # no path specified, no init
-        self.assertRaises(Exception, ImageCache(self.path))
+        self.assertRaises(Exception, DigitalObjectCache(self.path))
         # path specified, no init
-        cache = ImageCache(self.path, False)
+        cache = DigitalObjectCache(self.path, init=False)
         self.assertNotEqual(cache,None)
         self.assertEquals(cache.path,self.path)
         self.assertEquals(os.path.exists(self.path),True)
         # path specified, init
-        cache = ImageCache(self.path, True)
+        cache = DigitalObjectCache(self.path, init=True)
         self.assertNotEqual(cache,None)
         self.assertEquals(cache.path,self.path)
         self.assertEquals(os.path.exists(self.path),True)
+        # base url specified
+        cache = DigitalObjectCache(self.path, 'http://www.example.com/')
+        self.assertNotEqual(cache,None)
+        self.assertEquals(cache.path,self.path)
+        self.assertEquals('http://www.example.com/',cache.base)
     
     def test_getFileName(self):
         '''
         It should get the file name from a specified URL.
         '''
-        cache = ImageCache(self.path)
+        cache = DigitalObjectCache(self.path)
         paths = {
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png" : "tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.png" : "tn_Allandale%20Boys%20Cottage.png",
@@ -90,7 +95,7 @@ class ImageCacheUnitTests(unittest.TestCase):
         '''
         It should get the file name extension from a specified URL.
         '''
-        cache = ImageCache(self.path)
+        cache = DigitalObjectCache(self.path)
         paths = {
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.htm" : "htm",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_aust_inland_mission.jpg" : "jpg",
@@ -106,7 +111,7 @@ class ImageCacheUnitTests(unittest.TestCase):
         '''
         It should return the same hash for the file each time it is run.
         '''
-        cache = ImageCache(self.path)
+        cache = DigitalObjectCache(self.path)
         urls = [
                  "http://www.findandconnect.gov.au/site/images/aus-logo.png",
                  "http://www.findandconnect.gov.au/tas/site/images/logo-tasmania.png",
@@ -135,10 +140,10 @@ class ImageCacheUnitTests(unittest.TestCase):
 
     def test_resizeImage(self):
         '''
-        It should resize an image file to the specified dimensions.
+        It should resize an case file to the specified dimensions.
         '''
-        cache = ImageCache(self.path)
-        images = [
+        cache = DigitalObjectCache(self.path)
+        cases = [
                   "http://www.findandconnect.gov.au/site/images/aus-logo.png",
                   "http://www.findandconnect.gov.au/tas/site/images/logo-tasmania.png",
                   "http://www.findandconnect.gov.au/tas/objects/images/barrington_lodge_exterior.jpg",
@@ -146,10 +151,10 @@ class ImageCacheUnitTests(unittest.TestCase):
                   "http://www.findandconnect.gov.au/vic/objects/images/BM1-12A%20(355bl).jpg",
                   "http://www.findandconnect.gov.au/vic/objects/images/typing%20allambie.jpg",
                   ]
-        for image in images:
-            response = urllib2.urlopen(image)
+        for case in cases:
+            response = urllib2.urlopen(case)
             data = response.read()
-            ext = cache._getFileNameExtension(image)
+            ext = cache._getFileNameExtension(case)
             temp = tempfile.mktemp(suffix="." + ext)
             # write downloaded file
             outfile = open(temp,'w')
@@ -157,11 +162,11 @@ class ImageCacheUnitTests(unittest.TestCase):
             outfile.close()
             self.assertNotEqual(os.path.exists(temp),None)
             self.assertNotEqual(os.path.getsize(temp),0)
-            # get the source image dimensions
+            # get the source case dimensions
             img = Image.open(temp)
             source_width, source_height = img.size
             del(img)
-            # resize the image
+            # resize the case
             resized = cache._resizeImageAndSaveToNewFile(temp, 260, 180)
             img = Image.open(resized)
             resized_width, resized_height = img.size
@@ -173,49 +178,41 @@ class ImageCacheUnitTests(unittest.TestCase):
             self.assertEqual(os.path.exists(temp),False)
             self.assertEqual(os.path.exists(resized),False)
     
-    def test_store_and_retrieve(self):
+    def test_put_and_get(self):
         '''
-        It should store the data object and return a key. It should return the 
-        source data when queried with the item key.
+        It should put the data obj and return an identifier. It should 
+        return the source data when queried with the item key.
         '''
-        images = [
+        cases = [
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.png",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_aust_inland_mission.png",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kalumburu.png",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kartanup.png",
                   ]
-        keys = {}
-        cache = ImageCache(self.path)
-        # download the source images to a temporary directory
-        for image in images:
-            response = urllib2.urlopen(image)
-            data = response.read()
-            filename = cache._getFileName(image)
-            # write downloaded file
-            outfile = open(self.temp + os.sep + filename,'w')
-            outfile.write(data)
-            outfile.close()
-        # put images into the cache, save the item key
-        for filename in os.listdir(self.temp):
-            path = self.temp + os.sep + filename
-            key, objpath = cache.store(path)
-            self.assertNotEqual(key,None)
-            keys[key]= objpath
-        # fetch images from the cache using the key
-        copydir = tempfile.mkdtemp()
-        for key in keys:
-            source, filename, data = cache.retrieve(key)
-            self.assertNotEqual(source,None)
-            self.assertNotEqual(filename,None)
-            self.assertNotEqual(data,None)
-            path = copydir + os.sep + filename
-            outfile = open(path,'w')
-            outfile.write(data)
-            outfile.close()
+        baseurl = "http://www.findandconnect.gov.au/cache"
+        records = {}
+        cache = DigitalObjectCache(self.path,baseurl)
+        # add files to cache
+        for case in cases:
+            record = cache.put(case)
+            self.assertNotEqual(record,None)
+            self.assertNotEqual(record['id'],None)
+            cacheid = record['id']
+            records[cacheid]= record
+        # fetch cases from the cache using the key
+        tmpdir = tempfile.mkdtemp()
+        for key in records.keys():
+            obj = cache.get(key)
+            self.assertNotEqual(obj['source'],None)
+            self.assertNotEqual(obj['file-name'],None)
+            self.assertNotEqual(obj['file-extension'],None)
+            self.assertNotEqual(obj['large-url'],None)
+            self.assertNotEqual(obj['medium-url'],None)
+            self.assertNotEqual(obj['small-url'],None)
         # delete temporary files
-        self._rmdir(copydir)
-        self.assertEqual(os.path.exists(copydir), False)
+        self._rmdir(tmpdir)
+        self.assertEqual(os.path.exists(tmpdir), False)
         
 if __name__ == "__main__":
     unittest.main()

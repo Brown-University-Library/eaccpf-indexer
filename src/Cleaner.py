@@ -197,10 +197,10 @@ class Cleaner():
                     data = self.fixHtml(data)
                 else:
                     pass
-                # write data to specified file in the output directory.
+                # put data to specified file in the output directory.
                 outfile_path = output + os.sep + filename
                 outfile = open(outfile_path,'w')
-                outfile.write(data)
+                outfile.put(data)
                 outfile.close()
                 self.logger.info("Stored document " + filename)
             except Exception:

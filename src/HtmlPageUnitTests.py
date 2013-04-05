@@ -105,134 +105,76 @@ class HtmlPageUnitTests(unittest.TestCase):
 
     def test_init(self):
         '''
-        It should create an object instance, and the specified page content 
+        It should create an object instance, and the specified case content 
         should be loaded if it exists.
         '''
-        # create a list of pages to load and test
-        pages = [
-                 "http://www.findandconnect.gov.au/nsw/",                       # region home page
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",     # organization page
+        # create a list of cases to load and test
+        cases = [
+                 "http://www.findandconnect.gov.au/nsw/",                       # region home case
+                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",     # organization case
                  "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm"   # digital object
                  ]
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
+        for case in cases:
+            html = HtmlPage.HtmlPage(case)
             url = html.source
             data = html.data
             self.assertNotEqual(html, None)
-            self.assertEqual(page,url)
+            self.assertEqual(case,url)
             self.assertNotEqual(data, None)
-    
-    def test_hasDigitalObject(self):
-        '''
-        It should return true if a digital object properties table is present  
-        within the HTML. If a digital object properties table is not present it 
-        should return a negative result.
-        '''
-        pages = {
-                 "http://www.findandconnect.gov.au/nsw/" : False,                       # region home page
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : False,     # organization page
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm" : True,   # digital object
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm" : False,           # browse page
-                 }
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
-            result = html.hasDigitalObject()
-            self.assertEqual(result, pages[page])
     
     def test_hasEacCpfAlternate(self):
         '''
         It should return true if there is an EAC-CPF alternate representation 
-        specified for the HTML page. It should return false if none is 
+        specified for the HTML case. It should return false if none is 
         specified. 
         '''
-        pages = {
-                 "http://www.findandconnect.gov.au/nsw/" : False,                       # region home page
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : True,      # organization page
+        cases = {
+                 "http://www.findandconnect.gov.au/nsw/" : False,                       # region home case
+                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : True,      # organization case
                  "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm" : False   # digital object
                  }
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
+        for case in cases:
+            html = HtmlPage.HtmlPage(case)
             result = html.hasEacCpfAlternate()
-            self.assertEqual(result, pages[page])
+            self.assertEqual(result, cases[case])
     
-    def test_getDigitalObject(self):
-        '''
-        It should return a digital object record with the minimum required 
-        fields.
-        '''
-        pages = {
-                 "http://www.findandconnect.gov.au/nsw/" : False,                       # region home page
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : False,     # organization page
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000171.htm" : True,   # image
-                 "http://www.findandconnect.gov.au/vic/objects/D00000342.htm" : False,  # video digital object
-                 "http://www.findandconnect.gov.au/vic/objects/D00000277.htm" : True,   # image
-                 "http://www.findandconnect.gov.au/wa/objects/WD0000233.htm" : True,    # image
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": False,            # browse page
-                 }
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
-            result = html.getDigitalObjectRecord()
-            self.assertNotEqual(result,pages[page])
-            # the digital object must have a url property at minimum
-            if result:
-                self.assertIn("url",result)  
-                self.assertNotEqual(result['url'],None)
-    
-    def test_getDocumentParentUri(self):
+    def test_getDocumentParentUrl(self):
         '''
         It should return the URL of the first parent directory where a file is
         reference, and the directory itself where a directory is referenced.
         '''
-        pages = {
+        cases = {
                  "http://www.findandconnect.gov.au/nsw/" : "http://www.findandconnect.gov.au/nsw/",                         
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "http://www.findandconnect.gov.au/nsw/biogs/", 
                  "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm" : "http://www.findandconnect.gov.au/nsw/objects/"
                  }
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
-            result = html._getDocumentParentUri(page)
-            self.assertEqual(result, pages[page])
+        for case in cases:
+            html = HtmlPage.HtmlPage(case)
+            result = html._getDocumentParentUri(case)
+            self.assertEqual(result, cases[case])
     
-    def test_getRecordId(self):
-        '''
-        It should return a record id for pages that represent a digital object
-        or that have an EAC-CPF alternate representation.
-        '''
-        pages = {
-                 "http://www.findandconnect.gov.au/nsw/" : None,                            # region home page
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "NE00200b",    # organization page
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000171.htm" : "ND0000171",# image
-                 "http://www.findandconnect.gov.au/vic/objects/D00000342.htm" : "D00000342",# VIDEO digital object
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": None,                 # browse page
-                 }
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
-            result = html.getRecordId()
-            if result:
-                self.assertEqual(result,pages[page])
-
-    def test_getUri(self):
+    def test_getDocumentUrl(self):
         '''
         It should return the document URI.
         @todo this is not functioning correctly for the case where a base url is provided!!!
         '''
-        pages = [
+        cases = [
                  "http://www.findandconnect.gov.au/nsw/index.php",
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",
                  "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm",
                  "http://www.findandconnect.gov.au/vic/feedback.html",
                  ]
-        for page in pages:
-            html = HtmlPage.HtmlPage(page)
+        for case in cases:
+            html = HtmlPage.HtmlPage(case)
             result = html.getUrl()
-            self.assertEqual(result, page)
+            self.assertEqual(result, case)
             # the url should not have any spaces in it
             self.assertEqual(result.count(' '), 0)
         # path to the test data folder
         parentpath = self._getParentPath(HtmlPage.__file__)
         if not parentpath.endswith('/'):
             parentpath = parentpath + '/'
-        path = parentpath + 'test' + os.sep + 'data' + os.sep + 'html'
+        path = parentpath + 'test' + os.sep + 'html'
         # test cases for where a base url is provided
         bases = [
                  "http://www.example.com",
@@ -249,6 +191,24 @@ class HtmlPageUnitTests(unittest.TestCase):
                 url = html.getUrl()
                 fn = html.getFilename()
                 self.assertEqual(url, myurl + fn)
+
+    def test_getRecordId(self):
+        '''
+        It should return a record id for cases that represent a digital object
+        or that have an EAC-CPF alternate representation.
+        '''
+        cases = {
+                 "http://www.findandconnect.gov.au/nsw/" : None,                            # region home case
+                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "NE00200b",    # organization case
+                 "http://www.findandconnect.gov.au/nsw/objects/ND0000171.htm" : "ND0000171",# image
+                 "http://www.findandconnect.gov.au/vic/objects/D00000342.htm" : "D00000342",# VIDEO digital object
+                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": None,                 # browse case
+                 }
+        for case in cases:
+            html = HtmlPage.HtmlPage(case)
+            result = html.getRecordId()
+            if result:
+                self.assertEqual(result,cases[case])
             
 if __name__ == '__main__':
     unittest.main()

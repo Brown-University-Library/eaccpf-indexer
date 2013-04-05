@@ -119,13 +119,13 @@ Glastonbury at Colac (1977 - )
 </descriptiveNote>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Glastonbury Child and Family Services', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Glastonbury Child and Family Services', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Glastonbury Child and Family Services</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000003b.htm"></extptr>
 </bibref>
@@ -133,6 +133,7 @@ Glastonbury at Colac (1977 - )
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000003.htm">
 <relationEntry localType="published">Book: The Way It Was: Glastonbury 1928-1995</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -146,12 +147,13 @@ Glastonbury at Colac (1977 - )
 </objectXMLWrap>
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000002.htm">
-<relationEntry localType="published">Book: Advancing This Good Work: a history of Glastonbury Child &amp;amp; Family Services</relationEntry>
+<relationEntry localType="published">Book: Advancing This Good Work: a history of Glastonbury Child &amp;amp;amp; Family Services</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author">Jaggs, Donella</name>
-<title render="italic">Advancing This Good Work: a history of Glastonbury Child &amp;amp; Family Services</title>
+<title render="italic">Advancing This Good Work: a history of Glastonbury Child &amp;amp;amp; Family Services</title>
 <imprint>
 <place>Belmont, Victoria</place>
 <publisher>Glastonbury Child and Family Services</publisher>
@@ -162,6 +164,10 @@ Glastonbury at Colac (1977 - )
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000001.htm">
 <relationEntry localType="published">Resource Section: History of Glastonbury Child and Family Services</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">

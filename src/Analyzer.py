@@ -4,6 +4,7 @@ LICENSE file, which is part of this source code package.
 '''
 
 from BeautifulSoup import BeautifulSoup
+from StringIO import StringIO
 from datetime import datetime
 from lxml import etree
 import inspect
@@ -147,10 +148,10 @@ class Analyzer(object):
         Determine if the document is conformant to the EAC-CPF schema.
         '''
         try:
-            etree.XML(Data, self.parser)
-            return True
-        except Exception:
-            return False
+            etree.parse(StringIO(Data), self.parser)
+            return True, ''
+        except:
+            return False, self.parser.error_log
 
     def _isEacCpfFile(self, Path):
         '''
@@ -184,13 +185,15 @@ class Analyzer(object):
             analysis = {}
             # basic document quality indicators
             analysis['the analysis date'] = datetime.now()
-            analysis['conforms to schema'] = self._isConformantToEacCpfSchema(data)  
+            conformance, errors = self._isConformantToEacCpfSchema(data)
+            analysis['conforms to schema'] = conformance
             analysis['has maintenance record'] = self._hasMaintenanceRecord(data)
             analysis['has record identifier'] = self._hasRecordIdentifier(data)
             analysis['has resource relations'] = self._hasResourceRelations(data)
             analysis['the entity existence dates'] = self._getExistDates(data)
             analysis['the entity type'] = self._getEntityType(data)
             analysis['the entity local type'] = self._getEntityLocalType(data)
+            analysis['the parsing errors'] = errors
             analysis['the resource relations count'] = self._getResourceRelationsCount(data)
             analysis['the section content counts'] = self._getSectionContentCounts(data)
             analysis['the total content count'] = self._getTotalContentCount(data)
@@ -198,7 +201,7 @@ class Analyzer(object):
             # update the report file
             report['analysis'] = analysis
             outfile = open(Report + os.sep + Filename, 'w')
-            outfile.write(yaml.dump(report, default_flow_style=False, indent=4))
+            outfile.put(yaml.dump(report, default_flow_style=False, indent=4))
             outfile.close()
             self.logger.info("Wrote analysis for " + Filename)
         except:

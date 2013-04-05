@@ -32,7 +32,7 @@
 </maintenanceEvent>
 <maintenanceEvent>
 <eventType>updated</eventType>
-<eventDateTime standardDateTime="2012-09-06">2012-09-06</eventDateTime>
+<eventDateTime standardDateTime="2013-02-11">2013-02-11</eventDateTime>
 <agentType>human</agentType>
 <agent></agent>
 <eventDescription></eventDescription>
@@ -149,12 +149,13 @@ Wesley Mission Victoria (2010 - )
 </relationEntry>
 </cpfRelation>
 <resourceRelation resourceRelationType="subjectOf">
-<relationEntry localType="published">'Wesley Mission Melbourne', in <span style="font-style:italic">Find &amp;amp; Connect - Victoria</span>, </relationEntry>
+<relationEntry localType="published">'Wesley Mission Melbourne', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <title render="italic">Wesley Mission Melbourne</title>
 <bibseries>
-<title render="italic">Find &amp;amp; Connect - Victoria</title>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
 </bibseries>
 <extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000001b.htm"></extptr>
 </bibref>
@@ -162,6 +163,7 @@ Wesley Mission Victoria (2010 - )
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000033.htm">
 <relationEntry localType="published">Resource Section: Methodism</relationEntry>
+
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
@@ -181,6 +183,10 @@ Wesley Mission Victoria (2010 - )
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000005.htm">
 <relationEntry localType="published">Book: The Challenge of the City: the centenary history of Wesley Central Mission 1893-1993</relationEntry>
 
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
 <name type="author">Howe, Renate; Swain, Shurlee</name>
@@ -195,6 +201,10 @@ Wesley Mission Victoria (2010 - )
 </resourceRelation>
 <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000004.htm">
 <relationEntry localType="published">Resource Section: About Wesley - History</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
 
 <objectXMLWrap>
 <bibref xmlns="urn:isbn:1-931666-22-9">
