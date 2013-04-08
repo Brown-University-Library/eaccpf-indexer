@@ -191,16 +191,16 @@ class Cleaner():
                     # parser, so we'll save it here temporarily while we do our cleanup
                     src, ref = self._getSourceAndReferrerValues(source + os.sep + filename)
                     data = self.fixEacCpf(data)
-                    # put source/referrer comment back at the end of the file
+                    # write source/referrer comment back at the end of the file
                     data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
                 elif self._isHtml(source + os.sep + filename):
                     data = self.fixHtml(data)
                 else:
                     pass
-                # put data to specified file in the output directory.
+                # write data to specified file in the output directory.
                 outfile_path = output + os.sep + filename
                 outfile = open(outfile_path,'w')
-                outfile.put(data)
+                outfile.write(data)
                 outfile.close()
                 self.logger.info("Stored document " + filename)
             except Exception:

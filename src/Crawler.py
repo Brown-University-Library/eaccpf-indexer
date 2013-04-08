@@ -99,12 +99,13 @@ class Crawler(object):
                         # if the page represents a record
                         if html.getRecordId():
                             if 'eaccpf' in Actions and html.hasEacCpfAlternate():
-                                data, filename = html.getEACCPF()
-                                # append source and referrer values in comment
-                                src = html._getEacCpfUrl()
+                                src = html.getEacCpfUrl()
                                 ref = html.getUrl()
+                                eaccpf = EacCpf(src)
+                                data = eaccpf.data
+                                # append source and referrer values in comment
                                 data += '\n<!-- @Source=%(Source)s @referrer=%(referrer)s -->' % {"Source":src, "referrer":ref}
-                                self._write(Output, filename, data)
+                                self._write(Output, eaccpf.getFileName(), data)
                             if 'digitalobject' in Actions and html.hasEacCpfAlternate():
                                 url = html.getEacCpfUrl()
                                 eaccpf = EacCpf(url)
@@ -141,7 +142,7 @@ class Crawler(object):
         Execute crawl operation using specified parameters.
         '''
         # determine the type of crawl operation to be executed
-        actions = params.get("crawl","actions")
+        actions = params.get("crawl","actions").split(",")
         base = params.get("crawl","base")
         cache = params.get("crawl","cache")
         cacheurl = params.get("crawl","cache-url")

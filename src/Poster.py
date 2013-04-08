@@ -31,7 +31,7 @@ class Poster(object):
         '''
         Constructor
         '''
-        self.logger = logging.getLogger('feeder')
+        self.logger = logging.getLogger('Poster')
 
     def commit(self, solr, report=None, waitsearcher=False, waitflush=False):
         '''

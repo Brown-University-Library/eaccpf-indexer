@@ -50,7 +50,7 @@ class EacCpf(object):
         Parse unit date field to produce fromDate and toDate field values.
         @todo need to figure out what form these dates should be in!!!
         '''
-        return '2000-01-01', '2001-01-01'
+        return '2000-01-01T00:00:00Z', '2001-01-01T00:00:00Z'
     
     def _getFileName(self, Url):
         '''
@@ -127,7 +127,7 @@ class EacCpf(object):
             url = Record['xlink:href'].encode("utf-8")
             dobject = {}
             dobject['id'] = self._getId(url)
-            dobject['metadata_url'] = self.source.encode("utf-8")
+            dobject['metadata_url'] = str(self.source)
             dobject['presentation_url'] = url
             dobject['type'] = self.getEntityType()
             dobject['localtype'] = self.getLocalType()
@@ -138,7 +138,7 @@ class EacCpf(object):
             # date
             unitdate = Record.find('unitdate')
             if unitdate and unitdate.string:
-                udate = unitdate.string.encode("utf-8")
+                udate = str(unitdate.string)
                 fromdate, todate = self._getDateRange(udate)
                 if fromdate:
                     dobject['fromDate'] = fromdate
@@ -147,7 +147,7 @@ class EacCpf(object):
             # abstract
             abstract = Record.find('abstract')
             if abstract and abstract.string:
-                dobject['abstract'] = abstract.string.encode("utf-8")
+                dobject['abstract'] = str(abstract.string)
             # @todo location
             return dobject
         # no digital object found
@@ -176,6 +176,12 @@ class EacCpf(object):
             return etype.string.encode("utf-8")
         except:
             return None
+    
+    def getFileName(self):
+        '''
+        Get document file name.
+        '''
+        return self._getFileName(self.source)
     
     def getFunctions(self):
         '''

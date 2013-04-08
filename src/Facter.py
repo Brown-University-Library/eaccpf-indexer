@@ -384,25 +384,26 @@ class Facter(object):
         Execute analysis using the specified parameters.
         '''
         # get parameters
+        actions = params.get("infer","actions").split(",")
         output = params.get("infer","output")
         report = params.get("infer","report")
         sleep = float(params.get("infer","sleep"))
         source = params.get("infer","input")
-        types = params.get("infer","type")
         # create output folder
         self._makeCache(output)
         # execute inferences for each selected type
-        if 'location' in types:
-            google_api_key = params.get("infer","google_api_key")
-            geocoder = geocoders.Google(domain='maps.google.com.au')
-            self.inferLocations(source,output,geocoder,google_api_key,sleep,report)
-        if 'entity' in types:
-            # infer entities with Alchemy
-            #alchemy_api_key = params.get("infer","alchemy_api_key")
-            #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)
-            # infer entities with NLTK
-            # self.inferEntitiesWithNLTK(source, output, report)
-            # infer entities with Open Calais
-            calais_api_key = params.get("infer","calais_api_key")
-            self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
-    
+        for action in actions:
+            if 'location' in action:
+                google_api_key = params.get("infer","google_api_key")
+                geocoder = geocoders.Google(domain='maps.google.com.au')
+                self.inferLocations(source,output,geocoder,google_api_key,sleep,report)
+            if 'entity' in action:
+                # infer entities with Alchemy
+                #alchemy_api_key = params.get("infer","alchemy_api_key")
+                #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)
+                # infer entities with NLTK
+                # self.inferEntitiesWithNLTK(source, output, report)
+                # infer entities with Open Calais
+                calais_api_key = params.get("infer","calais_api_key")
+                self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
+        

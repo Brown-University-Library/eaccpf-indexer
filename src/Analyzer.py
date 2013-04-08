@@ -197,6 +197,7 @@ class Analyzer(object):
             analysis['the resource relations count'] = self._getResourceRelationsCount(data)
             analysis['the section content counts'] = self._getSectionContentCounts(data)
             analysis['the total content count'] = self._getTotalContentCount(data)
+            # @todo check paths for validity
             # field level quality checks
             # update the report file
             report['analysis'] = analysis
