@@ -311,11 +311,12 @@ class Facter(object):
             outfile.close()
             self.logger.info("Wrote inferred entities to " + yamlFilename)
         
-    def inferLocations(self, source, output, geocoder, api_key, sleep=0., report=None):
+    def inferLocations(self, source, output, geocoder, sleep=0., report=None):
         '''
         For each input file, extract the address name or address and 
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
+        @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
@@ -354,7 +355,7 @@ class Facter(object):
                                 # not specific enough. We create a record for each address, with the intent
                                 # that an archivist review the inferred data at a later date and then
                                 # manually select the appropriate address to retain for the record.
-                                for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False):
+                                for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False,region='au'):
                                     location = place.copy()
                                     location['address'] = self._cleanText(address)
                                     location['coordinates'] = [lat, lng]
@@ -394,9 +395,8 @@ class Facter(object):
         # execute inferences for each selected type
         for action in actions:
             if 'location' in action:
-                google_api_key = params.get("infer","google_api_key")
-                geocoder = geocoders.Google(domain='maps.google.com.au')
-                self.inferLocations(source,output,geocoder,google_api_key,sleep,report)
+                geocoder = geocoders.GoogleV3()
+                self.inferLocations(source,output,geocoder,sleep,report)
             if 'entity' in action:
                 # infer entities with Alchemy
                 #alchemy_api_key = params.get("infer","alchemy_api_key")
