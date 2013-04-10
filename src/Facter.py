@@ -5,10 +5,11 @@ LICENSE file, which is part of this source code package.
 
 from AlchemyAPI import AlchemyAPI
 from BeautifulSoup import BeautifulSoup as soup
-from geopy import geocoders
+from geopy import *
 from pythoncalais import Calais
 import logging
 import os
+import re
 import time
 import yaml 
 
@@ -60,6 +61,40 @@ class Facter(object):
         if 'T00:00:00Z' in date:
             return date
         return date + "T00:00:00Z"
+    
+    def _getAddressParts(self, Address):
+        '''
+        Parse a location record or address string into components.
+        '''
+        # defaults
+        street = city = region = postal = country = ''
+        try:
+            # split the address string into segments
+            segments = Address.split(',')
+            country = segments.pop().strip()
+            # a token is a postal code if it has numbers in it
+            tokens = segments.pop().strip().split(' ')
+            for token in reversed(tokens):
+                if any(c.isdigit() for c in token):
+                    postal = token + ' ' + postal
+                    tokens.pop()
+            postal = postal.strip()
+            # the next token should be the region and the remainder should
+            # be the city
+            for token in reversed(tokens):
+                if region == '':
+                    region = tokens.pop().strip()
+                elif city == '':
+                    city = ' '.join(tokens).strip()
+            if segments and city == '':
+                city = segments.pop().strip()
+            # the remaining segments should be part of the street
+            # address
+            if segments:
+                street = ','.join(segments).strip()
+        except:
+            pass
+        return street, city, region, postal, country
     
     def _getCalaisResultAsDictionary(self, result):
         '''
@@ -360,10 +395,12 @@ class Facter(object):
                                     location['address'] = self._cleanText(address)
                                     location['coordinates'] = [lat, lng]
                                     # split the address into city, region, country
-                                    parts = address.split(',')
-                                    location['country'] = self._cleanText(parts[len(parts)-1])
-                                    location['region'] = self._cleanText(parts[len(parts)-2])
-                                    location['city'] = self._cleanText(parts[len(parts)-3])
+                                    street, city, region, postal_code, country = self._getAddressParts(address)
+                                    location['country'] = country
+                                    location['postal_code'] = postal_code
+                                    location['region'] = region
+                                    location['city'] = city
+                                    location['street'] = street
                                     # add the location record
                                     inferred['locations'].append(location)
                     except Exception:
