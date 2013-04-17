@@ -17,7 +17,7 @@ from Transformer import Transformer
 
 class Indexer(object):
     '''
-    A utility class for indexing EAC-CPF and relate content from a web site or 
+    A utility class for indexing EAC-CPF and related content from a web site or 
     file system, inferring data, post-processing and posting that data to an 
     Apache Solr search index.
     '''
@@ -36,15 +36,20 @@ class Indexer(object):
         sh.setFormatter(formatter)
         self.logger.addHandler(sh)
         # configure command line options
-        self.parser = argparse.ArgumentParser(description="Harvest, process, and post EAC-CPF, HTML and related metadata to an Apache Solr/Lucene index.")
+        self.parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to an Apache Solr/Lucene index")
         self.parser.add_argument('config', help="path to configuration file")
-        self.parser.add_argument('--clean', help="clean input files of common errors before further processing", action='store_true')
+        self.parser.add_argument('--clean', help="clean metadata files of common errors and write updated files", action='store_true')
         self.parser.add_argument('--crawl', help="crawl file system or web site for metadata files", action='store_true')
-        self.parser.add_argument('--infer', help="infer concepts, entities, locations from free text fields", action='store_true')
-        self.parser.add_argument('--post', help="post Solr Input Documents to Apache Solr index", action='store_true')
-        self.parser.add_argument('--report', help="generate a report and write to specified path", action='store_true')
-        self.parser.add_argument('--transform', help="transform EAC-CPF files to Solr Input Document format", action='store_true')
-        #self.parser.add_argument('--update', help="process only those files that have changed since the last run", action='store_true')
+        self.parser.add_argument('--infer', help="infer concepts, entities, locations from metadata", action='store_true')
+        self.parser.add_argument('--post', help="post Solr Input Documents to index", action='store_true')
+        self.parser.add_argument('--report', help="generate report", action='store_true')
+        self.parser.add_argument('--transform', help="transform metadata to Solr Input Document format", action='store_true')
+        self.parser.add_argument('--update', help="process only those files that have changed since the last run", action='store_true')
+    
+    def run(self):
+        '''
+        Start processing.
+        '''
         # parse the command line arguments
         try:
             self.args = self.parser.parse_args()
@@ -59,11 +64,6 @@ class Indexer(object):
         except Exception, e:
             self.logger.critical("Could not load the specified configuration file")
             sys.exit(e)
-    
-    def run(self):
-        '''
-        Start processing.
-        '''
         # start clock
         start = datetime.datetime.now()
         # if crawl

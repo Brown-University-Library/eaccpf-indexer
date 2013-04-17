@@ -5,11 +5,10 @@ LICENSE file, which is part of this source code package.
 
 from AlchemyAPI import AlchemyAPI
 from BeautifulSoup import BeautifulSoup as soup
-from geopy import *
 from pythoncalais import Calais
+from geopy import * 
 import logging
 import os
-import re
 import time
 import yaml 
 
@@ -71,27 +70,27 @@ class Facter(object):
         try:
             # split the address string into segments
             segments = Address.split(',')
-            country = segments.pop().strip()
+            country = segments.pop().strip().encode('utf8')
             # a token is a postal code if it has numbers in it
             tokens = segments.pop().strip().split(' ')
             for token in reversed(tokens):
                 if any(c.isdigit() for c in token):
                     postal = token + ' ' + postal
                     tokens.pop()
-            postal = postal.strip()
+            postal = str(postal.strip())
             # the next token should be the region and the remainder should
             # be the city
             for token in reversed(tokens):
                 if region == '':
-                    region = tokens.pop().strip()
+                    region = tokens.pop().strip().encode('utf8')
                 elif city == '':
-                    city = ' '.join(tokens).strip()
+                    city = ' '.join(tokens).strip().encode('utf8')
             if segments and city == '':
-                city = segments.pop().strip()
+                city = segments.pop().strip().encode('utf8')
             # the remaining segments should be part of the street
             # address
             if segments:
-                street = ','.join(segments).strip()
+                street = ','.join(segments).strip().encode('utf8')
         except:
             pass
         return street, city, region, postal, country
@@ -245,6 +244,7 @@ class Facter(object):
         # Create an AlchemyAPI object, load API key
         alchemy = AlchemyAPI.AlchemyAPI() 
         alchemy.setAPIKey(api_key)
+
         # process files
         files = os.listdir(source)
         for filename in files:
@@ -339,7 +339,7 @@ class Facter(object):
             # get the free text fields from the record
             freetext = self._getFreeTextFields(xml)
             self.logger.info(freetext)
-            # infer entities
+            # infer entitiesnot
             # write output record
             outfile = open(output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)
@@ -348,74 +348,75 @@ class Facter(object):
         
     def inferLocations(self, source, output, geocoder, sleep=0., report=None):
         '''
-        For each input file, extract the address name or address and 
+        For each EAC-CPF input file, extract the address from each cronitem and
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
-        @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md
+        @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md.
         '''
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
         files = os.listdir(source)
         for filename in files:
-            try:
-                # read source data
-                infile = open(source + os.sep + filename,'r')
-                infile_data = infile.read()
-                infile.close()
-                xml = soup(infile_data)
-                # get the output inferred
-                yamlFilename = self._getYamlFilename(filename)
-                inferred = self._getRecord(output,yamlFilename)
-                # clear the existing locations section before populating
-                inferred['locations'] = []
-                # for each chronitem
-                for item in xml.findAll('chronitem'):
-                    try:
-                        # build the place record
-                        place = {}
-                        self._setStringField(place,'place',item.find('placeentry'))
-                        self._setStringField(place,'event',item.find('event'))
-                        if item.find('fromdate') is not None:
-                            self._setDateField(place,'eventFrom',item.find('fromdate','standarddate'))
-                        if item.find('todate') is not None:
-                            self._setDateField(place,'eventTo',item.find('todate','standarddate'))
-                        # if there is an existing GIS attribute attached to the record, don't process it
-                        if 'place' in place and place['place'] is not None:
-                            if 'GIS' in place or 'gis' in place:
-                                inferred['locations'].append(place)
-                                self.logger.warning("Record has existing location data")
-                            else:
-                                # ISSUE #5 the geocoder can return multiple locations when an address is
-                                # not specific enough. We create a record for each address, with the intent
-                                # that an archivist review the inferred data at a later date and then
-                                # manually select the appropriate address to retain for the record.
-                                for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False,region='au'):
-                                    location = place.copy()
-                                    location['address'] = self._cleanText(address)
-                                    location['coordinates'] = [lat, lng]
-                                    # split the address into city, region, country
-                                    street, city, region, postal_code, country = self._getAddressParts(address)
-                                    location['country'] = country
-                                    location['postal_code'] = postal_code
-                                    location['region'] = region
-                                    location['city'] = city
-                                    location['street'] = street
-                                    # add the location record
-                                    inferred['locations'].append(location)
-                    except Exception:
-                        self.logger.warning("Could not complete processing on place record in " + filename, exc_info=True)
-                        continue
-                # write output inferred
-                outfile = open(output + os.sep + yamlFilename, 'w')
-                yaml.dump(inferred,outfile)
-                outfile.close()
-                self.logger.info("Wrote inferred locations to " + yamlFilename)
-                # sleep between requests
-                time.sleep(sleep)
-            except Exception:
-                self.logger.warning("Could not resolve location for " + filename, exc_info=True)
-                continue
+            if filename.endswith(".xml"):
+                try:
+                    # read source data
+                    infile = open(source + os.sep + filename,'r')
+                    infile_data = infile.read()
+                    infile.close()
+                    xml = soup(infile_data)
+                    # if the file already exists, load the current data
+                    yamlFilename = self._getYamlFilename(filename)
+                    inferred = self._getRecord(output,yamlFilename)
+                    # clear the existing locations section before populating
+                    inferred['locations'] = []
+                    # for each chronitem
+                    for item in xml.findAll('chronitem'):
+                        try:
+                            # build the place record
+                            place = {}
+                            self._setStringField(place,'place',item.find('placeentry'))
+                            self._setStringField(place,'event',item.find('event'))
+                            if item.find('fromdate') is not None:
+                                self._setDateField(place,'eventFrom',item.find('fromdate','standarddate'))
+                            if item.find('todate') is not None:
+                                self._setDateField(place,'eventTo',item.find('todate','standarddate'))
+                            # if there is an existing GIS attribute attached to the record, don't process it
+                            if 'place' in place and place['place'] is not None:
+                                if 'GIS' in place or 'gis' in place:
+                                    inferred['locations'].append(place)
+                                    self.logger.warning("Record has existing location data")
+                                else:
+                                    # ISSUE #5 the geocoder can return multiple locations when an address is
+                                    # not specific enough. We create a record for each address, with the intent
+                                    # that an archivist review the inferred data at a later date and then
+                                    # manually select the appropriate address to retain for the record.
+                                    for address, (lat, lng) in geocoder.geocode(place['place'],exactly_one=False,region='au'):
+                                        location = place.copy()
+                                        location['address'] = self._cleanText(address)
+                                        location['coordinates'] = [lat, lng]
+                                        # split the address into parts
+                                        street, city, region, postal_code, country = self._getAddressParts(address)
+                                        location['country'] = country
+                                        location['postal_code'] = postal_code
+                                        location['region'] = region
+                                        location['city'] = city
+                                        location['street'] = street
+                                        # add the location record
+                                        inferred['locations'].append(location)
+                        except Exception:
+                            self.logger.warning("Could not complete processing on place record in " + filename, exc_info=True)
+                            continue
+                    # write inferred data to file
+                    outfile = open(output + os.sep + yamlFilename, 'w')
+                    yaml.dump(inferred,outfile)
+                    outfile.close()
+                    self.logger.info("Wrote inferred locations to " + yamlFilename)
+                    # sleep between requests
+                    time.sleep(sleep)
+                except Exception:
+                    self.logger.warning("Could not resolve location for " + filename, exc_info=True)
+                    continue
 
     def run(self, params):
         '''
@@ -434,7 +435,7 @@ class Facter(object):
             if 'location' in action:
                 geocoder = geocoders.GoogleV3()
                 self.inferLocations(source,output,geocoder,sleep,report)
-            if 'entity' in action:
+            if 'entities' in action:
                 # infer entities with Alchemy
                 #alchemy_api_key = params.get("infer","alchemy_api_key")
                 #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)

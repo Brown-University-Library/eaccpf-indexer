@@ -11,7 +11,6 @@ import fnmatch
 import logging
 import os
 import time
-import yaml
         
 class Crawler(object):
     '''
@@ -63,26 +62,16 @@ class Crawler(object):
             self._clearFiles(Path)
             self.logger.info("Cleared output folder at " + Path)
     
-    def _write(self, Path, Filename, Data):
-        '''
-        Write data to the file in the specified path.
-        '''
-        outfile_path = Path + os.sep + Filename
-        outfile = open(outfile_path,'w')
-        outfile.write(Data)
-        outfile.close()
-        self.logger.info("Stored document " + Filename)
-        
-    def crawlFileSystem(self, Source, Output, Actions=['html'], Base=None, Report=None, Sleep=0.):
+    def crawlFileSystem(self, Source, Output, Report, Actions=['html'], Base=None, Sleep=0.):
         '''
         Crawl file system for HTML files. Execute the specified indexing 
         actions on each file. Store files to the Output path. Sleep for the 
         specified number of seconds after fetching data.
         '''
-        # add a trailing / to the Base url if it doesn't exist
+        # make sure that Base has a trailing /
         if not Base.endswith('/'):
             Base = Base + '/'
-        # walk file system and look for html, htm files
+        # walk the file system and look for html files
         for path, _, files in os.walk(Source):
             # construct the public url for the file
             if path.startswith('/'):
@@ -95,48 +84,35 @@ class Crawler(object):
                 if self._isHTML(filename):
                     self.logger.debug("Found document " + path + os.sep + filename)
                     try:
-                        html = HtmlPage(path + os.sep + filename, baseurl)
                         # if the page represents a record
-                        if html.getRecordId():
+                        html = HtmlPage(path + os.sep + filename, baseurl)
+                        if html.hasRecord():
+                            metadata = html.getEacCpfUrl()
+                            presentation = html.getUrl()
                             if 'eaccpf' in Actions and html.hasEacCpfAlternate():
-                                src = html.getEacCpfUrl()
-                                ref = html.getUrl()
-                                eaccpf = EacCpf(src)
-                                data = eaccpf.data
-                                # append source and referrer values in comment
-                                data += '\n<!-- @Source=%(Source)s @referrer=%(referrer)s -->' % {"Source":src, "referrer":ref}
-                                self._write(Output, eaccpf.getFileName(), data)
+                                eaccpf = EacCpf(metadata,presentation)
+                                eaccpf.write(Output)
                             if 'digitalobject' in Actions and html.hasEacCpfAlternate():
-                                url = html.getEacCpfUrl()
-                                eaccpf = EacCpf(url)
+                                eaccpf = EacCpf(metadata,presentation)
                                 dobjects = eaccpf.getDigitalObjects()
-                                if len(dobjects) > 0:
-                                    for dobject in dobjects:
-                                        # cache the object at the referenced url
-                                        src = dobject['dobj_url']
-                                        cached = self.cache.put(src)
-                                        for key in cached.keys():
-                                            dobject[key] = cached[key]
-                                        # write data to output
-                                        filename = dobject['id'] + ".yml"
-                                        data = yaml.dump(dobject, default_flow_style=False, indent=4)
-                                        self._write(Output, filename, data)
+                                for dobject in dobjects:
+                                    cacherecord = self.cache.put(dobject)
+                                    dobject.write(Output, cacherecord)
                             if 'html' in Actions:
-                                data = html.getContent()
-                                self._write(Output, filename, data)
+                                html.write(Output)
                     except Exception:
                         self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
                         time.sleep(Sleep)
     
-    def crawlWebSite(self, source, output, actions=['html'], report=None, sleep=0.):
+    def crawlWebSite(self, source, output, report, actions=['html'], sleep=0.):
         '''
         Crawl web site for HTML entity pages. When such a page is found, 
         execute the specified indexing actions. Store files to the output path.
         Sleep for the specified number of seconds after fetching data.
         '''
         self.logger.warning("Web site crawling is not implemented")
-        
+
     def run(self, params):
         '''
         Execute crawl operation using specified parameters.
@@ -159,11 +135,10 @@ class Crawler(object):
         # check state before starting
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         assert os.path.exists(cache), self.logger.warning("Cache path does not exist: " + cache)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # start processing
         if (self._isUrl(source)):
-            self.crawlWebSite(source,output,report,sleep)
+            self.crawlWebSite(source,output,report,actions,sleep)
         else:
-            self.crawlFileSystem(source,output,actions,base,report,sleep)
+            self.crawlFileSystem(source,output,report,actions,base,sleep)
 

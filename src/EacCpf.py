@@ -4,7 +4,7 @@ LICENSE file, which is part of this source code package.
 '''
 
 from BeautifulSoup import BeautifulSoup
-from HtmlPage import HtmlPage
+from DigitalObject import DigitalObject
 import logging
 import os
 import urllib2
@@ -14,47 +14,20 @@ class EacCpf(object):
     An EAC-CPF document.
     '''
 
-    def __init__(self, Source):
+    def __init__(self, Source, Presentation):
         '''
         Constructor
         '''
         # logger
         self.logger = logging.getLogger('EacCpf')
         self.source = Source
+        self.presentation = Presentation
         # load the document content
         self._load()
     
-    def _getDigitalObjectType(self, Url):
-        '''
-        Determine the type of data a URL represents.
-        '''
-        images = ['.gif','.jpg','.jpeg','.png']
-        video = ['.avi','.mp4','.mpg','.mepg']
-        _, ext = os.path.splitext(Url)
-        if ext: 
-            if ext.lower() in images:
-                return 'image'
-            elif ext.lower() in video:
-                return 'video'
-        return 'other'
-
-    def _getDigitalObjectUrl(self, Source):
-        '''
-        Extract the digital object source file URL from its HTML record page.
-        '''
-        html = HtmlPage(Source)
-        return html.getDigitalObjectUrl()
-    
-    def _getDateRange(self, UnitDate):
-        '''
-        Parse unit date field to produce fromDate and toDate field values.
-        @todo need to figure out what form these dates should be in!!!
-        '''
-        return '2000-01-01T00:00:00Z', '2001-01-01T00:00:00Z'
-    
     def _getFileName(self, Url):
         '''
-        Get file name from URL.
+        Get the file name from a URL.
         '''
         if "/" in Url:
             parts = Url.split("/")
@@ -68,6 +41,18 @@ class EacCpf(object):
         filename = self._getFileName(Url)
         recordid, _ = os.path.splitext(filename)
         return recordid
+    
+    def _getLocation(self):
+        '''
+        '''
+        pass
+    
+    def _getTagString(self,Tag):
+        '''
+        '''
+        if Tag and Tag.string:
+            return str(Tag.string)
+        return None
         
     def _isEACCPF(self, Path):
         '''
@@ -123,33 +108,16 @@ class EacCpf(object):
         # if the resource contains a relationEntry with localType attribute = 'digitalObject'
         entry = Record.find('relationentry',{'localtype':'digitalObject'})
         if entry:
-            # digital object record
-            url = Record['xlink:href'].encode("utf-8")
-            dobject = {}
-            dobject['id'] = self._getId(url)
-            dobject['metadata_url'] = str(self.source)
-            dobject['presentation_url'] = url
-            dobject['type'] = self.getEntityType()
-            dobject['localtype'] = self.getLocalType()
-            dobject['dobj_url'] = self._getDigitalObjectUrl(url)
-            dobject['dobj_type'] = self._getDigitalObjectType(url)
-            dobject['title'] = str(entry.string)
-            # functions
-            # date
-            unitdate = Record.find('unitdate')
-            if unitdate and unitdate.string:
-                udate = str(unitdate.string)
-                fromdate, todate = self._getDateRange(udate)
-                if fromdate:
-                    dobject['fromDate'] = fromdate
-                if todate:
-                    dobject['toDate'] = todate
-            # abstract
-            abstract = Record.find('abstract')
-            if abstract and abstract.string:
-                dobject['abstract'] = str(abstract.string)
-            # @todo location
-            return dobject
+            metadata = str(self.source)
+            presentation = Record['xlink:href'].encode("utf-8")
+            title = str(entry.string)
+            abstract = self._getTagString(Record.find('abstract'))
+            entitytype = self.getEntityType()
+            localtype = self.getLocalType()
+            # location
+            unitdate = self._getTagString(Record.find('unitdate'))
+            dobj = DigitalObject(metadata,presentation,title,abstract,entitytype,localtype,unitdate)
+            return dobj
         # no digital object found
         return None
 
@@ -157,9 +125,9 @@ class EacCpf(object):
         '''
         Get the list of digital objects referenced in the document.
         '''
+        dobjects = []
         soup = BeautifulSoup(self.data)
         resources = soup.findAll('resourcerelation')
-        dobjects = []
         for resource in resources:
             dobject = self.getDigitalObject(resource)
             if dobject:
@@ -209,6 +177,13 @@ class EacCpf(object):
         except:
             return None
     
+    def getRecordId(self):
+        '''
+        Get the record identifier.
+        @todo the identifier should come from the data rather than the file name
+        '''
+        return self._getId(self.source)
+    
     def hasDigitalObjects(self):
         '''
         Determine if the EAC-CPF record has digital object references.
@@ -217,3 +192,12 @@ class EacCpf(object):
         if objects and len(objects) > 0:
             return True
         return False
+    
+    def write(self, Path):
+        '''
+        Write the EAC-CPF data to the specified path.
+        '''
+        outfile = (Path + os.sep + self.getFileName(),'w')
+        outfile.write(self.data)
+        outfile.write('\n<!-- @Source=%(Source)s @referrer=%(referrer)s -->' % {"Source":self.source, "referrer":self.presentation})
+        outfile.close()

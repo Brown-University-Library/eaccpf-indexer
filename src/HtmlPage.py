@@ -4,7 +4,9 @@ LICENSE file, which is part of this source code package.
 '''
 
 from BeautifulSoup import BeautifulSoup
+
 import logging
+import os
 import re
 import urllib2
 import urlparse
@@ -56,14 +58,14 @@ class HtmlPage(object):
         url = uri[:i+1]
         return url.replace(' ','%20').encode("utf-8")
 
-    def _getFileName(self, Filename):
+    def _getFileName(self, Url):
         '''
         Get the filename from the specified URI or path.
         '''
-        if "/" in Filename:
-            parts = Filename.split("/")
+        if "/" in Url:
+            parts = Url.split("/")
             return parts[-1]
-        return Filename
+        return Url
 
     def _getTagAttributeValueByName(self, Tags, Type, Attribute):
         '''l
@@ -226,3 +228,20 @@ class HtmlPage(object):
             return False
         except:
             return False
+
+    def hasRecord(self):
+        '''
+        Determine if the HTML page has a record.
+        '''
+        if self.getRecordId():
+            return True
+        return False
+    
+    def write(self, Path):
+        '''
+        Write data to the file in the specified path.
+        '''
+        outfile = open(Path + os.sep + self.getFilename(),'w')
+        outfile.write(self.data)
+        outfile.close()
+        self.logger.info("Stored Html document " + self.getRecordId())

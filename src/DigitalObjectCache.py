@@ -9,7 +9,6 @@ import logging
 import os
 import shutil
 import tempfile
-import urllib
 import urllib2
 from pairtree import PairtreeStorageFactory
 
@@ -52,14 +51,14 @@ class DigitalObjectCache(object):
         for filename in files:
             os.remove(path + os.sep + filename)
 
-    def _getFileName(self, Filename):
+    def _getFileName(self, Url):
         '''
         Get the filename from the specified URI or path.
         '''
-        if "/" in Filename:
-            parts = Filename.split("/")
+        if "/" in Url:
+            parts = Url.split("/")
             return parts[-1]
-        return Filename
+        return Url
 
     def _getFileNameExtension(self, Filename):
         '''
@@ -171,7 +170,7 @@ class DigitalObjectCache(object):
         except:
             return None
 
-    def put(self, Source):
+    def put(self, DigitalObject):
         '''
         Store the digital object located at the specified Source location in 
         the file storage. Generate alternate image representations of the 
@@ -179,13 +178,14 @@ class DigitalObjectCache(object):
         source URL, and URLs to the cached alternate representations.
         '''
         # source file name
-        filename = self._getFileName(Source)
+        source = DigitalObject.source
+        filename = self._getFileName(source)
         ext = self._getFileNameExtension(filename)
         # write source object to temporary file
         digitalObject = tempfile.mktemp(suffix="." + ext)
-        if (self._isUrl(Source)):
+        if (self._isUrl(source)):
             # replace spaces in URL before downloading
-            url = Source.replace(' ','%20')
+            url = source.replace(' ','%20')
             # download file
             response = urllib2.urlopen(url)
             data = response.read()
@@ -193,7 +193,7 @@ class DigitalObjectCache(object):
             outfile.write(data)
             outfile.close()
         else:
-            shutil.copyfile(Source, digitalObject)
+            shutil.copyfile(source, digitalObject)
         # generate an id for the object
         cacheid = self._getHash(digitalObject)
         # determine the URL for the cache root
@@ -207,7 +207,7 @@ class DigitalObjectCache(object):
             # create a new cache object
             obj = self.storage.get_object(cacheid, create_if_doesnt_exist=True)
             # set object source location, file name and extension 
-            obj.add_bytestream("dobj_url",Source)
+            obj.add_bytestream("dobj_url",source)
             obj.add_bytestream("dobj_file_name",filename)
             obj.add_bytestream("dobj_file_extension",ext)
             # create alternate representations
@@ -238,7 +238,7 @@ class DigitalObjectCache(object):
             # return the object record
             record = {}
             record['cache_id'] = cacheid
-            record['dobj_url'] = Source
+            record['dobj_url'] = source
             record['dobj_file_name'] = filename
             record['dobj_file_extension'] = ext
             record['dobj_proxy_large'] = large_url
@@ -246,4 +246,4 @@ class DigitalObjectCache(object):
             record['dobj_proxy_small'] = small_url
             return record
         except:
-            self.logger.warning("Could not write %s to the cache" % Source)
+            self.logger.warning("Could not write %s to the cache" % source)

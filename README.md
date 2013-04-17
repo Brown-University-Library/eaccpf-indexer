@@ -42,20 +42,21 @@ Thanks:
 License
 -------
 
-Please see the LICENSE file for licence information.
+Please see the LICENSE file for license information.
 
 
 Installation
 ------------
 
-Requires Python 2.7.x and lxml, pyYAML, Pairtree, Simple JSON libraries. 
+Requires Python 2.7.x and geopy, lxml, pyYAML, Pairtree, Simple JSON libraries. 
 
+ * pip install geopy
  * pip install lxml
  * pip install pairtree
  * pip install pyyaml
  * pip install simplejson
 
-To infer data from EACCPF files, a free account and associated API key is 
+To infer data from EAC-CPF files, a free account and associated API key is 
 required for the following services:
 
  * Alchemy - http://www.alchemyapi.com/
@@ -80,7 +81,7 @@ report on the quality of the EACCPF that is indexed.
   --infer      Infer concepts, entities, locations from free text fields
   --post       Post Solr Input Documents to Apache Solr index
   --report     Generate a report and write to specified path
-  --transform  Transform EAC, EAC-CPF files to Solr Input Document format
+  --transform  Transform metadata files to Solr Input Document format
 
 Copy indexer.cfg.example into a new configuration file and edit as needed.
 
@@ -108,18 +109,23 @@ Revision History
 
 1.3.1
 
-> Add analyze command option and configuration file section?
+ > First pass implementation of reporting with analysis
+ > Need to ensure that file indexing works only from the file system!
+ > Confirm that location look up is still working!!!
+
+ * DigitalObject module and unit tests
  * Revised digital object indexing to work from EAC-CPF rather than HTML
  * Improved address component parsing 
  * First implementation of EAC-CPF Analyzer with unit tests
+ * Moved some modules from source package to Python distribution, noted dependencies
 
 1.3.0
 
- * Fixed unicode handling issues -- some_unicode_string.encode('utf-8')
- * Field boost
+ * Fixed unicode handling issues
+ * Boost fields as specified in configuration file
  * Image indexing and thumbnail caching
  * HTML indexing
- * Renamed to EACCPF-Indexer
+ * Renamed project to eaccpf-indexer
  * Unit tests for various modules
 
 1.2.2
@@ -135,7 +141,7 @@ Revision History
 1.2.1
 
  * Transforms EAC-CPF to Solr Input Document format using an external XSLT file
- * Crawler appends comment to EAC-CPF xml to record store source and referrer URLs
+ * Crawler appends comment to EAC-CPF xml to record source and referrer URLs
  * Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
  * Merges inferred data with Solr Input Documents
  * Posts Solr Input Documents to Solr core

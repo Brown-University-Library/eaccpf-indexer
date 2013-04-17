@@ -42,14 +42,14 @@ class Transformer(object):
         Text = Text.replace(" & "," &amp; ")
         return Text
 
-    def _getFileName(self, Filename):
+    def _getFileName(self, Url):
         '''
         Get the filename from the specified URI or path.
         '''
-        if "/" in Filename:
-            parts = Filename.split("/")
+        if "/" in Url:
+            parts = Url.split("/")
             return parts[-1]
-        return Filename
+        return Url
 
     def _getSourceAndReferrerValues(self, Path):
         '''
@@ -299,7 +299,7 @@ class Transformer(object):
         boosts = params.get("transform","boost").split(',')
         output = params.get("transform","output")
         report = params.get("transform","report")
-        source = params.get("transform","source")
+        source = params.get("transform","input")
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         if report:
@@ -310,9 +310,7 @@ class Transformer(object):
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # execute actions
         for action in actions:
-            if action == "html-to-sid":
-                self.transformHtmlsToSid(source, output, report)
-            elif action == "eaccpf-to-sid":
+            if action == "eaccpf-to-sid":
                 # load schema
                 modpath = os.path.abspath(inspect.getfile(self.__class__))
                 xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + "eaccpf-to-solr.xsl"
@@ -325,6 +323,8 @@ class Transformer(object):
                 except:
                     self.logger.critical("Could not load XSLT file " + xslt)
                 self.transformEacCpfsToSID(source, output, transform, report)
+            elif action == "html-to-sid":
+                self.transformHtmlsToSid(source, output, report)
             elif action == "digitalobject-to-sid":
                 self.transformDigitalObjectsToSID(source, output, report)
             elif action == "merge-inferred-into-sid":
