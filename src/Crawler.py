@@ -74,11 +74,10 @@ class Crawler(object):
         # walk the file system and look for html files
         for path, _, files in os.walk(Source):
             # construct the public url for the file
-            if path.startswith('/'):
-                baseurl = Base + path.replace(Source,'')[1:]
-            else:
-                baseurl = Base + path.replace(Source,'')
-            self.logger.info('Current source is ' + baseurl)
+            baseurl = Base + path.replace(Source,'')
+            if not baseurl.endswith('/'):
+                baseurl = baseurl + '/'
+            self.logger.info('Current source ' + path + ' (' + baseurl + ')')
             # for each file in the current path
             for filename in files:
                 if self._isHTML(filename):

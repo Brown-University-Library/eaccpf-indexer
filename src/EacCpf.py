@@ -20,8 +20,8 @@ class EacCpf(object):
         '''
         # logger
         self.logger = logging.getLogger('EacCpf')
-        self.source = Source
-        self.presentation = Presentation
+        self.source = str(Source)
+        self.presentation = str(Presentation)
         # load the document content
         self._load()
     
@@ -197,7 +197,10 @@ class EacCpf(object):
         '''
         Write the EAC-CPF data to the specified path.
         '''
-        outfile = (Path + os.sep + self.getFileName(),'w')
+        source = self.source
+        presentation = self.presentation
+        path = Path + os.sep + self.getFileName()
+        outfile = open(path,'w')
         outfile.write(self.data)
-        outfile.write('\n<!-- @Source=%(Source)s @referrer=%(referrer)s -->' % {"Source":self.source, "referrer":self.presentation})
+        outfile.write('\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":source, "referrer":presentation})
         outfile.close()

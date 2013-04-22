@@ -339,7 +339,7 @@ class Facter(object):
             # get the free text fields from the record
             freetext = self._getFreeTextFields(xml)
             self.logger.info(freetext)
-            # infer entitiesnot
+            # infer entities
             # write output record
             outfile = open(output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)

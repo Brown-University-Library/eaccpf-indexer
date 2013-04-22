@@ -51,6 +51,13 @@ class Transformer(object):
             return parts[-1]
         return Url
 
+    def _getIdFromFilename(self,Filename):
+        '''
+        Get the record ID from the filename.
+        '''
+        recordId, _ = os.path.splitext(Filename)
+        return recordId
+
     def _getSourceAndReferrerValues(self, Path):
         '''
         Get document source and referrer URI values from the comment embedded 
@@ -105,11 +112,7 @@ class Transformer(object):
         record in YAML format.
         '''
         if Path.endswith("yml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "INFERRED DATA record" in data:
-                return True
+            return True
         return False
     
     def _isSolrInputDocument(self, Path):
@@ -138,7 +141,7 @@ class Transformer(object):
             for afile in files:
                 os.remove(Path + os.sep + afile)
             self.logger.info("Cleared output folder at " + Path)
-            
+
     def _removeNameSpaces(self, Text):
         '''
         Remove namespace references from XML data.
@@ -190,67 +193,76 @@ class Transformer(object):
             data = infile.read()
             inferred = yaml.load(data)
             infile.close()
+            filename = self._getFileName(output)
+            # if there is an existing SID file, then read it into memory, 
+            # otherwise create an XML tree to 
             if not os.path.exists(output):
-                self.logger.warning("Output path does not exist " + output)
+                root = etree.Element("add")
+                xml = etree.ElementTree(root)
+                doc = etree.Element("doc")
+                root.append(doc)
+                # add required records
+                recordId = etree.Element("field", name="id")
+                recordId.text = self._getIdFromFilename(filename)
+                doc.append(recordId)
             else:
                 # read output (Solr Input Document) data file
                 xml = etree.parse(output)
                 root = xml.getroot()
                 doc = root.getchildren()[0]
-                filename = self._getFileName(output)
-                # add inferred locations
-                # ISSUE #5 the geocoder can return multiple locations when an address is
-                # not specific enough. Or, in some cases, a record has multiple events and
-                # associated locations.  The Solr index allows for one location field entry, 
-                # and multiple geohash entries.  Here, we use the first location as the 
-                # primary record location, then make all subsequent locations geohashes.
-                if 'locations' in inferred:
-                    count = 0
-                    for location in inferred['locations']:
-                        # the first location in the list will become the 
-                        # primary entity locaion
-                        if count == 0:
-                            # address
-                            address = etree.Element('field', name='address')
-                            address.text = location['address']
-                            doc.append(address)
-                            # city
-                            city = etree.Element('field', name='city')
-                            city.text = location['primary_city']
-                            doc.append(city)
-                            # state
-                            region = etree.Element('field', name='region')
-                            region.text = location['primary_region']
-                            doc.append(region)
-                            # region
-                            country = etree.Element('field', name='country')
-                            country.text = location['primary_country']
-                            doc.append(country)
-                            # coordinates
-                            lat = location['coordinates'][0]
-                            lng = location['coordinates'][1]
-                            latlng = str(lat) + "," + str(lng)
-                            coordinates = etree.Element('field', name='location')
-                            coordinates.text = latlng
-                            doc.append(coordinates)
-                            # latitude
-                            location_0 = etree.Element('field', name='location_0_coordinate')
-                            location_0.text = str(lat)
-                            # longitude
-                            doc.append(location_0)
-                            location_1 = etree.Element('field', name='location_1_coordinate')
-                            location_1.text = str(lng)
-                            doc.append(location_1)
-                        else:
-                            # all subsequent locations will be added to the loocation_geohash field
-                            lat = location['coordinates'][0]
-                            lng = location['coordinates'][1]
-                            latlng = str(lat) + "," + str(lng)
-                            coordinates = etree.Element('field', name='location_geohash')
-                            coordinates.text = latlng
-                            doc.append(coordinates)
-                        # increment count
-                        count = count + 1
+            # add inferred locations
+            # ISSUE #5 the geocoder can return multiple locations when an address is
+            # not specific enough. Or, in some cases, a record has multiple events and
+            # associated locations.  The Solr index allows for one location field entry, 
+            # and multiple geohash entries.  Here, we use the first location as the 
+            # primary record location, then make all subsequent locations geohashes.
+            if 'locations' in inferred:
+                count = 0
+                for location in inferred['locations']:
+                    # the first location in the list will become the 
+                    # primary entity locaion
+                    if count == 0:
+                        # address
+                        address = etree.Element('field', name='address')
+                        address.text = location['address']
+                        doc.append(address)
+                        # city
+                        city = etree.Element('field', name='city')
+                        city.text = location['city']
+                        doc.append(city)
+                        # state
+                        region = etree.Element('field', name='region')
+                        region.text = location['region']
+                        doc.append(region)
+                        # region
+                        country = etree.Element('field', name='country')
+                        country.text = location['country']
+                        doc.append(country)
+                        # coordinates
+                        lat = location['coordinates'][0]
+                        lng = location['coordinates'][1]
+                        latlng = str(lat) + "," + str(lng)
+                        coordinates = etree.Element('field', name='location')
+                        coordinates.text = latlng
+                        doc.append(coordinates)
+                        # latitude
+                        location_0 = etree.Element('field', name='location_0_coordinate')
+                        location_0.text = str(lat)
+                        # longitude
+                        doc.append(location_0)
+                        location_1 = etree.Element('field', name='location_1_coordinate')
+                        location_1.text = str(lng)
+                        doc.append(location_1)
+                    else:
+                        # all subsequent locations will be added to the loocation_geohash field
+                        lat = location['coordinates'][0]
+                        lng = location['coordinates'][1]
+                        latlng = str(lat) + "," + str(lng)
+                        coordinates = etree.Element('field', name='location_geohash')
+                        coordinates.text = latlng
+                        doc.append(coordinates)
+                    # increment count
+                    count = count + 1
                 # @todo: add inferred entities
                 if 'entities' in inferred:
                     for entity in inferred['entities']:
@@ -271,23 +283,24 @@ class Transformer(object):
                 if 'topic' in inferred:
                     pass
                 # put the updated file
-                outfile = open(output + os.sep + filename,'w')
+                outfile = open(output,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
                 self.logger.info("Merged inferred data into " + filename)
         except Exception:
             self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
     
-    def mergeInferredRecordsIntoSID(self, Source, Output, Report=None):
+    def mergeInferredRecordsIntoSID(self, Sources, Output, Report=None):
         '''
         Transform zero or more paths with inferred object records to Solr Input 
         Document format.
         '''
-        files = os.listdir(Source)
-        for filename in files:
-            if self._isInferredYaml(Source + os.sep + filename):
-                # get the name of the Output record
-                self.mergeInferredRecordIntoSID(filename, Output, Report)
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isInferredYaml(source + os.sep + filename):
+                    outputFileName = self._getIdFromFilename(filename) + ".xml"
+                    self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + outputFileName, Report)
     
     def run(self, params):
         '''
@@ -299,38 +312,36 @@ class Transformer(object):
         boosts = params.get("transform","boost").split(',')
         output = params.get("transform","output")
         report = params.get("transform","report")
-        source = params.get("transform","input")
-        # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        sources = params.get("transform","inputs").split(",")
+        # check stateWrote
+        for source in sources:
+            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         if report:
             assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # create output folder
         self._makeCache(output)
         # check state
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        # execute actions
-        for action in actions:
-            if action == "eaccpf-to-sid":
-                # load schema
-                modpath = os.path.abspath(inspect.getfile(self.__class__))
-                xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + "eaccpf-to-solr.xsl"
-                xslt_file = open(xslt,'r')
-                xslt_data = xslt_file.read()
-                xslt_root = etree.XML(xslt_data)
-                xslt_file.close()
-                try:
-                    transform = etree.XSLT(xslt_root)
-                except:
-                    self.logger.critical("Could not load XSLT file " + xslt)
-                self.transformEacCpfsToSID(source, output, transform, report)
-            elif action == "html-to-sid":
-                self.transformHtmlsToSid(source, output, report)
-            elif action == "digitalobject-to-sid":
-                self.transformDigitalObjectsToSID(source, output, report)
-            elif action == "merge-inferred-into-sid":
-                self.mergeInferredRecordsIntoSID(source, output, report)
-            else:
-                self.logger.warning("Transform action is not available: " + action)
+        # execute actions in order
+        if "eaccpf-to-sid" in actions:
+            # load schema
+            modpath = os.path.abspath(inspect.getfile(self.__class__))
+            xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + "eaccpf-to-solr.xsl"
+            xslt_file = open(xslt,'r')
+            xslt_data = xslt_file.read()
+            xslt_root = etree.XML(xslt_data)
+            xslt_file.close()
+            try:
+                transform = etree.XSLT(xslt_root)
+            except:
+                self.logger.critical("Could not load XSLT file " + xslt)    
+            self.transformEacCpfsToSID(sources, output, transform, report)
+        if "html-to-sid" in actions:
+            self.transformHtmlsToSid(sources, output, report)
+        if "digitalobject-to-sid" in actions:
+            self.transformDigitalObjectsToSID(sources, output, report)
+        if "merge-inferred-into-sid" in actions:
+            self.mergeInferredRecordsIntoSID(sources, output, report)
         # boost fields
         for boost in boosts:
             fieldname, boostval = boost.split(':')
@@ -342,16 +353,17 @@ class Transformer(object):
         except:
             self.logger.debug("No schema file specified")
     
-    def transformDigitalObjectsToSID(self, Source, Output, Report=None):
+    def transformDigitalObjectsToSID(self, Sources, Output, Report=None):
         '''
         Transform zero or more paths with digital object YAML records to Solr 
         Input Document format.
         '''
-        files = os.listdir(Source)
-        for filename in files:
-            if self._isDigitalObjectYaml(Source + os.sep + filename):
-                path = Source + os.sep + filename
-                self.transformDigitalObjectToSID(path, Output, Report)
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isDigitalObjectYaml(source + os.sep + filename):
+                    path = source + os.sep + filename
+                    self.transformDigitalObjectToSID(path, Output, Report)
     
     def transformDigitalObjectToSID(self, Source, Output, Report=None):
         '''
@@ -375,19 +387,20 @@ class Transformer(object):
         outfile = open(outpath,'w')
         outfile.write(xml)
         outfile.close()
-        self.logger.info("Wrote digital object YAML to SID " + filename)
+        self.logger.info("Transformed digital object YAML to SID " + filename)
             
-    def transformEacCpfsToSID(self, Source, Output, Transform, Report=None):
+    def transformEacCpfsToSID(self, Sources, Output, Transform, Report=None):
         '''
         Transform zero or more paths containing EAC-CPF documents to Solr Input
         Document format. 
         '''
-        files = os.listdir(Source)
-        for filename in files:
-            if self._isEACCPF(Source + os.sep + filename):
-                self.transformEACCPFToSID(Source + os.sep + filename, Output, Transform, Report)
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isEACCPF(source + os.sep + filename):
+                    self.transformEacCpfToSID(source + os.sep + filename, Output, Transform, Report)
     
-    def transformEACCPFToSID(self, source, output, transform, report=None):
+    def transformEacCpfToSID(self, source, output, transform, report=None):
         '''
         Transform document to Solr Input Document format using the
         specified XSLT transform file.
@@ -409,11 +422,11 @@ class Transformer(object):
             src_val, ref_val = self._getSourceAndReferrerValues(source)
             # append the source and referrer values to the SID
             if src_val:
-                src_field = etree.Element('field',name='source_uri')
+                src_field = etree.Element('field',name='metadata_url')
                 src_field.text = src_val
                 sid.append(src_field)
             if ref_val:
-                ref_field = etree.Element('field',name='referrer_uri')
+                ref_field = etree.Element('field',name='presentation_url')
                 ref_field.text = ref_val
                 sid.append(ref_field)
             # write the output file
@@ -425,15 +438,16 @@ class Transformer(object):
         except Exception:
             self.logger.warning("Could not transform EAC-CPF to Solr Input Document " + filename, exc_info=True)
 
-    def transformHtmlsToSid(self, Source, Output, Report):
+    def transformHtmlsToSid(self, Sources, Output, Report):
         '''
         Transform HTML documents to Solr Input Document format.
         '''
-        files = os.listdir(Source)
-        for filename in files:
-            path = Source + os.sep + filename
-            html = HtmlPage(path)
-            self.transformHtmlToSid(html, Output, Report)
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                path = source + os.sep + filename
+                html = HtmlPage(path)
+                self.transformHtmlToSid(html, Output, Report)
 
     def transformHtmlToSid(self, html, output, report):
         '''

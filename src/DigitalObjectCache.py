@@ -178,7 +178,7 @@ class DigitalObjectCache(object):
         source URL, and URLs to the cached alternate representations.
         '''
         # source file name
-        source = DigitalObject.source
+        source = DigitalObject.getSourceUrl()
         filename = self._getFileName(source)
         ext = self._getFileNameExtension(filename)
         # write source object to temporary file

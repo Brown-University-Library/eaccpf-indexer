@@ -37,10 +37,10 @@ class DigitalObject(object):
         self.record['localtype'] = LocalType
         self.record['unitdate'] = UnitDate
         self.record['dobj_url'] = self._getObjectSourceUrl()
-        self.record['dobj_type'] = self._getType()
+        self.record['dobj_type'] = self.getType()
         self.record['id'] = self.getRecordId()
         # parse the unit date into from and to dates
-        fromDate, toDate = self._getDateRange(self.unitdate)
+        fromDate, toDate = self._getDateRange(UnitDate)
         if fromDate:
             self.record['fromDate'] = fromDate
         if toDate:
@@ -71,6 +71,18 @@ class DigitalObject(object):
         html = HtmlPage(self.record['presentation_url'])
         return html.getDigitalObjectUrl()
 
+    def getFileName(self):
+        '''
+        Get the metadata file name.
+        '''
+        return self._getFileName(self.record['metadata_url'])
+
+    def getRecord(self):
+        '''
+        Get the metadata record.
+        '''
+        return self.record
+
     def getRecordId(self):
         '''
         Get the record identifier.
@@ -78,6 +90,12 @@ class DigitalObject(object):
         filename = self._getFileName(self.record['presentation_url'])
         recordid, _ = os.path.splitext(filename)
         return recordid
+
+    def getSourceUrl(self):
+        '''
+        Get the URL for the digital object file.
+        '''
+        return self.record['dobj_url']
 
     def getType(self):
         '''
@@ -106,4 +124,4 @@ class DigitalObject(object):
         outfile = open(Path + os.sep + filename,'w')
         outfile.write(data)
         outfile.close()
-        self.logger.info("Stored digital object YML " + self._getId())
+        self.logger.info("Stored digital object YML " + filename)

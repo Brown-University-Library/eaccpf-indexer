@@ -126,6 +126,22 @@ class TransformerUnitTests(unittest.TestCase):
         '''
         pass
 
+    def test__getIdFromFilename(self,Filename):
+        '''
+        It should return the identifier for the record, which is the component
+        of the filename that precedes the . extension.
+        '''
+        transformer = Transformer()
+        cases = {
+                 "ABC00001.xml" : "ABC00001",
+                 "XYZghas.xml" : "XYZghas",
+                 "ABC0001.001.xml" : "ABC0001.001"
+                 }
+        for case in cases:
+            recordId = transformer._getIdFromFilename(case)
+            self.assertNotEqual(recordId,None)
+            self.assertEqual(recordId,cases[case])
+
     def test_getSourceAndReferrerValues(self):
         '''
         Get source and referrer values from the embedded comment in an EAC-CPF 
