@@ -1,0 +1,285 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>E000197</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-03-17">2009-03-17</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-12-19">2012-12-19</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000197b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Malmsbury Youth Training Centre</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>Malmsbury Juvenile Justice Centre</part>
+</nameEntry>
+<nameEntry localType=""><part>Malmsbury Youth Justice Centre</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1965-01-01">1965</fromDate>
+</dateRange>
+</existDates>
+<places>
+<place>
+<placeRole>Start Place</placeRole>
+<placeEntry>Malmsbury</placeEntry>
+</place>
+</places>
+<functions>
+<function>
+<term>Youth Training Centre</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Government-run</term>
+</function>
+</functions>
+<biogHist>
+<abstract>The state government established the youth training centre at Malmsbury in 1965. In 2009, it is known as the Malmsbury Youth Justice Centre. Malmsbury is primarily for males aged 18 to 20 serving a Youth Justice Centre order.</abstract>
+<p>During the mid 1970s the dormitory style accommodation at Malmsbury was converted to smaller units with bedroom accommodation. This increased the options for treatment available in the Centre.</p>
+<p>When the Langi Kal Kal youth training centre was closed in March 1993, Malmsbury became Victoria's main Youth Training Centre for 17 to 20 year old offenders.</p>
+<p>In 1994 a major redevelopment of Malmsbury commenced. The redevelopment improved the centre's safety, security and program capacity for 17 to 21 year old young male offenders. The new 75 bed centre at Malmsbury was opened in December 1997.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1965-01-01">1965</fromDate>
+</dateRange>
+<placeEntry>Calder Highway, Malmsbury</placeEntry>
+<event>Malmsbury Youth Training Centre is situated at Malmsbury</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000310b.htm">
+<relationEntry localType="Organisation">
+Adoption and Family Records Service, Department of Human Services (c. 1984 - 2010)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000662b.htm">
+<relationEntry localType="Organisation">
+Family Information, Networks and Discovery, Department of Human Services (DHS) (2010 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000130b.htm">
+<relationEntry localType="Organisation">
+Social Welfare Branch, State Government of Victoria (1960 - 1970)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1965-01-01">1965</fromDate>
+<toDate standardDate="1970-12-31">1970</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000131b.htm">
+<relationEntry localType="Organisation">
+Social Welfare Department, State Government of Victoria (1970 - 1978)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1970-01-01">1970</fromDate>
+<toDate standardDate="1978-12-31">1978</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000132b.htm">
+<relationEntry localType="Organisation">
+Department of Community Welfare Services, State Government of Victoria (1978 - 1985)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1978-01-01">1978</fromDate>
+<toDate standardDate="1985-12-31">1985</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000133b.htm">
+<relationEntry localType="Organisation">
+Community Services Victoria, State Government of Victoria (1985 - 1992)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1985-01-01">1985</fromDate>
+<toDate standardDate="1992-12-31">1992</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000134b.htm">
+<relationEntry localType="Organisation">
+Health and Community Services, State Government of Victoria (1992 - 1995)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1992-01-01">1992</fromDate>
+<toDate standardDate="1995-12-31">1995</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000125b.htm">
+<relationEntry localType="Organisation">
+Department of Human Services, State Government of Victoria (1995 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1995-01-01">1995</fromDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000704b.htm">
+<relationEntry localType="Archival Collection">
+Victorian Government Records relating to Wardship and Adoption, Department of Human Services, State Government of Victoria (1864 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000818b.htm">
+<relationEntry localType="Event">
+Reformatories, Youth Training Centres, Juvenile Justice Centres and Youth Justice Centres: the government response to juvenile correction (1887 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000511b.htm">
+<relationEntry localType="Organisation">
+Melbourne Youth Justice Centre (1993 - )
+</relationEntry>
+<descriptiveNote>
+<p>Most residents of Melbourne Youth Justice Centre are transferred to Malmsbury Youth Justice Centre when they turn 18.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Malmsbury Youth Training Centre', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Malmsbury Youth Training Centre</title>
+<bibseries>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000197b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000642.htm">
+<relationEntry localType="published">Report: Whistleblowers Protection Act 2001: investigation into conditions at the Melbourne Youth Justice Precinct</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Ombudsman Victoria</name>
+<title render="italic">Whistleblowers Protection Act 2001: investigation into conditions at the Melbourne Youth Justice Precinct</title>
+<imprint>
+<date>2010</date>
+</imprint>
+<extptr linktype="simple" href="http://www.ombudsman.vic.gov.au/resources/documents/Investigation_into_conditions_at_the_Melbourne_Youth_Justice_Precinct_Oct_20101.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000066.htm">
+<relationEntry localType="published">Report: Guide to out-of-home care services, 1940-2000</relationEntry>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">James Jenkinson Consulting</name>
+<title render="italic">Guide to out-of-home care services, 1940-2000</title>
+<imprint>
+<publisher>Unpublished</publisher>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000278.htm">
+<relationEntry localType="digitalObject">Youth Training Centre - Malmsbury</relationEntry>
+
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Youth Training Centre - Malmsbury</unittitle>
+<unitdate>c. 1967</unitdate>
+<abstract>This is a copy of an image published in the annual report of the Social Welfare Department for 1966-7.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000277.htm">
+<relationEntry localType="digitalObject">Dining room - Malmsbury Youth Training Centre</relationEntry>
+
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Dining room - Malmsbury Youth Training Centre</unittitle>
+<unitdate>c. 1966</unitdate>
+<abstract>This is a copy of an image published in the annual report of the Social Welfare Department for 1965-6.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000276.htm">
+<relationEntry localType="digitalObject">Dormitory - Malmsbury Youth Training Centre</relationEntry>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Dormitory - Malmsbury Youth Training Centre</unittitle>
+<unitdate>c. 1966</unitdate>
+<abstract>This is a copy of an image published in the annual report of the Social Welfare Department for 1965-6.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000287.htm">
+<relationEntry localType="digitalObject">Education block, Malmsbury Youth Training Centre</relationEntry>
+
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Education block, Malmsbury Youth Training Centre</unittitle>
+<unitdate>c. 1968</unitdate>
+<abstract>This is a copy of an image published in the annual report of the Social Welfare Department for 1967-68</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000286.htm">
+<relationEntry localType="digitalObject">Staff residences, Malmsbury Youth Training Centre</relationEntry>
+
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Staff residences, Malmsbury Youth Training Centre</unittitle>
+<unitdate>c. 1968</unitdate>
+<abstract>This is a copy of an image published in the annual report of the Social Welfare Department for 1967-68</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

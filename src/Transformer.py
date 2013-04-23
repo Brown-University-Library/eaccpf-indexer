@@ -181,6 +181,48 @@ class Transformer(object):
                         self.logger.info("Added " + FieldName + " boost to " + filename)
                 except:
                     self.logger.warning("Could not boost " + FieldName + " in " + filename)
+    
+    def mergeDigitalObjectIntoSID(self, Source, Output, Report=None):
+        '''
+        Merge the digital object record into the Solr Input Document.
+        Do not overwrite existing id, presentation_url and metadata_url fields.        
+        '''
+        try:
+            infile = open(Source,'r')
+            data = infile.read()
+            dobj = yaml.load(data)
+            infile.close()
+            filename = self._getFileName(Source).replace('.yml','.xml')
+            # if there is an existing SID file, then read it into memory
+            if os.path.exists(Output + os.sep + filename):
+                parser = etree.XMLParser(remove_blank_text=True)
+                xml = etree.parse(Output + os.sep + filename, parser)
+                root = xml.getroot()
+                doc = root.getchildren()[0]
+                # add fields
+                for field in dobj.keys():
+                    if field.startswith('dobj'):
+                        dobjfield = etree.Element("field", name=field)
+                        dobjfield.text = dobj[field]
+                        doc.append(dobjfield)
+                # write the updated file
+                outfile = open(Output + os.sep + filename,'w')
+                xml.write(outfile, pretty_print=True, xml_declaration=True)
+                outfile.close()
+                self.logger.info("Merged digital object into " + filename)
+        except:
+            self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
+    
+    def mergeDigitalObjectsIntoSID(self, Sources, Output, Report=None):
+        '''
+        Merge digital object records into Solr Input Documents.
+        '''
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isDigitalObjectYaml(source + os.sep + filename):
+                    path = source + os.sep + filename
+                    self.mergeDigitalObjectIntoSID(path, Output, Report)
                     
     def mergeInferredRecordIntoSID(self, source, output, report=None):
         '''
@@ -207,7 +249,8 @@ class Transformer(object):
                 doc.append(recordId)
             else:
                 # read output (Solr Input Document) data file
-                xml = etree.parse(output)
+                parser = etree.XMLParser(remove_blank_text=True)
+                xml = etree.parse(output, parser)
                 root = xml.getroot()
                 doc = root.getchildren()[0]
             # add inferred locations
@@ -282,7 +325,7 @@ class Transformer(object):
                 # @todo: add inferred topics
                 if 'topic' in inferred:
                     pass
-                # put the updated file
+                # write the updated file
                 outfile = open(output,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
@@ -302,17 +345,17 @@ class Transformer(object):
                     outputFileName = self._getIdFromFilename(filename) + ".xml"
                     self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + outputFileName, Report)
     
-    def run(self, params):
+    def run(self, Params):
         '''
         Execute transformations on source documents as specified. Write results 
         to the output path.
         '''
         # get parameters
-        actions = params.get("transform","actions").split(',')
-        boosts = params.get("transform","boost").split(',')
-        output = params.get("transform","output")
-        report = params.get("transform","report")
-        sources = params.get("transform","inputs").split(",")
+        actions = Params.get("transform","actions").split(',')
+        boosts = Params.get("transform","boost").split(',')
+        output = Params.get("transform","output")
+        report = Params.get("transform","report")
+        sources = Params.get("transform","inputs").split(",")
         # check stateWrote
         for source in sources:
             assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -338,9 +381,11 @@ class Transformer(object):
             self.transformEacCpfsToSID(sources, output, transform, report)
         if "html-to-sid" in actions:
             self.transformHtmlsToSid(sources, output, report)
-        if "digitalobject-to-sid" in actions:
+        if 'merge-digitalobjects' in actions:
+            self.mergeDigitalObjectsIntoSID(sources,output,report)
+        if "digitalobjects-to-sid" in actions:
             self.transformDigitalObjectsToSID(sources, output, report)
-        if "merge-inferred-into-sid" in actions:
+        if "merge-inferred" in actions:
             self.mergeInferredRecordsIntoSID(sources, output, report)
         # boost fields
         for boost in boosts:
@@ -348,7 +393,7 @@ class Transformer(object):
             self.boostFields(output, fieldname, boostval)
         # validate output
         try:
-            schema = params.get("transform","schema")
+            schema = Params.get("transform","schema")
             self.validate(output, schema, report)
         except:
             self.logger.debug("No schema file specified")

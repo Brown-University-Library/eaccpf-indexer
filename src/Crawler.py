@@ -91,16 +91,23 @@ class Crawler(object):
                             if 'eaccpf' in Actions and html.hasEacCpfAlternate():
                                 eaccpf = EacCpf(metadata,presentation)
                                 eaccpf.write(Output)
+                            if 'eaccpf-thumbnail' in Actions and html.hasEacCpfAlternate():
+                                eaccpf = EacCpf(metadata,presentation)
+                                thumbnail = eaccpf.getThumbnail()
+                                if thumbnail:
+                                    cacherecord = self.cache.put(thumbnail)
+                                    dobj_id = eaccpf.getRecordId()
+                                    thumbnail.write(Output,dobj_id,cacherecord)
                             if 'digitalobject' in Actions and html.hasEacCpfAlternate():
                                 eaccpf = EacCpf(metadata,presentation)
                                 dobjects = eaccpf.getDigitalObjects()
                                 for dobject in dobjects:
                                     cacherecord = self.cache.put(dobject)
-                                    dobject.write(Output, cacherecord)
+                                    dobject.write(Output,Cacherecord=cacherecord)
                             if 'html' in Actions:
                                 html.write(Output)
                     except Exception:
-                        self.logger.warning("Could not complete processing for " + filename, exc_info=True)
+                        self.logger.warning("Could not complete processing for " + filename)
                     finally:
                         time.sleep(Sleep)
     
@@ -112,19 +119,19 @@ class Crawler(object):
         '''
         self.logger.warning("Web site crawling is not implemented")
 
-    def run(self, params):
+    def run(self, Params):
         '''
         Execute crawl operation using specified parameters.
         '''
         # determine the type of crawl operation to be executed
-        actions = params.get("crawl","actions").split(",")
-        base = params.get("crawl","base")
-        cache = params.get("crawl","cache")
-        cacheurl = params.get("crawl","cache-url")
-        source = params.get("crawl","input")
-        output = params.get("crawl","output")
-        report = params.get("crawl","report")
-        sleep = float(params.get("crawl","sleep"))
+        actions = Params.get("crawl","actions").split(",")
+        base = Params.get("crawl","base")
+        cache = Params.get("crawl","cache")
+        cacheurl = Params.get("crawl","cache-url")
+        source = Params.get("crawl","input")
+        output = Params.get("crawl","output")
+        report = Params.get("crawl","report")
+        sleep = float(Params.get("crawl","sleep"))
         # digital object cache
         self.cache = DigitalObjectCache(cache,cacheurl)
         # create output folders

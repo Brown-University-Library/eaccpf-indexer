@@ -225,14 +225,14 @@ class Cleaner():
         data = self._convertHTMLEntitiesToUnicode(Data)
         return data
     
-    def run(self, params):
+    def run(self, Params):
         '''
         Execute the clean operation using specified parameters.
         '''
         # get parameters
-        source = params.get("clean","input")
-        output = params.get("clean","output")
-        report = params.get("clean","report")
+        source = Params.get("clean","input")
+        output = Params.get("clean","output")
+        report = Params.get("clean","report")
         # make output directory
         self._makeCache(output)
         # check state
@@ -244,7 +244,7 @@ class Cleaner():
         self.clean(source,output,report)
         # validate cleaned data files
         try:
-            schema = params.get("clean","schema")
+            schema = Params.get("clean","schema")
             self.validate(output, schema, report)
         except:
             self.logger.debug("No schema file specified")

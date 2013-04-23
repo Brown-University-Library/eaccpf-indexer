@@ -87,7 +87,7 @@ class EacCpf(object):
             infile.close()
         self.logger.debug("Loaded content for " + self.source)
         
-    def getDigitalObject(self, Record):
+    def getDigitalObject(self, Record, Thumbnail=False):
         '''
         Transform the metadata contained in the HTML page to an intermediate 
         YML digital object representation.
@@ -108,20 +108,27 @@ class EacCpf(object):
         # if the resource contains a relationEntry with localType attribute = 'digitalObject'
         entry = Record.find('relationentry',{'localtype':'digitalObject'})
         if entry:
+            if Thumbnail:
+                note = Record.find('descriptivenote')
+                # if the entry does not have a descriptiveNote or the descriptiveNote
+                # does not contain the string "<p>Include in Gallery</p>", then it is
+                # not a thumbnail for this record
+                if not note or not "Include in Gallery" in note.text:
+                    return None
             metadata = str(self.source)
             presentation = Record['xlink:href'].encode("utf-8")
             title = str(entry.string)
             abstract = self._getTagString(Record.find('abstract'))
             entitytype = self.getEntityType()
             localtype = self.getLocalType()
-            # location
+            # @todo location
             unitdate = self._getTagString(Record.find('unitdate'))
             dobj = DigitalObject(metadata,presentation,title,abstract,entitytype,localtype,unitdate)
             return dobj
         # no digital object found
         return None
 
-    def getDigitalObjects(self):
+    def getDigitalObjects(self,Thumbnail=False):
         '''
         Get the list of digital objects referenced in the document.
         '''
@@ -129,7 +136,7 @@ class EacCpf(object):
         soup = BeautifulSoup(self.data)
         resources = soup.findAll('resourcerelation')
         for resource in resources:
-            dobject = self.getDigitalObject(resource)
+            dobject = self.getDigitalObject(resource,Thumbnail)
             if dobject:
                 dobjects.append(dobject)
         return dobjects
@@ -183,6 +190,16 @@ class EacCpf(object):
         @todo the identifier should come from the data rather than the file name
         '''
         return self._getId(self.source)
+    
+    def getThumbnail(self):
+        '''
+        Get the digital object that acts as a thumbnail image for this record.
+        '''
+        try:
+            objs = self.getDigitalObjects(Thumbnail=True)
+            return objs[0]
+        except:
+            return None
     
     def hasDigitalObjects(self):
         '''

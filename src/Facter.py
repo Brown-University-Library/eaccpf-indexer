@@ -418,16 +418,16 @@ class Facter(object):
                     self.logger.warning("Could not resolve location for " + filename, exc_info=True)
                     continue
 
-    def run(self, params):
+    def run(self, Params):
         '''
         Execute analysis using the specified parameters.
         '''
         # get parameters
-        actions = params.get("infer","actions").split(",")
-        output = params.get("infer","output")
-        report = params.get("infer","report")
-        sleep = float(params.get("infer","sleep"))
-        source = params.get("infer","input")
+        actions = Params.get("infer","actions").split(",")
+        output = Params.get("infer","output")
+        report = Params.get("infer","report")
+        sleep = float(Params.get("infer","sleep"))
+        source = Params.get("infer","input")
         # create output folder
         self._makeCache(output)
         # execute inferences for each selected type
@@ -437,11 +437,11 @@ class Facter(object):
                 self.inferLocations(source,output,geocoder,sleep,report)
             if 'entities' in action:
                 # infer entities with Alchemy
-                #alchemy_api_key = params.get("infer","alchemy_api_key")
+                #alchemy_api_key = Params.get("infer","alchemy_api_key")
                 #self.inferEntitiesWithAlchemy(source,output,alchemy_api_key,sleep,report)
                 # infer entities with NLTK
                 # self.inferEntitiesWithNLTK(source, output, report)
                 # infer entities with Open Calais
-                calais_api_key = params.get("infer","calais_api_key")
+                calais_api_key = Params.get("infer","calais_api_key")
                 self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
         

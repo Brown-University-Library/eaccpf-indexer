@@ -15,7 +15,7 @@ class ReporterUnitTests(unittest.TestCase):
         '''
         Setup the test environment.
         '''
-        pass
+        self.reporter = Reporter()
     
     def tearDown(self):
         '''
@@ -27,8 +27,8 @@ class ReporterUnitTests(unittest.TestCase):
         '''
         It should create an object instance.
         '''
-        reporter = Reporter()
-        self.assertNotEqual(reporter, None)
+        self.assertNotEqual(self.reporter, None)
+        self.assertNotEqual(self.reporter.logger, None)
     
 if __name__ == '__main__':
     unittest.main()

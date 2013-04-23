@@ -111,7 +111,7 @@ class DigitalObject(object):
                 return 'video'
         return 'other'
     
-    def write(self, Path, CacheRecord=None):
+    def write(self, Path, Id=None, CacheRecord=None):
         '''
         Write a YML representation of the digital object to the specified path.
         '''
@@ -119,8 +119,12 @@ class DigitalObject(object):
         if CacheRecord:
             for key in CacheRecord:
                 record[key] = CacheRecord[key]
+        if Id:
+            filename = Id + '.yml'
+            record['id'] = Id
+        else:
+            filename = self.getRecordId() + '.yml'
         data = yaml.dump(record, default_flow_style=False, indent=4)
-        filename = self.getRecordId() + '.yml'
         outfile = open(Path + os.sep + filename,'w')
         outfile.write(data)
         outfile.close()

@@ -4,6 +4,8 @@ LICENSE file, which is part of this source code package.
 '''
 
 from httplib2 import Http
+from lxml import etree
+
 import logging
 import os 
 
@@ -19,8 +21,7 @@ class IndexingError(Exception):
 class Poster(object):
     '''
     Posts Solr Input Documents to a Solr core. Performs delete, commit and 
-    optimize commands. 
-
+    optimize commands.
     @author: Davis Marques
     @author: Marco La Rosa
     @author: ActiveState
@@ -32,94 +33,102 @@ class Poster(object):
         Constructor
         '''
         self.logger = logging.getLogger('Poster')
+        
+    def _hasRequiredFields(self, Doc, Fields):
+        '''
+        Determine if the XML document has one or more instances of the required
+        fields.
+        '''
+        for field in Fields:
+            x = Doc.findall(".//field",{'name':field})
+            if x == None or len(x) < 1:
+                return False
+        return True
 
-    def commit(self, solr, report=None, waitsearcher=False, waitflush=False):
+    def commit(self, Solr, Report=None):
         '''
         Commit staged data to the Solr core.
         '''
         # check state
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        if Report:
+            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # send command
         msg = '<commit waitFlush="false" waitSearcher="false" expungeDeletes="true"/>'
-        if solr.endswith('/'):
-            url = solr + 'update'
+        if Solr.endswith('/'):
+            url = Solr + 'update'
         else:
-            url = solr + '/update'
+            url = Solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
         if resp['status'] != '200':
             raise IndexingError(resp, content)
-        self.logger.info("Commited staged data to " + solr)
+        self.logger.info("Commited staged data to " + Solr)
         return resp, content
 
-            
-    def flush(self, solr, report=None):
+    def flush(self, Solr, Report=None):
         """
         Flush all documents from Solr.
         """
         # check state
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        if Report:
+            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # send command
         msg = "<delete><query>*</query></delete>"
-        if solr.endswith('/'):
-            url = solr + 'update'
+        if Solr.endswith('/'):
+            url = Solr + 'update'
         else:
-            url = solr + '/update'
+            url = Solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
         if resp['status'] != '200':
             print content
             raise IndexingError(resp, content)
-        self.logger.info("Flushed data from " + solr)
+        self.logger.info("Flushed data from " + Solr)
         return (resp, content)
         
-    def optimize(self, solr, report=None, waitsearcher=False):
+    def optimize(self, Solr, Report=None):
         '''
         Optimize data in Solr core.
         '''
         # check state
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        if Report:
+            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # send command
         msg = '<optimize waitSearcher="false"/>'
-        if solr.endswith('/'):
-            url = solr + 'update'
+        if Solr.endswith('/'):
+            url = Solr + 'update'
         else:
-            url = solr + '/update'
+            url = Solr + '/update'
         (resp, content) = Http().request(url, "POST", msg)
         if resp['status'] != '200':
             raise IndexingError(resp, content)
-        self.logger.info("Optimized " + solr)
+        self.logger.info("Optimized " + Solr)
         return (resp, content)
         
-    def post(self, source, solr, report=None):
+    def post(self, Source, Solr, Fields, Report=None):
         '''
-        Post Solr Input Documents to Solr core.
+        Post Solr Input Documents in the Source directory to the Solr core if 
+        they have all required fields.
         '''
         # check state
-        assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
-        # post documents
-        if solr.endswith('/'):
-            url = solr + 'update'
+        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
+        if Report:
+            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
+        # ensure that the posting URL is correct
+        if Solr.endswith('/'):
+            url = Solr + 'update'
         else:
-            url = solr + '/update'
-        files = os.listdir(source)
+            url = Solr + '/update'
+        # post documents
+        files = os.listdir(Source)
         for filename in files:
-            # read file
-            infile = open(source + os.sep + filename, 'r')
-            data = infile.read()
-            infile.close()
-            # remove xml declaration before posting to server
-            data = data.replace("<?xml version='1.0' encoding='ASCII'?>",'')
-            # post file
             try:
-                (resp, content) = Http().request(url, "POST", data)
-                if resp['status'] != '200':
-                    raise IndexingError(resp, content)
-                self.logger.info("Posted " + filename + " to Apache Solr")
+                xml = etree.parse(Source + os.sep + filename)
+                doc = xml.getroot()
+                if self._hasRequiredFields(doc,Fields):
+                    data = etree.tostring(doc)
+                    (resp, content) = Http().request(url, "POST", data)
+                    if resp['status'] != '200':
+                        raise IndexingError(resp, content)
+                    self.logger.info("Posted " + filename + " to Apache Solr")
             except IOError:
                 self.logger.warning("Can't connect to Solr" + url, exc_info=True)
                 print resp
@@ -133,23 +142,27 @@ class Poster(object):
                 print resp
                 print content
                     
-    def run(self, params):
+    def run(self, Params):
         '''
         Post Solr Input Documents to Solr core and perform index maintenance 
         operations.
         '''
         # get parameters
-        actions = params.get("post","actions").split(",")
-        index = params.get("post","index")
-        report = params.get("post","report")
-        source = params.get("post","input")
+        actions = Params.get("post","actions").split(",")
+        index = Params.get("post","index")
+        report = Params.get("post","report")
+        source = Params.get("post","input")
+        if Params.has_option("post", "required"):
+            required = Params.get("post","required").split(',')
+        else:
+            required = []
         # execute actions
         for action in actions:
             if action == "flush":
                 self.flush(index,report)
             # post
             elif action == "post":
-                self.post(source,index,report)
+                self.post(source,index,required,report)
             # commit
             elif action == "commit":
                 self.commit(index,report)

@@ -3,33 +3,24 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-import os
-import random
-import string
-import tempfile
+from Poster import Poster
+
 import unittest
-from .Poster import Poster
 
 class PosterUnitTests(unittest.TestCase):
     '''
     Executes unit tests against the Poster module.
     '''
 
-    def _generate(self, size=6, chars=string.ascii_uppercase + string.digits):
-        '''
-        Generate a string of random characters.
-        '''
-        return ''.join(random.choice(chars) for _ in range(size))
-
     def setUp(self):
         '''
-        Set test environment.
+        Set up the test environment.
         '''
-        pass
-
+        self.poster = Poster()
+        
     def tearDown(self):
         '''
-        Tear down test environment.
+        Tear down the test environment.
         '''
         pass
     
@@ -37,7 +28,21 @@ class PosterUnitTests(unittest.TestCase):
         '''
         It should create an instance of the Poster class.
         '''
-        pass
+        self.assertNotEqual(self.poster,None)
+        self.assertNotEqual(self.poster.logger,None)
     
+    def test__hasRequiredFields(self):
+        '''
+        It should determine whether a Solr Input Document has all the required 
+        fields for a specified index.
+        '''
+        cases = {
+                 'sid01.xml':True,
+                 'sid02.xml':False,
+                 'sid03.xml':False,
+                 }
+        for case in cases:
+            pass
+
 if __name__ == "__main__":
     unittest.main()

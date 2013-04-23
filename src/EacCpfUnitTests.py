@@ -152,6 +152,29 @@ class EacCpfUnitTests(unittest.TestCase):
             self.assertNotEqual(doc,None)
             localtype = doc.getLocalType()
             self.assertEqual(localtype,cases[case])
+            
+    def test_getThumbnail(self):
+        '''
+        It should return a digital object representing a thumbnail image for 
+        the record, if one is available.
+        '''
+        cases = {
+                 "E000001.xml": False,
+                 "E000002.xml": True,
+                 "E000003.xml": False,
+                 "E000004.xml": False,
+                 "E000005.xml": True,
+                 "E000006.xml": True,
+                 }
+        for filename in os.listdir(self.path):
+            if filename in cases:
+                doc = EacCpf(self.path + os.sep + filename,'http://www.example.com')
+                self.assertNotEqual(doc,None)
+                thumb = doc.getThumbnail()
+                if thumb != None:
+                    self.assertEqual(True, cases[filename])
+                else:
+                    self.assertEqual(False, cases[filename])
 
 if __name__ == "__main__":
     unittest.main()
