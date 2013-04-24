@@ -3,12 +3,13 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from BeautifulSoup import BeautifulSoup
+from lxml import etree
+
 import htmlentitydefs
 import logging
 import os
 import re
-from BeautifulSoup import BeautifulSoup
-from lxml import etree
 
 class Cleaner():
     '''
@@ -173,32 +174,32 @@ class Cleaner():
             Text = Text.replace(span,'')
         return Text
 
-    def clean(self, source, output, report=None):
+    def clean(self, Source, Output):
         '''
         Read all files from source directory, apply fixes to common errors in 
         documents. Write cleaned files to the output directory.
         '''
-        files = os.listdir(source)
+        files = os.listdir(Source)
         for filename in files:
             try:
                 # read data
-                infile = open(source + os.sep + filename,'r')
+                infile = open(Source + os.sep + filename,'r')
                 data = infile.read()
                 infile.close()        
                 # fix problems
-                if self._isEacCpf(source + os.sep + filename):
+                if self._isEacCpf(Source + os.sep + filename):
                     # the source/referrer values comment gets deleted by the XML 
                     # parser, so we'll save it here temporarily while we do our cleanup
-                    src, ref = self._getSourceAndReferrerValues(source + os.sep + filename)
+                    src, ref = self._getSourceAndReferrerValues(Source + os.sep + filename)
                     data = self.fixEacCpf(data)
                     # write source/referrer comment back at the end of the file
                     data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
-                elif self._isHtml(source + os.sep + filename):
+                elif self._isHtml(Source + os.sep + filename):
                     data = self.fixHtml(data)
                 else:
                     pass
                 # write data to specified file in the output directory.
-                outfile_path = output + os.sep + filename
+                outfile_path = Output + os.sep + filename
                 outfile = open(outfile_path,'w')
                 outfile.write(data)
                 outfile.close()
@@ -232,49 +233,44 @@ class Cleaner():
         # get parameters
         source = Params.get("clean","input")
         output = Params.get("clean","output")
-        report = Params.get("clean","report")
         # make output directory
         self._makeCache(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # clean data
-        self.clean(source,output,report)
+        self.clean(source,output)
         # validate cleaned data files
         try:
             schema = Params.get("clean","schema")
-            self.validate(output, schema, report)
+            self.validate(output,schema)
         except:
             self.logger.debug("No schema file specified")
 
-    def validate(self, source, schema, report=None):
+    def validate(self, Source, Schema):
         '''
         Validate a collection of files against an XML schema.
         '''
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(schema), self.logger.warning("Schema file does not exist: " + schema)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
+        assert os.path.exists(Schema), self.logger.warning("Schema file does not exist: " + Schema)
         # load schema file
         try:
-            infile = open(schema, 'r')
+            infile = open(Schema, 'r')
             schema_data = infile.read()
             schema_root = etree.XML(schema_data)
             xmlschema = etree.XMLSchema(schema_root)
             infile.close()
-            self.logger.info("Loaded schema file " + schema)
+            self.logger.info("Loaded schema file " + Schema)
         except Exception:
-            self.logger.critical("Could not load schema file " + schema)
+            self.logger.critical("Could not load schema file " + Schema)
         # create validating parser
         parser = etree.XMLParser(schema=xmlschema)
         # validate files against schema
         self.logger.info("Validating documents against schema")
-        files = os.listdir(source)
+        files = os.listdir(Source)
         for filename in files:
-            infile = open(source + os.sep + filename,'r')
+            infile = open(Source + os.sep + filename,'r')
             data = infile.read()
             infile.close()
             try:

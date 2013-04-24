@@ -10,6 +10,7 @@ import logging
 import os 
 
 class IndexingError(Exception):
+    
     def __init__(self, resp, content):
         self.status = "Server response status: " + resp['status']
         self.content = content
@@ -45,13 +46,10 @@ class Poster(object):
                 return False
         return True
 
-    def commit(self, Solr, Report=None):
+    def commit(self, Solr):
         '''
         Commit staged data to the Solr core.
         '''
-        # check state
-        if Report:
-            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # send command
         msg = '<commit waitFlush="false" waitSearcher="false" expungeDeletes="true"/>'
         if Solr.endswith('/'):
@@ -64,13 +62,10 @@ class Poster(object):
         self.logger.info("Commited staged data to " + Solr)
         return resp, content
 
-    def flush(self, Solr, Report=None):
+    def flush(self, Solr):
         """
         Flush all documents from Solr.
         """
-        # check state
-        if Report:
-            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # send command
         msg = "<delete><query>*</query></delete>"
         if Solr.endswith('/'):
@@ -84,13 +79,10 @@ class Poster(object):
         self.logger.info("Flushed data from " + Solr)
         return (resp, content)
         
-    def optimize(self, Solr, Report=None):
+    def optimize(self, Solr):
         '''
         Optimize data in Solr core.
         '''
-        # check state
-        if Report:
-            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # send command
         msg = '<optimize waitSearcher="false"/>'
         if Solr.endswith('/'):
@@ -103,15 +95,13 @@ class Poster(object):
         self.logger.info("Optimized " + Solr)
         return (resp, content)
         
-    def post(self, Source, Solr, Fields, Report=None):
+    def post(self, Source, Solr, Fields):
         '''
         Post Solr Input Documents in the Source directory to the Solr core if 
         they have all required fields.
         '''
         # check state
         assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
-        if Report:
-            assert os.path.exists(Report), self.logger.warning("Report path does not exist: " + Report)
         # ensure that the posting URL is correct
         if Solr.endswith('/'):
             url = Solr + 'update'
@@ -150,7 +140,6 @@ class Poster(object):
         # get parameters
         actions = Params.get("post","actions").split(",")
         index = Params.get("post","index")
-        report = Params.get("post","report")
         source = Params.get("post","input")
         if Params.has_option("post", "required"):
             required = Params.get("post","required").split(',')
@@ -159,14 +148,14 @@ class Poster(object):
         # execute actions
         for action in actions:
             if action == "flush":
-                self.flush(index,report)
+                self.flush(index)
             # post
             elif action == "post":
-                self.post(source,index,required,report)
+                self.post(source,index,required)
             # commit
             elif action == "commit":
-                self.commit(index,report)
+                self.commit(index)
             # optimize
             elif action == "optimize":
-                self.optimize(index,report)
+                self.optimize(index)
         

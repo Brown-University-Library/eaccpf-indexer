@@ -6,7 +6,8 @@ LICENSE file, which is part of this source code package.
 from AlchemyAPI import AlchemyAPI
 from BeautifulSoup import BeautifulSoup as soup
 from pythoncalais import Calais
-from geopy import * 
+from geopy import *
+
 import logging
 import os
 import time
@@ -208,15 +209,15 @@ class Facter(object):
             record[key] = result[key]
         return record
     
-    def _setDateField(self, target, fieldname, source):
+    def _setDateField(self, Target, Field, Source):
         '''
         Try to set the named field with the specified date string.
         '''
         try:
-            if source is not None:
-                if hasattr(source,'standarddate'):
-                    date = self._cleanText(source['standarddate'])
-                    target[fieldname] = self._fixDate(date)
+            if Source is not None:
+                if hasattr(Source,'standarddate'):
+                    date = self._cleanText(Source['standarddate'])
+                    Target[Field] = self._fixDate(date)
         except:
             pass
     
@@ -230,32 +231,29 @@ class Facter(object):
         except:
             pass
     
-    def inferEntitiesWithAlchemy(self, source, output, api_key, sleep=0., report=None):
+    def inferEntitiesWithAlchemy(self, Source, Output, Key, Sleep=0.):
         '''
         For each input file, attempt to extract people, things, concepts and 
         place names from free text fields. Sleep for the specified number of 
         seconds between requests.
         '''
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
+        assert os.path.exists(Output), self.logger.warning("Output path does not exist: " + Output)
         # Create an AlchemyAPI object, load API key
         alchemy = AlchemyAPI.AlchemyAPI() 
-        alchemy.setAPIKey(api_key)
-
+        alchemy.setAPIKey(Key)
         # process files
-        files = os.listdir(source)
+        files = os.listdir(Source)
         for filename in files:
-            # read source data
-            infile = open(source + os.sep + filename, 'r')
+            # read Source data
+            infile = open(Source + os.sep + filename, 'r')
             lines = infile.readlines()
             xml = soup(''.join(lines))
             infile.close()
-            # get the output record
+            # get the Output record
             yamlFilename = self._getYamlFilename(filename)
-            record = self._getRecord(output,yamlFilename)
+            record = self._getRecord(Output,yamlFilename)
             # clear the existing entities section before populating
             record['inferred_alchemy'] = []
             # get the free text fields from the record
@@ -264,34 +262,32 @@ class Facter(object):
             result = alchemy.TextGetRankedNamedEntities(freetext);
             self.logger.info(result)
             # record['entities'] = result
-            # write output record
-            outfile = open(output + os.sep + yamlFilename, 'w')
+            # write Output record
+            outfile = open(Output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)
             outfile.close()
             self.logger.info("Wrote inferred entities to " + yamlFilename)
-            # sleep between requests
-            time.sleep(sleep)
+            # Sleep between requests
+            time.sleep(Sleep)
         
-    def inferEntitiesWithCalais(self, source, output, api_key, sleep=0., report=None):
+    def inferEntitiesWithCalais(self, Source, Output, Key, Sleep=0.):
         # create an OpenCalais object, load API key
-        calais = Calais.Calais(api_key, submitter="University of Melbourne, eScholarship Research Centre")
+        calais = Calais.Calais(Key, submitter="University of Melbourne, eScholarship Research Centre")
         calais.user_directives["allowDistribution"] = "false"
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
+        assert os.path.exists(Output), self.logger.warning("Output path does not exist: " + Output)
         # process files
-        files = os.listdir(source)
+        files = os.listdir(Source)
         for filename in files:
             # read source data
-            infile = open(source + os.sep + filename, 'r')
+            infile = open(Source + os.sep + filename, 'r')
             lines = infile.readlines()
             xml = soup(''.join(lines))
             infile.close()
             # get the output record
             yamlFilename = self._getYamlFilename(filename)
-            record = self._getRecord(output,yamlFilename)
+            record = self._getRecord(Output,yamlFilename)
             # clear the existing entities section before populating
             # get free text fields from the record
             freetext = self._getFreeTextFields(xml)
@@ -302,38 +298,36 @@ class Facter(object):
                 result = self._getCalaisResultAsDictionary(calais_result)
                 record = self._mergeResultWithRecord(record, result)
                 # write output record
-                outfile = open(output + os.sep + yamlFilename, 'w')
+                outfile = open(Output + os.sep + yamlFilename, 'w')
                 yaml.dump(record,outfile)
                 outfile.close()
                 self.logger.info("Wrote inferred entities to " + yamlFilename)
             except Exception:
                 self.logger.warning("Could not complete inference operation for " + filename, exc_info=True)
             # sleep between requests
-            time.sleep(sleep)
+            time.sleep(Sleep)
     
-    def inferEntitiesWithNLTK(self, source, output, report=None):
+    def inferEntitiesWithNLTK(self, Source, Output):
         '''
         Infer entities from free text using Natural Language Toolkit.
         Attempt to identify people and things.
         '''
         # create output folder
-        self._makeCache(output)
+        self._makeCache(Output)
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        if report:
-            assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
+        assert os.path.exists(Output), self.logger.warning("Output path does not exist: " + Output)
         # process files
-        files = os.listdir(source)
+        files = os.listdir(Source)
         for filename in files:
             # read source data
-            infile = open(source + os.sep + filename, 'r')
+            infile = open(Source + os.sep + filename, 'r')
             lines = infile.readlines()
             xml = soup(''.join(lines))
             infile.close()
             # get the output record
             yamlFilename = self._getYamlFilename(filename)
-            record = self._getRecord(output,yamlFilename)
+            record = self._getRecord(Output,yamlFilename)
             # clear the existing entities section before populating
             record['inferred_nltk'] = []
             # get the free text fields from the record
@@ -341,12 +335,12 @@ class Facter(object):
             self.logger.info(freetext)
             # infer entities
             # write output record
-            outfile = open(output + os.sep + yamlFilename, 'w')
+            outfile = open(Output + os.sep + yamlFilename, 'w')
             yaml.dump(record,outfile)
             outfile.close()
             self.logger.info("Wrote inferred entities to " + yamlFilename)
         
-    def inferLocations(self, source, output, geocoder, sleep=0., report=None):
+    def inferLocations(self, source, output, geocoder, sleep=0.):
         '''
         For each EAC-CPF input file, extract the address from each cronitem and
         attempt to resolve its geographic coordinates. Sleep for the specified 
@@ -425,7 +419,6 @@ class Facter(object):
         # get parameters
         actions = Params.get("infer","actions").split(",")
         output = Params.get("infer","output")
-        report = Params.get("infer","report")
         sleep = float(Params.get("infer","sleep"))
         source = Params.get("infer","input")
         # create output folder
@@ -434,7 +427,7 @@ class Facter(object):
         for action in actions:
             if 'location' in action:
                 geocoder = geocoders.GoogleV3()
-                self.inferLocations(source,output,geocoder,sleep,report)
+                self.inferLocations(source,output,geocoder,sleep)
             if 'entities' in action:
                 # infer entities with Alchemy
                 #alchemy_api_key = Params.get("infer","alchemy_api_key")
@@ -443,5 +436,5 @@ class Facter(object):
                 # self.inferEntitiesWithNLTK(source, output, report)
                 # infer entities with Open Calais
                 calais_api_key = Params.get("infer","calais_api_key")
-                self.inferEntitiesWithCalais(source,output,calais_api_key,sleep,report)
+                self.inferEntitiesWithCalais(source,output,calais_api_key,sleep)
         

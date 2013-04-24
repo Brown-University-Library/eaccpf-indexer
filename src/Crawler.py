@@ -24,6 +24,7 @@ class Crawler(object):
         '''
         Initialize the crawler.
         '''
+        self.cache = None
         self.logger = logging.getLogger('Crawler')
     
     def _clearFiles(self, path):
@@ -62,7 +63,7 @@ class Crawler(object):
             self._clearFiles(Path)
             self.logger.info("Cleared output folder at " + Path)
     
-    def crawlFileSystem(self, Source, Output, Report, Actions=['html'], Base=None, Sleep=0.):
+    def crawlFileSystem(self, Source, Output, Actions, Base=None, Sleep=0.):
         '''
         Crawl file system for HTML files. Execute the specified indexing 
         actions on each file. Store files to the Output path. Sleep for the 
@@ -106,12 +107,12 @@ class Crawler(object):
                                     dobject.write(Output,Cacherecord=cacherecord)
                             if 'html' in Actions:
                                 html.write(Output)
-                    except Exception:
+                    except:
                         self.logger.warning("Could not complete processing for " + filename)
                     finally:
                         time.sleep(Sleep)
     
-    def crawlWebSite(self, source, output, report, actions=['html'], sleep=0.):
+    def crawlWebSite(self, source, output, actions=['html'], sleep=0.):
         '''
         Crawl web site for HTML entity pages. When such a page is found, 
         execute the specified indexing actions. Store files to the output path.
@@ -130,21 +131,17 @@ class Crawler(object):
         cacheurl = Params.get("crawl","cache-url")
         source = Params.get("crawl","input")
         output = Params.get("crawl","output")
-        report = Params.get("crawl","report")
         sleep = float(Params.get("crawl","sleep"))
         # digital object cache
         self.cache = DigitalObjectCache(cache,cacheurl)
         # create output folders
         self._makeCache(output)
-        if not os.path.exists(report):
-            os.makedirs(report)
         # check state before starting
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         assert os.path.exists(cache), self.logger.warning("Cache path does not exist: " + cache)
-        assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
         # start processing
         if (self._isUrl(source)):
-            self.crawlWebSite(source,output,report,actions,sleep)
+            self.crawlWebSite(source,output,actions,sleep)
         else:
-            self.crawlFileSystem(source,output,report,actions,base,sleep)
+            self.crawlFileSystem(source,output,actions,base,sleep)
 

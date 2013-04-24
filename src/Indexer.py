@@ -3,17 +3,18 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from Analyzer import Analyzer
+from Cleaner import Cleaner
+from Crawler import Crawler
+from Facter import Facter
+from Poster import Poster
+from Transformer import Transformer
+
 import ConfigParser
 import argparse
 import datetime
 import logging
 import sys
-from Cleaner import Cleaner
-from Crawler import Crawler
-from Facter import Facter
-from Poster import Poster
-from Reporter import Reporter
-from Transformer import Transformer
 
 class Indexer(object):
     '''
@@ -35,14 +36,16 @@ class Indexer(object):
         sh.setLevel(logging.DEBUG)
         sh.setFormatter(formatter)
         self.logger.addHandler(sh)
+        # configuration parser
+        self.config = ConfigParser.SafeConfigParser()
         # configure command line options
         self.parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to an Apache Solr/Lucene index")
         self.parser.add_argument('config', help="path to configuration file")
+        self.parser.add_argument('--analyze', help="analyze data", action='store_true')
         self.parser.add_argument('--clean', help="clean metadata files of common errors and write updated files", action='store_true')
         self.parser.add_argument('--crawl', help="crawl file system or web site for metadata files", action='store_true')
         self.parser.add_argument('--infer', help="infer concepts, entities, locations from metadata", action='store_true')
         self.parser.add_argument('--post', help="post Solr Input Documents to index", action='store_true')
-        self.parser.add_argument('--report', help="generate report", action='store_true')
         self.parser.add_argument('--transform', help="transform metadata to Solr Input Document format", action='store_true')
         self.parser.add_argument('--update', help="process only those files that have changed since the last run", action='store_true')
     
@@ -59,7 +62,6 @@ class Indexer(object):
             sys.exit(e)
         # load the specified configuration file
         try:
-            self.config = ConfigParser.SafeConfigParser()
             self.config.readfp(open(self.args.config))
         except Exception, e:
             self.logger.critical("Could not load the specified configuration file")
@@ -86,10 +88,10 @@ class Indexer(object):
         if (self.args.post):
             poster = Poster()
             poster.run(self.config)
-        # if report
-        if (self.args.report):
-            reporter = Reporter()
-            reporter.run(self.config)
+        # if analyze
+        if (self.args.analyze):
+            analyzer = Analyzer()
+            analyzer.run(self.config)
         # stop clock
         delta = datetime.datetime.now() - start
         s = delta.seconds

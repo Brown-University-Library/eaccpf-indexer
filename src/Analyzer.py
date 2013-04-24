@@ -7,9 +7,12 @@ from BeautifulSoup import BeautifulSoup
 from StringIO import StringIO
 from datetime import datetime
 from lxml import etree
+from mako.template import Template 
+
 import inspect
 import logging
 import os
+import shutil
 import yaml
 
 class Analyzer(object):
@@ -151,7 +154,11 @@ class Analyzer(object):
             etree.parse(StringIO(Data), self.parser)
             return True, ''
         except:
-            return False, self.parser.error_log
+            errors = []
+            for entry in self.parser.error_log:
+                error = str(entry.message)
+                errors.append(error)
+            return False, errors
 
     def _isEacCpfFile(self, Path):
         '''
@@ -165,7 +172,21 @@ class Analyzer(object):
                 return True
         return False
 
-    def analyzeFile(self, Source, Filename, Report):    
+    def _makeCache(self, Path):
+        '''
+        Create a folder at the specified path if none exists.
+        If the path already exists, delete all files within it.
+        '''
+        if not os.path.exists(Path):
+            os.makedirs(Path)
+            self.logger.info("Created output folder at " + Path)
+        else:
+            files = os.listdir(Path)
+            for filename in files:
+                os.remove(Path + os.sep + filename)
+            self.logger.info("Cleared output folder at " + Path)
+
+    def analyzeFile(self, Source, Filename, Output):    
         '''
         Analyze EAC-CPF file for quality indicators and changes.
         '''
@@ -173,17 +194,10 @@ class Analyzer(object):
         infile = open(Source + os.sep + Filename,'r')
         data = infile.read()
         infile.close()
-        # read the existing report file
-        if os.path.exists(Report + os.sep + Filename):
-            infile = open(Report + os.sep + Filename,'r')
-            report = yaml.load(infile.read())
-            infile.close()
-        else:
-            report = {}
+        report = {}
         try:
             # the analysis
             analysis = {}
-            # basic document quality indicators
             analysis['the analysis date'] = datetime.now()
             conformance, errors = self._isConformantToEacCpfSchema(data)
             analysis['conforms to schema'] = conformance
@@ -201,14 +215,15 @@ class Analyzer(object):
             # field level quality checks
             # update the report file
             report['analysis'] = analysis
-            outfile = open(Report + os.sep + Filename, 'w')
-            outfile.put(yaml.dump(report, default_flow_style=False, indent=4))
+            outfile = open(Output + os.sep + Filename, 'w')
+            outfile.write(yaml.dump(report, default_flow_style=False, indent=4))
             outfile.close()
             self.logger.info("Wrote analysis for " + Filename)
         except:
-            self.logger.warning("Could not complete analysis for " + Filename)
+            self.logger.warning("Could not complete analysis for " + Filename, exc_info=True)
     
-    def analyzeFiles(self, Source, Report):
+        
+    def analyzeFiles(self, Source, Output):
         '''
         Analyze EAC-CPF files in the specified path. Write a report file to the
         report path.
@@ -216,18 +231,45 @@ class Analyzer(object):
         files = os.listdir(Source)
         for filename in files:
             if self._isEacCpfFile(Source + os.sep + filename):
-                self.analyzeFile(Source, filename, Report)
+                self.analyzeFile(Source, filename, Output)
+                
+    def buildHtmlReport(self, Source, Output):
+        '''
+        Build HTML report file 
+        '''
+        # copy the file from the template directory into the output directory 
+        modpath = os.path.abspath(inspect.getfile(self.__class__))
+        parentpath = os.path.dirname(modpath)
+        assets = parentpath + os.sep + "template"
+        for filename in os.listdir(assets):
+            shutil.copyfile(assets + os.sep + filename, Output + os.sep + filename)
+        templatefile = assets + os.sep + "index.mako"
+        # build the report
+        try:
+            # load the template
+            template = Template(filename=templatefile)
+            data = template.render(Source=Source)
+            # write the report
+            outfile = open(Output + os.sep + 'index.html')
+            outfile.write(data)
+            outfile.close()
+            self.logger.info("Wrote HTML report file")
+        except:
+            self.logger.warning("Could not write HTML report")
                 
     def run(self, params):
         '''
         Execute analysis operations using specified parameters.
         '''
         # get parameters
-        source = params.get("analyze","source")
-        report = params.get("analyze","report")
+        source = params.get("analyze","input")
+        output = params.get("analyze","output")
+        # make output folder
+        self._makeCache(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(report), self.logger.warning("Report path does not exist: " + report)
+        assert os.path.exists(output), self.logger.warning("Report path does not exist: " + output)
         # execute actions
-        self.analyzeFiles(source,report)
+        self.analyzeFiles(source,output)
+        self.buildHtmlReport(source,output)
         

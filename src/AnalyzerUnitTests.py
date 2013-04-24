@@ -34,7 +34,7 @@ class AnalyzerUnitTests(unittest.TestCase):
         # folder with test files
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         parentpath = os.path.dirname(modpath)
-        self.input = parentpath + os.sep + "test" + os.sep + "eaccpf"
+        self.input = parentpath + os.sep + "test" + os.sep + "analyzer"
         # temporary directory for report files
         self.temp = tempfile.mkdtemp()
 
