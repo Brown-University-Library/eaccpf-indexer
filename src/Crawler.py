@@ -73,13 +73,13 @@ class Crawler(object):
                                 if thumbnail:
                                     cacherecord = self.cache.put(thumbnail)
                                     dobj_id = eaccpf.getRecordId()
-                                    thumbnail.write(Output,dobj_id,cacherecord)
+                                    thumbnail.write(Output,dobj_id,cacherecord)  # @todo FAILING HERE!!!
                             if 'digitalobject' in Actions and html.hasEacCpfAlternate():
                                 eaccpf = EacCpf(src,metadata,presentation)
                                 dobjects = eaccpf.getDigitalObjects()
                                 for dobject in dobjects:
                                     cacherecord = self.cache.put(dobject)
-                                    dobject.write(Output,Cacherecord=cacherecord)
+                                    dobject.write(Output,CacheRecord=cacherecord)
                             if 'html' in Actions:
                                 html.write(Output)
                     except:

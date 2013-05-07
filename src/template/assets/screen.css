@@ -1,27 +1,17 @@
 /* This is the report stylesheet */
 
-.records {
-	width: 100%;
-}
 .record {
-	vertical-align: top;
+  vertical-align: top;
 }
 .record .summary {
+  display: inline;
 }
-.record .summary .section-content-counts {
-
+.record .graph {
+	min-height: 20px;
+	min-width:200px;
 }
-.counts {
-	list-style: none;
-	margin: 0;
-	min-width: 100px;
-	padding: 0;
-}
-.counts li {
-	display: inline;
-}
-
 .record .detail {
-	border: 1px solid gray;
 	display: none;
+	height: 0;
 }
+
