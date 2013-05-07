@@ -24,7 +24,7 @@ class Facter(object):
         '''
         Initialize class
         '''
-        self.logger = logging.getLogger('feeder')
+        self.logger = logging.getLogger('Facter')
 
     def _addValueToDictionary(self,dic,key,value):
         '''
