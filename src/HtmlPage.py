@@ -18,16 +18,21 @@ class HtmlPage(object):
     provides convenience methods for extracting required metadata.
     '''
 
-    def __init__(self, Source, BaseUrl=None):
+    def __init__(self, Source, BaseUrl=None, Data=None):
         '''
         Source is a file system path or URL to the document. URL is an 
         optional argument specified when the document is being indexed from a 
-        file system and the document contains relative URLs. If the document
-        contains absolute URLs, then the URL parameter is ignored.
+        file system, and is used to determine what the file's public URL should
+        be. If the document contains absolute URLs, then the URL parameter is 
+        ignored.
         '''
         self.logger = logging.getLogger('HtmlPage')
         self.source = Source
-        self._load()
+        if Data:
+            self.data = Data
+        else:
+            self.data = self._load(self.source)
+        self.soup = BeautifulSoup(self.data)
         if BaseUrl:
             if not BaseUrl.endswith('/'):
                 BaseUrl = BaseUrl + '/'
@@ -99,27 +104,23 @@ class HtmlPage(object):
         result = re.sub('\s{2,}|&nbsp;', ' ', result)
         return result
 
-    def _isUrl(self, Source):
-        '''
-        Determine if the source is a URL or a file system path.
-        '''
-        if Source != None and ("http://" in Source or "https://" in Source):
-            return True
-        return False
-    
-    def _load(self):
+    def _load(self, Source):
         '''
         Load the document content.
         '''
-        if (self._isUrl(self.source)):
-            response = urllib2.urlopen(self.source)
-            self.data = response.read()
-        else:
-            infile = open(self.source)
-            self.data = infile.read()
-            infile.close()
-        self.logger.debug("Loaded content for " + self.source)
-    
+        try:
+            if 'http://' in Source or 'https://' in Source:
+                response = urllib2.urlopen(Source)
+                return response.read()
+            else:
+                infile = open(Source)
+                data = infile.read()
+                infile.close()
+                return data
+            self.logger.debug("Loaded content for " + Source)
+        except:
+            return None
+
     def getContent(self):
         '''
         Get the HTML content.
@@ -130,18 +131,17 @@ class HtmlPage(object):
         '''
         Get the URL to the digital object representation.
         '''
-        soup = BeautifulSoup(self.data)
         try:
-            thumbnail = soup.find('div',{'class':'image-caption'}).find('a').find('img')
+            thumbnail = self.soup.find('div',{'class':'image-caption'}).find('a').find('img')
             if thumbnail:
                 url = thumbnail['src']
                 if 'http' in url:
                     # absolute url reference
-                    return url.encode("utf-8")
+                    return str(url)
                 else:
                     # relative url reference
                     pageurl = self.getUrl()
-                    return urlparse.urljoin(pageurl,url).encode("utf-8")
+                    return str(urlparse.urljoin(pageurl,url))
         except:
             return None
         
@@ -149,12 +149,11 @@ class HtmlPage(object):
         '''
         Get the URL to the EAC-CPF alternate representation of this page.
         '''
-        soup = BeautifulSoup(self.data)
-        meta = soup.findAll('meta', {'name':'EAC'})
+        meta = self.soup.findAll('meta', {'name':'EAC'})
         try:
             # we need to deal with relative URLs in this reference
             # by appending the parent directory path
-            return meta[0].get('content')
+            return str(meta[0].get('content'))
         except:
             return None
 
@@ -169,18 +168,17 @@ class HtmlPage(object):
         '''
         Extract HTML metadata and content for indexing.
         '''
-        soup = BeautifulSoup(self.data)
         data = {}
         data['id'] = self.getRecordId()
         data['uri'] = self.getUrl()
-        title = soup.find('title')
+        title = self.soup.find('title')
         if title:
             data['title'] = title.text.encode("utf-8")
-        dctype = soup.find('meta',{'name':'DC.Type'})
+        dctype = self.soup.find('meta',{'name':'DC.Type'})
         if dctype:
             data['type'] = dctype.text.encode("utf-8")
         # text
-        texts = soup.findAll(text=True)
+        texts = self.soup.findAll(text=True)
         visible_elements = [self._getVisibleText(elem) for elem in texts]
         data['abstract'] = ' '.join(visible_elements)
         return data
@@ -207,8 +205,7 @@ class HtmlPage(object):
         if hasattr(self, 'url'):
             return self.url
         else:
-            soup = BeautifulSoup(self.data)
-            meta = soup.findAll('meta', {'name':'DC.Identifier'})
+            meta = self.soup.findAll('meta', {'name':'DC.Identifier'})
             try:
                 uri = meta[0].get('content')
                 return uri.replace(' ','%20').encode("utf-8")
@@ -219,8 +216,7 @@ class HtmlPage(object):
         '''
         Determine if this page has an EAC-CPF alternate representation.
         '''
-        soup = BeautifulSoup(self.data)
-        meta = soup.findAll('meta', {'name':'EAC'})
+        meta = self.soup.findAll('meta', {'name':'EAC'})
         try:
             alt = meta[0].get('content')
             if alt:

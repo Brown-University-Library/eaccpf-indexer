@@ -110,27 +110,28 @@ class Poster(object):
         # post documents
         files = os.listdir(Source)
         for filename in files:
-            try:
-                xml = etree.parse(Source + os.sep + filename)
-                doc = xml.getroot()
-                if self._hasRequiredFields(doc,Fields):
-                    data = etree.tostring(doc)
-                    (resp, content) = Http().request(url, "POST", data)
-                    if resp['status'] != '200':
-                        raise IndexingError(resp, content)
-                    self.logger.info("Posted " + filename + " to Apache Solr")
-            except IOError:
-                self.logger.warning("Can't connect to Solr" + url, exc_info=True)
-                print resp
-                print content
-            except IndexingError:
-                self.logger.warning("Could not post " + filename + " Error: " + resp['status'], exc_info=True)
-                print resp
-                print content
-            except Exception:
-                self.logger.warning("Could not complete post operation for " + filename, exc_info=True)
-                print resp
-                print content
+            if filename.endswith(".xml"):
+                try:
+                    xml = etree.parse(Source + os.sep + filename)
+                    doc = xml.getroot()
+                    if self._hasRequiredFields(doc,Fields):
+                        data = etree.tostring(doc)
+                        (resp, content) = Http().request(url, "POST", data)
+                        if resp['status'] != '200':
+                            raise IndexingError(resp, content)
+                        self.logger.info("Posted " + filename + " to Apache Solr")
+                except IOError:
+                    self.logger.warning("Can't connect to Solr" + url, exc_info=True)
+                    print resp
+                    print content
+                except IndexingError:
+                    self.logger.warning("Could not post " + filename + " Error: " + resp['status'], exc_info=True)
+                    print resp
+                    print content
+                except Exception:
+                    self.logger.warning("Could not complete post operation for " + filename, exc_info=True)
+                    print resp
+                    print content
                     
     def run(self, Params):
         '''

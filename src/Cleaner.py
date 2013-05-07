@@ -74,50 +74,26 @@ class Cleaner():
 
     def _getSourceAndReferrerValues(self, Path):
         '''
-        Get source and referrer URI values from comment embedded in the document.
+        Get source, metadata and presentation URL values from comment embedded
+        in the document.
         '''
         infile = open(Path,'r')
         lines = infile.readlines()
         infile.close()
-        # process lines
         for line in lines:
             try:
                 src = line.index("@source")
-                ref = line.index("@referrer")
-                source = line[src+len("@source="):ref-1]
-                referrer = line[ref+len("@referrer="):-4]
-                if not referrer.startswith("http"):
-                    referrer = None
-                return (source, referrer)
+                meta = line.index("@metadata")
+                pres = line.index("@presentation")
+                source = line[src+len("@source="):meta-1]
+                metadata = line[meta+len("@metadata="):pres-1]
+                presentation = line[pres+len("@presentation="):-4]
+                return (source, metadata, presentation)
             except:
                 pass
         # default case
-        return ('', '')
+        return ('', '', '')
     
-    def _isEacCpf(self, Path):
-        '''
-        Determines if the file at the specified path is EAC-CPF. 
-        '''
-        if Path.endswith("xml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "<eac-cpf" in data and "</eac-cpf>" in data:
-                return True
-        return False
-    
-    def _isHtml(self, Path):
-        '''
-        Determine if the file at the specified path is HTML.
-        '''
-        if Path.endswith("htm") or Path.endswith("html"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "<html" in data.lower():
-                return True
-        return False
-
     def _makeCache(self, path):
         '''
         Create a cache folder at the specified path if none exists.
@@ -187,14 +163,14 @@ class Cleaner():
                 data = infile.read()
                 infile.close()        
                 # fix problems
-                if self._isEacCpf(Source + os.sep + filename):
+                if filename.endswith(".xml"):
                     # the source/referrer values comment gets deleted by the XML 
                     # parser, so we'll save it here temporarily while we do our cleanup
-                    src, ref = self._getSourceAndReferrerValues(Source + os.sep + filename)
+                    src, meta, pres = self._getSourceAndReferrerValues(Source + os.sep + filename)
                     data = self.fixEacCpf(data)
                     # write source/referrer comment back at the end of the file
-                    data += '\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":src, "referrer":ref}
-                elif self._isHtml(Source + os.sep + filename):
+                    data += '\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' % {"source":src, "metadata": meta, "presentation":pres}
+                elif filename.endswith(".htm") or filename.endswith(".html"):
                     data = self.fixHtml(data)
                 else:
                     pass
@@ -240,40 +216,3 @@ class Cleaner():
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # clean data
         self.clean(source,output)
-        # validate cleaned data files
-        try:
-            schema = Params.get("clean","schema")
-            self.validate(output,schema)
-        except:
-            self.logger.debug("No schema file specified")
-
-    def validate(self, Source, Schema):
-        '''
-        Validate a collection of files against an XML schema.
-        '''
-        # check state
-        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
-        assert os.path.exists(Schema), self.logger.warning("Schema file does not exist: " + Schema)
-        # load schema file
-        try:
-            infile = open(Schema, 'r')
-            schema_data = infile.read()
-            schema_root = etree.XML(schema_data)
-            xmlschema = etree.XMLSchema(schema_root)
-            infile.close()
-            self.logger.info("Loaded schema file " + Schema)
-        except Exception:
-            self.logger.critical("Could not load schema file " + Schema)
-        # create validating parser
-        parser = etree.XMLParser(schema=xmlschema)
-        # validate files against schema
-        self.logger.info("Validating documents against schema")
-        files = os.listdir(Source)
-        for filename in files:
-            infile = open(Source + os.sep + filename,'r')
-            data = infile.read()
-            infile.close()
-            try:
-                etree.fromstring(data, parser)
-            except Exception:
-                self.logger.warning("Document " + filename + " does not conform to schema")

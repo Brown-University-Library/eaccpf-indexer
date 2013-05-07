@@ -7,27 +7,33 @@ from HtmlPage import HtmlPage
 
 import logging
 import os
+import urlparse
 import yaml
 
 class DigitalObject(object):
     '''
-    An image or video file and associated metadata. Transforms the metadata 
-    contained in the EAC-CPF record and HTML page to an intermediate YML 
-    representation.
+    An image or video file with associated metadata. The digital object is
+    identified inside of an EAC-CPF document. That document provides metadata
+    and a URL to a web page that presents the digital object. The web page
+    must be parsed to extract a URL to the actual digital object file. Once
+    the digital object is in hand, we create alternate thumbnail 
+    representations of that file. The digital object metadata is recorded in
+    a YAML file. Field names in the YAML record conform with the indexing 
+    fields specified in the EAC-CPF Apache Solr schema.
     
-    <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/wa/objects/WD0000203.htm">
-        <relationEntry localType="digitalObject">
-            The 'Homes' Herald, 1978 [Methodist Homes for Children]
-        </relationEntry>
-        <objectXMLWrap>...</objectXMLWrap>
-    </resourceRelation>
+    @see https://bitbucket.org/esrc/eaccpf-solr
     '''
 
-    def __init__(self, MetadataUrl, PresentationUrl, Title, Abstract, EntityType, LocalType, UnitDate):
+    def __init__(self, Source, MetadataUrl, PresentationUrl, Title, Abstract, EntityType, LocalType, UnitDate):
         '''
-        Constructor
+        Source is a file system path or URL to the EAC-CPF document that 
+        defines the digital object. MetadataUrl is a publc URL to the 
+        EAC-CPF document that holds the primary digital object metadata. 
+        PresentationUrl is a public URL to the HTML page the presents the 
+        digital object.
         '''
         self.logger = logging.getLogger('DigitalObject')
+        self.source = Source
         self.record = {}
         self.record['metadata_url'] = MetadataUrl
         self.record['presentation_url'] = PresentationUrl
@@ -36,15 +42,45 @@ class DigitalObject(object):
         self.record['type'] = EntityType
         self.record['localtype'] = LocalType
         self.record['unitdate'] = UnitDate
-        self.record['dobj_url'] = self._getObjectSourceUrl()
-        self.record['dobj_type'] = self.getType()
-        self.record['id'] = self.getRecordId()
         # parse the unit date into from and to dates
         fromDate, toDate = self._getDateRange(UnitDate)
         if fromDate:
             self.record['fromDate'] = fromDate
         if toDate:
             self.record['toDate'] = toDate
+        # determine the source and public URL for the digital object
+        if 'http://' in self.source or 'https://' in self.source:
+            self.record['dobj_url'] = self._getObjectSourceUrl() 
+        else:
+            # The documents are being indexed through the file system. 
+            # Consequently, we need to determine what the file system paths are 
+            # to the HTML and digital object files. We currently know the 
+            # EAC-CPF file path and URL, and the HTML document URL. Here we 
+            # determine the file system path to the HTML document from that.
+            pth = Source.split('/')
+            url = MetadataUrl.replace('http://','').replace('https://','').split('/')
+            pth.reverse()
+            url.reverse()
+            for a,b in zip(pth,url):
+                if a == b:
+                    pth.remove(a) 
+                    url.remove(b)
+            pth.reverse()
+            url.reverse()
+            # the web site and file system roots
+            pth_base = '/'.join(pth)
+            url_base = 'http://' + '/'.join(url)
+            # the file system path to the HTML document
+            html_path = pth_base + PresentationUrl.replace(url_base,'')
+            # get the URL to the digital object file
+            html = HtmlPage(html_path)
+            self.record['dobj_url'] = html.getDigitalObjectUrl() 
+            url = urlparse.urlparse(self.record['dobj_url'])
+            # determine the path to the digital object file
+            self.dobjpath = pth_base + url[2]
+        # extract metadata from the HTML document
+        self.record['dobj_type'] = self.getType()
+        self.record['id'] = self.getRecordId()
 
     def _getDateRange(self, UnitDate):
         '''
@@ -54,19 +90,13 @@ class DigitalObject(object):
         if UnitDate:
             return '0000-01-01T00:00:00Z', '0000-01-01T00:00:00Z'
         return None, None
-    
-    def _getFileName(self, Url):
-        '''
-        Get the file name from a URL.
-        '''
-        if "/" in Url:
-            parts = Url.split("/")
-            return parts[-1]
-        return Url
 
     def _getObjectSourceUrl(self):
         '''
         Extract the digital object source file URL from its HTML record page.
+        
+        If the digital object was indexed from the file system, then we need
+        to convert between 
         '''
         html = HtmlPage(self.record['presentation_url'])
         return html.getDigitalObjectUrl()
@@ -75,7 +105,23 @@ class DigitalObject(object):
         '''
         Get the metadata file name.
         '''
-        return self._getFileName(self.record['metadata_url'])
+        if "/" in self.record['metadata_url']:
+            parts = self.record['metadata_url'].split("/")
+            return parts[-1]
+        return self.record['metadata_url']
+
+    def getMetadataUrl(self):
+        '''
+        Get the public URL to the EAC-CPF metadata document that identifies
+        this digital object.
+        '''
+        return self.record['metadata_url']
+
+    def getPresentationUrl(self):
+        '''
+        Get the public URL to the HTML presentation.
+        '''
+        return self.record['presentation_url']
 
     def getRecord(self):
         '''
@@ -87,13 +133,13 @@ class DigitalObject(object):
         '''
         Get the record identifier.
         '''
-        filename = self._getFileName(self.record['presentation_url'])
+        filename = self.getFileName()
         recordid, _ = os.path.splitext(filename)
         return recordid
 
     def getSourceUrl(self):
         '''
-        Get the URL for the digital object file.
+        Get the public URL for the digital object file.
         '''
         return self.record['dobj_url']
 

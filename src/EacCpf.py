@@ -5,105 +5,75 @@ LICENSE file, which is part of this source code package.
 
 from BeautifulSoup import BeautifulSoup
 from DigitalObject import DigitalObject
+
 import logging
 import os
 import urllib2
 
 class EacCpf(object):
     '''
-    An EAC-CPF document.
+    EAC-CPF documents provide metadata and references to external entities    
+    that are the subject of indexing. This class wraps the EAC-CPF document 
+    and provides convenience methods for extracting required metadata.    
+
+    The content of an EAC-CPF document is typically presented by a separate 
+    HTML document, referred to here as the presentation.
     '''
 
-    def __init__(self, Source, Presentation):
+    def __init__(self, Source, MetadataUrl=None, PresentationUrl=None, Data=None):
         '''
-        Constructor
+        Source is a file system path or URL to the EAC-CPF document file. This 
+        is used to load the content of the document. MetadataUrl is the public 
+        URL to the EAC-CPF document. PresentationUrl is the public URL to the
+        HTML presentation
         '''
-        # logger
         self.logger = logging.getLogger('EacCpf')
-        self.source = str(Source)
-        self.presentation = str(Presentation)
-        # load the document content
-        self._load()
-    
-    def _getFileName(self, Url):
-        '''
-        Get the file name from a URL.
-        '''
-        if "/" in Url:
-            parts = Url.split("/")
-            return parts[-1]
-        return Url
-        
-    def _getId(self, Url):
-        '''
-        Get digital object identifier from the object URL.
-        '''
-        filename = self._getFileName(Url)
-        recordid, _ = os.path.splitext(filename)
-        return recordid
-    
-    def _getLocation(self):
-        '''
-        '''
-        pass
-    
+        self.source = Source
+        self.metadata = MetadataUrl
+        self.presentation = PresentationUrl
+        if Data:
+            self.data = Data
+        else:
+            self.data = self._load(Source)
+        self.soup = BeautifulSoup(self.data)
+
     def _getTagString(self,Tag):
         '''
+        Get tag string value.
         '''
         if Tag and Tag.string:
             return str(Tag.string)
         return None
-        
+
     def _isEACCPF(self, Path):
         '''
         Determines if the file at the specified path is EAC-CPF. 
         '''
-        if Path.endswith("xml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "<eac-cpf" in data and "</eac-cpf>" in data:
-                return True
-        return False
-
-    def _isUrl(self, Source):
-        '''
-        Determine if the source reference is a URL.
-        '''
-        if Source != None and ("http:" in Source or "https:" in Source):
+        if "<eac-cpf" in self.data and "</eac-cpf>" in self.data:
             return True
         return False
 
-    def _load(self):
+    def _load(self, Source):
         '''
         Load the document content.
         '''
-        if self._isUrl(self.source):
-            response = urllib2.urlopen(self.source)
-            self.data = response.read()
-        else:
-            infile = open(self.source)
-            self.data = infile.read()
-            infile.close()
-        self.logger.debug("Loaded content for " + self.source)
-        
+        try:
+            if 'http://' in Source or 'https://' in Source:
+                response = urllib2.urlopen(Source)
+                return response.read()
+            else:
+                infile = open(Source)
+                data = infile.read()
+                infile.close()
+                return data
+            self.logger.debug("Loaded content for " + Source)
+        except:
+            return None
+
     def getDigitalObject(self, Record, Thumbnail=False):
         '''
         Transform the metadata contained in the HTML page to an intermediate 
         YML digital object representation.
-        @see http://www.findandconnect.gov.au/wa/biogs/WE00006b.htm
-        @see http://www.findandconnect.gov.au/wa/eac/WE00006.xml
-        
-        <resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/wa/objects/WD0000203.htm">
-            <relationEntry localType="digitalObject">
-                The 'Homes' Herald, 1978 [Methodist Homes for Children]
-            </relationEntry>
-            <objectXMLWrap>...</objectXMLWrap>
-        </resourceRelation>
-        
-        - it should return the image metadata (web page URL, image URL, image 
-          title, image description, image location), in addition to the URL to 
-          the image to be cached
         '''
         # if the resource contains a relationEntry with localType attribute = 'digitalObject'
         entry = Record.find('relationentry',{'localtype':'digitalObject'})
@@ -115,15 +85,14 @@ class EacCpf(object):
                 # not a thumbnail for this record
                 if not note or not "Include in Gallery" in note.text:
                     return None
-            metadata = str(self.source)
             presentation = Record['xlink:href'].encode("utf-8")
             title = str(entry.string)
-            abstract = self._getTagString(Record.find('abstract'))
+            abstract = self._getTagString(Record.find('abstract'))    
             entitytype = self.getEntityType()
             localtype = self.getLocalType()
             # @todo location
             unitdate = self._getTagString(Record.find('unitdate'))
-            dobj = DigitalObject(metadata,presentation,title,abstract,entitytype,localtype,unitdate)
+            dobj = DigitalObject(self.source,self.metadata,presentation,title,abstract,entitytype,localtype,unitdate)
             return dobj
         # no digital object found
         return None
@@ -133,22 +102,29 @@ class EacCpf(object):
         Get the list of digital objects referenced in the document.
         '''
         dobjects = []
-        soup = BeautifulSoup(self.data)
-        resources = soup.findAll('resourcerelation')
+        resources = self.soup.findAll('resourcerelation')
         for resource in resources:
             dobject = self.getDigitalObject(resource,Thumbnail)
             if dobject:
                 dobjects.append(dobject)
         return dobjects
     
+    def getEntityId(self):
+        '''
+        Get the record entity Id
+        '''
+        try:
+            return str(self.soup.find('identity').find('entityid').string)
+        except:
+            return None
+    
     def getEntityType(self):
         '''
         Get the entity type.
         '''
-        soup = BeautifulSoup(self.data)
         try:
-            etype = soup.find('entitytype')
-            return etype.string.encode("utf-8")
+            etype = self.soup.find('entitytype')
+            return str(etype.string)
         except:
             return None
     
@@ -156,14 +132,16 @@ class EacCpf(object):
         '''
         Get document file name.
         '''
-        return self._getFileName(self.source)
+        if "/" in self.source:
+            parts = self.source.split("/")
+            return parts[-1]
+        return self.source
     
     def getFunctions(self):
         '''
         Get the functions.
         '''
-        soup = BeautifulSoup(self.data)
-        functions = soup.findAll('function')
+        functions = self.soup.findAll('function')
         result = []
         for function in functions:
             try:
@@ -177,9 +155,8 @@ class EacCpf(object):
         '''
         Get the local type.
         '''
-        soup = BeautifulSoup(self.data)
         try:
-            ltype = soup.find('localcontrol').find('term')
+            ltype = self.soup.find('localcontrol').find('term')
             return ltype.string.encode("utf-8")
         except:
             return None
@@ -189,7 +166,25 @@ class EacCpf(object):
         Get the record identifier.
         @todo the identifier should come from the data rather than the file name
         '''
-        return self._getId(self.source)
+        filename = self.getFileName()
+        recordid, _ = os.path.splitext(filename)
+        return recordid
+    
+    def getTitle(self):
+        '''
+        Get the record title.
+        '''
+        try:
+            identity = self.soup.find('identity')
+            nameentry = identity.find('nameentry')
+            nameparts = nameentry.findAll('part')
+            if nameparts:
+                title = ''
+                for part in nameparts:
+                    title = title + part.string + ' '
+                return str(title)
+        except:
+            return None
     
     def getThumbnail(self):
         '''
@@ -209,15 +204,14 @@ class EacCpf(object):
         if objects and len(objects) > 0:
             return True
         return False
-    
+
     def write(self, Path):
         '''
         Write the EAC-CPF data to the specified path.
         '''
-        source = self.source
-        presentation = self.presentation
         path = Path + os.sep + self.getFileName()
         outfile = open(path,'w')
         outfile.write(self.data)
-        outfile.write('\n<!-- @source=%(source)s @referrer=%(referrer)s -->' % {"source":source, "referrer":presentation})
+        outfile.write('\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' % {"source":self.source, "metadata":self.metadata, "presentation":self.presentation})
         outfile.close()
+        self.logger.info("Stored EAC-CPF document " + self.getFileName())

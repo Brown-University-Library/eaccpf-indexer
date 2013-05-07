@@ -23,18 +23,6 @@ class Transformer(object):
         '''
         self.logger = logging.getLogger('Transformer')
 
-    def _applyFieldBoost(self, doc, boost):
-        '''
-        Apply field boost on the specified document.
-        '''
-        if boost is not None:
-            for b in boost:
-                searchfor = "//add/doc/field[@name='" + b + "']"
-            try:
-                doc.xpath(searchfor)[0].set("boost", str(boost[b]))
-            except:
-                pass
-
     def _escapeChars(self, Text):
         '''
         Escape characters as required for XML output.
@@ -94,18 +82,6 @@ class Transformer(object):
                 return True
         return False
 
-    def _isEACCPF(self, Path):
-        '''
-        Determines if the file at the specified path is EAC-CPF. 
-        '''
-        if Path.endswith("xml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "<eac-cpf" in data and "</eac-cpf>" in data:
-                return True
-        return False
-
     def _isInferredYaml(self, Path):
         '''
         Determines if the file at the specified path is an inferred data
@@ -157,30 +133,6 @@ class Transformer(object):
         for ns in re.findall("xmlns=\".*\"", Text):
             Text = Text.replace(ns,'')
         return Text
-
-    def boostFields(self, Path, FieldName, BoostValue):
-        '''
-        Boost the specified field for all Solr Input Document in the path.
-        '''
-        assert os.path.exists(Path), self.logger.warning("Source documents path does not exist: " + Path)
-        files = os.listdir(Path)
-        for filename in files:
-            if self._isSolrInputDocument(Path + os.sep + filename):
-                try:
-                    # parse the document
-                    xml = etree.parse(Path + os.sep + filename)
-                    fields = xml.findall('//field[@name="' + FieldName + '"]')
-                    for field in fields:
-                        # add the boost value
-                        field.attrib['boost']=BoostValue
-                        # save the updated document
-                        outfile = open(Path + os.sep + filename,'w')
-                        data = etree.tostring(xml, pretty_print=True)
-                        outfile.write(data)
-                        outfile.close()
-                        self.logger.info("Added " + FieldName + " boost to " + filename)
-                except:
-                    self.logger.warning("Could not boost " + FieldName + " in " + filename)
     
     def mergeDigitalObjectIntoSID(self, Source, Output):
         '''
@@ -355,6 +307,7 @@ class Transformer(object):
         boosts = Params.get("transform","boost").split(',')
         output = Params.get("transform","output")
         sources = Params.get("transform","inputs").split(",")
+        fields = Params.get("transform","set-fields").split(",")
         # check stateWrote
         for source in sources:
             assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
@@ -384,10 +337,11 @@ class Transformer(object):
             self.transformDigitalObjectsToSID(sources,output)
         if "merge-inferred" in actions:
             self.mergeInferredRecordsIntoSID(sources,output)
+        if "set-fields" in actions:
+            self.setFieldValue(output,fields)
         # boost fields
-        for boost in boosts:
-            fieldname, boostval = boost.split(':')
-            self.boostFields(output, fieldname, boostval)
+        if boosts:
+            self.setBoosts(source,boosts)
         # validate output
         try:
             schema = Params.get("transform","schema")
@@ -395,6 +349,67 @@ class Transformer(object):
         except:
             self.logger.debug("No schema file specified")
     
+    def setBoosts(self, Source, Boosts):
+        '''
+        Boost the specified field for all Solr Input Documents.
+        '''
+        assert os.path.exists(Source), self.logger.warning("Source documents path does not exist: " + Source)
+        files = os.listdir(Source)
+        for filename in files:
+            if self._isSolrInputDocument(Source + os.sep + filename):
+                try:
+                    # parse the document
+                    xml = etree.parse(Source + os.sep + filename)
+                    for boost in Boosts:
+                        fieldname, boostval = boost.split(':')
+                        fields = xml.findall('//field[@name="' + fieldname + '"]')
+                        for field in fields:
+                            # add the boost value
+                            field.attrib['boost']=boostval
+                    # save the updated document
+                    outfile = open(Source + os.sep + filename,'w')
+                    data = etree.tostring(xml, pretty_print=True)
+                    outfile.write(data)
+                    outfile.close()
+                    self.logger.info("Applied boosts to " + filename)
+                except:
+                    self.logger.warning("Could not apply boosts to " + filename)
+    
+    def setFieldValue(self, Source, FieldValue):
+        '''
+        Set the specified field value for all Solr Input Documents.
+        '''
+        assert os.path.exists(Source), self.logger.warning("Source documents path does not exist: " + Source)
+        files = os.listdir(Source)
+        parser = etree.XMLParser(remove_blank_text=True)
+        for filename in files:
+            if self._isSolrInputDocument(Source + os.sep + filename):
+                try:
+                    # load the document
+                    xml = etree.parse(Source + os.sep + filename, parser)
+                    root = xml.getroot()
+                    doc = root.getchildren()[0]
+                    # set the field values
+                    for fieldvalue in FieldValue:
+                        fieldname, value = fieldvalue.split(":")
+                        fields = doc.findall('field[@name="' + fieldname + '"]')
+                        # if the field exists, change its value
+                        if len(fields) > 0:
+                            for field in fields:
+                                field.text = value
+                        else:
+                            newfield = etree.Element("field", name=fieldname)
+                            newfield.text = value
+                            doc.append(newfield)
+                    # save the updated document
+                    outfile = open(Source + os.sep + filename,'w')
+                    data = etree.tostring(xml, pretty_print=True)
+                    outfile.write(data)
+                    outfile.close()
+                    self.logger.info("Set fields in " + filename)
+                except:
+                    self.logger.warning("Could not set field " + fieldname + " in " + filename)
+
     def transformDigitalObjectsToSID(self,Sources,Output):
         '''
         Transform zero or more paths with digital object YAML records to Solr 
@@ -439,7 +454,7 @@ class Transformer(object):
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
-                if self._isEACCPF(source + os.sep + filename):
+                if filename.endswith(".xml"):
                     self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
     
     def transformEacCpfToSID(self, Source, Output, Transform):

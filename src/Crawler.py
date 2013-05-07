@@ -7,11 +7,11 @@ from DigitalObjectCache import DigitalObjectCache
 from EacCpf import EacCpf
 from HtmlPage import HtmlPage
 
-import fnmatch
 import logging
 import os
+import shutil
 import time
-        
+
 class Crawler(object):
     '''
     File system and web site crawler. Locates HTML files with embedded digital
@@ -26,43 +26,17 @@ class Crawler(object):
         '''
         self.cache = None
         self.logger = logging.getLogger('Crawler')
-    
-    def _clearFiles(self, path):
-        '''
-        Delete all files within the specified path.
-        '''
-        files = os.listdir(path)
-        for filename in files:
-            os.remove(path + os.sep + filename)
-    
-    def _isHTML(self, filename):
-        '''
-        Determine if a file is an *.htm or *.html file.
-        '''
-        if fnmatch.fnmatch(filename,'*.html') or fnmatch.fnmatch(filename,'*.htm'):
-            return True
-        return False
-
-    def _isUrl(self, Source):
-        ''' 
-        Determine if Source is a URL.
-        '''
-        if 'http://' in Source or 'https://' in Source:
-            return True
-        return False
 
     def _makeCache(self, Path):
         '''
         Create a cache folder at the specified path if none exists.
         If the path already exists, delete all files within it.
         '''
-        if not os.path.exists(Path):
-            os.makedirs(Path)
-            self.logger.info("Created output folder at " + Path)
-        else:
-            self._clearFiles(Path)
-            self.logger.info("Cleared output folder at " + Path)
-    
+        if os.path.exists(Path):
+            shutil.rmtree(Path)
+        os.makedirs(Path)
+        self.logger.info("Cleared output folder at " + Path)
+
     def crawlFileSystem(self, Source, Output, Actions, Base=None, Sleep=0.):
         '''
         Crawl file system for HTML files. Execute the specified indexing 
@@ -81,7 +55,7 @@ class Crawler(object):
             self.logger.info('Current source ' + path + ' (' + baseurl + ')')
             # for each file in the current path
             for filename in files:
-                if self._isHTML(filename):
+                if filename.endswith(".htm") or filename.endswith(".html"):
                     self.logger.debug("Found document " + path + os.sep + filename)
                     try:
                         # if the page represents a record
@@ -89,18 +63,19 @@ class Crawler(object):
                         if html.hasRecord():
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
+                            src = Source + html.getEacCpfUrl().replace(Base,'')
                             if 'eaccpf' in Actions and html.hasEacCpfAlternate():
-                                eaccpf = EacCpf(metadata,presentation)
+                                eaccpf = EacCpf(src,metadata,presentation)
                                 eaccpf.write(Output)
                             if 'eaccpf-thumbnail' in Actions and html.hasEacCpfAlternate():
-                                eaccpf = EacCpf(metadata,presentation)
+                                eaccpf = EacCpf(src,metadata,presentation)
                                 thumbnail = eaccpf.getThumbnail()
                                 if thumbnail:
                                     cacherecord = self.cache.put(thumbnail)
                                     dobj_id = eaccpf.getRecordId()
                                     thumbnail.write(Output,dobj_id,cacherecord)
                             if 'digitalobject' in Actions and html.hasEacCpfAlternate():
-                                eaccpf = EacCpf(metadata,presentation)
+                                eaccpf = EacCpf(src,metadata,presentation)
                                 dobjects = eaccpf.getDigitalObjects()
                                 for dobject in dobjects:
                                     cacherecord = self.cache.put(dobject)
@@ -108,11 +83,11 @@ class Crawler(object):
                             if 'html' in Actions:
                                 html.write(Output)
                     except:
-                        self.logger.warning("Could not complete processing for " + filename)
+                        self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
                         time.sleep(Sleep)
-    
-    def crawlWebSite(self, source, output, actions=['html'], sleep=0.):
+
+    def crawlWebSite(self, Source, Output, Actions, Sleep=0.):
         '''
         Crawl web site for HTML entity pages. When such a page is found, 
         execute the specified indexing actions. Store files to the output path.
@@ -131,7 +106,10 @@ class Crawler(object):
         cacheurl = Params.get("crawl","cache-url")
         source = Params.get("crawl","input")
         output = Params.get("crawl","output")
-        sleep = float(Params.get("crawl","sleep"))
+        try:
+            sleep = Params.getfloat("crawl","sleep")
+        except:
+            sleep = 0.0
         # digital object cache
         self.cache = DigitalObjectCache(cache,cacheurl)
         # create output folders
@@ -140,8 +118,7 @@ class Crawler(object):
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         assert os.path.exists(cache), self.logger.warning("Cache path does not exist: " + cache)
         # start processing
-        if (self._isUrl(source)):
+        if 'http://' in source or 'https://' in source:
             self.crawlWebSite(source,output,actions,sleep)
         else:
             self.crawlFileSystem(source,output,actions,base,sleep)
-

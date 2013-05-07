@@ -74,14 +74,14 @@ will fetch, parse and transform the EACCPF document into a Solr Input Document,
 then insert the record into Solr.  In addition, the crawler can generate a 
 report on the quality of the EACCPF that is indexed.
 
-  python indexer.py config [OPTIONS]
-	
-  --clean      Clean input files of common errors before further processing
-  --crawl      Crawl file system or web site for metadata files
-  --infer      Infer concepts, entities, locations from free text fields
-  --post       Post Solr Input Documents to Apache Solr index
-  --report     Generate a report and write to specified path
-  --transform  Transform metadata files to Solr Input Document format
+ > python indexer.py config [OPTIONS]
+ >
+ > --analyze   Analyze EAC-CPF for quality indicators and generate an HTML report
+ > --clean      Clean input files of common errors before further processing
+ > --crawl      Crawl file system or web site for metadata files
+ > --infer      Infer concepts, entities, locations from free text fields
+ > --post       Post Solr Input Documents to Apache Solr index
+ > --transform  Transform metadata files to Solr Input Document format
 
 Copy indexer.cfg.example into a new configuration file and edit as needed.
 
@@ -91,27 +91,30 @@ Revision History
 
 1.3.4
 
-> Puppet deployment module
+ > Puppet deployment module
 
 1.3.3
 
-> Improve extracted relations data
-> Add update option to process only changed files
-> Store hash and timestamp of all files in a hidden file, to be used with update option
+ > Improve extracted relations data
+ > Add update option to process only changed files
+ > Store hash and timestamp of all files in a hidden file, to be used with update option
 
 1.3.2
 
-> Entity extraction with Alchemy API
-> Free text statistics using NLTK
-> EACCPF document unit tests and reporting
-> Writes processing messages to report log
-> Merges individual reports into a single report file
+ > Entity extraction with Alchemy API
+ > Free text statistics using NLTK
+ > EACCPF document unit tests and reporting
+ > Writes processing messages to report log
+ > Merges individual reports into a single report file
 
-1.3.1
 
  > First pass implementation of reporting with analysis
  > Need to ensure that file indexing works only from the file system!
  > Confirm that location look up is still working!!!
+
+ > Reimplemented option to specify XML transform 
+
+1.3.1
 
  * DigitalObject module and unit tests
  * Revised digital object indexing to work from EAC-CPF rather than HTML

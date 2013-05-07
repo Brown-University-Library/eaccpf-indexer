@@ -4,6 +4,7 @@ LICENSE file, which is part of this source code package.
 '''
 
 from BeautifulSoup import BeautifulSoup
+from EacCpf import EacCpf
 from StringIO import StringIO
 from datetime import datetime
 from lxml import etree
@@ -112,7 +113,7 @@ class Analyzer(object):
         counts['description'] = self._getSectionContentCount("description", Data)
         counts['relations'] = self._getSectionContentCount("relations", Data)
         return counts
-
+    
     def _getTotalContentCount(self, Data):
         '''
         Get the total number of characters comprising the EAC-CPF document.
@@ -138,11 +139,19 @@ class Analyzer(object):
         return False
 
     def _hasResourceRelations(self, Data):
-        '''
+        '''m
         Determine if the document has resource relations.
         '''
         count = self._getResourceRelationsCount(Data)
         if count is not None and count > 0:
+            return True
+        return False
+
+    def _isAnalysisFile(self,Path):
+        '''
+        Determine if the file at the specified path is an analysis file.
+        '''
+        if Path.endswith("yml"):
             return True
         return False
 
@@ -171,7 +180,7 @@ class Analyzer(object):
             if "<eac-cpf" in data and "</eac-cpf>" in data:
                 return True
         return False
-
+    
     def _makeCache(self, Path):
         '''
         Create a folder at the specified path if none exists.
@@ -181,14 +190,14 @@ class Analyzer(object):
             os.makedirs(Path)
             self.logger.info("Created output folder at " + Path)
         else:
-            files = os.listdir(Path)
-            for filename in files:
-                os.remove(Path + os.sep + filename)
+            shutil.rmtree(Path)
+            os.makedirs(Path)
             self.logger.info("Cleared output folder at " + Path)
 
     def analyzeFile(self, Source, Filename, Output):    
         '''
-        Analyze EAC-CPF file for quality indicators and changes.
+        Analyze EAC-CPF file for quality indicators and changes. Write a YAML
+        file with analysis data to the output path.
         '''
         # read the input file
         infile = open(Source + os.sep + Filename,'r')
@@ -196,7 +205,14 @@ class Analyzer(object):
         infile.close()
         report = {}
         try:
-            # the analysis
+            eaccpf = EacCpf(Source + os.sep + Filename, None)
+            # get some basic metadata for the file
+            metadata = {}
+            metadata['id'] = eaccpf.getRecordId()
+            metadata['entityid'] = eaccpf.getEntityId()
+            metadata['localtype'] = eaccpf.getLocalType()
+            metadata['title'] = eaccpf.getTitle()
+            # analyze the file
             analysis = {}
             analysis['the analysis date'] = datetime.now()
             conformance, errors = self._isConformantToEacCpfSchema(data)
@@ -212,27 +228,31 @@ class Analyzer(object):
             analysis['the section content counts'] = self._getSectionContentCounts(data)
             analysis['the total content count'] = self._getTotalContentCount(data)
             # @todo check paths for validity
-            # field level quality checks
-            # update the report file
+            # @todo field level quality checks
+            
+            # create an output file name
+            output_filename = Filename.replace('xml','yml')
+            # write analysis file to the output path
+            report['metadata'] = metadata
             report['analysis'] = analysis
-            outfile = open(Output + os.sep + Filename, 'w')
-            outfile.write(yaml.dump(report, default_flow_style=False, indent=4))
+            outfile = open(Output + os.sep + output_filename, 'w')
+            outfile.write(yaml.dump(report, indent=4))
             outfile.close()
-            self.logger.info("Wrote analysis for " + Filename)
+            self.logger.info("Wrote analysis to " + output_filename)
         except:
             self.logger.warning("Could not complete analysis for " + Filename, exc_info=True)
-    
         
-    def analyzeFiles(self, Source, Output):
+    def analyzeFiles(self, Sources, Output):
         '''
-        Analyze EAC-CPF files in the specified path. Write a report file to the
-        report path.
+        Analyze EAC-CPF files in the specified source paths. Write a YML file 
+        with analysis data to the output path.
         '''
-        files = os.listdir(Source)
-        for filename in files:
-            if self._isEacCpfFile(Source + os.sep + filename):
-                self.analyzeFile(Source, filename, Output)
-                
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                if self._isEacCpfFile(source + os.sep + filename):
+                    self.analyzeFile(source, filename, Output)
+
     def buildHtmlReport(self, Source, Output):
         '''
         Build HTML report file 
@@ -241,35 +261,50 @@ class Analyzer(object):
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         parentpath = os.path.dirname(modpath)
         assets = parentpath + os.sep + "template"
-        for filename in os.listdir(assets):
-            shutil.copyfile(assets + os.sep + filename, Output + os.sep + filename)
+        shutil.copytree(assets + os.sep + 'assets',Output + os.sep + 'assets')
         templatefile = assets + os.sep + "index.mako"
         # build the report
+        records = []
+        files = os.listdir(Source)
+        # load analysis records
+        for filename in files:
+            try:
+                path = Source + os.sep + filename
+                if self._isAnalysisFile(path):
+                    infile = open(path,'r')
+                    data = infile.read()
+                    record = yaml.load(data)
+                    infile.close()
+                    records.append(record)
+            except:
+                self.logger.warning("Could not process analysis file " + filename, exc_info=True)
+        # load the template and update contents
         try:
-            # load the template
             template = Template(filename=templatefile)
-            data = template.render(Source=Source)
+            reportdate = datetime.now().strftime("%B %d, %Y")
+            data = template.render(title="EAC-CPF Analysis",date=reportdate,records=records,source='Source Name')
             # write the report
-            outfile = open(Output + os.sep + 'index.html')
+            outfile = open(Output + os.sep + 'index.html','w')
             outfile.write(data)
             outfile.close()
             self.logger.info("Wrote HTML report file")
         except:
-            self.logger.warning("Could not write HTML report")
-                
+            self.logger.warning("Could not write HTML report file", exc_info=True)
+
     def run(self, params):
         '''
         Execute analysis operations using specified parameters.
         '''
         # get parameters
-        source = params.get("analyze","input")
+        sources = params.get("analyze","inputs").split(',')
         output = params.get("analyze","output")
         # make output folder
         self._makeCache(output)
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        for source in sources:
+            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Report path does not exist: " + output)
         # execute actions
-        self.analyzeFiles(source,output)
-        self.buildHtmlReport(source,output)
+        self.analyzeFiles(sources,output)
+        self.buildHtmlReport(output,output)
         
