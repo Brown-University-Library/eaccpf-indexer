@@ -58,12 +58,12 @@ class Transformer(object):
         for line in lines:
             try:
                 src = line.index("@source")
-                ref = line.index("@referrer")
-                source = line[src+len("@source="):ref-1]
-                referrer = line[ref+len("@referrer="):-4]
-                if not referrer.startswith("http"):
-                    referrer = None
-                return (source, referrer)
+                meta = line.index("@metadata")
+                pres = line.index("@presentation")
+                source = line[src+len("@source="):meta-1]
+                metadata = line[meta+len("@metadata="):pres-1]
+                presentation = line[pres+len("@presentation="):-4]
+                return (source, metadata, presentation)
             except:
                 pass
         # default case
@@ -476,15 +476,15 @@ class Transformer(object):
             # get the doc element
             sid = result.find('doc')
             # get the document source and referrer values from the embedded comment
-            src_val, ref_val = self._getSourceAndReferrerValues(Source)
+            _, meta_val, pres_val = self._getSourceAndReferrerValues(Source)
             # append the source and referrer values to the SID
-            if src_val:
+            if meta_val:
                 src_field = etree.Element('field',name='metadata_url')
-                src_field.text = src_val
+                src_field.text = meta_val
                 sid.append(src_field)
-            if ref_val:
+            if pres_val:
                 ref_field = etree.Element('field',name='presentation_url')
-                ref_field.text = ref_val
+                ref_field.text = pres_val
                 sid.append(ref_field)
             # write the output file
             filename = self._getFileName(Source)
