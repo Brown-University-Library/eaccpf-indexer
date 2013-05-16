@@ -119,7 +119,7 @@ class Poster(object):
                         (resp, content) = Http().request(url, "POST", data)
                         if resp['status'] != '200':
                             raise IndexingError(resp, content)
-                        self.logger.info("Posted " + filename + " to Apache Solr")
+                        self.logger.info("Posted " + filename)
                 except IOError:
                     self.logger.warning("Can't connect to Solr" + url, exc_info=True)
                     print resp
