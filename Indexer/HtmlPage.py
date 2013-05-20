@@ -1,7 +1,7 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
 from BeautifulSoup import BeautifulSoup
 
@@ -12,20 +12,20 @@ import urllib2
 import urlparse
 
 class HtmlPage(object):
-    '''
+    """
     HTML document pages contain metadata and references to external entities
     that are the subject of indexing. This class wraps the HTML document and
     provides convenience methods for extracting required metadata.
-    '''
+    """
 
     def __init__(self, Source, BaseUrl=None, Data=None):
-        '''
+        """
         Source is a file system path or URL to the document. URL is an 
         optional argument specified when the document is being indexed from a 
         file system, and is used to determine what the file's public URL should
         be. If the document contains absolute URLs, then the URL parameter is 
         ignored.
-        '''
+        """
         self.logger = logging.getLogger('HtmlPage')
         self.source = Source
         if Data:
@@ -40,43 +40,43 @@ class HtmlPage(object):
             self.url = BaseUrl + filename
 
     def _getAbsoluteUrl(self,Base,Path):
-        '''
+        """
         Get the absolute URL for a path.
-        '''
+        """
         url = urlparse.urljoin(Base,Path)
         return url.replace(' ','%20')
         
     def _getDocumentParentPath(self, Path):
-        '''
+        """
         Get the path to the parent of the specified directory.
-        '''
+        """
         i = Path.rfind('/')
         return Path[:i+1]
 
     def _getDocumentParentUri(self, Uri):
-        '''
+        """
         Get the parent directory of the file in the specified URL.  Non / 
         terminated URLs are treated as representing files.
-        '''
+        """
         uri = self.getUrl()
         i = uri.rfind('/')
         url = uri[:i+1]
         return url.replace(' ','%20').encode("utf-8")
 
     def _getFileName(self, Url):
-        '''
+        """
         Get the filename from the specified URI or path.
-        '''
+        """
         if "/" in Url:
             parts = Url.split("/")
             return parts[-1]
         return Url
 
     def _getTagAttributeValueByName(self, Tags, Type, Attribute):
-        '''l
+        """l
         Get the value of the specified digital object field name from a list of
         tags. Return None if the field name can not be found.
-        '''
+        """
         for tag in Tags:
             field = tag.find(Type)
             if field:
@@ -85,10 +85,10 @@ class HtmlPage(object):
         return None
 
     def _getTagContentByClass(self, Tags, Type, FieldName, Field='class'):
-        '''
+        """
         Get the value of the specified digital object field name from a list of
         tags. Return None if the field name can not be found.
-        '''
+        """
         for tag in Tags:
             field = tag.find(Type,{Field:FieldName})
             if field:
@@ -96,8 +96,8 @@ class HtmlPage(object):
         return None
     
     def _getVisibleText(self, element):
-        '''
-        '''
+        """
+        """
         if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
             return ''
         result = re.sub('<!--.*-->|\r|\n', '', str(element), flags=re.DOTALL)
@@ -105,9 +105,9 @@ class HtmlPage(object):
         return result
 
     def _load(self, Source):
-        '''
+        """
         Load the document content.
-        '''
+        """
         try:
             if 'http://' in Source or 'https://' in Source:
                 response = urllib2.urlopen(Source)
@@ -117,20 +117,19 @@ class HtmlPage(object):
                 data = infile.read()
                 infile.close()
                 return data
-            self.logger.debug("Loaded content for " + Source)
         except:
             return None
 
     def getContent(self):
-        '''
+        """
         Get the HTML content.
-        '''
+        """
         return self.data
         
     def getDigitalObjectUrl(self):
-        '''
+        """
         Get the URL to the digital object representation.
-        '''
+        """
         try:
             thumbnail = self.soup.find('div',{'class':'image-caption'}).find('a').find('img')
             if thumbnail:
@@ -146,9 +145,9 @@ class HtmlPage(object):
             return None
         
     def getEacCpfUrl(self):
-        '''
+        """
         Get the URL to the EAC-CPF alternate representation of this page.
-        '''
+        """
         meta = self.soup.findAll('meta', {'name':'EAC'})
         try:
             # we need to deal with relative URLs in this reference
@@ -158,16 +157,16 @@ class HtmlPage(object):
             return None
 
     def getFilename(self):
-        '''
+        """
         Get the filename.
-        '''
+        """
         url = self.getUrl()
         return self._getFileName(url)
     
     def getHtmlIndexContent(self):
-        '''
+        """
         Extract HTML metadata and content for indexing.
-        '''
+        """
         data = {}
         data['id'] = self.getRecordId()
         data['uri'] = self.getUrl()
@@ -184,10 +183,10 @@ class HtmlPage(object):
         return data
     
     def getRecordId(self):
-        '''
+        """
         Get the record identifier for the record represented by the HTML page. 
         If the page does not have an identifier ID then None is returned.
-        '''
+        """
         if self.hasEacCpfAlternate():
             uri = self.getUrl()
             filename = self._getFileName(uri)
@@ -197,11 +196,11 @@ class HtmlPage(object):
             return None
     
     def getUrl(self):
-        '''
+        """
         Get the document URI. If a URI has been assigned to the document, then 
         use that as the default. If not, attempt to extract the DC.Identifier 
         value from the HTML meta tag. Return None if nothing is found.
-        '''
+        """
         if hasattr(self, 'url'):
             return self.url
         else:
@@ -213,9 +212,9 @@ class HtmlPage(object):
                 return None
     
     def hasEacCpfAlternate(self):
-        '''
+        """
         Determine if this page has an EAC-CPF alternate representation.
-        '''
+        """
         meta = self.soup.findAll('meta', {'name':'EAC'})
         try:
             alt = meta[0].get('content')
@@ -226,17 +225,17 @@ class HtmlPage(object):
             return False
 
     def hasRecord(self):
-        '''
+        """
         Determine if the HTML page has a record.
-        '''
+        """
         if self.getRecordId():
             return True
         return False
     
     def write(self, Path):
-        '''
+        """
         Write data to the file in the specified path.
-        '''
+        """
         outfile = open(Path + os.sep + self.getFilename(),'w')
         outfile.write(self.data)
         outfile.close()

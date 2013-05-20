@@ -1,7 +1,7 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
 import Image
 import hashlib
@@ -13,15 +13,15 @@ import urllib2
 from pairtree import PairtreeStorageFactory
 
 class DigitalObjectCache(object):
-    '''
+    """
     Storage for source and alternate sized representations of a digital 
     object.
-    '''
+    """
 
     def __init__(self, Path, BaseUrl='', init=False):
-        '''
+        """
         Constructor
-        '''
+        """
         self.logger = logging.getLogger('DigitalObjectCache')
         self.path = Path
         if BaseUrl.endswith('/'):
@@ -44,35 +44,35 @@ class DigitalObjectCache(object):
             raise
 
     def _clearFiles(self, path):
-        '''
+        """
         Delete all files within the specified path.
-        '''
+        """
         files = os.listdir(path)
         for filename in files:
             os.remove(path + os.sep + filename)
 
     def _getFileName(self, Url):
-        '''
+        """
         Get the filename from the specified URI or path.
-        '''
+        """
         if "/" in Url:
             parts = Url.split("/")
             return parts[-1]
         return Url
 
     def _getFileNameExtension(self, Filename):
-        '''
+        """
         Get the filename extension. If an extension is not found, return None.
-        '''
+        """
         if "." in Filename:
             parts = Filename.split(".")
             return parts[-1]
         return None
     
     def _getHash(self, Path):
-        '''
+        """
         Get a hash of the specified file.
-        '''
+        """
         hasher = hashlib.md5()
         infile = open(Path,'r')
         hasher.update(infile.read())
@@ -80,25 +80,25 @@ class DigitalObjectCache(object):
         return hasher.hexdigest()
     
     def _getPathRelativeToCacheRoot(self, Path):
-        '''
+        """
         Get the path relative to the cache root.
-        '''
+        """
         Path = Path.replace(self.path,'')
         return Path.replace('/pairtree_root/','')
     
     def _isUrl(self, Path):
-        '''
+        """
         Determine if the source is a URL or a file system path.
-        '''
+        """
         if Path != None and ("http:" in Path or "https:" in Path):
             return True
         return False
 
     def _makeCache(self, Path, init=False):
-        '''
+        """
         Create a cache folder at the specified Path if none exists. If the Path 
         already exists, delete all files.
-        '''
+        """
         if not os.path.exists(Path):
             os.makedirs(Path)
             self.logger.info("Created cache folder at " + Path)
@@ -109,12 +109,12 @@ class DigitalObjectCache(object):
                 self.logger.info("Cleared cache folder at " + Path)
 
     def _resizeImageAndSaveToNewFile(self, Source, Width, Height):
-        '''
+        """
         Resize the image to the specified height and width and save the updated
         image to a new file. If the image's existing height and width are less 
         than those specified, then the original dimensions are maintained. 
         Return the new file path.
-        '''
+        """
         # set output file
         ext = self._getFileNameExtension(Source)
         filepath = tempfile.mktemp(suffix="." + ext)
@@ -137,11 +137,11 @@ class DigitalObjectCache(object):
         return filepath
 
     def _rmdir(self,d):
-        '''
+        """
         Recursively delete a directory.
         @author ActiveState
         @see http://code.activestate.com/recipes/552732-remove-directories-recursively/
-        '''
+        """
         if (os.path.exists(d)):
             for path in (os.path.join(d,f) for f in os.listdir(d)):
                 if os.path.isdir(path): 
@@ -151,10 +151,10 @@ class DigitalObjectCache(object):
             os.rmdir(d)
 
     def get(self, Id):
-        '''url
+        """url
         Get the source URI, source filename and file data as identified by
         the specified key. If no object is found, return None.
-        '''
+        """
         try:
             obj = self.storage.get_object(Id)
             if obj:
@@ -171,12 +171,12 @@ class DigitalObjectCache(object):
             return None
 
     def put(self, DigitalObject):
-        '''
+        """
         Store the digital object located at the specified Source location in 
         the file storage. Generate alternate image representations of the 
         digital object. Return a record with the cache identifier, object 
         source URL, and URLs to the cached alternate representations.
-        '''
+        """
         # source file name
         source = DigitalObject.getSourceUrl()
         filename = self._getFileName(source)

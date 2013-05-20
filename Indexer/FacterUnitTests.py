@@ -1,38 +1,38 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
-from Facter import Facter
 import unittest
+from Facter import Facter
 
 class FacterUnitTests(unittest.TestCase):
-    '''
+    """
     Unit tests for Facter module.
-    '''
+    """
 
     def setUp(self):
-        '''
+        """
         Setup the test environment.
-        '''
+        """
         self.facter = Facter()
 
     def tearDown(self):
-        '''
+        """
         Tear down the test environment.
-        '''
+        """
         pass
 
     def test_init(self):
-        '''
+        """
         It should return an instance of the class.
-        '''
+        """
         self.assertNotEqual(self.facter,None)
 
     def test_getAddressParts(self):
-        '''
+        """
         It should return the components of the address string.
-        '''
+        """
         cases = {
                  "Rapid Creek NT, Australia" : ['',"Rapid Creek","NT",'',"Australia"],
                  "Mulgowie QLD 4341, Australia" : ['',"Mulgowie","QLD","4341","Australia"],

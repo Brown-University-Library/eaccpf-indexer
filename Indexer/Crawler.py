@@ -1,24 +1,23 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
-
-from DigitalObjectCache import DigitalObjectCache
-from EacCpf import EacCpf
-from HtmlPage import HtmlPage
+"""
 
 import logging
 import os
 import shutil
 import time
+from EacCpf import EacCpf
+from HtmlPage import HtmlPage
+from DigitalObjectCache import DigitalObjectCache 
 
 class Crawler(object):
-    '''
+    """
     File system and web site crawler. Locates HTML files with embedded digital
     object representations, extracts their metadata and URL to related image 
     file. It stores metadata in an intermediary file, and digital objects in a 
     file system image cache.
-    '''
+    """
 
     def __init__(self):
         '''

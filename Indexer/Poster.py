@@ -1,7 +1,7 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
 from httplib2 import Http
 from lxml import etree
@@ -17,29 +17,28 @@ class IndexingError(Exception):
 
     def __str__(self):
         return repr(self.status)
-        return repr(self.content)
 
 class Poster(object):
-    '''
+    """
     Posts Solr Input Documents to a Solr core. Performs delete, commit and 
     optimize commands.
     @author: Davis Marques
     @author: Marco La Rosa
     @author: ActiveState
     @see: http://code.activestate.com/recipes/577909-basic-interface-to-apache-solr/
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         self.logger = logging.getLogger('Poster')
         
     def _hasRequiredFields(self, Doc, Fields):
-        '''
+        """
         Determine if the XML document has one or more instances of the required
         fields.
-        '''
+        """
         for field in Fields:
             x = Doc.findall(".//field",{'name':field})
             if x == None or len(x) < 1:
@@ -47,9 +46,9 @@ class Poster(object):
         return True
 
     def commit(self, Solr):
-        '''
+        """
         Commit staged data to the Solr core.
-        '''
+        """
         # send command
         msg = '<commit waitFlush="false" waitSearcher="false" expungeDeletes="true"/>'
         if Solr.endswith('/'):
@@ -80,9 +79,9 @@ class Poster(object):
         return (resp, content)
         
     def optimize(self, Solr):
-        '''
+        """
         Optimize data in Solr core.
-        '''
+        """
         # send command
         msg = '<optimize waitSearcher="false"/>'
         if Solr.endswith('/'):
@@ -96,10 +95,10 @@ class Poster(object):
         return (resp, content)
         
     def post(self, Source, Solr, Fields):
-        '''
+        """
         Post Solr Input Documents in the Source directory to the Solr core if 
         they have all required fields.
-        '''
+        """
         # check state
         assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
         # ensure that the posting URL is correct
@@ -134,10 +133,10 @@ class Poster(object):
                     print content
                     
     def run(self, Params):
-        '''
+        """
         Post Solr Input Documents to Solr core and perform index maintenance 
         operations.
-        '''
+        """
         # get parameters
         actions = Params.get("post","actions").split(",")
         index = Params.get("post","index")

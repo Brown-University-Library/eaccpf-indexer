@@ -3,13 +3,12 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-from BeautifulSoup import BeautifulSoup
-from lxml import etree
-
 import htmlentitydefs
 import logging
 import os
 import re
+from BeautifulSoup import BeautifulSoup
+from lxml import etree
 
 class Cleaner():
     '''

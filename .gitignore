@@ -6,6 +6,8 @@
 *.pyo
 *.sh
 *.test
+.classpath
+.idea
 .project
 .pydevproject
 feeder.cfg

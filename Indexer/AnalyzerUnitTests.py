@@ -3,11 +3,11 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
-from Analyzer import Analyzer
 import inspect
 import os
 import tempfile
 import unittest
+from Analyzer import Analyzer
 
 class AnalyzerUnitTests(unittest.TestCase):
     '''

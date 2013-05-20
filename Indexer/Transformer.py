@@ -1,9 +1,8 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
-from HtmlPage import HtmlPage
 from lxml import etree
 
 import inspect
@@ -11,46 +10,48 @@ import logging
 import os
 import re 
 import yaml
+from HtmlPage import HtmlPage
+
 
 class Transformer(object):
-    '''
+    """
     Merge and transform source data to Solr Input Document format.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         self.logger = logging.getLogger('Transformer')
 
     def _escapeChars(self, Text):
-        '''
+        """
         Escape characters as required for XML output.
-        '''
+        """
         Text = Text.replace(" & "," &amp; ")
         return Text
 
     def _getFileName(self, Url):
-        '''
+        """
         Get the filename from the specified URI or path.
-        '''
+        """
         if "/" in Url:
             parts = Url.split("/")
             return parts[-1]
         return Url
 
     def _getIdFromFilename(self,Filename):
-        '''
+        """
         Get the record ID from the filename.
-        '''
+        """
         recordId, _ = os.path.splitext(Filename)
         return recordId
 
     def _getSourceAndReferrerValues(self, Path):
-        '''
+        """
         Get document source and referrer URI values from the comment embedded 
         at the end of the document.
-        '''
+        """
         infile = open(Path,'r')
         lines = infile.readlines()
         infile.close()
@@ -70,10 +71,10 @@ class Transformer(object):
         return ('', '')
     
     def _isDigitalObjectYaml(self, Path):
-        '''
+        """
         Determines if the file at the specified path is an image record in
         YAML format.
-        '''
+        """
         if Path.endswith("yml"):
             infile = open(Path,'r')
             data = infile.read()
@@ -83,19 +84,19 @@ class Transformer(object):
         return False
 
     def _isInferredYaml(self, Path):
-        '''
+        """
         Determines if the file at the specified path is an inferred data
         record in YAML format.
-        '''
+        """
         if Path.endswith("yml"):
             return True
         return False
     
     def _isSolrInputDocument(self, Path):
-        '''
+        """
         Determines if the file at the specified path is a Solr Input
         Document.
-        '''
+        """
         if Path.endswith("xml"):
             infile = open(Path,'r')
             data = infile.read()
@@ -105,10 +106,10 @@ class Transformer(object):
         return False
 
     def _makeCache(self, Path):
-        '''
+        """
         Create a cache folder at the specified Path if none exists.
         If the Path already exists, delete all files.
-        '''
+        """
         if not os.path.exists(Path):
             os.makedirs(Path)
             self.logger.info("Created output folder at " + Path)
@@ -119,7 +120,7 @@ class Transformer(object):
             self.logger.info("Cleared output folder at " + Path)
 
     def _removeNameSpaces(self, Text):
-        '''
+        """
         Remove namespace references from XML data.
         
         ISSUE #4: When the XML/XSLT parser encounters a problem, it fails 
@@ -127,7 +128,7 @@ class Transformer(object):
         problem occurs due to namespace declarations in source files. 
         Because these are not important in the transformation to SID 
         format, we strip them out here before processing.
-        '''
+        """
         for ns in re.findall("\w*:\w*=\".*\"", Text):
             Text = Text.replace(ns,'')
         for ns in re.findall("xmlns=\".*\"", Text):
@@ -135,10 +136,10 @@ class Transformer(object):
         return Text
     
     def mergeDigitalObjectIntoSID(self, Source, Output):
-        '''
+        """
         Merge the digital object record into the Solr Input Document.
         Do not overwrite existing id, presentation_url and metadata_url fields.        
-        '''
+        """
         try:
             infile = open(Source,'r')
             data = infile.read()
@@ -166,9 +167,9 @@ class Transformer(object):
             self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
     
     def mergeDigitalObjectsIntoSID(self, Sources, Output):
-        '''
+        """
         Merge digital object records into Solr Input Documents.
-        '''
+        """
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
@@ -177,10 +178,10 @@ class Transformer(object):
                     self.mergeDigitalObjectIntoSID(path, Output)
                     
     def mergeInferredRecordIntoSID(self, Source, Output):
-        '''
+        """
         Merge inferred data into Solr Input Document. Write merged data to 
         output.
-        '''
+        """
         try:
             # read input (inferred) data file
             infile = open(Source,'r')
@@ -286,10 +287,10 @@ class Transformer(object):
             self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
     
     def mergeInferredRecordsIntoSID(self, Sources, Output):
-        '''
+        """
         Transform zero or more paths with inferred object records to Solr Input 
         Document format.
-        '''
+        """
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
@@ -298,10 +299,10 @@ class Transformer(object):
                     self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + outputFileName)
     
     def run(self, Params):
-        '''
+        """
         Execute transformations on source documents as specified. Write results 
         to the output path.
-        '''
+        """
         # get parameters
         actions = Params.get("transform","actions").split(',')
         boosts = Params.get("transform","boost").split(',')
@@ -350,9 +351,9 @@ class Transformer(object):
             self.logger.debug("No schema file specified")
     
     def setBoosts(self, Source, Boosts):
-        '''
+        """
         Boost the specified field for all Solr Input Documents.
-        '''
+        """
         assert os.path.exists(Source), self.logger.warning("Source documents path does not exist: " + Source)
         files = os.listdir(Source)
         for filename in files:
@@ -376,9 +377,9 @@ class Transformer(object):
                     self.logger.warning("Could not apply boosts to " + filename)
     
     def setFieldValue(self, Source, FieldValue):
-        '''
+        """
         Set the specified field value for all Solr Input Documents.
-        '''
+        """
         assert os.path.exists(Source), self.logger.warning("Source documents path does not exist: " + Source)
         files = os.listdir(Source)
         parser = etree.XMLParser(remove_blank_text=True)
@@ -411,10 +412,10 @@ class Transformer(object):
                     self.logger.warning("Could not set field " + fieldname + " in " + filename)
 
     def transformDigitalObjectsToSID(self,Sources,Output):
-        '''
+        """
         Transform zero or more paths with digital object YAML records to Solr 
         Input Document format.
-        '''
+        """
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
@@ -423,10 +424,10 @@ class Transformer(object):
                     self.transformDigitalObjectToSID(path,Output)
     
     def transformDigitalObjectToSID(self, Source, Output):
-        '''
+        """
         Transform a single digital object YAML record to Solr Input Document 
         format.
-        '''
+        """
         # read input file
         infile = open(Source,'r')
         data = yaml.load(infile.read())
@@ -447,10 +448,10 @@ class Transformer(object):
         self.logger.info("Transformed digital object YAML to SID " + filename)
             
     def transformEacCpfsToSID(self, Sources, Output, Transform):
-        '''
+        """
         Transform zero or more paths containing EAC-CPF documents to Solr Input
         Document format. 
-        '''
+        """
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
@@ -458,10 +459,10 @@ class Transformer(object):
                     self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
     
     def transformEacCpfToSID(self, Source, Output, Transform):
-        '''
+        """
         Transform document to Solr Input Document format using the
         specified XSLT transform file.
-        '''
+        """
         try:
             # read source data
             infile = open(Source,'r')
@@ -496,9 +497,9 @@ class Transformer(object):
             self.logger.warning("Could not transform EAC-CPF to Solr Input Document " + filename, exc_info=True)
 
     def transformHtmlsToSid(self, Sources, Output):
-        '''
+        """
         Transform HTML documents to Solr Input Document format.
-        '''
+        """
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
@@ -507,9 +508,9 @@ class Transformer(object):
                 self.transformHtmlToSid(html,Output)
 
     def transformHtmlToSid(self, Html, Output):
-        '''
+        """
         Transform HTML to Solr Input Document format.
-        '''
+        """
         data = Html.getHtmlIndexContent()
         if 'abstract' in data:
             abstract = data['abstract']
@@ -540,9 +541,9 @@ class Transformer(object):
         self.logger.info("Transformed HTML to SID " + Html.getUrl())
 
     def validate(self, Source, Schema):
-        '''
+        """
         Validate a collection of files against an XML schema.
-        '''
+        """
         # load schemas
         try:
             infile = open(Schema, 'r')

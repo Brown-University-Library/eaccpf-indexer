@@ -1,33 +1,32 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
-
-from BeautifulSoup import BeautifulSoup
-from EacCpf import EacCpf
-from StringIO import StringIO
-from datetime import datetime
-from lxml import etree
-from mako.template import Template 
+"""
 
 import inspect
 import logging
 import os
 import shutil
 import yaml
+from BeautifulSoup import BeautifulSoup
+from EacCpf import EacCpf
+from StringIO import StringIO
+from datetime import datetime
+from mako.template import Template
+from lxml import etree
 
 class Analyzer(object):
-    '''
+    """
     EAC-CPF document analyzer. Performs a high level analysis of a document to
     produce an objective set of rudimentary metrics. These metrics may be used
-    by an archivist or end user to make a quick, subjective assessment of the 
+    by an archivist or end user to make a quick, subjective assessment of the
     state or quality of a single document in relation to a whole collection.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         # logger
         self.logger = logging.getLogger('Analyzer')
         # load validation schema
@@ -47,21 +46,21 @@ class Analyzer(object):
         self.parser = etree.XMLParser(schema=xmlschema)
 
     def _getEntityType(self, Data):
-        '''
+        """
         Get the entity type.
         ex. <entityType>type</entityType>
-        '''
+        """
         soup = BeautifulSoup(Data)
         tag = soup.find("entitytype")
         return str(tag.string)
         
     def _getEntityLocalType(self, Data):
-        '''
+        """
         Get the entity local type.
         <localControl localType="typeOfEntity">
         <term>Organisation</term>
         </localControl>
-        '''
+        """
         soup = BeautifulSoup(Data)
         tag = soup.find("localcontrol",{'localtype':'typeOfEntity'})
         if tag:
@@ -72,30 +71,30 @@ class Analyzer(object):
         return None
 
     def _getExistDates(self, Data):
-        '''
+        """
         Get the list of existence dates for the entity.
-        '''
+        """
         dates = []
         return dates
 
     def _getResourceRelations(self, Data):
-        '''
+        """
         Get a list of resource relations.
-        '''
+        """
         soup = BeautifulSoup(Data)
         relations = soup.find('relations')
         return relations.findChildren()
     
     def _getResourceRelationsCount(self, Data):
-        '''
+        """
         Get the number of resource relations in the document.
-        '''
+        """
         return len(self._getResourceRelations(Data))
     
     def _getSectionContentCount(self, Tag, Data):
-        '''
+        """
         Get the number of characters between the open and closing section tags.
-        '''
+        """
         starttag = "<" + Tag + ">"
         endtag = "</" + Tag + ">"
         start = Data.index(starttag)
@@ -103,10 +102,10 @@ class Analyzer(object):
         return end - start - len(starttag)
 
     def _getSectionContentCounts(self, Data):
-        '''
-        Get a dictionary with content length counts for each section of the 
+        """
+        Get a dictionary with content length counts for each section of the
         document.
-        '''
+        """
         counts = {}
         counts['control'] = self._getSectionContentCount("control", Data)
         counts['identity'] = self._getSectionContentCount("identity", Data)
@@ -115,21 +114,21 @@ class Analyzer(object):
         return counts
     
     def _getTotalContentCount(self, Data):
-        '''
+        """
         Get the total number of characters comprising the EAC-CPF document.
-        '''
+        """
         return len(Data)
 
     def _hasMaintenanceRecord(self, Data):
-        '''
+        """
         Determine if the document has a maintenance record.
-        '''
+        """
         return True
 
     def _hasRecordIdentifier(self, Data):
-        '''
+        """
         Determine if the document has a record Id.
-        '''
+        """
         soup = BeautifulSoup(Data)
         tag = soup.find("recordid")
         if tag:
@@ -139,26 +138,26 @@ class Analyzer(object):
         return False
 
     def _hasResourceRelations(self, Data):
-        '''m
+        """
         Determine if the document has resource relations.
-        '''
+        """
         count = self._getResourceRelationsCount(Data)
         if count is not None and count > 0:
             return True
         return False
 
     def _isAnalysisFile(self,Path):
-        '''
+        """
         Determine if the file at the specified path is an analysis file.
-        '''
+        """
         if Path.endswith("yml"):
             return True
         return False
 
     def _isConformantToEacCpfSchema(self, Data):
-        '''
+        """
         Determine if the document is conformant to the EAC-CPF schema.
-        '''
+        """
         try:
             etree.parse(StringIO(Data), self.parser)
             return True, ''
@@ -170,9 +169,9 @@ class Analyzer(object):
             return False, errors
 
     def _isEacCpfFile(self, Path):
-        '''
+        """
         Determine if the document at the specified path is EAC-CPF.
-        '''
+        """
         if Path.endswith("xml"):
             infile = open(Path,'r')
             data = infile.read()
@@ -182,10 +181,10 @@ class Analyzer(object):
         return False
     
     def _makeCache(self, Path):
-        '''
+        """
         Create a folder at the specified path if none exists.
         If the path already exists, delete all files within it.
-        '''
+        """
         if not os.path.exists(Path):
             os.makedirs(Path)
             self.logger.info("Created output folder at " + Path)
@@ -195,10 +194,10 @@ class Analyzer(object):
             self.logger.info("Cleared output folder at " + Path)
 
     def analyzeFile(self, Source, Filename, Output):    
-        '''
+        """
         Analyze EAC-CPF file for quality indicators and changes. Write a YAML
         file with analysis data to the output path.
-        '''
+        """
         # read the input file
         infile = open(Source + os.sep + Filename,'r')
         data = infile.read()
@@ -243,10 +242,10 @@ class Analyzer(object):
             self.logger.warning("Could not complete analysis for " + Filename, exc_info=True)
         
     def analyzeFiles(self, Sources, Output):
-        '''
-        Analyze EAC-CPF files in the specified source paths. Write a YML file 
+        """
+        Analyze EAC-CPF files in the specified source paths. Write a YML file
         with analysis data to the output path.
-        '''
+        """
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
@@ -254,15 +253,15 @@ class Analyzer(object):
                     self.analyzeFile(source, filename, Output)
 
     def buildHtmlReport(self, Source, Output):
-        '''
-        Build HTML report file 
-        '''
+        """
+        Build HTML report file
+        """
         # copy the file from the template directory into the output directory 
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         parentpath = os.path.dirname(modpath)
         assets = parentpath + os.sep + "template"
         shutil.copytree(assets + os.sep + 'assets',Output + os.sep + 'assets')
-        templatefile = assets + os.sep + "index.mako"
+        templatefile = assets + os.sep + "index.mako"#####
         # build the report
         records = []
         files = os.listdir(Source)
@@ -292,9 +291,9 @@ class Analyzer(object):
             self.logger.warning("Could not write HTML report file", exc_info=True)
 
     def run(self, params):
-        '''
+        """
         Execute analysis operations using specified parameters.
-        '''
+        """
         # get parameters
         sources = params.get("analyze","inputs").split(',')
         output = params.get("analyze","output")
@@ -303,7 +302,7 @@ class Analyzer(object):
         # check state
         for source in sources:
             assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Report path does not exist: " + output)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # execute actions
         self.analyzeFiles(sources,output)
         self.buildHtmlReport(output,output)

@@ -1,7 +1,7 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
 import os
 import random
@@ -10,21 +10,22 @@ import tempfile
 import unittest
 from Transformer import Transformer
 
+
 class TransformerUnitTests(unittest.TestCase):
-    '''
+    """
     Executes unit tests against the transformer module.
-    '''
+    """
 
     def _generate(self, size=6, chars=string.ascii_uppercase + string.digits):
-        '''
+        """
         Generate a string of random characters.
-        '''
+        """
         return ''.join(random.choice(chars) for _ in range(size))
 
     def _writeDigitalObject(self, Path):
-        '''
+        """
         Write a minimal digital object record to a file for testing.
-        '''    
+        """    
         outfile = open(Path,'w')
         outfile.write('comment: DIGITAL OBJECT record from ????????.xml\n')
         outfile.write('url: http://www.example.com/path/to/source/image.jpg\n')
@@ -34,9 +35,9 @@ class TransformerUnitTests(unittest.TestCase):
         return Path
     
     def _writeEACCPF(self, Path):
-        '''
+        """
         Write a minimal EAC-CPF document for testing.
-        '''
+        """
         outfile = open(Path,'w')
         outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         outfile.write('<eac-cpf>\n')
@@ -49,9 +50,9 @@ class TransformerUnitTests(unittest.TestCase):
         return Path
 
     def _writeInferredRecord(self,Path):
-        '''
+        """
         Write a minimal inferred record for testing.
-        '''
+        """
         outfile = open(Path,'w')
         outfile.write('comment: INFERRED DATA record for SOURCE\n')
         outfile.write('locations: \n')
@@ -61,9 +62,9 @@ class TransformerUnitTests(unittest.TestCase):
         return Path
 
     def _writeSolrInputDocument(self,Path):
-        '''
+        """
         Write a minimal Solr Input Document for testing.
-        '''
+        """
         outfile = open(Path,'w')
         outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         outfile.write('<add>\n')
@@ -75,9 +76,9 @@ class TransformerUnitTests(unittest.TestCase):
         return Path
 
     def setUp(self):
-        '''
+        """
         Set test environment.
-        '''
+        """
         # a junk file
         self.junk = tempfile.mktemp()
         outfile = open(self.junk,'w')
@@ -102,9 +103,9 @@ class TransformerUnitTests(unittest.TestCase):
         self.transformer = Transformer()
 
     def tearDown(self):
-        '''
+        """
         Tear down test environment.
-        '''
+        """
         os.remove(self.junk)
         os.remove(self.yml)
         os.remove(self.xml)
@@ -121,16 +122,16 @@ class TransformerUnitTests(unittest.TestCase):
         self.assertEqual(os.path.exists(self.solr),False)
 
     def test_boostFields(self):
-        '''
+        """
         Boost the specified Solr Input Document fields.
-        '''
+        """
         pass
 
     def test__getIdFromFilename(self,Filename):
-        '''
+        """
         It should return the identifier for the record, which is the component
         of the filename that precedes the . extension.
-        '''
+        """
         transformer = Transformer()
         cases = {
                  "ABC00001.xml" : "ABC00001",
@@ -143,23 +144,23 @@ class TransformerUnitTests(unittest.TestCase):
             self.assertEqual(recordId,cases[case])
 
     def test_getSourceAndReferrerValues(self):
-        '''
+        """
         Get source and referrer values from the embedded comment in an EAC-CPF 
         document.
-        '''
+        """
         pass
 
     def test_init(self):
-        '''
+        """
         It should create an instance of the Transformer class.
-        '''
+        """
         self.assertNotEqual(self.transformer,None)
     
     def test_isDigitalObjectYaml(self):
-        '''
+        """
         It should correctly determine if a file is a digital object record in
         YAML format.
-        '''
+        """
         # no match
         result = self.transformer._isDigitalObjectYaml(self.junk)
         self.assertEqual(result, False)
@@ -171,10 +172,10 @@ class TransformerUnitTests(unittest.TestCase):
         self.assertEqual(result, True)
 
     def test_isEACCPF(self):
-        '''
+        """
         It should correctly determine if a file is an EAC-CPF record.
-        '''
-        '''
+        """
+        """
         # no match
         result = self.transformer._isEACCPF(self.junk)
         self.assertEqual(result, False)
@@ -184,14 +185,14 @@ class TransformerUnitTests(unittest.TestCase):
         # matches extension and content
         result = self.transformer._isEACCPF(self.eaccpf)
         self.assertEqual(result, True)
-        '''
+        """
         pass
     
     def test_isInferredYaml(self):
-        '''
+        """
         It should correctly determine if a file is an inferred data record in
         YAML format.
-        '''
+        """
         # no match
         result = self.transformer._isInferredYaml(self.junk)
         self.assertEqual(result, False)
@@ -203,9 +204,9 @@ class TransformerUnitTests(unittest.TestCase):
         self.assertEqual(result, True)
     
     def test_isSolrInputDocument(self):
-        '''
+        """
         It should correctly determine if a file is a Solr Input Document.
-        '''
+        """
         # no match
         result = self.transformer._isSolrInputDocument(self.junk)
         self.assertEqual(result, False)
@@ -217,23 +218,23 @@ class TransformerUnitTests(unittest.TestCase):
         self.assertEqual(result, True)
     
     def test_mergeInferredRecordToSID(self):
-        '''
+        """
         Merge inferred data into Solr Input Document record.
-        '''
+        """
         pass
     
     def test_transformDigitalObjectToSID(self):
-        '''
+        """
         It should transform a path with digital object YAML records to Solr 
         Input Document format.
-        '''
+        """
         pass
 
     def test_transformEACCPFToSID(self):
-        '''
+        """
         It should transform a path with EAC-CPF records to Solr Input Document 
         format.
-        '''
+        """
         pass
     
 if __name__ == "__main__":

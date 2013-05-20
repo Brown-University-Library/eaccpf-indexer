@@ -1,52 +1,52 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
-
-from AlchemyAPI import AlchemyAPI
-from BeautifulSoup import BeautifulSoup as soup
-from pythoncalais import Calais
-from geopy import *
+"""
 
 import logging
 import os
 import time
 import yaml 
 
+from AlchemyAPI import AlchemyAPI
+from BeautifulSoup import BeautifulSoup as soup
+from pythoncalais import Calais
+from geopy import *
+
 class Facter(object):
-    '''
+    """
     Takes an EACCPF record, executes a semantic analysis of the contents and 
     attempts to extract people, places, things, concepts from free text or 
     structured fields.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Initialize class
-        '''
+        """
         self.logger = logging.getLogger('Facter')
 
     def _addValueToDictionary(self,dic,key,value):
-        '''
+        """
         For dictionaries that hold multiple values for each key.
-        '''
+        """
         if not dic.has_key(key):
             dic[key] = []
         items = dic[key]
         items.append(value)
 
     def _cleanList(self, alist):
-        '''
+        """
         Fix yaml encoding issues for list items.
-        '''
+        """
         for item in alist:
             item = self._cleanText(item)
         return list
 
     def _cleanText(self, val):
-        '''
+        """
         Fix yaml encoding issues for string items.
-        '''
+        """
         if val == None:
             return ''
         clean = str(val)
@@ -55,17 +55,17 @@ class Facter(object):
         return clean
     
     def _fixDate(self, date):
-        '''
+        """
         Fix date string to make it conform to ISO standard.
-        '''
+        """
         if 'T00:00:00Z' in date:
             return date
         return date + "T00:00:00Z"
     
     def _getAddressParts(self, Address):
-        '''
+        """
         Parse a location record or address string into components.
-        '''
+        """
         # defaults
         street = city = region = postal = country = ''
         try:
@@ -97,9 +97,9 @@ class Facter(object):
         return street, city, region, postal, country
     
     def _getCalaisResultAsDictionary(self, result):
-        '''
+        """
         Get Calais result as a dictionary.
-        '''
+        """
         out = {}
         # entities
         try:
@@ -132,9 +132,9 @@ class Facter(object):
         return out
     
     def _getFreeTextFields(self, xml):
-        '''
+        """
         Get content from free text fields.
-        '''
+        """
         freetext = ''
         # /eac-cpf/identity/nameEntry/part
         nameentry = xml.find('nameentry')
@@ -165,11 +165,11 @@ class Facter(object):
         return freetext
 
     def _getRecord(self, path, filename):
-        '''
+        """
         Try to load the entity record. If it does not already exist, return a
         default dictionary record structure. The record is encoded in YAML 
         format.
-        '''
+        """
         if os.path.exists(path + os.sep + filename):
             # load the existing record file as yaml  
             infile = open(path + os.sep + filename, 'r')
@@ -181,17 +181,17 @@ class Facter(object):
             return {'comment':'Inferred entity and location data extracted from ' + filename}
         
     def _getYamlFilename(self, filename):
-        '''
+        """
         Takes a file name and returns a name with .yml appended.
-        '''
+        """
         name, _ = os.path.splitext(filename)
         return name + ".yml"
         
     def _makeCache(self, path):
-        '''
+        """
         Create a cache folder at the specified path if none exists.
         If the path already exists, delete all files.
-        '''
+        """
         if not os.path.exists(path):
             os.makedirs(path)
             self.logger.info("Created output folder at " + path)
@@ -202,17 +202,17 @@ class Facter(object):
             self.logger.info("Cleared output folder at " + path)
             
     def _mergeResultWithRecord(self, record, result):
-        '''
+        """
         Merge the result dictionary with the record dictionary.
-        '''
+        """
         for key in result.keys():
             record[key] = result[key]
         return record
     
     def _setDateField(self, Target, Field, Source):
-        '''
+        """
         Try to set the named field with the specified date string.
-        '''
+        """
         try:
             if Source is not None:
                 if hasattr(Source,'standarddate'):
@@ -222,9 +222,9 @@ class Facter(object):
             pass
     
     def _setStringField(self, target, fieldname, source):
-        '''
+        """
         Try to set the named field with the specified source object.
-        '''
+        """
         try:
             if source is not None:
                 target[fieldname] = self._cleanText(source.string)
@@ -232,11 +232,11 @@ class Facter(object):
             pass
     
     def inferEntitiesWithAlchemy(self, Source, Output, Key, Sleep=0.):
-        '''
+        """
         For each input file, attempt to extract people, things, concepts and 
         place names from free text fields. Sleep for the specified number of 
         seconds between requests.
-        '''
+        """
         # check state
         assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
         assert os.path.exists(Output), self.logger.warning("Output path does not exist: " + Output)
@@ -308,10 +308,10 @@ class Facter(object):
             time.sleep(Sleep)
     
     def inferEntitiesWithNLTK(self, Source, Output):
-        '''
+        """
         Infer entities from free text using Natural Language Toolkit.
         Attempt to identify people and things.
-        '''
+        """
         # create output folder
         self._makeCache(Output)
         # check state
@@ -341,12 +341,12 @@ class Facter(object):
             self.logger.info("Wrote inferred entities to " + yamlFilename)
         
     def inferLocations(self, source, output, geocoder, sleep=0.):
-        '''
+        """
         For each EAC-CPF input file, extract the address from each cronitem and
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
         @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md.
-        '''
+        """
         # check state
         assert os.path.exists(source), self.logger.warning("Specified path does not exist: " + source)
         # process files
@@ -413,9 +413,9 @@ class Facter(object):
                     continue
 
     def run(self, Params):
-        '''
+        """
         Execute analysis using the specified parameters.
-        '''
+        """
         # get parameters
         actions = Params.get("infer","actions").split(",")
         output = Params.get("infer","output")

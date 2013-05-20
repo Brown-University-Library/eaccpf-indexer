@@ -1,14 +1,9 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
-from Analyzer import Analyzer
-from Cleaner import Cleaner
-from Crawler import Crawler
-from Facter import Facter
-from Poster import Poster
-from Transformer import Transformer
+__author__ = 'Davis Marques <dmarques@unimelb.edu.au>'
 
 import ConfigParser
 import argparse
@@ -16,18 +11,27 @@ import datetime
 import logging
 import sys
 
+from Analyzer import Analyzer
+from Cleaner import Cleaner
+from Facter import Facter
+from Crawler import Crawler
+from Grapher import Grapher
+from Poster import Poster
+from Transformer import Transformer
+
+
 class Indexer(object):
-    '''
+    """
     A utility class for indexing EAC-CPF and related content from a web site or 
     file system, inferring data, post-processing and posting that data to an 
     Apache Solr search index.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Set logging options, parse the command line arguments, load the 
         configuration file.
-        '''
+        """
         # logging default
         formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
         self.logger = logging.getLogger('Indexer')
@@ -44,15 +48,16 @@ class Indexer(object):
         self.parser.add_argument('--analyze', help="analyze data", action='store_true')
         self.parser.add_argument('--clean', help="clean metadata files of common errors and write updated files", action='store_true')
         self.parser.add_argument('--crawl', help="crawl file system or web site for metadata files", action='store_true')
+        self.parser.add_argument('--graph', help="build graph representation of document collection", action='store_true')
         self.parser.add_argument('--infer', help="infer concepts, entities, locations from metadata", action='store_true')
         self.parser.add_argument('--post', help="post Solr Input Documents to index", action='store_true')
         self.parser.add_argument('--transform', help="transform metadata to Solr Input Document format", action='store_true')
         self.parser.add_argument('--update', help="process only those files that have changed since the last run", action='store_true')
     
     def run(self):
-        '''
+        """
         Start processing.
-        '''
+        """
         # parse the command line arguments
         try:
             self.args = self.parser.parse_args()
@@ -80,6 +85,10 @@ class Indexer(object):
         if (self.args.infer):
             factor = Facter()
             factor.run(self.config)
+        # if graph
+        if (self.args.graph):
+            grapher = Grapher()
+            grapher.run(self.config)
         # if transform
         if (self.args.transform):
             transformer = Transformer()

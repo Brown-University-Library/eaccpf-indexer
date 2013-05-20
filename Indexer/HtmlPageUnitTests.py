@@ -1,28 +1,28 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
+import HtmlPage
 import os
 import unittest
-import HtmlPage
 
 class HtmlPageUnitTests(unittest.TestCase):
-    '''
+    """
     Test cases for the HTML Page module.
     @todo Need test cases for when the page contains relative URLs throughout
-    '''
+    """
     def _getParentPath(self, Path):
-        '''
+        """
         Get the path to the parent of the specified directory.
-        '''
+        """
         i = Path.rfind('/')
         return Path[:i+1]
     
     def setUp(self):
-        '''
+        """
         Setup the test environment.
-        '''
+        """
         self.html = """<html>
             <head>
                 <title>TEST</title>
@@ -98,16 +98,16 @@ class HtmlPageUnitTests(unittest.TestCase):
         """
 
     def tearDown(self):
-        '''
+        """
         Tear down the test environment.
-        '''
+        """
         pass
 
     def test_init(self):
-        '''
+        """
         It should create an object instance, and the specified case content 
         should be loaded if it exists.
-        '''
+        """
         # create a list of cases to load and test
         cases = [
                  "http://www.findandconnect.gov.au/nsw/",                       # region home case
@@ -123,11 +123,11 @@ class HtmlPageUnitTests(unittest.TestCase):
             self.assertNotEqual(data, None)
     
     def test_hasEacCpfAlternate(self):
-        '''
+        """
         It should return true if there is an EAC-CPF alternate representation 
         specified for the HTML case. It should return false if none is 
         specified. 
-        '''
+        """
         cases = {
                  "http://www.findandconnect.gov.au/nsw/" : False,                       # region home case
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : True,      # organization case
@@ -139,10 +139,10 @@ class HtmlPageUnitTests(unittest.TestCase):
             self.assertEqual(result, cases[case])
     
     def test_getDocumentParentUrl(self):
-        '''
+        """
         It should return the URL of the first parent directory where a file is
         reference, and the directory itself where a directory is referenced.
-        '''
+        """
         cases = {
                  "http://www.findandconnect.gov.au/nsw/" : "http://www.findandconnect.gov.au/nsw/",                         
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "http://www.findandconnect.gov.au/nsw/biogs/", 
@@ -154,10 +154,10 @@ class HtmlPageUnitTests(unittest.TestCase):
             self.assertEqual(result, cases[case])
     
     def test_getDocumentUrl(self):
-        '''
+        """
         It should return the document URI.
         @todo this is not functioning correctly for the case where a base url is provided!!!
-        '''
+        """
         cases = [
                  "http://www.findandconnect.gov.au/nsw/index.php",
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",
@@ -193,10 +193,10 @@ class HtmlPageUnitTests(unittest.TestCase):
                 self.assertEqual(url, myurl + fn)
 
     def test_getRecordId(self):
-        '''
+        """
         It should return a record id for cases that represent a digital object
         or that have an EAC-CPF alternate representation.
-        '''
+        """
         cases = {
                  "http://www.findandconnect.gov.au/nsw/" : None,                            # region home case
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "NE00200b",    # organization case

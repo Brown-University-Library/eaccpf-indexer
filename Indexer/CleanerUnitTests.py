@@ -4,7 +4,7 @@ LICENSE file, which is part of this source code package.
 '''
 
 import unittest
-import Cleaner
+from Cleaner import Cleaner
 
 class CleanerUnitTests(unittest.TestCase):
     '''

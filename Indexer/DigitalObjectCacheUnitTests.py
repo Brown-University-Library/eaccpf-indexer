@@ -1,7 +1,7 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
 import Image
 import os
@@ -13,19 +13,19 @@ import tempfile
 from DigitalObjectCache import DigitalObjectCache
 
 class DigitalObjectCacheUnitTests(unittest.TestCase):
-    '''
+    """
     Executes unit tests against the digital object cache module.
-    '''
+    """
     
     def _generate(self, size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
     def _rmdir(self,d):
-        '''
+        """
         Recursively delete a directory.
         @author ActiveState
         @see http://code.activestate.com/recipes/552732-remove-directories-recursively/
-        '''
+        """
         for path in (os.path.join(d,f) for f in os.listdir(d)):
             if os.path.isdir(path):
                 self._rmdir(path)
@@ -34,16 +34,16 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
         os.rmdir(d)
 
     def setUp(self):
-        '''
+        """
         Create a path for the temporary cache.
-        '''
+        """
         self.path = "/tmp/cache"
         self.temp = tempfile.mkdtemp()
 
     def tearDown(self):
-        '''
+        """
         Clean up temporary directories.
-        '''
+        """
         if (os.path.exists(self.path)):
             self._rmdir(self.path)
         if (os.path.exists(self.temp)):
@@ -52,10 +52,10 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
         self.assertNotEqual(os.path.exists(self.temp),True)
 
     def test_init(self):
-        '''
+        """
         It should create an object instance and a concomitant file system put
         for the image cache.
-        '''
+        """
         # no path specified, no init
         self.assertRaises(Exception, DigitalObjectCache(self.path))
         # path specified, no init
@@ -75,9 +75,9 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
         self.assertEquals('http://www.example.com/',cache.base)
     
     def test_getFileName(self):
-        '''
+        """
         It should get the file name from a specified URL.
-        '''
+        """
         cache = DigitalObjectCache(self.path)
         paths = {
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png" : "tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png",
@@ -92,9 +92,9 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
             self.assertEquals(filename, paths[path])
     
     def test_getFileNameExtension(self):
-        '''
+        """
         It should get the file name extension from a specified URL.
-        '''
+        """
         cache = DigitalObjectCache(self.path)
         paths = {
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.htm" : "htm",
@@ -108,9 +108,9 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
             self.assertEquals(extension, paths[path])
             
     def test_getHash(self):
-        '''
+        """
         It should return the same hash for the file each time it is run.
-        '''
+        """
         cache = DigitalObjectCache(self.path)
         urls = [
                  "http://www.findandconnect.gov.au/site/images/aus-logo.png",
@@ -139,9 +139,9 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
             self.assertEqual(os.path.exists(temp),False)
 
     def test_resizeImage(self):
-        '''
+        """
         It should resize an case file to the specified dimensions.
-        '''
+        """
         cache = DigitalObjectCache(self.path)
         cases = [
                   "http://www.findandconnect.gov.au/site/images/aus-logo.png",
@@ -179,10 +179,10 @@ class DigitalObjectCacheUnitTests(unittest.TestCase):
             self.assertEqual(os.path.exists(resized),False)
     
     def test_put_and_get(self):
-        '''
+        """
         It should put the data obj and return an identifier. It should 
         return the source data when queried with the item key.
-        '''
+        """
         cases = [
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png",
                   "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.png",
