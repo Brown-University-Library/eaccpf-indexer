@@ -87,7 +87,23 @@ class EacCpf(object):
             relations = []
             cpfr = self.soup.findAll('cpfrelation')
             for rel in cpfr:
-                pass
+                relation = {}
+                for attr, val in rel.attrs:
+                    if attr == 'cpfrelationtype':
+                        relation['type'] = str(rel['cpfrelationtype'])
+                    elif attr == 'xlink:type':
+                        relation['xlink:type'] = str(rel['xlink:type'])
+                    elif attr == 'xlink:href':
+                        relation['xlink:href'] = str(rel['xlink:href'])
+                relationEntry = rel.find('relationentry')
+                if relationEntry:
+                    relation['relationentry'] = str(relationEntry.text)
+                    relation['relationentry_localtype'] = str(relationEntry['localtype'])
+                note = rel.find('descriptivenote')
+                if note:
+                    relation['descriptivenote'] = str(rel.find('descriptivenote').text)
+                relations.append(relation)
+            return relations
         except:
             return []
         
@@ -199,7 +215,35 @@ class EacCpf(object):
             return ltype.string.encode("utf-8")
         except:
             return None
-    
+
+    def getMetadataUrl(self):
+        """
+        Get the URL to the EAC-CPF document.
+        """
+        try:
+            if 'http://' in self.source or 'https://' in self.source:
+                return self.source
+            elif self.metadata:
+                return self.metadata
+            else:
+                return None
+        except:
+            return None
+
+    def getPresentationUrl(self):
+        """
+        Get the URL to the HTML presentation of the EAC-CPF document.
+        """
+        try:
+            if self.presentation:
+                return self.presentation
+            else:
+                entityid = self.soup.find('entityid')
+                url = entityid.text
+                return str(url)
+        except:
+            return None
+
     def getRecordId(self):
         """
         Get the record identifier.
@@ -220,18 +264,18 @@ class EacCpf(object):
                 relation = {}
                 for attr, val in rel.attrs:
                     if attr == 'resourcerelationtype':
-                        relation['type'] = rel['resourcerelationtype']
+                        relation['type'] = str(rel['resourcerelationtype'])
                     elif attr == 'xlink:type':
-                        relation['xlink:type'] = rel['xlink:type']
+                        relation['xlink:type'] = str(rel['xlink:type'])
                     elif attr == 'xlink:href':
-                        relation['xlink:href'] = rel['xlink:href']
+                        relation['xlink:href'] = str(rel['xlink:href'])
                 relationEntry = rel.find('relationentry')
                 if relationEntry:
-                    relation['relationentry'] = relationEntry.text
-                    relation['relationentry_localtype'] = relationEntry['localtype']
+                    relation['relationentry'] = str(relationEntry.text)
+                    relation['relationentry_localtype'] = str(relationEntry['localtype'])
                 note = rel.find('descriptivenote')
                 if note:
-                    relation['descriptivenote'] = rel.find('descriptivenote').text
+                    relation['descriptivenote'] = str(rel.find('descriptivenote').text)
                 relations.append(relation)
             return relations
         except:

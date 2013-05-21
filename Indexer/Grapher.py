@@ -6,12 +6,14 @@ LICENSE file, which is part of this source code package.
 __author__ = 'Davis Marques <dmarques@unimelb.edu.au>'
 
 import logging
-import networkx
+import matplotlib.pyplot as plt
+import networkx as nx
 import os
 import shutil
 import yaml
 
 from EacCpf import EacCpf
+
 
 class Grapher(object):
     """
@@ -43,18 +45,67 @@ class Grapher(object):
         os.makedirs(Path)
         self.logger.info("Cleared output folder at " + Path)
 
-    def buildGraph(self, Source, Output):
+    def graph(self, Source, Output):
         """
         Build graph representation from directory of YAML intermediate metadata
         files.
         """
+        g = nx.Graph()
         files = os.listdir(Source)
         for filename in files:
             if filename.endswith('.yml'):
-                pass
-        return None
+                infile = open(Source + os.sep + filename,'r')
+                data = infile.read()
+                data = yaml.load(data)
+                infile.close()
+                # create the node
+                g.add_node(data['presentation_url'], label=data['id'], data=data)
+                # create the relationships
+                for rel in data['cpfrelations']:
+                    pass
+                for rel in data['resourcerelations']:
+                    # if the relation is to another document, then just create an edge
+                    if 'xlink:href' in rel:
+                        g.add_edge(data['presentation_url'], rel['xlink:href'])
+                    # else, create a node to represent the entity and then link to it
+                    else:
+                        rel['title'] = rel['relationentry']
+                        g.add_node(rel['relationentry'], data=rel)
+                        g.add_edge(data['presentation_url'], rel['title'])
+        # draw the graph
+        nx.draw_spring(g)
+        plt.show()
+        # write the graph file
+        # nx.write_gexf(g, Output)
 
-    def process(self, Source, Output):
+    def jsongraph(self, Source):
+        """
+        Build a JSON graph representation directly from the input EAC-CPF data
+        source.
+        """
+        pass
+
+    def run(self, params):
+        """
+        Execute analysis operations using specified parameters.
+        """
+        # get parameters
+        source = params.get("graph","input")
+        output = params.get("graph","output")
+        try:
+            gexf = params.get("graph","graphmodel")
+        except:
+            gexf = None
+        # make output folder
+        self._makeCache(output)
+        # check state
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        # execute actions
+        self.summarize(source, output)
+        self.graph(output, gexf)
+
+    def summarize(self, Source, Output):
         """
         Process the source directory and write all graph related metadata to
         the YAML intermediate files in the specified output folder.
@@ -67,8 +118,8 @@ class Grapher(object):
                 metadata['id'] = doc.getRecordId()
                 metadata['title'] = doc.getTitle()
                 metadata['abstract'] = doc.getAbstract()
-                metadata['metadata_url'] = ''
-                metadata['presentation_url'] = ''
+                metadata['metadata_url'] = doc.getMetadataUrl()
+                metadata['presentation_url'] = doc.getPresentationUrl()
                 metadata['existdates'] = ''
                 metadata['function'] = doc.getFunctions()
                 metadata['entitytype'] = doc.getEntityType()
@@ -81,26 +132,3 @@ class Grapher(object):
                 yaml.dump(metadata,outfile)
                 outfile.close()
                 self.logger.info("Wrote graph data to " + outfile_name)
-
-    def run(self, params):
-        """
-        Execute analysis operations using specified parameters.
-        """
-        # get parameters
-        source = params.get("graph","input")
-        output = params.get("graph","output")
-        # make output folder
-        self._makeCache(output)
-        # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        # execute actions
-        self.process(source,output)
-        self.buildGraph(output,output)
-
-    def writeGraph(self,Graph):
-        """
-        Write graph to GEXML format file.
-        """
-        pass
-
