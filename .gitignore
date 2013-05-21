@@ -1,5 +1,6 @@
 *~
 *.cfg
+*.gexf
 *.gz
 *.old
 *.pyc
