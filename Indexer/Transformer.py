@@ -338,7 +338,7 @@ class Transformer(object):
             self.transformDigitalObjectsToSID(sources,output)
         if "merge-inferred" in actions:
             self.mergeInferredRecordsIntoSID(sources,output)
-        if "set-fields" in actions:
+        if "set-fields" in actions and not ('' in fields):
             self.setFieldValue(output,fields)
         # boost fields
         if boosts:
@@ -409,7 +409,7 @@ class Transformer(object):
                     outfile.close()
                     self.logger.info("Set fields in " + filename)
                 except:
-                    self.logger.warning("Could not set field " + fieldname + " in " + filename)
+                    self.logger.warning("Could not set field in " + filename)
 
     def transformDigitalObjectsToSID(self,Sources,Output):
         """

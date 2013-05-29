@@ -19,19 +19,10 @@
     <body>
         
     <div class="container">
-        <div class="row">
-            <div class="span12">
-                <h1>EAC-CPF Quality Report - ${date}</h1>
-                <p>Document source ${source}</p>
-                <div id="summary">
-                    <h3>Summary</h3>
-                    <p>Matrix diagram</p>
-                </div>
-           </div>
-		</div>
-		
+
 		<div class="row">
 			<div class="span12">
+                <h1>EAC-CPF Quality Report - ${date}</h1>
                 <h3>Records</h3>
                 % for record in records:
                     <%

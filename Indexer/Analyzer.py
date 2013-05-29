@@ -261,7 +261,7 @@ class Analyzer(object):
         parentpath = os.path.dirname(modpath)
         assets = parentpath + os.sep + "template"
         shutil.copytree(assets + os.sep + 'assets',Output + os.sep + 'assets')
-        templatefile = assets + os.sep + "index.mako"#####
+        templatefile = assets + os.sep + "index.mako"
         # build the report
         records = []
         files = os.listdir(Source)
