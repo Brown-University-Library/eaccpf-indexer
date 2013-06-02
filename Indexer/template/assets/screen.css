@@ -1,17 +1,35 @@
-/* This is the report stylesheet */
+body {
+    padding-bottom: 20px;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+tr {
+    vertical-align: top;
+}
+th {
+    border-bottom: 3px solid darkgray;
+    border-top: 1px solid darkgray;
+    padding-right: 10px;
+    text-align: left;
+}
+td {
+    border-bottom: 1px solid gainsboro;
+    margin: 0;
+    padding: 0;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+tr:last-child td {
+    border-bottom: 3px solid darkgray;
+}
 
-.record {
-  vertical-align: top;
+.graph {
+    min-height: 50px;
+    min-width: 300px;
 }
-.record .summary {
-  display: inline;
+.footer {
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
-.record .graph {
-	min-height: 20px;
-	min-width:200px;
-}
-.record .detail {
-	display: none;
-	height: 0;
-}
-

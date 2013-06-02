@@ -29,8 +29,8 @@ class Indexer(object):
 
     def __init__(self):
         """
-        Set logging options, parse the command line arguments, load the 
-        configuration file.
+        Set logging options, create a configuration file parser, command line
+        argument parser.
         """
         # logging default
         formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
@@ -65,12 +65,17 @@ class Indexer(object):
         except Exception, e:
             self.parser.print_help()
             sys.exit(e)
-        # load the specified configuration file
+        # load the configuration file
         try:
             self.config.readfp(open(self.args.config))
         except Exception, e:
             self.logger.critical("Could not load the specified configuration file")
             sys.exit(e)
+        # get the update option
+        if self.args.update:
+            update = True
+        else:
+            update = False
         # start clock
         start = datetime.datetime.now()
         # if crawl

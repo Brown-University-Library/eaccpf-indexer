@@ -44,6 +44,8 @@ class Analyzer(object):
             self.logger.critical("Could not load schema file " + schema)
         # create validating parser
         self.parser = etree.XMLParser(schema=xmlschema)
+        # dictionary for geocoordinates
+        self.coordinates = {}
 
     def _getEntityType(self, Data):
         """
@@ -118,6 +120,12 @@ class Analyzer(object):
         Get the total number of characters comprising the EAC-CPF document.
         """
         return len(Data)
+
+    def _hasLocation(self, Data):
+        """
+        Determine if the document has location properties.
+        """
+        return True
 
     def _hasMaintenanceRecord(self, Data):
         """
@@ -216,6 +224,8 @@ class Analyzer(object):
             analysis['the analysis date'] = datetime.now()
             conformance, errors = self._isConformantToEacCpfSchema(data)
             analysis['conforms to schema'] = conformance
+            analysis['has duplicate geocoordinate'] = False
+            analysis['has location'] = self._hasLocation(data)
             analysis['has maintenance record'] = self._hasMaintenanceRecord(data)
             analysis['has record identifier'] = self._hasRecordIdentifier(data)
             analysis['has resource relations'] = self._hasResourceRelations(data)
@@ -281,7 +291,7 @@ class Analyzer(object):
         try:
             template = Template(filename=templatefile)
             reportdate = datetime.now().strftime("%B %d, %Y")
-            data = template.render(title="EAC-CPF Analysis",date=reportdate,records=records,source='Source Name')
+            data = template.render(title="EAC-CPF Analysis",date=reportdate,records=records,source=Source)
             # write the report
             outfile = open(Output + os.sep + 'index.html','w')
             outfile.write(data)
