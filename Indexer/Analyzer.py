@@ -275,6 +275,7 @@ class Analyzer(object):
         # build the report
         records = []
         files = os.listdir(Source)
+        files.sort()
         # load analysis records
         for filename in files:
             try:
@@ -291,7 +292,7 @@ class Analyzer(object):
         try:
             template = Template(filename=templatefile)
             reportdate = datetime.now().strftime("%B %d, %Y")
-            data = template.render(title="EAC-CPF Analysis",date=reportdate,records=records,source=Source)
+            data = template.render(date=reportdate,records=records,source=Source)
             # write the report
             outfile = open(Output + os.sep + 'index.html','w')
             outfile.write(data)
