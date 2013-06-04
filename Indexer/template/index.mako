@@ -10,11 +10,13 @@
     <!-- stylesheets -->
     <link rel="stylesheet" type="text/css" href="assets/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="assets/screen.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="assets/datatables/demo_page.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="assets/datatables/demo_table.css" media="screen"/>
     <!-- scripts -->
-    <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="assets/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="assets/jquery/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="assets/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="assets/d3.v2.js"></script>
+    <script type="text/javascript" src="assets/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="assets/d3/d3.v2.js"></script>
 </head>
 <body>
 
@@ -25,26 +27,30 @@
             <h2>EAC-CPF Quality Report - ${date}</h2>
             <p>Data Source: ${source}</p>
 
-            <table id="records">
+            <table id="records" class="display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>EntityType</th>
+                        <th>LocalType</th>
+                        <th>Maintenance Record</th>
+                        <th>Location</th>
+                        <th>Errors</th>
+                        <th>Content</th>
+                    </tr>
+                </thead>
                 <tbody>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>LocalType</th>
-                    <th>Maintenance Record</th>
-                    <th>Location</th>
-                    <th>Warnings</th>
-                    <th>Errors</th>
-                    <th>Content</th>
-                </tr>
                 <% maxval = 0 %>
                 % for record in records:
                    <% if record['analysis']['the total content count'] > maxval:
                           maxTotal = record['analysis']['the total content count']
                    %>
+
                 <tr>
                     <td><a href='${record['metadata']['entityid']}'>${record['metadata']['id']}</a></td>
                     <td><a href='${record['metadata']['entityid']}'>${record['metadata']['title']}</a></td>
+                    <td>${record['metadata']['entitytype']}</td>
                     <td>${record['metadata']['localtype']}</td>
                     <td>
                         % if record['analysis']['has maintenance record'] and record['analysis']['has maintenance record'] == True:
@@ -53,8 +59,13 @@
                             <i class="icon-remove"></i>
                         % endif
                     </td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td>
+                        % if record['analysis']['has location']:
+                            <i class="icon-ok"></i>
+                        % else:
+                            <i class="icon-remove"></i>
+                        % endif
+                    </td>
                     <td>
                         <ul>
                         % for error in record['analysis']['the parsing errors']:
@@ -104,7 +115,7 @@
 
         var margin = {top: 0, right: 0, bottom: 0, left: 0};
         var width = 300 - margin.left - margin.right;
-        var height = 24 - margin.top - margin.bottom;
+        var height = 25 - margin.top - margin.bottom;
 
         var y = d3.scale.ordinal()
             .domain(d3.range(m))
@@ -147,6 +158,11 @@
             .attr("height", height)
             .attr("width", function(d) { return x(d.y); });
     }
+
+    // initialize the data table
+    $(document).ready(function() {
+        $('#records').dataTable();
+    });
 </script>
 
 </body>

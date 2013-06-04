@@ -27,7 +27,6 @@ class Analyzer(object):
         """
         Constructor
         """
-        # logger
         self.logger = logging.getLogger('Analyzer')
         # load validation schema
         modpath = os.path.abspath(inspect.getfile(self.__class__))
@@ -46,38 +45,6 @@ class Analyzer(object):
         self.parser = etree.XMLParser(schema=xmlschema)
         # dictionary for geocoordinates
         self.coordinates = {}
-
-    def _getEntityType(self, Data):
-        """
-        Get the entity type.
-        ex. <entityType>type</entityType>
-        """
-        soup = BeautifulSoup(Data)
-        tag = soup.find("entitytype")
-        return str(tag.string)
-        
-    def _getEntityLocalType(self, Data):
-        """
-        Get the entity local type.
-        <localControl localType="typeOfEntity">
-        <term>Organisation</term>
-        </localControl>
-        """
-        soup = BeautifulSoup(Data)
-        tag = soup.find("localcontrol",{'localtype':'typeOfEntity'})
-        if tag:
-            thetype = tag.find("term")
-            if thetype:
-                return str(thetype.string)
-            return tag.string
-        return None
-
-    def _getExistDates(self, Data):
-        """
-        Get the list of existence dates for the entity.
-        """
-        dates = []
-        return dates
 
     def _getResourceRelations(self, Data):
         """
@@ -120,39 +87,6 @@ class Analyzer(object):
         Get the total number of characters comprising the EAC-CPF document.
         """
         return len(Data)
-
-    def _hasLocation(self, Data):
-        """
-        Determine if the document has location properties.
-        """
-        return True
-
-    def _hasMaintenanceRecord(self, Data):
-        """
-        Determine if the document has a maintenance record.
-        """
-        return True
-
-    def _hasRecordIdentifier(self, Data):
-        """
-        Determine if the document has a record Id.
-        """
-        soup = BeautifulSoup(Data)
-        tag = soup.find("recordid")
-        if tag:
-            recordid = tag.string
-            if recordid and len(recordid) > 0:
-                return True
-        return False
-
-    def _hasResourceRelations(self, Data):
-        """
-        Determine if the document has resource relations.
-        """
-        count = self._getResourceRelationsCount(Data)
-        if count is not None and count > 0:
-            return True
-        return False
 
     def _isAnalysisFile(self,Path):
         """
@@ -210,36 +144,48 @@ class Analyzer(object):
         infile = open(Source + os.sep + Filename,'r')
         data = infile.read()
         infile.close()
-        report = {}
         try:
-            eaccpf = EacCpf(Source + os.sep + Filename, None)
+            report = {}
+            entity_locations = {}
+            doc = EacCpf(Source + os.sep + Filename, None)
             # get some basic metadata for the file
             metadata = {}
-            metadata['id'] = eaccpf.getRecordId()
-            metadata['entityid'] = eaccpf.getEntityId()
-            metadata['localtype'] = eaccpf.getLocalType()
-            metadata['title'] = eaccpf.getTitle()
+            metadata['id'] = doc.getRecordId()
+            metadata['entityid'] = doc.getEntityId()
+            metadata['entitytype'] = doc.getEntityType()
+            metadata['localtype'] = doc.getLocalType()
+            metadata['title'] = doc.getTitle()
             # analyze the file
             analysis = {}
             analysis['the analysis date'] = datetime.now()
             conformance, errors = self._isConformantToEacCpfSchema(data)
             analysis['conforms to schema'] = conformance
-            analysis['has duplicate geocoordinate'] = False
-            analysis['has location'] = self._hasLocation(data)
-            analysis['has maintenance record'] = self._hasMaintenanceRecord(data)
-            analysis['has record identifier'] = self._hasRecordIdentifier(data)
-            analysis['has resource relations'] = self._hasResourceRelations(data)
-            analysis['the entity existence dates'] = self._getExistDates(data)
-            analysis['the entity type'] = self._getEntityType(data)
-            analysis['the entity local type'] = self._getEntityLocalType(data)
+            # look for duplicate locations
+            locations = doc.getLocations()
+            duplicate = False
+            for location in locations:
+                if 'placeentry' in location:
+                    place = location['placeentry']
+                    if place in entity_locations.keys():
+                        duplicate = True
+                        errors.append("Location '" + place + "' duplicates record '" + entity_locations[place] + "'")
+                    else:
+                        entity_locations[place] = metadata['id']
+            analysis['has duplicate place name'] = duplicate
+            analysis['has location'] = doc.hasLocation()
+            analysis['has maintenance record'] = doc.hasMaintenanceRecord()
+            analysis['has record identifier'] = True if doc.getRecordId() != None else False
+            analysis['has resource relations'] = doc.hasResourceRelations()
+            analysis['the entity existence dates'] = doc.getExistDates()
+            analysis['the entity type'] = doc.getEntityType()
+            analysis['the entity local type'] = doc.getLocalType()
             analysis['the parsing errors'] = errors
             analysis['the resource relations count'] = self._getResourceRelationsCount(data)
             analysis['the section content counts'] = self._getSectionContentCounts(data)
             analysis['the total content count'] = self._getTotalContentCount(data)
             # @todo check paths for validity
             # @todo field level quality checks
-            
-            # create an output file name
+            #  create an output file name
             output_filename = Filename.replace('xml','yml')
             # write analysis file to the output path
             report['metadata'] = metadata

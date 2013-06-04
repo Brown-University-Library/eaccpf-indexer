@@ -3,14 +3,6 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-__author__ = 'Davis Marques <dmarques@unimelb.edu.au>'
-
-import ConfigParser
-import argparse
-import datetime
-import logging
-import sys
-
 from Analyzer import Analyzer
 from Cleaner import Cleaner
 from Facter import Facter
@@ -18,6 +10,11 @@ from Crawler import Crawler
 from Grapher import Grapher
 from Poster import Poster
 from Transformer import Transformer
+import ConfigParser
+import argparse
+import datetime
+import logging
+import sys
 
 
 class Indexer(object):

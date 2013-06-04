@@ -144,6 +144,25 @@ class EacCpfUnitTests(unittest.TestCase):
             self.assertNotEqual(entitytype,None)
             self.assertEqual(entitytype,cases[case])
 
+    def test_getExistDates(self):
+        """
+        It should return the entity exist dates. If the exist date has a
+        standardDate attribute, the standardDate attribute value should be
+        return before the date value.
+        """
+        cases = {
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":("1900-01-01",None),
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":("1926-01-01",None),
+                 "http://www.findandconnect.gov.au/vic/eac/E000582.xml":("1942-01-01","1965-12-31")
+                 }
+        for case in cases:
+            doc = EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc,None)
+            fromDate, toDate = doc.getExistDates()
+            expectFromDate, expectToDate = cases[case]
+            self.assertEqual(fromDate,expectFromDate)
+            self.assertEqual(toDate,expectToDate)
+
     def test_getFunctions(self):
         """
         It should get the record functions.
@@ -151,7 +170,7 @@ class EacCpfUnitTests(unittest.TestCase):
         cases = {
                  "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": 4,
                  "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": 3,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml" : 4,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 4,
                  }
         for case in cases:
             doc = EacCpf(case,'http://www.example.com')
@@ -167,14 +186,33 @@ class EacCpfUnitTests(unittest.TestCase):
         cases = {
                  "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": "Organisation",
                  "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": "Organisation",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml" : "Organisation",
+                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": "Organisation",
                  }
         for case in cases:
             doc = EacCpf(case,'http://www.example.com')
             self.assertNotEqual(doc,None)
             localtype = doc.getLocalType()
             self.assertEqual(localtype,cases[case])
-            
+
+    def test_getLocations(self):
+        """
+        It should return a list of locations for the entity. If there are no
+        locations available then it should return an empty list. Each location
+        record should include the place name, and optional existence dates and
+        event description.
+        """
+        cases = {
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": 3,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": 0,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 1,
+                 }
+        for case in cases:
+            doc = EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc,None)
+            locations = doc.getLocations()
+            self.assertNotEqual(locations,None)
+            self.assertEqual(cases[case],len(locations))
+
     def test_getThumbnail(self):
         """
         It should return a digital object representing a thumbnail image for 
@@ -197,6 +235,23 @@ class EacCpfUnitTests(unittest.TestCase):
                     self.assertEqual(True, cases[filename])
                 else:
                     self.assertEqual(False, cases[filename])
+
+    def test_hasLocation(self):
+        """
+        It should return true if the record has a location entry, false
+        otherwise.
+        """
+        cases = {
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": True,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": False,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
+                 }
+        for case in cases:
+            doc = EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc,None)
+            location = doc.hasLocation()
+            self.assertNotEqual(location,None)
+            self.assertEqual(cases[case],location)
 
 if __name__ == "__main__":
     unittest.main()

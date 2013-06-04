@@ -3,13 +3,13 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from BeautifulSoup import BeautifulSoup
+from DigitalObject import DigitalObject
+from lxml import etree
 import logging
 import os
 import urllib2
 
-from BeautifulSoup import BeautifulSoup
-from DigitalObject import DigitalObject
-from lxml import etree
 
 class EacCpf(object):
     """
@@ -36,6 +36,7 @@ class EacCpf(object):
         else:
             self.data = self._load(Source)
         self.soup = BeautifulSoup(self.data)
+        self.xml = etree.fromstring(self.data)
 
     def _getTagString(self, Tag):
         """
@@ -46,7 +47,7 @@ class EacCpf(object):
             return str(Tag.string)
         return None
 
-    def _isEACCPF(self, Path):
+    def _isEACCPF(self):
         """
         Determines if the file at the specified path is EAC-CPF. 
         """
@@ -114,7 +115,7 @@ class EacCpf(object):
         """
         try:
             # if the resource contains a relationEntry with localType attribute = 'digitalObject'
-            entry = Record.find('relationentry',{'localtype':'digitalObject'})
+            entry = Record.find('relationentry', {'localtype':'digitalObject'})
             if entry:
                 if Thumbnail:
                     note = Record.find('descriptivenote')
@@ -174,11 +175,15 @@ class EacCpf(object):
         Get entity exist dates. Returns 'from date', 'to date' list.
         """
         try:
-            existdates = self.soup.find('existdates')
-            if existdates:
-                fromdate = existdates.find('daterange').find('fromdate')
-                todate = existdates.find('daterange').find('todate')
-                return fromdate, todate
+            existDates = self.soup.find('existdates')
+            if existDates:
+                fromDate = existDates.find('daterange').find('fromdate')
+                toDate = existDates.find('daterange').find('todate')
+                if fromDate and 'standarddate' in dict(fromDate.attrs):
+                    fromDate = fromDate['standarddate']
+                if toDate and 'standarddate' in dict(toDate.attrs):
+                    toDate = toDate['standarddate']
+                return fromDate, toDate
             return None
         except:
             return None
@@ -216,6 +221,36 @@ class EacCpf(object):
         except:
             return None
 
+    def getLocations(self):
+        """
+        Get locations.
+        """
+        try:
+            locations = []
+            chronItems = self.soup.findAll('chronitem')
+            for chronItem in chronItems:
+                dateRange = chronItem.find('daterange')
+                placeEntry = chronItem.find('placeentry')
+                event = chronItem.find('event')
+                item = {}
+                if dateRange:
+                    fromDate = dateRange.find('fromdate')
+                    toDate = dateRange.find('todate')
+                    if fromDate and 'standarddate' in dict(fromDate.attrs):
+                        fromDate = fromDate['standarddate']
+                    if toDate and 'standarddate' in dict(toDate.attrs):
+                        toDate = toDate['standarddate']
+                    item['fromDate'] = fromDate
+                    item['toDate'] = toDate
+                if placeEntry:
+                    item['placeentry'] = placeEntry.text
+                if event:
+                    item['event'] = event.text
+                locations.append(item)
+            return locations
+        except:
+            return []
+
     def getMetadataUrl(self):
         """
         Get the URL to the EAC-CPF document.
@@ -249,10 +284,14 @@ class EacCpf(object):
         Get the record identifier.
         @todo the identifier should come from the data rather than the file name
         """
-        filename = self.getFileName()
-        recordid, _ = os.path.splitext(filename)
-        return recordid
-    
+        try:
+            record = self.soup.find("recordid")
+            if record:
+                return record.text
+            return None
+        except:
+            return None
+
     def getResourceRelations(self):
         """
         Get list of resource relations.
@@ -315,6 +354,42 @@ class EacCpf(object):
         if objects and len(objects) > 0:
             return True
         return False
+
+    def hasLocation(self):
+        """
+        Determine if the record has a location.
+        """
+        locations = self.getLocations()
+        if len(locations) > 0:
+            return True
+        return False
+
+    def hasMaintenanceRecord(self):
+        """
+        Determine if the record has a maintenance history section.
+        """
+        try:
+            events = self.soup.find('control').find('maintenancehistory').findAll('maintenanceevent')
+            if len(events) > 0:
+                return True
+            return False
+        except:
+            return False
+
+    def hasResourceRelations(self):
+        """
+        Determine if the record has one or more resource relations.
+        """
+        try:
+            rels = self.soup.find('relations')
+            if rels:
+                cpf = rels.findAll('cpfrelation')
+                rrel = rels.findAll('resourcerelation')
+                if len(cpf) + len(rrel) > 0:
+                    return True
+            return False
+        except:
+            return False
 
     def write(self, Path):
         """
