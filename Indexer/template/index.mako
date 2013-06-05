@@ -34,8 +34,9 @@
                         <th>Title</th>
                         <th>EntityType</th>
                         <th>LocalType</th>
-                        <th>Maintenance Record</th>
-                        <th>Location</th>
+                        <th>Has Abstract</th>
+                        <th>Has Maintenance Record</th>
+                        <th>Has Location</th>
                         <th>Errors</th>
                         <th>Content</th>
                     </tr>
@@ -52,6 +53,13 @@
                     <td><a href='${record['metadata']['entityid']}'>${record['metadata']['title']}</a></td>
                     <td>${record['metadata']['entitytype']}</td>
                     <td>${record['metadata']['localtype']}</td>
+                    <td>
+                        % if record['analysis']['has abstract'] == True:
+                            <i class="icon-ok"></i>
+                        % else:
+                            <i class="icon-remove"></i>
+                        % endif
+                    </td>
                     <td>
                         % if record['analysis']['has maintenance record'] and record['analysis']['has maintenance record'] == True:
                             <i class="icon-ok"></i>

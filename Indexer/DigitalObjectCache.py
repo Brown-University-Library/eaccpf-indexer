@@ -114,6 +114,7 @@ class DigitalObjectCache(object):
         image to a new file. If the image's existing height and width are less 
         than those specified, then the original dimensions are maintained. 
         Return the new file path.
+        @todo check image format type
         """
         # set output file
         ext = self._getFileNameExtension(Source)

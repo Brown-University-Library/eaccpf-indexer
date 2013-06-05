@@ -171,6 +171,7 @@ class Analyzer(object):
                         errors.append("Location '" + place + "' duplicates record '" + entity_locations[place] + "'")
                     else:
                         entity_locations[place] = metadata['id']
+            analysis['has abstract'] = True if doc.getAbstract() != '' else False
             analysis['has duplicate place name'] = duplicate
             analysis['has location'] = doc.hasLocation()
             analysis['has maintenance record'] = doc.hasMaintenanceRecord()
