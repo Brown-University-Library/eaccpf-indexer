@@ -149,7 +149,7 @@ class Cleaner():
             Text = Text.replace(span,'')
         return Text
 
-    def clean(self, Source, Output):
+    def clean(self, Source, Output, UpdateOnly):
         '''
         Read all files from source directory, apply fixes to common errors in 
         documents. Write cleaned files to the output directory.
@@ -201,7 +201,7 @@ class Cleaner():
         data = self._convertHTMLEntitiesToUnicode(Data)
         return data
     
-    def run(self, Params):
+    def run(self, Params, UpdateOnly=False):
         '''
         Execute the clean operation using specified parameters.
         '''
@@ -214,4 +214,4 @@ class Cleaner():
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # clean data
-        self.clean(source,output)
+        self.clean(source, output, UpdateOnly)

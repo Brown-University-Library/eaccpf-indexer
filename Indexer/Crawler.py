@@ -3,13 +3,14 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from EacCpf import EacCpf
+from HtmlPage import HtmlPage
+from DigitalObjectCache import DigitalObjectCache
 import logging
 import os
 import shutil
 import time
-from EacCpf import EacCpf
-from HtmlPage import HtmlPage
-from DigitalObjectCache import DigitalObjectCache
+import yaml
 
 
 class Crawler(object):
@@ -27,7 +28,7 @@ class Crawler(object):
         self.cache = None
         self.logger = logging.getLogger('Crawler')
 
-    def _makeCache(self, Path):
+    def _clearOutput(self, Path):
         """
         Create a cache folder at the specified path if none exists.
         If the path already exists, delete all files within it.
@@ -37,12 +38,39 @@ class Crawler(object):
         os.makedirs(Path)
         self.logger.info("Cleared output folder at " + Path)
 
-    def crawlFileSystem(self, Source, Output, Actions, Base=None, Sleep=0.):
+    def _loadFileIndex(self, Path):
+        """
+        Load the file index from the specified path and return a dictionary
+        with the filename as the key and hash as the value.
+        """
+        if os.path.exists(Path + os.sep + "index.yml"):
+            infile = open(Path + os.sep + 'index.yml','r')
+            data = infile.read()
+            index = yaml.load(data)
+            infile.close()
+            return index
+        else:
+            return {}
+
+    def _writeFileIndex(self, Data, Path):
+        """
+        Write the file hash index to the specified path.
+        """
+        outfile = open(Path + os.sep + 'index.yml','w')
+        yaml.dump(Data,outfile)
+        outfile.close()
+
+    def crawlFileSystem(self, Source, Output, Actions, Base=None, Sleep=0., UpdateOnly=False):
         """
         Crawl file system for HTML files. Execute the specified indexing 
         actions on each file. Store files to the Output path. Sleep for the 
-        specified number of seconds after fetching data.
+        specified number of seconds after fetching data. The Update parameter
+        controls whether we should process the file only if it has changed.
         """
+        # load file hash index
+        index = self._loadFileIndex(Output)
+        if index == None:
+            index = {}
         # make sure that Base has a trailing /
         if not Base.endswith('/'):
             Base += '/'
@@ -61,6 +89,14 @@ class Crawler(object):
                         # if the page represents a record
                         html = HtmlPage(path + os.sep + filename, baseurl)
                         if html.hasRecord():
+                            # check to see if the file has changed since the last run
+                            # if it has, update the file hash record and continue processing
+                            if UpdateOnly:
+                                fileHash = html.getHash()
+                                if not filename in index or index[filename] != fileHash:
+                                    index[filename] = fileHash
+                                else:
+                                    break
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
                             src = Source + html.getEacCpfUrl().replace(Base, '')
@@ -86,8 +122,10 @@ class Crawler(object):
                         self.logger.warning("Could not complete processing for " + filename, exc_info=True)
                     finally:
                         time.sleep(Sleep)
+        # write the updated index file
+        self._writeFileIndex(index, Output)
 
-    def crawlWebSite(self, Source, Output, Actions, Sleep=0.):
+    def crawlWebSite(self, Source, Output, Actions, Sleep=0.0, UpdateOnly=False):
         """
         Crawl web site for HTML entity pages. When such a page is found, 
         execute the specified indexing actions. Store files to the output path.
@@ -95,7 +133,7 @@ class Crawler(object):
         """
         self.logger.warning("Web site crawling is not implemented")
 
-    def run(self, Params):
+    def run(self, Params, UpdateOnly=False):
         """
         Execute crawl operation using specified parameters.
         """
@@ -113,12 +151,13 @@ class Crawler(object):
             # digital object cache
         self.cache = DigitalObjectCache(cache, cacheurl)
         # create output folders
-        self._makeCache(output)
+        if not UpdateOnly:
+            self._clearOutput(output)
         # check state before starting
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         assert os.path.exists(cache), self.logger.warning("Cache path does not exist: " + cache)
         # start processing
         if 'http://' in source or 'https://' in source:
-            self.crawlWebSite(source, output, actions, sleep)
+            self.crawlWebSite(source, output, actions, sleep, UpdateOnly)
         else:
-            self.crawlFileSystem(source, output, actions, base, sleep)
+            self.crawlFileSystem(source, output, actions, base, sleep, UpdateOnly)

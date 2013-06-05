@@ -68,7 +68,7 @@ class Indexer(object):
         except Exception, e:
             self.logger.critical("Could not load the specified configuration file")
             sys.exit(e)
-        # get the update option
+        # set the update option
         if self.args.update:
             update = True
         else:
@@ -78,15 +78,15 @@ class Indexer(object):
         # if crawl
         if (self.args.crawl):
             crawler = Crawler()
-            crawler.run(self.config)
+            crawler.run(self.config, update)
         # if clean
         if (self.args.clean):
             cleaner = Cleaner()
-            cleaner.run(self.config)
+            cleaner.run(self.config, update)
         # if infer
         if (self.args.infer):
             factor = Facter()
-            factor.run(self.config)
+            factor.run(self.config, update)
         # if graph
         if (self.args.graph):
             grapher = Grapher()

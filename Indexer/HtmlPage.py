@@ -4,12 +4,14 @@ LICENSE file, which is part of this source code package.
 """
 
 from BeautifulSoup import BeautifulSoup
-
+import hashlib
 import logging
+import lxml
 import os
 import re
 import urllib2
 import urlparse
+
 
 class HtmlPage(object):
     """
@@ -162,7 +164,15 @@ class HtmlPage(object):
         """
         url = self.getUrl()
         return self._getFileName(url)
-    
+
+    def getHash(self):
+        """
+        Get a secure hash for the content in hexadecimal format.
+        """
+        h = hashlib.sha1()
+        h.update(self.data)
+        return h.hexdigest()
+
     def getHtmlIndexContent(self):
         """
         Extract HTML metadata and content for indexing.
