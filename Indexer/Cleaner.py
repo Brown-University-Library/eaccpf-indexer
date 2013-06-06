@@ -1,56 +1,72 @@
-'''
+"""
 This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
-'''
+"""
 
+from BeautifulSoup import BeautifulSoup
+from lxml import etree
 import htmlentitydefs
 import logging
 import os
 import re
-from BeautifulSoup import BeautifulSoup
-from lxml import etree
+import yaml
+
 
 class Cleaner():
-    '''
+    """
     Corrects common errors in XML files and validates the file against an 
     external schema.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Initialize the class
-        '''
+        """
+        self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger('Cleaner')
         
+    def _cleanOutput(self, Path):
+        """
+        Clear all files from the output folder. If the folder does not exist
+        then create it.
+        """
+        if os.path.exists(Path):
+            files = os.listdir(Path)
+            for filename in files:
+                os.remove(Path + os.sep + filename)
+        else:
+            os.makedirs(Path)
+        self.logger.info("Cleared output folder at " + Path)
+
     def _convertHTMLEntitiesToUnicode(self, text):
-        '''
+        """
         Converts HTML entities to unicode.  For example '&amp;' becomes '&'.
-        '''
+        """
         text = unicode(BeautifulSoup(text, convertEntities=BeautifulSoup.ALL_ENTITIES))
         return text    
 
     def _fixAttributeURLEncoding(self,xml):
-        '''
+        """
         Where an XML tag contains an attribute with a URL in it, any 
         ampersand characters in the URL must be escaped.
         @todo: finish implementing this method
         @see http://priyadi.net/archives/2004/09/26/ampersand-is-not-allowed-within-xml-attributes-value/
-        '''
+        """
         return xml
 
     def _fixDateFields(self,xml):
-        '''
+        """
         Convert dates into ISO format. Where a date is specified with a circa 
         indication, or 's to indicate a decade, expand the date into a range.
         @todo: finish implementing this method
-        '''
+        """
         return xml
    
-    def _fixEntityReferences(self, Text):
-        '''
+    def _fixEntityReferences(self, Html):
+        """
         Convert HTML entities into XML entities.
         @see http://effbot.org/zone/re-sub.htm#unescape-html
-        '''
+        """
         def fixup(m):
             Text = m.group(0)
             if Text[:2] == "&#":
@@ -68,14 +84,14 @@ class Cleaner():
                     Text = unichr(htmlentitydefs.name2codepoint[Text[1:-1]])
                 except KeyError:
                     pass
-            return Text # leave as is
-        return re.sub("&#?\w+;", fixup, Text)
+            return Text
+        return re.sub("&#?\w+;", fixup, Html)
 
     def _getSourceAndReferrerValues(self, Path):
-        '''
+        """
         Get source, metadata and presentation URL values from comment embedded
         in the document.
-        '''
+        """
         infile = open(Path,'r')
         lines = infile.readlines()
         infile.close()
@@ -93,24 +109,23 @@ class Cleaner():
         # default case
         return ('', '', '')
     
-    def _makeCache(self, path):
-        '''
-        Create a cache folder at the specified path if none exists.
-        If the path already exists, delete all files.
-        '''
-        if not os.path.exists(path):
-            os.makedirs(path)
-            self.logger.info("Created output folder at " + path)
-        else:
-            files = os.listdir(path)
-            for afile in files:
-                os.remove(path + os.sep + afile)
-            self.logger.info("Cleared output folder at " + path)
-    
+    def _loadFileHashIndex(self, Path):
+        """
+        Load the file hash index from the specified path.
+        """
+        if os.path.exists(Path + os.sep + self.hashIndexFilename):
+            infile = open(Path + os.sep + self.hashIndexFilename,'r')
+            data = infile.read()
+            index = yaml.load(data)
+            infile.close()
+            if index != None:
+                return index
+        return {}
+
     def _removeEmptyDateFields(self, Text):
-        '''
+        """
         Remove any empty fromDate or toDate tags.
-        '''
+        """
         xml = etree.XML(Text)
         tree = etree.ElementTree(xml)
         for item in tree.findall('//fromDate'):
@@ -122,9 +137,9 @@ class Cleaner():
         return etree.tostring(xml,pretty_print=True)
     
     def _removeEmptyStandardDateFields(self, Text):
-        '''
+        """
         Remove any fromDate or toDate tags that have empty standardDate attributes.
-        '''
+        """
         xml = etree.XML(Text)
         tree = etree.ElementTree(xml)
         for item in tree.findall('//fromDate'):
@@ -138,9 +153,9 @@ class Cleaner():
         return etree.tostring(xml,pretty_print=True)
     
     def _removeSpanTags(self, Text):
-        '''
+        """
         Remove all <span> and </span> tags from the markup.
-        '''
+        """
         # replace simple cases first
         Text = Text.replace("<span>","")
         Text = Text.replace("</span>","")
@@ -149,11 +164,52 @@ class Cleaner():
             Text = Text.replace(span,'')
         return Text
 
-    def clean(self, Source, Output, UpdateOnly):
-        '''
+    def _writeFileHashIndex(self, Data, Path):
+        """
+        Write the file hash index to the specified path.
+        """
+        outfile = open(Path + os.sep + self.hashIndexFilename,'w')
+        yaml.dump(Data,outfile)
+        outfile.close()
+
+    def cleanFile(self, Source, Output):
+        """
+        Read the input file, apply fixes to common errors, then write the file
+        to the output.
+        """
+        files = os.listdir(Source)
+        for filename in files:
+            try:
+                # read data
+                infile = open(Source + os.sep + filename,'r')
+                data = infile.read()
+                infile.close()
+                # fix problems
+                if filename.endswith(".xml"):
+                    # the source/referrer values comment gets deleted by the XML
+                    # parser, so we'll save it here temporarily while we do our cleanup
+                    src, meta, pres = self._getSourceAndReferrerValues(Source + os.sep + filename)
+                    data = self.fixEacCpf(data)
+                    # write source/referrer comment back at the end of the file
+                    data += '\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' % {"source":src, "metadata": meta, "presentation":pres}
+                elif filename.endswith(".htm") or filename.endswith(".html"):
+                    data = self.fixHtml(data)
+                else:
+                    pass
+                # write data to specified file in the output directory.
+                outfile_path = Output + os.sep + filename
+                outfile = open(outfile_path,'w')
+                outfile.write(data)
+                outfile.close()
+                self.logger.info("Stored document " + filename)
+            except Exception:
+                self.logger.warning("Could not complete processing on " + filename, exc_info=True)
+
+    def clean(self, Source, Output, Update):
+        """
         Read all files from source directory, apply fixes to common errors in 
         documents. Write cleaned files to the output directory.
-        '''
+        """
         files = os.listdir(Source)
         for filename in files:
             try:
@@ -183,9 +239,9 @@ class Cleaner():
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
         
     def fixEacCpf(self, Data):
-        '''
+        """
         Clean problems that are typical of EAC-CPF files.
-        '''
+        """
         # data = self._fixEntityReferences(data)
         data = self._fixAttributeURLEncoding(Data)
         data = self._fixDateFields(data)
@@ -195,23 +251,47 @@ class Cleaner():
         return data
     
     def fixHtml(self, Data):
-        '''
+        """
         Clean typical problems found in HTML files.
-        '''
+        """
         data = self._convertHTMLEntitiesToUnicode(Data)
         return data
     
-    def run(self, Params, UpdateOnly=False):
-        '''
+    def run(self, Params, Update=False):
+        """
         Execute the clean operation using specified parameters.
-        '''
+        """
         # get parameters
         source = Params.get("clean","input")
         output = Params.get("clean","output")
-        # make output directory
-        self._makeCache(output)
+        # load filename to hash index. we use this to keep track of which files
+        # have changed
+        hashIndex = {}
+        if Update:
+            hashIndex = self._loadFileHashIndex(output)
+        # clear output folder
+        if not Update:
+            self._cleanOutput(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # clean data
-        self.clean(source, output, UpdateOnly)
+        records = self.clean(source, output, Update)
+        # remove records from the index that were deleted in the source
+        if Update:
+            self.logger.info("Clearing orphaned records from the file hash index")
+            rtd = []
+            for filename in hashIndex.keys():
+                if filename not in records:
+                    rtd.append(filename)
+            for filename in rtd:
+                del hashIndex[filename]
+        # remove files from the output that are not in the index
+        if Update:
+            self.logger.info("Clearing orphaned files from the output folder")
+            files = os.listdir(output)
+            for filename in files:
+                if not filename in hashIndex.keys():
+                    os.remove(output + os.sep + filename)
+        # write the updated file hash index
+        self._writeFileHashIndex(hashIndex, output)

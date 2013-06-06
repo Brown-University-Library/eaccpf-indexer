@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 from BeautifulSoup import BeautifulSoup
 from DigitalObject import DigitalObject
 from lxml import etree
+import hashlib
 import logging
 import os
 import urllib2
@@ -211,6 +212,14 @@ class EacCpf(object):
                 pass
         return result
     
+    def getHash(self):
+        """
+        Get a secure hash for the content in hexadecimal format.
+        """
+        h = hashlib.sha1()
+        h.update(self.data)
+        return h.hexdigest()
+
     def getLocalType(self):
         """
         Get the local type.
