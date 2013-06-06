@@ -18,7 +18,7 @@ class DigitalObjectCache(object):
     object.
     """
 
-    def __init__(self, Path, BaseUrl='', init=False):
+    def __init__(self, Path, BaseUrl='', Init=False):
         """
         Constructor
         """
@@ -28,7 +28,10 @@ class DigitalObjectCache(object):
             self.base = BaseUrl
         else:
             self.base = BaseUrl + '/'
-        # Create the parent directories for the storage path if they don't 
+        # delete the existing path if it exists
+        if Init:
+            shutil.rmtree(Path)
+        # Create the parent directories for the storage path if they don't
         # exist. If you create the pairtree folder itself, it requires the 
         # pairtree metadata files in it before getting the put. Otherwise, it 
         # will throw a pairtree.storage_exceptions.NotAPairtreeStoreException
@@ -93,20 +96,6 @@ class DigitalObjectCache(object):
         if Path != None and ("http:" in Path or "https:" in Path):
             return True
         return False
-
-    def _makeCache(self, Path, init=False):
-        """
-        Create a cache folder at the specified Path if none exists. If the Path 
-        already exists, delete all files.
-        """
-        if not os.path.exists(Path):
-            os.makedirs(Path)
-            self.logger.info("Created cache folder at " + Path)
-        else:
-            if (init):
-                self._rmdir(Path)
-                os.makedirs(Path)
-                self.logger.info("Cleared cache folder at " + Path)
 
     def _resizeImageAndSaveToNewFile(self, Source, Width, Height):
         """

@@ -101,7 +101,7 @@ class Crawler(object):
                             # if the file hash has not changed since the last run then skip it
                             if UpdateOnly:
                                 if record_filename in Index and Index[record_filename] == fileHash:
-                                    self.logger.info("Document " + record_filename + " has not changed since last update")
+                                    self.logger.info("No change since last update " + record_filename)
                                     continue
                             Index[record_filename] = fileHash
                             if 'eaccpf' in Actions:
@@ -147,11 +147,12 @@ class Crawler(object):
         source = Params.get("crawl", "input")
         output = Params.get("crawl", "output")
         sleep = Params.getfloat("crawl", "sleep")
-        # digital object cache
-        self.cache = DigitalObjectCache(cache, cacheUrl)
-        # clear output folder
-        if not Update:
+        # clear output folder and cache
+        if Update:
+            self.cache = DigitalObjectCache(cache, cacheUrl)
+        else:
             self._clearOutput(output)
+            self.cache = DigitalObjectCache(cache, cacheUrl, Init=True)
         # check state before starting
         assert os.path.exists(source), self.logger.warning("Input path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)

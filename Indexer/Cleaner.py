@@ -5,6 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from BeautifulSoup import BeautifulSoup
 from lxml import etree
+import hashlib
 import htmlentitydefs
 import logging
 import os
@@ -20,7 +21,7 @@ class Cleaner():
 
     def __init__(self):
         """
-        Initialize the class
+        Initialize
         """
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger('Cleaner')
@@ -40,7 +41,7 @@ class Cleaner():
 
     def _convertHTMLEntitiesToUnicode(self, text):
         """
-        Converts HTML entities to unicode.  For example '&amp;' becomes '&'.
+        Converts HTML entities to unicode. For example '&amp;' becomes '&'.
         """
         text = unicode(BeautifulSoup(text, convertEntities=BeautifulSoup.ALL_ENTITIES))
         return text    
@@ -184,6 +185,7 @@ class Cleaner():
                 infile = open(Source + os.sep + filename,'r')
                 data = infile.read()
                 infile.close()
+                filehash = hashlib.sha1(data).hexdigest()
                 # fix problems
                 if filename.endswith(".xml"):
                     # the source/referrer values comment gets deleted by the XML
@@ -205,18 +207,34 @@ class Cleaner():
             except Exception:
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
 
-    def clean(self, Source, Output, Update):
+    def clean(self, Source, Output, HashIndex, Update):
         """
         Read all files from source directory, apply fixes to common errors in 
         documents. Write cleaned files to the output directory.
         """
+        # list of records that have been discovered
+        records = []
+        # for each file in the source folder
         files = os.listdir(Source)
         for filename in files:
             try:
+                if filename.startswith('.'):
+                    continue
+                else:
+                    records.append(filename)
                 # read data
                 infile = open(Source + os.sep + filename,'r')
                 data = infile.read()
-                infile.close()        
+                infile.close()
+                fileHash = hashlib.sha1(data).hexdigest()
+                # if we are doing an update and the file has not changed then
+                # skip it
+                if Update:
+                    if filename in HashIndex and HashIndex[filename] == fileHash:
+                        self.logger.info("No change since last update " + filename)
+                        continue
+                # record the file hash
+                HashIndex[filename] = fileHash
                 # fix problems
                 if filename.endswith(".xml"):
                     # the source/referrer values comment gets deleted by the XML 
@@ -237,7 +255,9 @@ class Cleaner():
                 self.logger.info("Stored document " + filename)
             except Exception:
                 self.logger.warning("Could not complete processing on " + filename, exc_info=True)
-        
+        # return the list of processed records
+        return records
+
     def fixEacCpf(self, Data):
         """
         Clean problems that are typical of EAC-CPF files.
@@ -264,8 +284,8 @@ class Cleaner():
         # get parameters
         source = Params.get("clean","input")
         output = Params.get("clean","output")
-        # load filename to hash index. we use this to keep track of which files
-        # have changed
+        # load filename to hash index. we use this to keep track of which
+        # files have changed
         hashIndex = {}
         if Update:
             hashIndex = self._loadFileHashIndex(output)
@@ -276,7 +296,7 @@ class Cleaner():
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # clean data
-        records = self.clean(source, output, Update)
+        records = self.clean(source, output, hashIndex, Update)
         # remove records from the index that were deleted in the source
         if Update:
             self.logger.info("Clearing orphaned records from the file hash index")
