@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 from BeautifulSoup import BeautifulSoup
 from DigitalObject import DigitalObject
 from lxml import etree
+import Utils
 import hashlib
 import logging
 import os
@@ -198,6 +199,39 @@ class EacCpf(object):
             return parts[-1]
         return self.source
     
+    def getFreeText(self):
+        """
+        Get content from free text fields.
+        """
+        freetext = ''
+        # /eac-cpf/identity/nameEntry/part
+        nameentry = self.soup.find('nameentry')
+        if nameentry:
+            parts = nameentry.findAll('part')
+            if parts:
+                for p in parts:
+                    freetext += self._cleanText(p.getString())
+        # /eac-cpf/description/biogHist/abstract
+        # /eac-cpf/description/biogHist/p
+        bioghist = self.soup.find('bioghist')
+        if bioghist:
+            abstract = bioghist.find('abstract')
+            if abstract:
+                freetext += self._cleanText(abstract.getText())
+            ps = bioghist.findAll('p')
+            if ps:
+                for p in ps:
+                    freetext += self._cleanText(p.getString())
+        # /eac-cpf/description/function/descNote/p
+        function = self.soup.find('function')
+        if function:
+            functions = function.findAll('p')
+            if functions:
+                for f in functions:
+                    freetext += self._cleanText(f.getString())
+        # return
+        return freetext
+
     def getFunctions(self):
         """
         Get the functions.
@@ -234,31 +268,33 @@ class EacCpf(object):
         """
         Get locations.
         """
+        locations = []
         try:
-            locations = []
             chronItems = self.soup.findAll('chronitem')
             for chronItem in chronItems:
+                location = {}
                 dateRange = chronItem.find('daterange')
                 placeEntry = chronItem.find('placeentry')
                 event = chronItem.find('event')
-                item = {}
                 if dateRange:
                     fromDate = dateRange.find('fromdate')
                     toDate = dateRange.find('todate')
                     if fromDate and 'standarddate' in dict(fromDate.attrs):
                         fromDate = fromDate['standarddate']
+                        fromDate = Utils.fixIncorrectDateEncoding(fromDate)
                     if toDate and 'standarddate' in dict(toDate.attrs):
                         toDate = toDate['standarddate']
-                    item['fromDate'] = fromDate
-                    item['toDate'] = toDate
+                        toDate = Utils.fixIncorrectDateEncoding(toDate)
+                    location['fromDate'] = str(fromDate)
+                    location['toDate'] = str(toDate)
                 if placeEntry:
-                    item['placeentry'] = placeEntry.text
+                    location['placeentry'] = str(placeEntry.text)
                 if event:
-                    item['event'] = event.text
-                locations.append(item)
-            return locations
+                    location['event'] = str(event.text)
+                locations.append(location)
         except:
-            return []
+            pass
+        return locations
 
     def getMetadataUrl(self):
         """

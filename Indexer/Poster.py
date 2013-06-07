@@ -5,9 +5,9 @@ LICENSE file, which is part of this source code package.
 
 from httplib2 import Http
 from lxml import etree
-
 import logging
-import os 
+import os
+
 
 class IndexingError(Exception):
     
@@ -18,13 +18,11 @@ class IndexingError(Exception):
     def __str__(self):
         return repr(self.status)
 
+
 class Poster(object):
     """
     Posts Solr Input Documents to a Solr core. Performs delete, commit and 
     optimize commands.
-    @author: Davis Marques
-    @author: Marco La Rosa
-    @author: ActiveState
     @see: http://code.activestate.com/recipes/577909-basic-interface-to-apache-solr/
     """
 

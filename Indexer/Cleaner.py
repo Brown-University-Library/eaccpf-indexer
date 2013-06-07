@@ -5,15 +5,15 @@ LICENSE file, which is part of this source code package.
 
 from BeautifulSoup import BeautifulSoup
 from lxml import etree
+import Utils
 import hashlib
 import htmlentitydefs
 import logging
 import os
 import re
-import yaml
 
 
-class Cleaner():
+class Cleaner(object):
     """
     Corrects common errors in XML files and validates the file against an 
     external schema.
@@ -26,42 +26,29 @@ class Cleaner():
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger('Cleaner')
         
-    def _cleanOutput(self, Path):
-        """
-        Clear all files from the output folder. If the folder does not exist
-        then create it.
-        """
-        if os.path.exists(Path):
-            files = os.listdir(Path)
-            for filename in files:
-                os.remove(Path + os.sep + filename)
-        else:
-            os.makedirs(Path)
-        self.logger.info("Cleared output folder at " + Path)
-
-    def _convertHTMLEntitiesToUnicode(self, text):
+    def _convertHTMLEntitiesToUnicode(self, Text):
         """
         Converts HTML entities to unicode. For example '&amp;' becomes '&'.
         """
-        text = unicode(BeautifulSoup(text, convertEntities=BeautifulSoup.ALL_ENTITIES))
-        return text    
+        Text = unicode(BeautifulSoup(Text, convertEntities=BeautifulSoup.ALL_ENTITIES))
+        return Text
 
-    def _fixAttributeURLEncoding(self,xml):
+    def _fixAttributeURLEncoding(self, Xml):
         """
         Where an XML tag contains an attribute with a URL in it, any 
         ampersand characters in the URL must be escaped.
         @todo: finish implementing this method
         @see http://priyadi.net/archives/2004/09/26/ampersand-is-not-allowed-within-xml-attributes-value/
         """
-        return xml
+        return Xml
 
-    def _fixDateFields(self,xml):
+    def _fixDateFields(self, Xml):
         """
         Convert dates into ISO format. Where a date is specified with a circa 
         indication, or 's to indicate a decade, expand the date into a range.
         @todo: finish implementing this method
         """
-        return xml
+        return Xml
    
     def _fixEntityReferences(self, Html):
         """
@@ -110,19 +97,6 @@ class Cleaner():
         # default case
         return ('', '', '')
     
-    def _loadFileHashIndex(self, Path):
-        """
-        Load the file hash index from the specified path.
-        """
-        if os.path.exists(Path + os.sep + self.hashIndexFilename):
-            infile = open(Path + os.sep + self.hashIndexFilename,'r')
-            data = infile.read()
-            index = yaml.load(data)
-            infile.close()
-            if index != None:
-                return index
-        return {}
-
     def _removeEmptyDateFields(self, Text):
         """
         Remove any empty fromDate or toDate tags.
@@ -165,48 +139,6 @@ class Cleaner():
             Text = Text.replace(span,'')
         return Text
 
-    def _writeFileHashIndex(self, Data, Path):
-        """
-        Write the file hash index to the specified path.
-        """
-        outfile = open(Path + os.sep + self.hashIndexFilename,'w')
-        yaml.dump(Data,outfile)
-        outfile.close()
-
-    def cleanFile(self, Source, Output):
-        """
-        Read the input file, apply fixes to common errors, then write the file
-        to the output.
-        """
-        files = os.listdir(Source)
-        for filename in files:
-            try:
-                # read data
-                infile = open(Source + os.sep + filename,'r')
-                data = infile.read()
-                infile.close()
-                filehash = hashlib.sha1(data).hexdigest()
-                # fix problems
-                if filename.endswith(".xml"):
-                    # the source/referrer values comment gets deleted by the XML
-                    # parser, so we'll save it here temporarily while we do our cleanup
-                    src, meta, pres = self._getSourceAndReferrerValues(Source + os.sep + filename)
-                    data = self.fixEacCpf(data)
-                    # write source/referrer comment back at the end of the file
-                    data += '\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' % {"source":src, "metadata": meta, "presentation":pres}
-                elif filename.endswith(".htm") or filename.endswith(".html"):
-                    data = self.fixHtml(data)
-                else:
-                    pass
-                # write data to specified file in the output directory.
-                outfile_path = Output + os.sep + filename
-                outfile = open(outfile_path,'w')
-                outfile.write(data)
-                outfile.close()
-                self.logger.info("Stored document " + filename)
-            except Exception:
-                self.logger.warning("Could not complete processing on " + filename, exc_info=True)
-
     def clean(self, Source, Output, HashIndex, Update):
         """
         Read all files from source directory, apply fixes to common errors in 
@@ -223,9 +155,7 @@ class Cleaner():
                 else:
                     records.append(filename)
                 # read data
-                infile = open(Source + os.sep + filename,'r')
-                data = infile.read()
-                infile.close()
+                data = Utils.read(Source, filename)
                 fileHash = hashlib.sha1(data).hexdigest()
                 # if we are doing an update and the file has not changed then
                 # skip it
@@ -288,10 +218,10 @@ class Cleaner():
         # files have changed
         hashIndex = {}
         if Update:
-            hashIndex = self._loadFileHashIndex(output)
+            hashIndex = Utils.loadFileHashIndex(output)
         # clear output folder
         if not Update:
-            self._cleanOutput(output)
+            Utils.cleanOutputFolder(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
@@ -300,18 +230,10 @@ class Cleaner():
         # remove records from the index that were deleted in the source
         if Update:
             self.logger.info("Clearing orphaned records from the file hash index")
-            rtd = []
-            for filename in hashIndex.keys():
-                if filename not in records:
-                    rtd.append(filename)
-            for filename in rtd:
-                del hashIndex[filename]
+            Utils.purgeIndex(records, hashIndex)
         # remove files from the output that are not in the index
         if Update:
             self.logger.info("Clearing orphaned files from the output folder")
-            files = os.listdir(output)
-            for filename in files:
-                if not filename in hashIndex.keys():
-                    os.remove(output + os.sep + filename)
+            Utils.purgeFolder(output, hashIndex)
         # write the updated file hash index
-        self._writeFileHashIndex(hashIndex, output)
+        Utils.writeFileHashIndex(hashIndex, output)

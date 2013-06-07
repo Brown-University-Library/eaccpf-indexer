@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 import unittest
 from Facter import Facter
 
+
 class FacterUnitTests(unittest.TestCase):
     """
     Unit tests for Facter module.

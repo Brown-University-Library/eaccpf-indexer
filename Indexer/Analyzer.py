@@ -3,17 +3,18 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-import inspect
-import logging
-import os
-import shutil
-import yaml
 from BeautifulSoup import BeautifulSoup
 from EacCpf import EacCpf
 from StringIO import StringIO
 from datetime import datetime
 from mako.template import Template
 from lxml import etree
+import Utils
+import inspect
+import logging
+import os
+import shutil
+
 
 class Analyzer(object):
     """
@@ -39,10 +40,9 @@ class Analyzer(object):
             xmlschema = etree.XMLSchema(schema_root)
             infile.close()
             self.logger.info("Loaded schema file " + schema)
+            self.parser = etree.XMLParser(schema=xmlschema)
         except Exception:
             self.logger.critical("Could not load schema file " + schema)
-        # create validating parser
-        self.parser = etree.XMLParser(schema=xmlschema)
         # dictionary for geocoordinates
         self.coordinates = {}
 
@@ -53,7 +53,7 @@ class Analyzer(object):
         soup = BeautifulSoup(Data)
         relations = soup.find('relations')
         return relations.findChildren()
-    
+
     def _getResourceRelationsCount(self, Data):
         """
         Get the number of resource relations in the document.
@@ -140,10 +140,6 @@ class Analyzer(object):
         Analyze EAC-CPF file for quality indicators and changes. Write a YAML
         file with analysis data to the output path.
         """
-        # read the input file
-        infile = open(Source + os.sep + Filename,'r')
-        data = infile.read()
-        infile.close()
         try:
             report = {}
             entity_locations = {}
@@ -158,7 +154,7 @@ class Analyzer(object):
             # analyze the file
             analysis = {}
             analysis['the analysis date'] = datetime.now()
-            conformance, errors = self._isConformantToEacCpfSchema(data)
+            conformance, errors = self._isConformantToEacCpfSchema(doc.data) # @todo move to eaccpf
             analysis['conforms to schema'] = conformance
             # look for duplicate locations
             locations = doc.getLocations()
@@ -181,19 +177,16 @@ class Analyzer(object):
             analysis['the entity type'] = doc.getEntityType()
             analysis['the entity local type'] = doc.getLocalType()
             analysis['the parsing errors'] = errors
-            analysis['the resource relations count'] = self._getResourceRelationsCount(data)
-            analysis['the section content counts'] = self._getSectionContentCounts(data)
-            analysis['the total content count'] = self._getTotalContentCount(data)
+            analysis['the resource relations count'] = self._getResourceRelationsCount(doc.data) # @todo move to eaccpf
+            analysis['the section content counts'] = self._getSectionContentCounts(doc.data) # @todo move to eaccpf
+            analysis['the total content count'] = self._getTotalContentCount(doc.data) # @todo move to eaccpf
             # @todo check paths for validity
             # @todo field level quality checks
-            #  create an output file name
-            output_filename = Filename.replace('xml','yml')
             # write analysis file to the output path
             report['metadata'] = metadata
             report['analysis'] = analysis
-            outfile = open(Output + os.sep + output_filename, 'w')
-            outfile.write(yaml.dump(report, indent=4))
-            outfile.close()
+            output_filename = Filename.replace('xml','yml')
+            Utils.writeYaml(Output, output_filename, report)
             self.logger.info("Wrote analysis to " + output_filename)
         except:
             self.logger.warning("Could not complete analysis for " + Filename, exc_info=True)
@@ -223,40 +216,31 @@ class Analyzer(object):
         records = []
         files = os.listdir(Source)
         files.sort()
-        # load analysis records
+        # load analysis data
         for filename in files:
-            try:
-                path = Source + os.sep + filename
-                if self._isAnalysisFile(path):
-                    infile = open(path,'r')
-                    data = infile.read()
-                    record = yaml.load(data)
-                    infile.close()
-                    records.append(record)
-            except:
-                self.logger.warning("Could not process analysis file " + filename, exc_info=True)
+            if filename.endswith(".yml"):
+                record = Utils.readYaml(Source, filename)
+                records.append(record)
         # load the template and update contents
         try:
             template = Template(filename=templatefile)
-            reportdate = datetime.now().strftime("%B %d, %Y")
-            data = template.render(date=reportdate,records=records,source=Source)
+            reportDate = datetime.now().strftime("%B %d, %Y")
+            data = template.render(date=reportDate,records=records,source=Source)
             # write the report
-            outfile = open(Output + os.sep + 'index.html','w')
-            outfile.write(data)
-            outfile.close()
+            Utils.write(Output, 'index.html', data)
             self.logger.info("Wrote HTML report file")
         except:
             self.logger.warning("Could not write HTML report file", exc_info=True)
 
-    def run(self, params):
+    def run(self, Params):
         """
         Execute analysis operations using specified parameters.
         """
         # get parameters
-        sources = params.get("analyze","inputs").split(',')
-        output = params.get("analyze","output")
+        sources = Params.get("analyze","inputs").split(',')
+        output = Params.get("analyze","output")
         # make output folder
-        self._makeCache(output)
+        Utils.cleanOutputFolder(output)
         # check state
         for source in sources:
             assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)

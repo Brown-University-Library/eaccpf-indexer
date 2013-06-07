@@ -3,16 +3,13 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-__author__ = 'Davis Marques <dmarques@unimelb.edu.au>'
-
+from EacCpf import EacCpf
+import Utils
 import logging
 import matplotlib.pyplot as plt
 import networkx as nx
 import os
-import shutil
 import yaml
-
-from EacCpf import EacCpf
 
 
 class Grapher(object):
@@ -31,19 +28,7 @@ class Grapher(object):
         """
         Constructor
         """
-        # logger
         self.logger = logging.getLogger('Grapher')
-        pass
-
-    def _makeCache(self, Path):
-        """
-        Create a cache folder at the specified path if none exists.
-        If the path already exists, delete all files within it.
-        """
-        if os.path.exists(Path):
-            shutil.rmtree(Path)
-        os.makedirs(Path)
-        self.logger.info("Cleared output folder at " + Path)
 
     def graph(self, Source, Output):
         """
@@ -85,19 +70,19 @@ class Grapher(object):
         """
         pass
 
-    def run(self, params):
+    def run(self, Params, Update):
         """
         Execute analysis operations using specified parameters.
         """
         # get parameters
-        source = params.get("graph","input")
-        output = params.get("graph","output")
+        source = Params.get("graph","input")
+        output = Params.get("graph","output")
         try:
-            gexf = params.get("graph","graphmodel")
+            gexf = Params.get("graph","graphmodel")
         except:
             gexf = None
         # make output folder
-        self._makeCache(output)
+        Utils.cleanOutputFolder(output)
         # check state
         assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)

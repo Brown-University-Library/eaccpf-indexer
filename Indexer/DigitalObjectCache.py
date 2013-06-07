@@ -3,14 +3,14 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from pairtree import PairtreeStorageFactory
 import Image
-import hashlib
+import Utils
 import logging
 import os
 import shutil
 import tempfile
 import urllib2
-from pairtree import PairtreeStorageFactory
 
 class DigitalObjectCache(object):
     """
@@ -46,42 +46,6 @@ class DigitalObjectCache(object):
             self.logger.critical("Could not initialize the image cache")
             raise
 
-    def _clearFiles(self, path):
-        """
-        Delete all files within the specified path.
-        """
-        files = os.listdir(path)
-        for filename in files:
-            os.remove(path + os.sep + filename)
-
-    def _getFileName(self, Url):
-        """
-        Get the filename from the specified URI or path.
-        """
-        if "/" in Url:
-            parts = Url.split("/")
-            return parts[-1]
-        return Url
-
-    def _getFileNameExtension(self, Filename):
-        """
-        Get the filename extension. If an extension is not found, return None.
-        """
-        if "." in Filename:
-            parts = Filename.split(".")
-            return parts[-1]
-        return None
-    
-    def _getHash(self, Path):
-        """
-        Get a hash of the specified file.
-        """
-        hasher = hashlib.md5()
-        infile = open(Path,'r')
-        hasher.update(infile.read())
-        infile.close()
-        return hasher.hexdigest()
-    
     def _getPathRelativeToCacheRoot(self, Path):
         """
         Get the path relative to the cache root.
@@ -89,14 +53,6 @@ class DigitalObjectCache(object):
         Path = Path.replace(self.path,'')
         return Path.replace('/pairtree_root/','')
     
-    def _isUrl(self, Path):
-        """
-        Determine if the source is a URL or a file system path.
-        """
-        if Path != None and ("http:" in Path or "https:" in Path):
-            return True
-        return False
-
     def _resizeImageAndSaveToNewFile(self, Source, Width, Height):
         """
         Resize the image to the specified height and width and save the updated
@@ -106,7 +62,7 @@ class DigitalObjectCache(object):
         @todo check image format type
         """
         # set output file
-        ext = self._getFileNameExtension(Source)
+        ext = Utils.getFileNameExtension(Source)
         filepath = tempfile.mktemp(suffix="." + ext)
         # load the image
         im = Image.open(Source)
@@ -125,20 +81,6 @@ class DigitalObjectCache(object):
         im.save(filepath, fmt)
         # return new image path
         return filepath
-
-    def _rmdir(self,d):
-        """
-        Recursively delete a directory.
-        @author ActiveState
-        @see http://code.activestate.com/recipes/552732-remove-directories-recursively/
-        """
-        if (os.path.exists(d)):
-            for path in (os.path.join(d,f) for f in os.listdir(d)):
-                if os.path.isdir(path): 
-                    self._rmdir(path)
-                else:
-                    os.unlink(path)
-            os.rmdir(d)
 
     def get(self, Id):
         """url
@@ -169,11 +111,11 @@ class DigitalObjectCache(object):
         """
         # source file name
         source = DigitalObject.getSourceUrl()
-        filename = self._getFileName(source)
-        ext = self._getFileNameExtension(filename)
+        filename = Utils.getFileName(source)
+        ext = Utils.getFileNameExtension(filename)
         # write source object to temporary file
         digitalObject = tempfile.mktemp(suffix="." + ext)
-        if (self._isUrl(source)):
+        if (Utils.isUrl(source)):
             # replace spaces in URL before downloading
             url = source.replace(' ','%20')
             # download file
@@ -185,7 +127,7 @@ class DigitalObjectCache(object):
         else:
             shutil.copyfile(source, digitalObject)
         # generate an id for the object
-        cacheid = self._getHash(digitalObject)
+        cacheid = Utils.getFileHash(digitalObject)
         # determine the URL for the cache root
         path = self.storage._id_to_dirpath(cacheid) + os.sep
         path = self._getPathRelativeToCacheRoot(path)

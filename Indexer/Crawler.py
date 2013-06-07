@@ -3,13 +3,13 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from DigitalObjectCache import DigitalObjectCache
 from EacCpf import EacCpf
 from HtmlPage import HtmlPage
-from DigitalObjectCache import DigitalObjectCache
+import Utils
 import logging
 import os
 import time
-import yaml
 
 
 class Crawler(object):
@@ -28,41 +28,7 @@ class Crawler(object):
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger('Crawler')
 
-    def _clearOutput(self, Path):
-        """
-        Clear all files from the output folder. If the folder does not exist
-        then create it.
-        """
-        if os.path.exists(Path):
-            files = os.listdir(Path)
-            for filename in files:
-                os.remove(Path + os.sep + filename)
-        else:
-            os.makedirs(Path)
-        self.logger.info("Cleared output folder at " + Path)
-
-    def _loadFileHashIndex(self, Path):
-        """
-        Load the file hash index from the specified path.
-        """
-        if os.path.exists(Path + os.sep + self.hashIndexFilename):
-            infile = open(Path + os.sep + self.hashIndexFilename,'r')
-            data = infile.read()
-            index = yaml.load(data)
-            infile.close()
-            if index != None:
-                return index
-        return {}
-
-    def _writeFileHashIndex(self, Data, Path):
-        """
-        Write the file hash index to the specified path.
-        """
-        outfile = open(Path + os.sep + self.hashIndexFilename,'w')
-        yaml.dump(Data,outfile)
-        outfile.close()
-
-    def crawlFileSystem(self, Source, Output, Actions, Index, Base=None, Sleep=0.0, UpdateOnly=False):
+    def crawlFileSystem(self, Source, Output, Actions, HashIndex, Base=None, Sleep=0.0, UpdateOnly=False):
         """
         Crawl file system for HTML files. Execute the specified indexing 
         actions on each file. Store files to the Output path. Sleep for the 
@@ -98,12 +64,12 @@ class Crawler(object):
                             record_filename = eaccpf.getFileName()
                             records.append(record_filename)
                             fileHash = eaccpf.getHash()
-                            # if the file hash has not changed since the last run then skip it
+                            # if the file has not changed since the last run then skip it
                             if UpdateOnly:
-                                if record_filename in Index and Index[record_filename] == fileHash:
+                                if record_filename in HashIndex and HashIndex[record_filename] == fileHash:
                                     self.logger.info("No change since last update " + record_filename)
                                     continue
-                            Index[record_filename] = fileHash
+                            HashIndex[record_filename] = fileHash
                             if 'eaccpf' in Actions:
                                 eaccpf.write(Output)
                             if 'eaccpf-thumbnail' in Actions:
@@ -111,7 +77,7 @@ class Crawler(object):
                                 if thumbnail:
                                     cacherecord = self.cache.put(thumbnail)
                                     dobj_id = eaccpf.getRecordId()
-                                    thumbnail.write(Output, dobj_id, cacherecord)  # @todo FAILING HERE!!!
+                                    thumbnail.write(Output, dobj_id, cacherecord)
                             if 'digitalobject' in Actions:
                                 dobjects = eaccpf.getDigitalObjects()
                                 for dobject in dobjects:
@@ -126,7 +92,7 @@ class Crawler(object):
         # return the list of processed records
         return records
 
-    def crawlWebSite(self, Source, Output, Actions, Index, Sleep=0.0, UpdateOnly=False):
+    def crawlWebSite(self, Source, Output, Actions, HashIndex, Sleep=0.0, UpdateOnly=False):
         """
         Crawl web site for HTML entity pages. When such a page is found, 
         execute the specified indexing actions. Store files to the output path.
@@ -151,7 +117,7 @@ class Crawler(object):
         if Update:
             self.cache = DigitalObjectCache(cache, cacheUrl)
         else:
-            self._clearOutput(output)
+            Utils.cleanOutputFolder(output)
             self.cache = DigitalObjectCache(cache, cacheUrl, Init=True)
         # check state before starting
         assert os.path.exists(source), self.logger.warning("Input path does not exist: " + source)
@@ -161,7 +127,7 @@ class Crawler(object):
         # have changed
         hashIndex = {}
         if Update:
-            hashIndex = self._loadFileHashIndex(output)
+            hashIndex = Utils.loadFileHashIndex(output)
         # crawl the document source
         if 'http://' in source or 'https://' in source:
             records = self.crawlWebSite(source, output, actions, hashIndex, sleep, Update)
@@ -170,18 +136,10 @@ class Crawler(object):
         # remove records from the index that were deleted in the source
         if Update:
             self.logger.info("Clearing orphaned records from the file hash index")
-            rtd = []
-            for filename in hashIndex.keys():
-                if filename not in records:
-                    rtd.append(filename)
-            for filename in rtd:
-                del hashIndex[filename]
+            Utils.purgeIndex(records, hashIndex)
         # remove files from the output folder that are not in the index
         if Update:
             self.logger.info("Clearing orphaned files from the output folder")
-            files = os.listdir(output)
-            for filename in files:
-                if not filename in hashIndex.keys():
-                    os.remove(output + os.sep + filename)
+            Utils.purgeFolder(output, hashIndex)
         # write the updated file hash index
-        self._writeFileHashIndex(hashIndex, output)
+        Utils.writeFileHashIndex(hashIndex, output)

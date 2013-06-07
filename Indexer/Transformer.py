@@ -4,13 +4,13 @@ LICENSE file, which is part of this source code package.
 """
 
 from lxml import etree
-
+import HtmlPage
+import Utils
 import inspect
 import logging
 import os
 import re 
 import yaml
-from HtmlPage import HtmlPage
 
 
 class Transformer(object):
@@ -104,20 +104,6 @@ class Transformer(object):
             if "<add>" in data and "<doc>" in data:
                 return True
         return False
-
-    def _makeCache(self, Path):
-        """
-        Create a cache folder at the specified Path if none exists.
-        If the Path already exists, delete all files.
-        """
-        if not os.path.exists(Path):
-            os.makedirs(Path)
-            self.logger.info("Created output folder at " + Path)
-        else:
-            files = os.listdir(Path)
-            for afile in files:
-                os.remove(Path + os.sep + afile)
-            self.logger.info("Cleared output folder at " + Path)
 
     def _removeNameSpaces(self, Text):
         """
@@ -313,8 +299,10 @@ class Transformer(object):
         for source in sources:
             assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         # create output folder
-        self._makeCache(output)
+        Utils.cleanOutputFolder(output)
         # check state
+        for source in sources:
+            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
         # execute actions in order
         if "eaccpf-to-sid" in actions:
@@ -329,20 +317,20 @@ class Transformer(object):
                 transform = etree.XSLT(xslt_root)
             except:
                 self.logger.critical("Could not load XSLT file " + xslt)    
-            self.transformEacCpfsToSID(sources,output,transform)
+            self.transformEacCpfsToSID(sources, output, transform)
         if "html-to-sid" in actions:
-            self.transformHtmlsToSid(sources,output)
+            self.transformHtmlsToSid(sources, output)
         if 'merge-digitalobjects' in actions:
-            self.mergeDigitalObjectsIntoSID(sources,output)
+            self.mergeDigitalObjectsIntoSID(sources, output)
         if "digitalobjects-to-sid" in actions:
-            self.transformDigitalObjectsToSID(sources,output)
+            self.transformDigitalObjectsToSID(sources, output)
         if "merge-inferred" in actions:
-            self.mergeInferredRecordsIntoSID(sources,output)
+            self.mergeInferredRecordsIntoSID(sources, output)
         if "set-fields" in actions and not ('' in fields):
-            self.setFieldValue(output,fields)
+            self.setFieldValue(output, fields)
         # boost fields
         if boosts:
-            self.setBoosts(source,boosts)
+            self.setBoosts(source, boosts)
         # validate output
         try:
             schema = Params.get("transform","schema")
@@ -539,30 +527,3 @@ class Transformer(object):
         outfile.write("\t</doc>\n</add>")
         outfile.close()
         self.logger.info("Transformed HTML to SID " + Html.getUrl())
-
-    def validate(self, Source, Schema):
-        """
-        Validate a collection of files against an XML schema.
-        """
-        # load schemas
-        try:
-            infile = open(Schema, 'r')
-            schema_data = infile.read()
-            schema_root = etree.XML(schema_data) 
-            schema = etree.XMLSchema(schema_root)
-            infile.close()
-            self.logger.info("Loaded schema file " + schema)
-        except Exception:
-            self.logger.critical("Could not load schema file " + schema)
-        # create validating parser
-        parser = etree.XMLParser(schema=schema)
-        # validate files against schema
-        files = os.listdir(Source)
-        for filename in files:
-            infile = open(Source + os.sep + filename,'r')
-            data = infile.read()
-            infile.close()
-            try:
-                etree.fromstring(data, parser)
-            except Exception:
-                self.logger.warning("Document does not conform to schema " + filename)
