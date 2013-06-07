@@ -178,15 +178,13 @@ class EacCpf(object):
         """
         try:
             existDates = self.soup.find('existdates')
-            if existDates:
-                fromDate = existDates.find('daterange').find('fromdate')
-                toDate = existDates.find('daterange').find('todate')
-                if fromDate and 'standarddate' in dict(fromDate.attrs):
-                    fromDate = fromDate['standarddate']
-                if toDate and 'standarddate' in dict(toDate.attrs):
-                    toDate = toDate['standarddate']
-                return fromDate, toDate
-            return None
+            fromDate = existDates.find('daterange').find('fromdate')
+            toDate = existDates.find('daterange').find('todate')
+            if fromDate and 'standarddate' in dict(fromDate.attrs):
+                fromDate = fromDate['standarddate']
+            if toDate and 'standarddate' in dict(toDate.attrs):
+                toDate = toDate['standarddate']
+            return fromDate, toDate
         except:
             return None
 
@@ -203,34 +201,36 @@ class EacCpf(object):
         """
         Get content from free text fields.
         """
-        freetext = ''
+        freeText = ''
         # /eac-cpf/identity/nameEntry/part
-        nameentry = self.soup.find('nameentry')
-        if nameentry:
-            parts = nameentry.findAll('part')
-            if parts:
-                for p in parts:
-                    freetext += self._cleanText(p.getString())
+        try:
+            parts = self.soup.find('nameentry').findAll('part')
+            for p in parts:
+                freeText += Utils.cleanText(p.getString())
+        except:
+            pass
         # /eac-cpf/description/biogHist/abstract
+        try:
+            abstract = self.soup.find('bioghist').find('abstract')
+            freeText += Utils.cleanText(abstract.getText())
+        except:
+            pass
         # /eac-cpf/description/biogHist/p
-        bioghist = self.soup.find('bioghist')
-        if bioghist:
-            abstract = bioghist.find('abstract')
-            if abstract:
-                freetext += self._cleanText(abstract.getText())
-            ps = bioghist.findAll('p')
-            if ps:
-                for p in ps:
-                    freetext += self._cleanText(p.getString())
+        try:
+            ps = self.soup.find('bioghist').findAll('p')
+            for p in ps:
+                freeText += Utils.cleanText(p.getString())
+        except:
+            pass
         # /eac-cpf/description/function/descNote/p
-        function = self.soup.find('function')
-        if function:
-            functions = function.findAll('p')
-            if functions:
-                for f in functions:
-                    freetext += self._cleanText(f.getString())
+        try:
+            functions = self.soup.find('function').findAll('p')
+            for f in functions:
+                freeText += Utils.cleanText(f.getString())
+        except:
+            pass
         # return
-        return freetext
+        return freeText
 
     def getFunctions(self):
         """
