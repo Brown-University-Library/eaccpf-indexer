@@ -232,7 +232,7 @@ class Analyzer(object):
         except:
             self.logger.warning("Could not write HTML report file", exc_info=True)
 
-    def run(self, Params):
+    def run(self, Params, Update=False):
         """
         Execute analysis operations using specified parameters.
         """

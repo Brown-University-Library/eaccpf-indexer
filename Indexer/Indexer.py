@@ -90,7 +90,7 @@ class Indexer(object):
         # if graph
         if (self.args.graph):
             grapher = Grapher()
-            grapher.run(self.config)
+            grapher.run(self.config, update)
         # if transform
         if (self.args.transform):
             transformer = Transformer()
@@ -102,7 +102,7 @@ class Indexer(object):
         # if analyze
         if (self.args.analyze):
             analyzer = Analyzer()
-            analyzer.run(self.config)
+            analyzer.run(self.config, update)
         # stop clock
         delta = datetime.datetime.now() - start
         s = delta.seconds

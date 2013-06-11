@@ -15,7 +15,7 @@ import time
 
 class Facter(object):
     """
-    Takes an EACCPF record, executes a semantic analysis of the contents and 
+    Takes an EAC-CPF record, executes a semantic analysis of the contents and
     attempts to extract people, places, things, concepts from free text or 
     structured fields.
     """
@@ -41,7 +41,6 @@ class Facter(object):
         """
         Parse a location record or address string into components.
         """
-        # defaults
         street = city = region = postal = country = ''
         try:
             # split the address string into segments
@@ -73,7 +72,7 @@ class Facter(object):
     
     def _getCalaisResultAsDictionary(self, result):
         """
-        convert Calais result to dictionary structure.
+        Convert Calais result to dictionary structure.
         """
         out = {}
         # entities
@@ -224,23 +223,23 @@ class Facter(object):
         # return list of processed records
         return records
 
-    def run(self, Params, Update):
+    def run(self, Params, Update=False):
         """
         Execute analysis using the specified parameters.
         """
         # get parameters
-        actions = Params.get("infer","actions").split(",")
-        output = Params.get("infer","output")
-        sleep = Params.getfloat("infer","sleep")
-        source = Params.get("infer","input")
+        actions = Params.get("infer", "actions").split(",")
+        output = Params.get("infer", "output")
+        sleep = Params.getfloat("infer", "sleep")
+        source = Params.get("infer", "input")
         if 'named-entities' in actions:
             try:
-                self.alchemy_api_key = Params.get("infer","alchemy_api_key")
+                self.alchemy_api_key = Params.get("infer", "alchemy_api_key")
             except:
                 self.alchemy_api_key = ''
         if 'entities' in actions:
             try:
-                self.calais_api_key = Params.get("infer","calais_api_key")
+                self.calais_api_key = Params.get("infer", "calais_api_key")
                 # create an OpenCalais object, load API key
                 self.calais = Calais.Calais(self.calais_api_key, submitter="University of Melbourne, eScholarship Research Centre")
                 self.calais.user_directives["allowDistribution"] = "false"
@@ -263,7 +262,7 @@ class Facter(object):
         # remove records from the index that were deleted in the source
         if Update and records != []:
             self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records,hashIndex)
+            Utils.purgeIndex(records, hashIndex)
         # remove files from the output folder that are not in the index
         if Update and records != []:
             self.logger.info("Clearing orphaned files from the output folder")
