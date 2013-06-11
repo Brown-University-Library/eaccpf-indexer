@@ -214,8 +214,7 @@ class Cleaner(object):
         # get parameters
         source = Params.get("clean","input")
         output = Params.get("clean","output")
-        # load filename to hash index. we use this to keep track of which
-        # files have changed
+        # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:
             hashIndex = Utils.loadFileHashIndex(output)

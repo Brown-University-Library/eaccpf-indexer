@@ -252,8 +252,7 @@ class Facter(object):
         # check state before starting
         assert os.path.exists(source), self.logger.warning("Input path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        # load filename to hash index. we use this to keep track of which files
-        # have changed
+        # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:
             hashIndex = Utils.loadFileHashIndex(output)
