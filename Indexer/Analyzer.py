@@ -110,18 +110,6 @@ class Analyzer(object):
                 errors.append(error)
             return False, errors
 
-    def _isEacCpfFile(self, Path):
-        """
-        Determine if the document at the specified path is EAC-CPF.
-        """
-        if Path.endswith("xml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "<eac-cpf" in data and "</eac-cpf>" in data:
-                return True
-        return False
-    
     def _makeCache(self, Path):
         """
         Create a folder at the specified path if none exists.
@@ -191,27 +179,40 @@ class Analyzer(object):
         except:
             self.logger.warning("Could not complete analysis for " + Filename, exc_info=True)
         
-    def analyzeFiles(self, Sources, Output):
+    def analyzeFiles(self, Source, Output, HashIndex, Update):
         """
         Analyze EAC-CPF files in the specified source paths. Write a YML file
         with analysis data to the output path.
         """
-        for source in Sources:
-            files = os.listdir(source)
-            for filename in files:
-                if self._isEacCpfFile(source + os.sep + filename):
-                    self.analyzeFile(source, filename, Output)
+        records = []
+        files = os.listdir(Source)
+        for filename in files:
+            if filename.endswith(".xml"):
+                # if the file has not changed since the last run then skip it
+                fileHash = Utils.getFileHash(Source + os.sep + filename)
+                if Update:
+                    if filename in HashIndex and HashIndex[filename] == fileHash:
+                        self.logger.info("No change since last update " + filename)
+                        continue
+                # process the file
+                records.append(filename)
+                HashIndex[filename] = fileHash
+                self.analyzeFile(Source, filename, Output)
+        return records
 
-    def buildHtmlReport(self, Source, Output):
+    def buildHtmlReport(self, Source, Output, Update):
         """
         Build HTML report file
         """
-        # copy the file from the template directory into the output directory 
-        modpath = os.path.abspath(inspect.getfile(self.__class__))
-        parentpath = os.path.dirname(modpath)
-        assets = parentpath + os.sep + "template"
-        shutil.copytree(assets + os.sep + 'assets',Output + os.sep + 'assets')
-        templatefile = assets + os.sep + "index.mako"
+        modPath = os.path.abspath(inspect.getfile(self.__class__))
+        parentPath = os.path.dirname(modPath)
+        assets_input = parentPath + os.sep + "template"
+        assets_output = Output + os.sep + 'assets'
+        templateFile = assets_input + os.sep + "index.mako"
+        # copy HTML assets to the output path
+        if not Update and os.path.exists(assets_output):
+            shutil.rmtree(assets_output) # copytree won't work if there is an existing target
+            shutil.copytree(assets_input + os.sep + 'assets', assets_output)
         # build the report
         records = []
         files = os.listdir(Source)
@@ -223,7 +224,7 @@ class Analyzer(object):
                 records.append(record)
         # load the template and update contents
         try:
-            template = Template(filename=templatefile)
+            template = Template(filename=templateFile)
             reportDate = datetime.now().strftime("%B %d, %Y")
             data = template.render(date=reportDate,records=records,source=Source)
             # write the report
@@ -237,15 +238,30 @@ class Analyzer(object):
         Execute analysis operations using specified parameters.
         """
         # get parameters
-        sources = Params.get("analyze","inputs").split(',')
-        output = Params.get("analyze","output")
+        source = Params.get("analyze", "input")
+        output = Params.get("analyze", "output")
         # make output folder
-        Utils.cleanOutputFolder(output)
+        if not Update:
+            Utils.cleanOutputFolder(output)
         # check state
-        for source in sources:
-            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        # execute actions
-        self.analyzeFiles(sources,output)
-        self.buildHtmlReport(output,output)
-        
+        # load filename to hash index. we use this to keep track of which
+        # files have changed
+        hashIndex = {}
+        if Update:
+            hashIndex = Utils.loadFileHashIndex(output)
+        # analyze files
+        records = self.analyzeFiles(source, output, hashIndex, Update)
+        # remove records from the index that were deleted in the source
+        if Update:
+            self.logger.info("Clearing orphaned records from the file hash index")
+            Utils.purgeIndex(records, hashIndex)
+        # remove files from the output folder that are not in the index
+        if Update:
+            self.logger.info("Clearing orphaned files from the output folder")
+            Utils.purgeFolder(output, hashIndex)
+        # build the HTML report
+        self.buildHtmlReport(output, output, Update)
+        # write the updated file hash index
+        Utils.writeFileHashIndex(hashIndex, output)

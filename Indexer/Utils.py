@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 from lxml import etree
 import hashlib
 import os
+import shutil
 import yaml
 
 
@@ -28,7 +29,11 @@ def cleanOutputFolder(Path):
     if os.path.exists(Path):
         files = os.listdir(Path)
         for filename in files:
-            os.remove(Path + os.sep + filename)
+            path = Path + os.sep + filename
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
     else:
         os.makedirs(Path)
     #self.logger.info("Cleared output folder at " + Path)

@@ -260,11 +260,11 @@ class Facter(object):
         # execute inference actions
         records = self.infer(source, output, actions, hashIndex, sleep, Params, Update)
         # remove records from the index that were deleted in the source
-        if Update and records != []:
+        if Update:
             self.logger.info("Clearing orphaned records from the file hash index")
             Utils.purgeIndex(records, hashIndex)
         # remove files from the output folder that are not in the index
-        if Update and records != []:
+        if Update:
             self.logger.info("Clearing orphaned files from the output folder")
             Utils.purgeFolder(output, hashIndex)
         # write the updated file hash index
