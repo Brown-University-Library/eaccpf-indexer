@@ -140,7 +140,7 @@ class Facter(object):
         for place in Places:
             # if there is an existing GIS attribute attached to the record then
             # don't process it
-            if 'GIS' in place or 'gis' in place:
+            if 'longitude' in place and 'latitude' in place:
                 locations.append(place)
                 self.logger.warning("Record has existing location data")
             else:

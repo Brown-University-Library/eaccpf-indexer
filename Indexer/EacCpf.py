@@ -289,6 +289,10 @@ class EacCpf(object):
                     location['toDate'] = str(toDate)
                 if placeEntry:
                     location['placeentry'] = str(placeEntry.text)
+                    if 'latitude' in dict(placeEntry.attrs):
+                        location['latitude'] = placeEntry['latitude']
+                    if 'longitude' in dict(placeEntry.attrs):
+                        location['longitude'] = placeEntry['longitude']
                 if event:
                     location['event'] = str(event.text)
                 locations.append(location)
