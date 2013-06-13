@@ -3,21 +3,10 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from httplib2 import Http
 from lxml import etree
 import logging
 import os
 import requests
-
-
-class IndexingError(Exception):
-    
-    def __init__(self, resp, content):
-        self.status = "Server response status: " + resp['status']
-        self.content = content
-
-    def __str__(self):
-        return repr(self.status)
 
 
 class Poster(object):
@@ -136,11 +125,11 @@ class Poster(object):
         else:
             required = []
         # execute actions
-        if "flush" in actions:
+        if 'flush' in actions:
             self.flush(index)
-        if "post" in actions:
+        if 'post' in actions:
             self.post(source,index,required)
-        if "commit" in actions:
+        if 'commit' in actions:
             self.commit(index)
-        if "optimize" in actions:
+        if 'optimize' in actions:
             self.optimize(index)
