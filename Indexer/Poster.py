@@ -7,6 +7,7 @@ from httplib2 import Http
 from lxml import etree
 import logging
 import os
+import requests
 
 
 class IndexingError(Exception):
@@ -30,6 +31,7 @@ class Poster(object):
         """
         Constructor
         """
+        self.headers = { 'Content-type': 'text/xml; charset=utf-8' }
         self.logger = logging.getLogger('Poster')
         
     def _hasRequiredFields(self, Doc, Fields):
@@ -47,35 +49,34 @@ class Poster(object):
         """
         Commit staged data to the Solr core.
         """
-        # send command
-        msg = '<commit waitFlush="false" waitSearcher="false" expungeDeletes="true"/>'
+        msg = '<commit expungeDeletes="true"/>'
         if Solr.endswith('/'):
             url = Solr + 'update'
         else:
             url = Solr + '/update'
-        (resp, content) = Http().request(url, "POST", msg)
-        if resp['status'] != '200':
-            raise IndexingError(resp, content)
-        self.logger.info("Commited staged data to " + Solr)
-        return resp, content
+        resp = requests.post(url, msg, headers=self.headers)
+        if resp.status_code == 200:
+            self.logger.info("Committed staged data to " + Solr)
+        else:
+            self.logger.error("Something went wrong trying to commit the changes.")
+            self.logger.error("\n%s" % resp.text)
 
     def flush(self, Solr):
         """
         Flush all documents from Solr.
         """
-        # send command
-        msg = "<delete><query>*</query></delete>"
+        msg = "<delete><query>*:*</query></delete>"
         if Solr.endswith('/'):
             url = Solr + 'update'
         else:
             url = Solr + '/update'
-        (resp, content) = Http().request(url, "POST", msg)
-        if resp['status'] != '200':
-            print content
-            raise IndexingError(resp, content)
-        self.logger.info("Flushed data from " + Solr)
-        return (resp, content)
-        
+        resp = requests.post(url, msg, headers=self.headers)
+        if resp.status_code == 200:
+            self.logger.info("Flushed data from " + Solr)
+        else:
+            self.logger.error("Something went wrong trying to submit a request to wipe the index.")
+            self.logger.error("\n%s" % resp.text)
+
     def optimize(self, Solr):
         """
         Optimize data in Solr core.
@@ -86,12 +87,13 @@ class Poster(object):
             url = Solr + 'update'
         else:
             url = Solr + '/update'
-        (resp, content) = Http().request(url, "POST", msg)
-        if resp['status'] != '200':
-            raise IndexingError(resp, content)
-        self.logger.info("Optimized " + Solr)
-        return (resp, content)
-        
+        resp = requests.post(url, msg, headers=self.headers)
+        if resp.status_code == 200:
+            self.logger.info("Optimized " + Solr)
+        else:
+            self.logger.error("Something went wrong trying to optimize the index.")
+            self.logger.error("\n%s" % resp.text)
+
     def post(self, Source, Solr, Fields):
         """
         Post Solr Input Documents in the Source directory to the Solr core if 
@@ -113,29 +115,19 @@ class Poster(object):
                     doc = xml.getroot()
                     if self._hasRequiredFields(doc,Fields):
                         data = etree.tostring(doc)
-                        (resp, content) = Http().request(url, "POST", data)
-                        if resp['status'] != '200':
-                            raise IndexingError(resp, content)
-                        self.logger.info("Posted " + filename)
-                except IOError:
-                    self.logger.warning("Can't connect to Solr" + url, exc_info=True)
-                    print resp
-                    print content
-                except IndexingError:
-                    self.logger.warning("Could not post " + filename + " Error: " + resp['status'], exc_info=True)
-                    print resp
-                    print content
-                except Exception:
+                        resp = requests.post(url, data=data, headers=self.headers)
+                        if resp.status_code == 200:
+                            self.logger.info("Posted " + filename)
+                        else:
+                            self.logger.error("Submission of %s failed with error %s." % (filename, resp.status_code))
+                except:
                     self.logger.warning("Could not complete post operation for " + filename, exc_info=True)
-                    print resp
-                    print content
-                    
+
     def run(self, Params):
         """
         Post Solr Input Documents to Solr core and perform index maintenance 
         operations.
         """
-        # get parameters
         actions = Params.get("post","actions").split(",")
         index = Params.get("post","index")
         source = Params.get("post","input")
@@ -144,16 +136,11 @@ class Poster(object):
         else:
             required = []
         # execute actions
-        for action in actions:
-            if action == "flush":
-                self.flush(index)
-            # post
-            elif action == "post":
-                self.post(source,index,required)
-            # commit
-            elif action == "commit":
-                self.commit(index)
-            # optimize
-            elif action == "optimize":
-                self.optimize(index)
-        
+        if "flush" in actions:
+            self.flush(index)
+        if "post" in actions:
+            self.post(source,index,required)
+        if "commit" in actions:
+            self.commit(index)
+        if "optimize" in actions:
+            self.optimize(index)
