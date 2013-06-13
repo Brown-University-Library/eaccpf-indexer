@@ -4,13 +4,14 @@ LICENSE file, which is part of this source code package.
 """
 
 from pairtree import PairtreeStorageFactory
-import Image
+from PIL import Image
 import Utils
 import logging
 import os
 import shutil
 import tempfile
 import urllib2
+
 
 class DigitalObjectCache(object):
     """
