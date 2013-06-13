@@ -6,7 +6,6 @@ LICENSE file, which is part of this source code package.
 from EacCpf import EacCpf
 import Utils
 import logging
-import matplotlib.pyplot as plt
 import networkx as nx
 import os
 import yaml
@@ -59,7 +58,6 @@ class Grapher(object):
                         g.add_edge(data['presentation_url'], rel['title'])
         # draw the graph
         nx.draw_spring(g)
-        plt.show()
         # write the graph file
         # nx.write_gexf(g, Output)
 
