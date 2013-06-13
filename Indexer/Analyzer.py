@@ -3,7 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup as bs4
 from EacCpf import EacCpf
 from StringIO import StringIO
 from datetime import datetime
@@ -50,7 +50,7 @@ class Analyzer(object):
         """
         Get a list of resource relations.
         """
-        soup = BeautifulSoup(Data)
+        soup = bs4(Data)
         relations = soup.find('relations')
         return relations.findChildren()
 

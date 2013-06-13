@@ -3,7 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup as bs4
 from DigitalObject import DigitalObject
 from lxml import etree
 import Utils
@@ -37,7 +37,7 @@ class EacCpf(object):
             self.data = Data
         else:
             self.data = self._load(Source)
-        self.soup = BeautifulSoup(self.data)
+        self.soup = bs4(self.data)
         self.xml = etree.fromstring(self.data)
 
     def _getTagString(self, Tag):
