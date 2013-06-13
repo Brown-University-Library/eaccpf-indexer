@@ -3,13 +3,6 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from Analyzer import Analyzer
-from Cleaner import Cleaner
-from Facter import Facter
-from Crawler import Crawler
-from Grapher import Grapher
-from Poster import Poster
-from Transformer import Transformer
 import ConfigParser
 import argparse
 import datetime
@@ -77,31 +70,38 @@ class Indexer(object):
         start = datetime.datetime.now()
         # if crawl
         if (self.args.crawl):
-            crawler = Crawler()
+            import Crawler
+            crawler = Crawler.Crawler()
             crawler.run(self.config, update)
         # if clean
         if (self.args.clean):
-            cleaner = Cleaner()
+            import Cleaner
+            cleaner = Cleaner.Cleaner()
             cleaner.run(self.config, update)
         # if infer
         if (self.args.infer):
-            factor = Facter()
+            import Facter
+            factor = Facter.Facter()
             factor.run(self.config, update)
         # if graph
         if (self.args.graph):
-            grapher = Grapher()
+            import Grapher
+            grapher = Grapher.Grapher()
             grapher.run(self.config, update)
         # if transform
         if (self.args.transform):
-            transformer = Transformer()
+            import Transformer
+            transformer = Transformer.Transformer()
             transformer.run(self.config)
         # if post
         if (self.args.post):
-            poster = Poster()
+            import Poster
+            poster = Poster.Poster()
             poster.run(self.config)
         # if analyze
         if (self.args.analyze):
-            analyzer = Analyzer()
+            import Analyzer
+            analyzer = Analyzer.Analyzer()
             analyzer.run(self.config, update)
         # stop clock
         delta = datetime.datetime.now() - start
