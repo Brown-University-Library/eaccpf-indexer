@@ -3,7 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup as bs4
 import hashlib
 import logging
 import lxml
@@ -34,7 +34,7 @@ class HtmlPage(object):
             self.data = Data
         else:
             self.data = self._load(self.source)
-        self.soup = BeautifulSoup(self.data)
+        self.soup = bs4(self.data)
         if BaseUrl:
             if not BaseUrl.endswith('/'):
                 BaseUrl = BaseUrl + '/'

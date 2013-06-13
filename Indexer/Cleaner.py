@@ -3,7 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup as bs4
 from lxml import etree
 import Utils
 import hashlib
@@ -30,7 +30,7 @@ class Cleaner(object):
         """
         Converts HTML entities to unicode. For example '&amp;' becomes '&'.
         """
-        Text = unicode(BeautifulSoup(Text, convertEntities=BeautifulSoup.ALL_ENTITIES))
+        Text = unicode(bs4(Text, convertEntities=bs4.ALL_ENTITIES))
         return Text
 
     def _fixAttributeURLEncoding(self, Xml):
