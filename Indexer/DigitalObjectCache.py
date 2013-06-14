@@ -29,13 +29,12 @@ class DigitalObjectCache(object):
             self.base = BaseUrl
         else:
             self.base = BaseUrl + '/'
-        # delete the existing path if it exists
-        if Init:
-            shutil.rmtree(Path)
+        if Init and os.path.exists(self.path):
+            shutil.rmtree(self.path)
         # Create the parent directories for the storage path if they don't
-        # exist. If you create the pairtree folder itself, it requires the 
-        # pairtree metadata files in it before getting the put. Otherwise, it 
-        # will throw a pairtree.storage_exceptions.NotAPairtreeStoreException
+        # already exist. If you create the pairtree folder itself, it requires
+        # that you have the pairtree metadata files in it. Otherwise, it will
+        # throw a pairtree.storage_exceptions.NotAPairtreeStoreException
         parent = os.path.dirname(self.path)
         if not os.path.exists(parent):
             os.makedirs(parent)

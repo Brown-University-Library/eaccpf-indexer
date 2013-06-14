@@ -114,11 +114,9 @@ class Crawler(object):
         output = Params.get("crawl", "output")
         sleep = Params.getfloat("crawl", "sleep")
         # clear output folder and cache
-        if Update:
-            self.cache = DigitalObjectCache(cache, cacheUrl)
-        else:
+        if not Update:
             Utils.cleanOutputFolder(output)
-            self.cache = DigitalObjectCache(cache, cacheUrl, Init=True)
+        self.cache = DigitalObjectCache(cache, cacheUrl)
         # check state before starting
         assert os.path.exists(source), self.logger.warning("Input path does not exist: " + source)
         assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)

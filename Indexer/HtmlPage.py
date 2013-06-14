@@ -3,7 +3,10 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from bs4 import BeautifulSoup as bs4
+try:
+    from bs4 import BeautifulSoup as bs4
+except:
+    from BeautifulSoup import BeautifulSoup as bs4
 import hashlib
 import logging
 import lxml
