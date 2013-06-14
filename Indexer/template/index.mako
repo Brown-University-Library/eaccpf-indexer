@@ -44,7 +44,7 @@
                 <tbody>
                 <%
                     # find the record with the largest total content count
-                    maxval = 0
+                    maxTotal = 0
                     for record in records:
                         if record['analysis']['the total content count'] > maxval:
                             maxTotal = record['analysis']['the total content count']
