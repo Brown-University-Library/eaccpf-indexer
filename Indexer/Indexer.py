@@ -27,7 +27,7 @@ class Indexer(object):
             logging.basicConfig(level=logging.INFO,
                                 format='%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s',
                                 filename='/var/log/indexer.log',
-                                filemode='w')
+                                filemode='a')
         else:
             logging.basicConfig(level=logging.INFO,
                                 format='%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')

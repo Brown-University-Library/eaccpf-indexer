@@ -32,6 +32,7 @@ class Analyzer(object):
         Constructor
         """
         self.logger = logging.getLogger('Analyzer')
+        self.coordinates = {} # dictionary for geocoordinates
         # load validation schema
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         path = os.path.dirname(modpath)
@@ -46,8 +47,6 @@ class Analyzer(object):
             self.parser = etree.XMLParser(schema=xmlschema)
         except Exception:
             self.logger.critical("Could not load schema file " + schema)
-        # dictionary for geocoordinates
-        self.coordinates = {}
 
     def _getResourceRelations(self, Data):
         """
