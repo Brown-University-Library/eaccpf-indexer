@@ -16,7 +16,10 @@ import urllib2
 class DigitalObjectCache(object):
     """
     Storage for source and alternate sized representations of a digital 
-    object.
+    object. The storage folder must either not exist when first creating
+    the cache, or it must already be initialized as a Pairtree storage
+    folder. If the folder exists and is not initialized, then it will
+    throw a pairtree.storage_exceptions.NotAPairtreeStoreException
     """
 
     def __init__(self, Path, BaseUrl='', Init=False):
@@ -31,19 +34,12 @@ class DigitalObjectCache(object):
             self.base = BaseUrl + '/'
         if Init and os.path.exists(self.path):
             shutil.rmtree(self.path)
-        # Create the parent directories for the storage path if they don't
-        # already exist. If you create the pairtree folder itself, it requires
-        # that you have the pairtree metadata files in it. Otherwise, it will
-        # throw a pairtree.storage_exceptions.NotAPairtreeStoreException
-        parent = os.path.dirname(self.path)
-        if not os.path.exists(parent):
-            os.makedirs(parent)
-        # create the pairtree storage
+        # create the pairtree storage instance
         factory = PairtreeStorageFactory()
         try:
             self.storage = factory.get_store(store_dir=self.path, uri_base="http://")
         except:
-            self.logger.critical("Could not initialize the image cache")
+            self.logger.critical("Could not initialize the image cache " + self.path)
             raise
 
     def _getPathRelativeToCacheRoot(self, Path):

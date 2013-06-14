@@ -4,9 +4,9 @@ LICENSE file, which is part of this source code package.
 """
 
 try:
-    from bs4 import BeautifulSoup as bs4
-except:
     from BeautifulSoup import BeautifulSoup as bs4
+except:
+    from bs4 import BeautifulSoup as bs4
 from DigitalObject import DigitalObject
 from lxml import etree
 import Utils

@@ -42,12 +42,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                <% maxval = 0 %>
+                <%
+                    # find the record with the largest total content count
+                    maxval = 0
+                    for record in records:
+                        if record['analysis']['the total content count'] > maxval:
+                            maxTotal = record['analysis']['the total content count']
+                %>
                 % for record in records:
-                   <% if record['analysis']['the total content count'] > maxval:
-                          maxTotal = record['analysis']['the total content count']
-                   %>
-
                 <tr>
                     <td><a href='${record['metadata']['entityid']}'>${record['metadata']['id']}</a></td>
                     <td><a href='${record['metadata']['entityid']}'>${record['metadata']['title']}</a></td>

@@ -7,6 +7,7 @@ import ConfigParser
 import argparse
 import datetime
 import logging
+import os
 import sys
 
 
@@ -22,14 +23,15 @@ class Indexer(object):
         Set logging options, create a configuration file parser, command line
         argument parser.
         """
-        # logging default
-        formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
+        if os.access('/var/log', os.W_OK):
+            logging.basicConfig(level=logging.INFO,
+                                format='%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s',
+                                filename='/var/log/indexer.log',
+                                filemode='w')
+        else:
+            logging.basicConfig(level=logging.INFO,
+                                format='%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
         self.logger = logging.getLogger('Indexer')
-        self.logger.setLevel(level=logging.INFO)
-        sh = logging.StreamHandler()
-        sh.setLevel(logging.DEBUG)
-        sh.setFormatter(formatter)
-        self.logger.addHandler(sh)
         # configuration parser
         self.config = ConfigParser.SafeConfigParser()
         # configure command line options
