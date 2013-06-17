@@ -23,36 +23,77 @@ class Indexer(object):
         Set logging options, create a configuration file parser, command line
         argument parser.
         """
-        if os.access('/var/log', os.W_OK):
-            logging.basicConfig(level=logging.INFO,
-                                format='%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s',
-                                filename='/var/log/indexer.log',
-                                filemode='a')
-        else:
-            logging.basicConfig(level=logging.INFO,
-                                format='%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
-        self.logger = logging.getLogger('Indexer')
         # configuration parser
         self.config = ConfigParser.SafeConfigParser()
         # configure command line options
-        self.parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to an Apache Solr/Lucene index")
+        self.parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to an Apache Solr index.")
         self.parser.add_argument('config', help="path to configuration file")
-        self.parser.add_argument('--analyze', help="analyze data", action='store_true')
-        self.parser.add_argument('--clean', help="clean metadata files of common errors and write updated files", action='store_true')
-        self.parser.add_argument('--crawl', help="crawl file system or web site for metadata files", action='store_true')
-        self.parser.add_argument('--graph', help="build graph representation of document collection", action='store_true')
-        self.parser.add_argument('--infer', help="infer concepts, entities, locations from metadata", action='store_true')
-        self.parser.add_argument('--post', help="post Solr Input Documents to index", action='store_true')
-        self.parser.add_argument('--transform', help="transform metadata to Solr Input Document format", action='store_true')
-        self.parser.add_argument('--update', help="process only those files that have changed since the last run", action='store_true')
-    
+        self.parser.add_argument('--analyze',
+                                 help="analyze data",
+                                 action='store_true')
+        self.parser.add_argument('--clean',
+                                 help="clean metadata files of common errors and write updated files",
+                                 action='store_true')
+        self.parser.add_argument('--crawl',
+                                 help="crawl file system or web site for metadata files",
+                                 action='store_true')
+        self.parser.add_argument('--graph',
+                                 help="build graph representation of document collection",
+                                 action='store_true')
+        self.parser.add_argument('--infer',
+                                 help="infer concepts, entities, locations from metadata",
+                                 action='store_true')
+        self.parser.add_argument('--post',
+                                 help="post metadata to Apache Solr index",
+                                 action='store_true')
+        self.parser.add_argument('--transform',
+                                 help="transform metadata to Solr Input Document format",
+                                 action='store_true')
+        self.parser.add_argument('--update',
+                                 help="process only those files that have changed since the last run",
+                                 action='store_true')
+        self.parser.add_argument('--loglevel',
+                                 help="set the logging level",
+                                 choices=['DEBUG','INFO','WARNING','ERROR'],
+                                 )
+        # defaults
+        self.logFilePath = '/var/log/indexer.log'
+        self.logFormat = '%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s'
+        self.logLevel = logging.ERROR
+        self.update = False
+
+    def _configureLogging(self):
+        """
+        Configure logging.
+        """
+        # override default log level with user specified value
+        if self.args.loglevel:
+            if self.args.loglevel == 'DEBUG':
+                self.logLevel = logging.DEBUG
+            elif self.args.loglevel == 'INFO':
+                self.logLevel = logging.INFO
+            elif self.args.loglevel == 'WARNING':
+                self.logLevel = logging.WARNING
+            elif self.args.loglevel == 'ERROR':
+                self.logLevel = logging.ERROR
+        # configure logging
+        if os.access('/var/log', os.W_OK):
+            logging.basicConfig(level=self.logLevel,
+                                format=self.logFormat,
+                                filename=self.logFilePath,
+                                filemode='a')
+        else:
+            logging.basicConfig(level=self.logLevel, format=self.logFormat)
+
     def run(self):
         """
         Start processing.
         """
-        # parse the command line arguments
+        # parse the command line arguments and set logging
         try:
             self.args = self.parser.parse_args()
+            self._configureLogging()
+            self.logger = logging.getLogger('Indexer')
             self.logger.info('Started with ' + ' '.join(sys.argv[1:]))
         except Exception, e:
             self.parser.print_help()
@@ -65,31 +106,29 @@ class Indexer(object):
             sys.exit(e)
         # set the update option
         if self.args.update:
-            update = True
-        else:
-            update = False
+            self.update = self.args.update
         # start clock
         start = datetime.datetime.now()
         # if crawl
         if (self.args.crawl):
             import Crawler
             crawler = Crawler.Crawler()
-            crawler.run(self.config, update)
+            crawler.run(self.config, self.update)
         # if clean
         if (self.args.clean):
             import Cleaner
             cleaner = Cleaner.Cleaner()
-            cleaner.run(self.config, update)
+            cleaner.run(self.config, self.update)
         # if infer
         if (self.args.infer):
             import Facter
             factor = Facter.Facter()
-            factor.run(self.config, update)
+            factor.run(self.config, self.update)
         # if graph
         if (self.args.graph):
             import Grapher
             grapher = Grapher.Grapher()
-            grapher.run(self.config, update)
+            grapher.run(self.config, self.update)
         # if transform
         if (self.args.transform):
             import Transformer
@@ -104,7 +143,7 @@ class Indexer(object):
         if (self.args.analyze):
             import Analyzer
             analyzer = Analyzer.Analyzer()
-            analyzer.run(self.config, update)
+            analyzer.run(self.config, self.update)
         # stop clock
         delta = datetime.datetime.now() - start
         s = delta.seconds
