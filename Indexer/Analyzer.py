@@ -179,7 +179,7 @@ class Analyzer(object):
             Utils.writeYaml(Output, output_filename, report)
             self.logger.info("Wrote analysis to " + output_filename)
         except:
-            self.logger.warning("Could not complete analysis for " + Filename, exc_info=True)
+            self.logger.error("Could not complete analysis for " + Filename, exc_info=True)
         
     def analyzeFiles(self, Source, Output, HashIndex, Update):
         """
@@ -233,7 +233,7 @@ class Analyzer(object):
             Utils.write(Output, 'index.html', data)
             self.logger.info("Wrote HTML report file")
         except:
-            self.logger.warning("Could not write HTML report file", exc_info=True)
+            self.logger.error("Could not write HTML report file", exc_info=True)
 
     def run(self, Params, Update=False):
         """
@@ -246,8 +246,8 @@ class Analyzer(object):
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:

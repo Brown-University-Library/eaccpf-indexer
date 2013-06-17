@@ -86,7 +86,7 @@ class Crawler(object):
                             if 'html' in Actions:
                                 html.write(Output)
                     except:
-                        self.logger.warning("Could not complete processing for " + filename, exc_info=True)
+                        self.logger.error("Could not complete processing for " + filename, exc_info=True)
                     finally:
                         time.sleep(Sleep)
         # return the list of processed records
@@ -98,7 +98,7 @@ class Crawler(object):
         execute the specified indexing actions. Store files to the output path.
         Sleep for the specified number of seconds after fetching data.
         """
-        self.logger.warning("Web site crawling is not implemented")
+        self.logger.error("Web site crawling is not implemented")
         return []
 
     def run(self, Params, Update=False):
@@ -114,12 +114,11 @@ class Crawler(object):
         output = Params.get("crawl", "output")
         sleep = Params.getfloat("crawl", "sleep")
         # check state before starting
-        assert os.path.exists(source), self.logger.warning("Input path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
-        # clear output folder and cache
+        assert os.path.exists(source), self.logger.error("Input path does not exist: " + source)
         if not Update:
             Utils.cleanOutputFolder(output)
         self.cache = DigitalObjectCache(cache, cacheUrl)
+        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:

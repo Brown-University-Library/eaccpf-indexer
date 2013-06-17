@@ -89,7 +89,7 @@ class Poster(object):
         they have all required fields.
         """
         # check state
-        assert os.path.exists(Source), self.logger.warning("Source path does not exist: " + Source)
+        assert os.path.exists(Source), self.logger.error("Source path does not exist: " + Source)
         # ensure that the posting URL is correct
         if Solr.endswith('/'):
             url = Solr + 'update'
@@ -110,7 +110,7 @@ class Poster(object):
                         else:
                             self.logger.error("Submission of %s failed with error %s." % (filename, resp.status_code))
                 except:
-                    self.logger.warning("Could not complete post operation for " + filename, exc_info=True)
+                    self.logger.error("Could not complete post operation for " + filename, exc_info=True)
 
     def run(self, Params):
         """

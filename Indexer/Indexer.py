@@ -54,9 +54,11 @@ class Indexer(object):
                                  action='store_true')
         self.parser.add_argument('--loglevel',
                                  help="set the logging level",
-                                 choices=['DEBUG','INFO','WARNING','ERROR'],
+                                 choices=['DEBUG','INFO','ERROR'],
                                  )
         # defaults
+        self.logger = logging.getLogger('')
+        self.logger.setLevel(logging.INFO) # don't know why this has to be set but its the only way I can get it to work
         self.logFilePath = '/var/log/indexer.log'
         self.logFormat = '%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s'
         self.logLevel = logging.ERROR
@@ -72,18 +74,21 @@ class Indexer(object):
                 self.logLevel = logging.DEBUG
             elif self.args.loglevel == 'INFO':
                 self.logLevel = logging.INFO
-            elif self.args.loglevel == 'WARNING':
-                self.logLevel = logging.WARNING
             elif self.args.loglevel == 'ERROR':
                 self.logLevel = logging.ERROR
-        # configure logging
+        # console stream handler
+        formatter = logging.Formatter(self.logFormat)
+        sh = logging.StreamHandler()
+        sh.setFormatter(formatter)
+        sh.setLevel(self.logLevel)
+        self.logger.addHandler(sh)
+        # log file handler
         if os.access('/var/log', os.W_OK):
-            logging.basicConfig(level=self.logLevel,
-                                format=self.logFormat,
-                                filename=self.logFilePath,
-                                filemode='a')
-        else:
-            logging.basicConfig(level=self.logLevel, format=self.logFormat)
+            import logging.handlers as lh
+            fh = lh.RotatingFileHandler(self.logFilePath, backupCount=5, maxBytes=50331648) # 48 MB rollover
+            fh.setFormatter(formatter)
+            fh.setLevel(logging.INFO)
+            self.logger.addHandler(fh)
 
     def run(self):
         """
@@ -93,7 +98,6 @@ class Indexer(object):
         try:
             self.args = self.parser.parse_args()
             self._configureLogging()
-            self.logger = logging.getLogger('Indexer')
             self.logger.info('Started with ' + ' '.join(sys.argv[1:]))
         except Exception, e:
             self.parser.print_help()

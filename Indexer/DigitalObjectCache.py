@@ -174,4 +174,4 @@ class DigitalObjectCache(object):
             record['dobj_proxy_small'] = small_url
             return record
         except:
-            self.logger.warning("Could not write %s to the cache" % source)
+            self.logger.error("Could not write %s to the cache" % source)

@@ -126,6 +126,7 @@ class Transformer(object):
         Merge the digital object record into the Solr Input Document.
         Do not overwrite existing id, presentation_url and metadata_url fields.        
         """
+        filename = ''
         try:
             infile = open(Source,'r')
             data = infile.read()
@@ -150,7 +151,7 @@ class Transformer(object):
                 outfile.close()
                 self.logger.info("Merged digital object into " + filename)
         except:
-            self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
+            self.logger.error("Could not complete merge processing for " + filename, exc_info=True)
     
     def mergeDigitalObjectsIntoSID(self, Sources, Output):
         """
@@ -168,6 +169,7 @@ class Transformer(object):
         Merge inferred data into Solr Input Document. Write merged data to 
         output.
         """
+        filename = ''
         try:
             # read input (inferred) data file
             infile = open(Source,'r')
@@ -270,7 +272,7 @@ class Transformer(object):
                 outfile.close()
                 self.logger.info("Merged inferred data into " + filename)
         except Exception:
-            self.logger.warning("Could not complete merge processing for " + filename, exc_info=True)
+            self.logger.error("Could not complete merge processing for " + filename, exc_info=True)
     
     def mergeInferredRecordsIntoSID(self, Sources, Output):
         """
@@ -297,14 +299,16 @@ class Transformer(object):
         fields = Params.get("transform","set-fields").split(",")
         # check stateWrote
         for source in sources:
-            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
+            assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
         # create output folder
         Utils.cleanOutputFolder(output)
         # check state
         for source in sources:
-            assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+            assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # execute actions in order
+        source = None
+        transform = None
         if "eaccpf-to-sid" in actions:
             # load schema
             modpath = os.path.abspath(inspect.getfile(self.__class__))
@@ -334,7 +338,7 @@ class Transformer(object):
         # validate output
         try:
             schema = Params.get("transform","schema")
-            self.validate(output,schema)
+            # self.validate(output,schema)
         except:
             self.logger.debug("No schema file specified")
     
@@ -342,7 +346,7 @@ class Transformer(object):
         """
         Boost the specified field for all Solr Input Documents.
         """
-        assert os.path.exists(Source), self.logger.warning("Source documents path does not exist: " + Source)
+        assert os.path.exists(Source), self.logger.error("Source documents path does not exist: " + Source)
         files = os.listdir(Source)
         for filename in files:
             if self._isSolrInputDocument(Source + os.sep + filename):
@@ -362,13 +366,13 @@ class Transformer(object):
                     outfile.close()
                     self.logger.info("Applied boosts to " + filename)
                 except:
-                    self.logger.warning("Could not apply boosts to " + filename)
+                    self.logger.error("Could not apply boosts to " + filename)
     
     def setFieldValue(self, Source, FieldValue):
         """
         Set the specified field value for all Solr Input Documents.
         """
-        assert os.path.exists(Source), self.logger.warning("Source documents path does not exist: " + Source)
+        assert os.path.exists(Source), self.logger.error("Source documents path does not exist: " + Source)
         files = os.listdir(Source)
         parser = etree.XMLParser(remove_blank_text=True)
         for filename in files:
@@ -397,7 +401,7 @@ class Transformer(object):
                     outfile.close()
                     self.logger.info("Set fields in " + filename)
                 except:
-                    self.logger.warning("Could not set field in " + filename)
+                    self.logger.error("Could not set field in " + filename)
 
     def transformDigitalObjectsToSID(self,Sources,Output):
         """
@@ -451,6 +455,7 @@ class Transformer(object):
         Transform document to Solr Input Document format using the
         specified XSLT transform file.
         """
+        filename = ''
         try:
             # read source data
             infile = open(Source,'r')
@@ -482,7 +487,7 @@ class Transformer(object):
             outfile.close()
             self.logger.info("Transformed to Solr Input Document " + filename)
         except Exception:
-            self.logger.warning("Could not transform EAC-CPF to Solr Input Document " + filename, exc_info=True)
+            self.logger.error("Could not transform EAC-CPF to Solr Input Document " + filename, exc_info=True)
 
     def transformHtmlsToSid(self, Sources, Output):
         """
@@ -492,7 +497,7 @@ class Transformer(object):
             files = os.listdir(source)
             for filename in files:
                 path = source + os.sep + filename
-                html = HtmlPage(path)
+                html = HtmlPage.HtmlPage(path)
                 self.transformHtmlToSid(html,Output)
 
     def transformHtmlToSid(self, Html, Output):

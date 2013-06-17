@@ -187,7 +187,7 @@ class Cleaner(object):
                 outfile.close()
                 self.logger.info("Stored document " + filename)
             except Exception:
-                self.logger.warning("Could not complete processing on " + filename, exc_info=True)
+                self.logger.error("Could not complete processing on " + filename, exc_info=True)
         # return the list of processed records
         return records
 
@@ -225,8 +225,8 @@ class Cleaner(object):
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # clean data
         records = self.clean(source, output, hashIndex, Update)
         # remove records from the index that were deleted in the source

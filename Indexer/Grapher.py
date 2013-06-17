@@ -82,8 +82,8 @@ class Grapher(object):
         # make output folder
         Utils.cleanOutputFolder(output)
         # check state
-        assert os.path.exists(source), self.logger.warning("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
+        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # execute actions
         self.summarize(source, output)
         self.graph(output, gexf)

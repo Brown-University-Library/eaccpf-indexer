@@ -142,7 +142,7 @@ class Facter(object):
             # don't process it
             if 'longitude' in place and 'latitude' in place:
                 locations.append(place)
-                self.logger.warning("Record has existing location data")
+                self.logger.error("Record has existing location data")
             else:
                 # ISSUE #5 the geocoder can return multiple locations when an address is
                 # not specific enough. We create a record for each address, with the intent
@@ -196,25 +196,25 @@ class Facter(object):
                         locations = self.inferLocations(places)
                         inferred['locations'] = locations
                     except:
-                        self.logger.warning("Could not complete location processing " + filename, exc_info=True)
+                        self.logger.error("Could not complete location processing " + filename, exc_info=True)
                 if 'entities' in Actions:
                     try:
                         entities = self.inferEntitiesWithCalais(freeText)
                         inferred['entities'] = entities
                     except:
-                        self.logger.warning("Could not complete entity processing " + filename, exc_info=True)
+                        self.logger.error("Could not complete entity processing " + filename, exc_info=True)
                 if 'named-entities' in Actions:
                     try:
                         namedEntities = self.inferEntitiesWithAlchemy(freeText)
                         inferred['named-entities'] = namedEntities
                     except:
-                        self.logger.warning("Could not complete named entity processing " + filename, exc_info=True)
+                        self.logger.error("Could not complete named entity processing " + filename, exc_info=True)
                 if 'text-analysis' in Actions:
                     try:
                         textAnalysis = self.inferEntitiesWithNLTK(freeText)
                         inferred['text-analysis'] = textAnalysis
                     except:
-                        self.logger.warning("Could not complete text analysis " + filename, exc_info=True)
+                        self.logger.error("Could not complete text analysis " + filename, exc_info=True)
                 # write inferred data to file
                 Utils.writeYaml(Output, inferred_filename, inferred)
                 self.logger.info("Wrote inferred locations to " + inferred_filename)
@@ -250,8 +250,8 @@ class Facter(object):
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state before starting
-        assert os.path.exists(source), self.logger.warning("Input path does not exist: " + source)
-        assert os.path.exists(output), self.logger.warning("Output path does not exist: " + output)
+        assert os.path.exists(source), self.logger.error("Input path does not exist: " + source)
+        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:
