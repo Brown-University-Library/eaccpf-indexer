@@ -212,14 +212,17 @@ class Analyzer(object):
         assets_output = Output + os.sep + 'assets'
         templateFile = assets_input + os.sep + "index.mako"
         # copy HTML assets to the output path
-        if not Update and os.path.exists(assets_output):
-            shutil.rmtree(assets_output) # copytree won't work if there is an existing target
+        try:
+            if os.path.exists(assets_output):
+                shutil.rmtree(assets_output) # copytree won't work if there is an existing target
             shutil.copytree(assets_input + os.sep + 'assets', assets_output)
+        except:
+            pass
         # build the report
         records = []
         files = os.listdir(Source)
         files.sort()
-        # load analysis data
+        # load analysis data 
         for filename in files:
             if filename.endswith(".yml"):
                 record = Utils.readYaml(Source, filename)
