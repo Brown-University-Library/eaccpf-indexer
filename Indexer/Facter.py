@@ -142,7 +142,7 @@ class Facter(object):
             # don't process it
             if 'longitude' in place and 'latitude' in place:
                 locations.append(place)
-                self.logger.error("Record has existing location data")
+                self.logger.info("Record has existing location data")
             else:
                 # ISSUE #5 the geocoder can return multiple locations when an address is
                 # not specific enough. We create a record for each address, with the intent
