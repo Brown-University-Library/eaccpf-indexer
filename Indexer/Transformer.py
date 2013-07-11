@@ -303,8 +303,6 @@ class Transformer(object):
         # create output folder
         Utils.cleanOutputFolder(output)
         # check state
-        for source in sources:
-            assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
         assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # execute actions in order
         source = None
@@ -334,7 +332,7 @@ class Transformer(object):
             self.setFieldValue(output, fields)
         # boost fields
         if boosts:
-            self.setBoosts(source, boosts)
+            self.setBoosts(output, boosts)
         # validate output
         try:
             schema = Params.get("transform","schema")
@@ -346,7 +344,6 @@ class Transformer(object):
         """
         Boost the specified field for all Solr Input Documents.
         """
-        assert os.path.exists(Source), self.logger.error("Source documents path does not exist: " + Source)
         files = os.listdir(Source)
         for filename in files:
             if self._isSolrInputDocument(Source + os.sep + filename):
@@ -372,7 +369,6 @@ class Transformer(object):
         """
         Set the specified field value for all Solr Input Documents.
         """
-        assert os.path.exists(Source), self.logger.error("Source documents path does not exist: " + Source)
         files = os.listdir(Source)
         parser = etree.XMLParser(remove_blank_text=True)
         for filename in files:
