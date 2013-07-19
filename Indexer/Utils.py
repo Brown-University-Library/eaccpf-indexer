@@ -7,6 +7,7 @@ from lxml import etree
 import hashlib
 import os
 import shutil
+import urllib2
 import yaml
 
 
@@ -150,6 +151,23 @@ def readYaml(Path, Filename):
     yml = yaml.load(infile)
     infile.close()
     return yml
+
+def resourceExists(Resource):
+    """
+    Determine if a resource exists. The resource may be specified as a file
+    system path or URL.
+    """
+    if 'http://' in Resource or 'https://' in Resource:
+        try:
+            urllib2.urlopen(Resource)
+            return True
+        except:
+            return False
+    else:
+        if os.path.exists(Resource):
+            return True
+        else:
+            return False
 
 def tryReadYaml(Path, Filename):
     """

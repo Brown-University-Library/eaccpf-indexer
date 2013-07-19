@@ -58,7 +58,10 @@ class Crawler(object):
                             # get the eaccpf document
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
-                            src = Source + html.getEacCpfUrl().replace(Base, '')
+                            src = Source + metadata.replace(Base, '')
+                            if not Utils.resourceExists(src):
+                                msg = "Resource not available {0}".format(src)
+                                raise Exception(msg)
                             eaccpf = EacCpf(src, metadata, presentation)
                             # we will check the eaccpf document to see if its changed
                             record_filename = eaccpf.getFileName()
@@ -86,7 +89,8 @@ class Crawler(object):
                             if 'html' in Actions:
                                 html.write(Output)
                     except:
-                        self.logger.error("Could not complete processing for " + filename, exc_info=True)
+                        msg = "Could not complete processing for {0}".format(filename)
+                        self.logger.error(msg, exc_info=True)
                     finally:
                         time.sleep(Sleep)
         # return the list of processed records
