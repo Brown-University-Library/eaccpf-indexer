@@ -74,7 +74,8 @@ generate a report on the quality of the EAC-CPF that is indexed.
 
  > python indexer.py config [OPTIONS]
  >
- > --analyze    Analyze EAC-CPF for quality indicators and generate an HTML report
+ > --analyze    Analyze EAC-CPF for quality indicators and generate an HTML
+ >              report
  > --clean      Clean input files of common errors before further processing
  > --crawl      Crawl file system or web site for metadata files
  > --infer      Infer concepts, entities, locations from free text fields
@@ -87,15 +88,25 @@ Copy indexer.cfg.example into a new configuration file and edit as needed.
 Revision History
 ----------------
 
+1.5.0
+
+ > Reimplemented option to specify XML transform
+ > Generate a graph of document relations
+ > Write graph to web readable format
+
 1.4.0
 
- > Add update option to process only changed files
+ * Updated eaccfp-to-solr.xslt to account for the full note appearing
+   directly under biogHist
+ * Add update option to process only changed files
+ * Added additional logging to make it apparent when the BASE URL value is
+   incorrect, or that a resource can't be loaded
 
 1.3.3
 
- > Improve extracted relations data
- > Store hash and timestamp of all files in a hidden file, to be used with update option
- > Reimplemented option to specify XML transform
+ * Improve extracted relations data
+ * Store hash and timestamp of all files in a hidden file, to be used with
+   update option
 
 1.3.2
 
@@ -109,7 +120,8 @@ Revision History
  * Revised digital object indexing to work from EAC-CPF rather than HTML
  * Improved address component parsing 
  * First implementation of EAC-CPF Analyzer with unit tests
- * Moved some modules from source package to Python distribution, noted dependencies
+ * Moved some modules from source package to Python distribution, noted
+   dependencies
 
 1.3.0
 
@@ -134,13 +146,15 @@ Revision History
 
  * Transforms EAC-CPF to Solr Input Document format using an external XSLT file
  * Crawler appends comment to EAC-CPF xml to record source and referrer URLs
- * Removed BeautifulSoup for all applications where data is written because it doesn't respect case formatting in tag names
+ * Removed BeautifulSoup for all applications where data is written because it
+   doesn't respect case formatting in tag names
  * Merges inferred data with Solr Input Documents
  * Posts Solr Input Documents to Solr core
 
 1.1.1
 
- * Converts place names in structured fields into geographic coordinates for mapping
+ * Converts place names in structured fields into geographic coordinates for
+   mapping
  * Writes inferred data to cache folder
  * Extracts entities (people, places, things, concepts) from free text fields
 

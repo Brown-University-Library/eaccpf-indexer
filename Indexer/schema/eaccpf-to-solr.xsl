@@ -38,7 +38,15 @@
 	            <xsl:for-each select="/eac-cpf/cpfDescription/description/functions/function">
 	            	<field name="function"><xsl:value-of select="term"/></field>            
 	            </xsl:for-each>
-	            <field name="abstract"><xsl:value-of select="/eac-cpf/cpfDescription/description/biogHist/abstract" /></field>
+                <!-- abstract: will appear in /biogHist or /biogHist/abstract -->
+                <xsl:choose>
+                    <xsl:when test="/eac-cpf/cpfDescription/description/biogHist/abstract">
+                        <field name="abstract"><xsl:value-of select="/eac-cpf/cpfDescription/description/biogHist/abstract" /></field>
+                    </xsl:when>
+                    <xsl:otherwise>
+	                    <field name="abstract"><xsl:value-of select="/eac-cpf/cpfDescription/description/biogHist" /></field>
+                    </xsl:otherwise>
+                </xsl:choose>
 	        	<!-- relations -->
 	        </doc>                
         </add>
