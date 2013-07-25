@@ -492,9 +492,10 @@ class Transformer(object):
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
-                path = source + os.sep + filename
-                html = HtmlPage.HtmlPage(path)
-                self.transformHtmlToSid(html,Output)
+                if filename.endswith('htm') or filename.endswith('html'):
+                    path = source + os.sep + filename
+                    html = HtmlPage.HtmlPage(path)
+                    self.transformHtmlToSid(html, Output)
 
     def transformHtmlToSid(self, Html, Output):
         """
@@ -517,7 +518,8 @@ class Transformer(object):
             uri = data['uri']
         else:
             uri = ""
-        outfile_path = Output + os.sep + Html.getRecordId() + ".xml"
+        filename = Html.getRecordId()
+        outfile_path = Output + os.sep + filename + ".xml"
         outfile = open(outfile_path,'w')
         outfile.write("<?xml version='1.0' encoding='UTF-8'?>\n")
         outfile.write("<add>\n\t<doc>\n")

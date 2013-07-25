@@ -51,8 +51,8 @@ class Crawler(object):
             for filename in files:
                 if filename.endswith(".htm") or filename.endswith(".html"):
                     try:
-                        # if the page represents a record
                         html = HtmlPage(path + os.sep + filename, baseurl)
+                        # if the page represents a record
                         if html.hasEacCpfAlternate():
                             self.logger.debug("Record found at " + path + os.sep + filename)
                             # get the eaccpf document
@@ -88,6 +88,8 @@ class Crawler(object):
                                     dobject.write(Output, CacheRecord=cacherecord)
                             if 'html' in Actions:
                                 html.write(Output)
+                        elif 'html-all' in Actions:
+                            html.write(Output)
                     except:
                         msg = "Could not complete processing for {0}".format(filename)
                         self.logger.error(msg, exc_info=True)

@@ -5,7 +5,6 @@ LICENSE file, which is part of this source code package.
 
 from AlchemyAPI import AlchemyAPI
 from EacCpf import EacCpf
-from pythoncalais import Calais
 from geopy import *
 import Utils
 import logging
@@ -241,6 +240,7 @@ class Facter(object):
             try:
                 self.calais_api_key = Params.get("infer", "calais_api_key")
                 # create an OpenCalais object, load API key
+                from pythoncalais import Calais
                 self.calais = Calais.Calais(self.calais_api_key, submitter="University of Melbourne, eScholarship Research Centre")
                 self.calais.user_directives["allowDistribution"] = "false"
             except:

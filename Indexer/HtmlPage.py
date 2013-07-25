@@ -200,14 +200,11 @@ class HtmlPage(object):
         Get the record identifier for the record represented by the HTML page. 
         If the page does not have an identifier ID then None is returned.
         """
-        if self.hasEacCpfAlternate():
-            uri = self.getUrl()
-            filename = self._getFileName(uri)
-            name = filename.split('.')
-            return name[0]
-        else: 
-            return None
-    
+        uri = self.getUrl()
+        filename = self._getFileName(uri)
+        name = filename.split('.')
+        return name[0]
+
     def getUrl(self):
         """
         Get the document URI. If a URI has been assigned to the document, then 
@@ -250,6 +247,10 @@ class HtmlPage(object):
         Write data to the file in the specified path.
         """
         outfile = open(Path + os.sep + self.getFilename(),'w')
-        outfile.write(self.data)
+        outfile.write(str(self.data))
         outfile.close()
-        self.logger.info("Stored Html document " + self.getRecordId())
+        record = self.getRecordId()
+        if record:
+            self.logger.info("Stored HTML document " + record)
+        else:
+            self.logger.info("Stored HTML document " + self.getFilename())

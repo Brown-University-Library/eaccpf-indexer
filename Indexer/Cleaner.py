@@ -208,6 +208,7 @@ class Cleaner(object):
         Clean typical problems found in HTML files.
         """
         data = self._convertHTMLEntitiesToUnicode(Data)
+        data = data.encode('ascii','xmlcharrefreplace')
         return data
     
     def run(self, Params, Update=False):
