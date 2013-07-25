@@ -210,11 +210,13 @@ class Cleaner(object):
         data = Data
         try:
             data = self._convertHTMLEntitiesToUnicode(data)
+        except:
+            pass
+        try:
             data = data.encode('ascii','xmlcharrefreplace')
         except:
-            data = str(Data)
-        finally:
-            return data
+            data = data.encode('ascii','replace')
+        return data
     
     def run(self, Params, Update=False):
         """

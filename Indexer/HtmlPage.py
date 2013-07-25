@@ -101,7 +101,7 @@ class HtmlPage(object):
         return None
     
     def _getVisibleText(self, element):
-        """
+        """Remove all markup from the element text content and return the text.
         """
         if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
             return ''
@@ -183,16 +183,22 @@ class HtmlPage(object):
         data = {}
         data['id'] = self.getRecordId()
         data['uri'] = self.getUrl()
-        title = self.soup.find('title')
-        if title:
-            data['title'] = title.text.encode("utf-8")
+        try:
+            title = self.soup.find('title')
+            if title:
+                data['title'] = title.text.encode("utf-8")
+        except:
+            data['title'] = ''
         dctype = self.soup.find('meta',{'name':'DC.Type'})
         if dctype:
             data['type'] = dctype.text.encode("utf-8")
         # text
-        texts = self.soup.findAll(text=True)
-        visible_elements = [self._getVisibleText(elem) for elem in texts]
-        data['abstract'] = ' '.join(visible_elements)
+        try:
+            texts = self.soup.findAll(text=True)
+            visible_elements = [self._getVisibleText(elem) for elem in texts]
+            data['abstract'] = ' '.join(visible_elements)
+        except:
+            data['abstract'] = self.data
         return data
     
     def getRecordId(self):

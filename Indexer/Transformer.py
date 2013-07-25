@@ -529,4 +529,4 @@ class Transformer(object):
         outfile.write("\t\t<field name='source_uri'>" + uri + "</field>\n")
         outfile.write("\t</doc>\n</add>")
         outfile.close()
-        self.logger.info("Transformed HTML to SID " + Html.getUrl())
+        self.logger.info("Transformed HTML to SID " + filename)
