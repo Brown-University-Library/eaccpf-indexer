@@ -207,7 +207,11 @@ class Cleaner(object):
         """
         Clean typical problems found in HTML files.
         """
-        data = self._convertHTMLEntitiesToUnicode(Data)
+        data = Data
+        try:
+            data = self._convertHTMLEntitiesToUnicode(data)
+        except:
+            pass
         data = data.encode('ascii','xmlcharrefreplace')
         return data
     
