@@ -83,7 +83,7 @@ class Poster(object):
             self.logger.error("Something went wrong trying to optimize the index.")
             self.logger.error("\n%s" % resp.text)
 
-    def post(self, Source, Solr, Fields):
+    def post(self, Source, Solr):
         """
         Post Solr Input Documents in the Source directory to the Solr core if 
         they have all required fields.
@@ -100,15 +100,14 @@ class Poster(object):
         for filename in files:
             if filename.endswith(".xml"):
                 try:
-                    xml = etree.parse(Source + os.sep + filename)
-                    doc = xml.getroot()
-                    if self._hasRequiredFields(doc,Fields):
-                        data = etree.tostring(doc)
-                        resp = requests.post(url, data=data, headers=self.headers)
-                        if resp.status_code == 200:
-                            self.logger.info("Posted " + filename)
-                        else:
-                            self.logger.error("Submission of %s failed with error %s." % (filename, resp.status_code))
+                    f = open(Source + os.sep + filename)
+                    data = f.read()
+                    f.close()
+                    resp = requests.post(url, data=data, headers=self.headers)
+                    if resp.status_code == 200:
+                        self.logger.info("Posted " + filename)
+                    else:
+                        self.logger.error("Submission of %s failed with error %s." % (filename, resp.status_code))
                 except:
                     self.logger.error("Could not complete post operation for " + filename, exc_info=True)
 
@@ -120,15 +119,11 @@ class Poster(object):
         actions = Params.get("post","actions").split(",")
         index = Params.get("post","index")
         source = Params.get("post","input")
-        if Params.has_option("post", "required"):
-            required = Params.get("post","required").split(',')
-        else:
-            required = []
         # execute actions
         if 'flush' in actions:
             self.flush(index)
         if 'post' in actions:
-            self.post(source,index,required)
+            self.post(source,index)
         if 'commit' in actions:
             self.commit(index)
         if 'optimize' in actions:
