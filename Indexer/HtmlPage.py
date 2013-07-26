@@ -36,7 +36,6 @@ class HtmlPage(object):
             self.data = Data
         else:
             self.data = self._load(self.source)
-        self.id = self.getRecordId()
         self.soup = bs4(self.data)
         if BaseUrl:
             if not BaseUrl.endswith('/'):
