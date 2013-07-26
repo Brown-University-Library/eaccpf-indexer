@@ -9,7 +9,6 @@ except:
     from BeautifulSoup import BeautifulSoup as bs4
 import hashlib
 import logging
-import lxml
 import os
 import re
 import urllib2
@@ -37,6 +36,7 @@ class HtmlPage(object):
             self.data = Data
         else:
             self.data = self._load(self.source)
+        self.id = self.getRecordId()
         self.soup = bs4(self.data)
         if BaseUrl:
             if not BaseUrl.endswith('/'):
@@ -198,7 +198,9 @@ class HtmlPage(object):
             visible_elements = [self._getVisibleText(elem) for elem in texts]
             data['abstract'] = ' '.join(visible_elements)
         except:
-            data['abstract'] = self.data
+            data['abstract'] = re.sub('<[^<]+?>', '', self.data)
+            # msg = 'Could not extract text content for record {0}'.format(self.id)
+            # raise Exception(msg)
         return data
     
     def getRecordId(self):

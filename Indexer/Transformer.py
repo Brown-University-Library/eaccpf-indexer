@@ -363,7 +363,7 @@ class Transformer(object):
                     outfile.close()
                     self.logger.info("Applied boosts to " + filename)
                 except:
-                    self.logger.error("Could not apply boosts to " + filename)
+                    self.logger.error("Could not apply boosts to " + filename, exc_info=True)
     
     def setFieldValue(self, Source, FieldValue):
         """

@@ -29,13 +29,6 @@ class Cleaner(object):
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger('Cleaner')
         
-    def _convertHTMLEntitiesToUnicode(self, Text):
-        """
-        Converts HTML entities to unicode. For example '&amp;' becomes '&'.
-        """
-        Text = unicode(bs4(Text, convertEntities=bs4.ALL_ENTITIES))
-        return Text
-
     def _fixAttributeURLEncoding(self, Xml):
         """
         Where an XML tag contains an attribute with a URL in it, any 
@@ -207,15 +200,12 @@ class Cleaner(object):
         """
         Clean typical problems found in HTML files.
         """
-        data = Data
-        try:
-            data = self._convertHTMLEntitiesToUnicode(data)
-        except:
-            pass
-        try:
-            data = data.encode('ascii','xmlcharrefreplace')
-        except:
-            data = str(data)
+        data = Data.decode('utf-8')
+        # I don't like this either but it appears to be the only
+        # thing that works for some reason
+        data = data.replace('&', 'and')
+        data = data.encode('ascii','xmlcharrefreplace')
+        # data = data.encode('ascii','ignore')
         return data
     
     def run(self, Params, Update=False):
