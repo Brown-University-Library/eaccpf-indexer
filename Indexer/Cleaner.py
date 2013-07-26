@@ -215,7 +215,7 @@ class Cleaner(object):
         try:
             data = data.encode('ascii','xmlcharrefreplace')
         except:
-            data = data.encode('ascii','replace')
+            data = str(data)
         return data
     
     def run(self, Params, Update=False):
