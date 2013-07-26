@@ -3,10 +3,6 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-try:
-    from BeautifulSoup import BeautifulSoup as bs4
-except:
-    from bs4 import BeautifulSoup as bs4
 from lxml import etree
 import Utils
 import hashlib
@@ -200,12 +196,12 @@ class Cleaner(object):
         """
         Clean typical problems found in HTML files.
         """
-        data = Data.decode('utf-8')
+        # data = Data.decode('utf-8','xmlcharrefreplace')
+        # data = Data.decode('utf-8', 'ignore')
         # I don't like this either but it appears to be the only
         # thing that works for some reason
+        data = str(Data)
         data = data.replace('&', 'and')
-        data = data.encode('ascii','xmlcharrefreplace')
-        # data = data.encode('ascii','ignore')
         return data
     
     def run(self, Params, Update=False):

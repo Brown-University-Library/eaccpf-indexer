@@ -24,13 +24,6 @@ class Transformer(object):
         """
         self.logger = logging.getLogger('Transformer')
 
-    def _escapeChars(self, Text):
-        """
-        Escape characters as required for XML output.
-        """
-        Text = Text.replace(" & "," &amp; ")
-        return Text
-
     def _getFileName(self, Url):
         """
         Get the filename from the specified URI or path.
@@ -346,25 +339,27 @@ class Transformer(object):
         """
         files = os.listdir(Source)
         for filename in files:
-            if self._isSolrInputDocument(Source + os.sep + filename):
+            path = Source + os.sep + filename
+            if self._isSolrInputDocument(path):
                 try:
                     # parse the document
-                    xml = etree.parse(Source + os.sep + filename)
+                    xml = etree.parse(path)
                     for boost in Boosts:
                         fieldname, boostval = boost.split(':')
                         fields = xml.findall('//field[@name="' + fieldname + '"]')
                         for field in fields:
-                            # add the boost value
-                            field.attrib['boost']=boostval
-                    # save the updated document
-                    outfile = open(Source + os.sep + filename,'w')
+                            field.attrib['boost'] = boostval
+                    # save the document
+                    outfile = open(path, 'w')
                     data = etree.tostring(xml, pretty_print=True)
                     outfile.write(data)
                     outfile.close()
-                    self.logger.info("Applied boosts to " + filename)
+                    msg = "Set boosts: {0}".format(filename)
+                    self.logger.info(msg)
                 except:
-                    self.logger.error("Could not apply boosts to " + filename, exc_info=True)
-    
+                    msg = "Could not set boosts: {0}".format(filename)
+                    self.logger.error(msg, exc_info=True)
+
     def setFieldValue(self, Source, FieldValue):
         """
         Set the specified field value for all Solr Input Documents.
@@ -409,32 +404,35 @@ class Transformer(object):
             for filename in files:
                 if self._isDigitalObjectYaml(source + os.sep + filename):
                     path = source + os.sep + filename
-                    self.transformDigitalObjectToSID(path,Output)
-    
+                    try:
+                        self.transformDigitalObjectToSID(path,Output)
+                    except:
+                        msg = "Could not transform DObject to SID: {0}".format(filename)
+                        self.logger.error(msg, exc_info=True)
+
     def transformDigitalObjectToSID(self, Source, Output):
         """
         Transform a single digital object YAML record to Solr Input Document 
         format.
         """
-        # read input file
-        infile = open(Source,'r')
+        # read digital object data
+        infile = open(Source, 'r')
         data = yaml.load(infile.read())
         infile.close()
-        # create output data
-        xml = "<?xml version='1.0' encoding='ASCII'?>"
-        xml += "\n<add>\n\t<doc>"
-        for key in data.keys():
-            if data[key]:
-                xml += "\n\t\t<field name='" + key + "'>" + self._escapeChars(data[key]) + "</field>\n"
-        xml += "\n\t</doc>\n</add>"
-        # create a new XML Output file
+        # create SID document
+        root = etree.Element("add")
+        doc = etree.SubElement(root, "doc")
+        for key in data:
+            f = etree.SubElement(doc, "field")
+            f.text = data[key]
+        # write XML
         filename = data['id'] + ".xml"
-        outpath = Output + os.sep + filename
-        outfile = open(outpath,'w')
+        outfile = open(Output + os.sep + filename,'w')
+        xml = etree.tostring(root, pretty_print=True)
         outfile.write(xml)
         outfile.close()
-        self.logger.info("Transformed digital object YAML to SID " + filename)
-            
+        self.logger.info("Transformed DObject to SID: " + filename)
+
     def transformEacCpfsToSID(self, Sources, Output, Transform):
         """
         Transform zero or more paths containing EAC-CPF documents to Solr Input
@@ -444,46 +442,47 @@ class Transformer(object):
             files = os.listdir(source)
             for filename in files:
                 if filename.endswith(".xml"):
-                    self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
-    
+                    try:
+                        self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
+                    except Exception:
+                        msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
+                        self.logger.error(msg, exc_info=True)
+
     def transformEacCpfToSID(self, Source, Output, Transform):
         """
         Transform document to Solr Input Document format using the
         specified XSLT transform file.
         """
-        filename = ''
-        try:
-            # read source data
-            infile = open(Source,'r')
-            data = infile.read()
-            infile.close()
-            # ISSUE #4: remove namespaces in the XML document before transforming
-            data = self._removeNameSpaces(data)
-            # create document tree
-            xml = etree.XML(data)
-            # transform the document
-            result = Transform(xml)
-            # get the doc element
-            sid = result.find('doc')
-            # get the document source and referrer values from the embedded comment
-            _, meta_val, pres_val = self._getSourceAndReferrerValues(Source)
-            # append the source and referrer values to the SID
-            if meta_val:
-                src_field = etree.Element('field',name='metadata_url')
-                src_field.text = meta_val
-                sid.append(src_field)
-            if pres_val:
-                ref_field = etree.Element('field',name='presentation_url')
-                ref_field.text = pres_val
-                sid.append(ref_field)
-            # write the output file
-            filename = self._getFileName(Source)
-            outfile = open(Output + os.sep + filename, 'w')
-            result.write(outfile, pretty_print=True, xml_declaration=True)
-            outfile.close()
-            self.logger.info("Transformed to Solr Input Document " + filename)
-        except Exception:
-            self.logger.error("Could not transform EAC-CPF to Solr Input Document " + filename, exc_info=True)
+        # read source data
+        infile = open(Source,'r')
+        data = infile.read()
+        infile.close()
+        # ISSUE #4: remove namespaces in the XML document before transforming
+        data = self._removeNameSpaces(data)
+        # create document tree
+        xml = etree.XML(data)
+        # transform the document
+        result = Transform(xml)
+        # get the doc element
+        sid = result.find('doc')
+        # get the document source and referrer values from the embedded comment
+        _, meta_val, pres_val = self._getSourceAndReferrerValues(Source)
+        # append the source and referrer values to the SID
+        if meta_val:
+            src_field = etree.Element('field',name='metadata_url')
+            src_field.text = meta_val
+            sid.append(src_field)
+        if pres_val:
+            ref_field = etree.Element('field',name='presentation_url')
+            ref_field.text = pres_val
+            sid.append(ref_field)
+        # write the output file
+        filename = self._getFileName(Source)
+        outfile = open(Output + os.sep + filename, 'w')
+        result.write(outfile, pretty_print=True, xml_declaration=True)
+        outfile.close()
+        msg = "Transformed to SID: {0}".format(filename)
+        self.logger.info(msg)
 
     def transformHtmlsToSid(self, Sources, Output):
         """
@@ -495,38 +494,30 @@ class Transformer(object):
                 if filename.endswith('htm') or filename.endswith('html'):
                     path = source + os.sep + filename
                     html = HtmlPage.HtmlPage(path)
-                    self.transformHtmlToSid(html, Output)
+                    try:
+                        self.transformHtmlToSid(html, Output)
+                    except:
+                        msg = "Could not transform HTML to SID: {0}".format(filename)
+                        self.logger.error(msg)
 
     def transformHtmlToSid(self, Html, Output):
         """
-        Transform HTML to Solr Input Document format.
+        Transform HTML document to Solr Input Document.
         """
         data = Html.getHtmlIndexContent()
-        if 'abstract' in data:
-            abstract = data['abstract']
-        else:
-            abstract = ""
-        if 'id' in data:
-            recordid = data['id']
-        else:
-            recordid = "unknown"
-        if 'title' in data:
-            title = data['title']
-        else:
-            title = ""
-        if 'uri' in data:
-            uri = data['uri']
-        else:
-            uri = ""
-        filename = Html.getRecordId()
-        outfile_path = Output + os.sep + filename + ".xml"
-        outfile = open(outfile_path,'w')
-        outfile.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-        outfile.write("<add>\n\t<doc>\n")
-        outfile.write("\t\t<field name='abstract'>" + abstract + "</field>\n")
-        outfile.write("\t\t<field name='id'>" + recordid + "</field>\n")
-        outfile.write("\t\t<field name='title'>" + title + "</field>\n")
-        outfile.write("\t\t<field name='source_uri'>" + uri + "</field>\n")
-        outfile.write("\t</doc>\n</add>")
+        filename = Html.getFilename()
+        record_id = Html.getRecordId()
+        # create XML document
+        root = etree.Element("add")
+        doc = etree.SubElement(root, "doc")
+        for key in data:
+            f = etree.SubElement(doc, "field")
+            f.attrib['name'] = key
+            f.text = data[key]
+        # write XML
+        outfile = open(Output + os.sep + record_id + ".xml", 'w')
+        xml = etree.tostring(root, pretty_print=True)
+        outfile.write(xml)
         outfile.close()
-        self.logger.info("Transformed HTML to SID " + filename)
+        msg = "Transformed HTML to SID: {0}".format(filename)
+        self.logger.info(msg)

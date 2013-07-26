@@ -9,6 +9,7 @@ except:
     from bs4 import BeautifulSoup as bs4
 from DigitalObject import DigitalObject
 from lxml import etree
+
 import Utils
 import hashlib
 import logging

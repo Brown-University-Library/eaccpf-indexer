@@ -3,10 +3,6 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-try:
-    from BeautifulSoup import BeautifulSoup as bs4
-except:
-    from bs4 import BeautifulSoup as bs4
 from EacCpf import EacCpf
 from StringIO import StringIO
 from datetime import datetime
@@ -46,14 +42,14 @@ class Analyzer(object):
             self.logger.info("Loaded schema file " + schema)
             self.parser = etree.XMLParser(schema=xmlschema)
         except Exception:
-            self.logger.critical("Could not load schema file " + schema)
+            self.logger.error("Could not load schema file " + schema)
 
     def _getResourceRelations(self, Data):
         """
         Get a list of resource relations.
         """
-        soup = bs4(Data)
-        relations = soup.find('relations')
+        tree = etree.parse(Data)
+        relations = tree.findall('//relations')
         return relations.findChildren()
 
     def _getResourceRelationsCount(self, Data):

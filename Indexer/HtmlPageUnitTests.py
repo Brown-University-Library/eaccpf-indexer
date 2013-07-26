@@ -184,13 +184,14 @@ class HtmlPageUnitTests(unittest.TestCase):
                  ]
         files = os.listdir(path)
         for base in bases:
-            if not base.endswith('/'):
-                myurl = base + '/'
             for filename in files:
                 html = HtmlPage.HtmlPage(path + os.sep + filename, base)
                 url = html.getUrl()
                 fn = html.getFilename()
-                self.assertEqual(url, myurl + fn)
+                if not base.endswith('/'):
+                    base = base + '/'
+                self.assertEqual(filename, fn)
+                self.assertEqual(url, base + fn)
 
     def test_getRecordId(self):
         """
@@ -198,11 +199,10 @@ class HtmlPageUnitTests(unittest.TestCase):
         or that have an EAC-CPF alternate representation.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/" : None,                            # region home case
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "NE00200b",    # organization case
                  "http://www.findandconnect.gov.au/nsw/objects/ND0000171.htm" : "ND0000171",# image
                  "http://www.findandconnect.gov.au/vic/objects/D00000342.htm" : "D00000342",# VIDEO digital object
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": None,                 # browse case
+                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": "browse_h",                 # browse case
                  }
         for case in cases:
             html = HtmlPage.HtmlPage(case)

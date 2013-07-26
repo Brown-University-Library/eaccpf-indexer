@@ -3,12 +3,12 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from HtmlPage import HtmlPage
+
 import logging
 import os
 import urlparse
 import yaml
-
-from HtmlPage import HtmlPage
 
 
 class DigitalObject(object):

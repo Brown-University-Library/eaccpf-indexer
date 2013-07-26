@@ -3,12 +3,10 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-try:
-    from bs4 import BeautifulSoup as bs4
-except:
-    from BeautifulSoup import BeautifulSoup as bs4
+import codecs
 import hashlib
 import logging
+import lxml.html
 import os
 import re
 import urllib2
@@ -22,7 +20,7 @@ class HtmlPage(object):
     provides convenience methods for extracting required metadata.
     """
 
-    def __init__(self, Source, BaseUrl=None, Data=None):
+    def __init__(self, Source, BaseUrl=None):
         """
         Source is a file system path or URL to the document. URL is an 
         optional argument specified when the document is being indexed from a 
@@ -31,23 +29,18 @@ class HtmlPage(object):
         ignored.
         """
         self.logger = logging.getLogger('HtmlPage')
+        self.base = BaseUrl
+        self.data = self._load(Source)
+        self.filename = self._getFileName(Source)
         self.source = Source
-        if Data:
-            self.data = Data
-        else:
-            self.data = self._load(self.source)
-        self.soup = bs4(self.data)
-        if BaseUrl:
-            if not BaseUrl.endswith('/'):
-                BaseUrl = BaseUrl + '/'
-            filename = self._getFileName(Source)        
-            self.url = BaseUrl + filename
+        self.tree = lxml.html.parse(Source)
+        self.url = self._getUrl()
 
     def _getAbsoluteUrl(self,Base,Path):
         """
         Get the absolute URL for a path.
         """
-        url = urlparse.urljoin(Base,Path)
+        url = urlparse.urljoin(Base, Path)
         return url.replace(' ','%20')
         
     def _getDocumentParentPath(self, Path):
@@ -98,7 +91,35 @@ class HtmlPage(object):
             if field:
                 return field.text.encode("utf8")
         return None
-    
+
+    def _getUrl(self):
+        """
+        Determine the public document URL from the data that has been provided.
+        If a source URI has been assigned to the document, then use that as the
+        default. If not, attempt to extract the DC.Identifier value from the
+        HTML meta tag. If that is not available, use the base URL value plus
+        file name.
+        """
+        # if the source is a URL then use that
+        if 'http://' in self.source or 'https://' in self.source:
+            return self.source
+        # try to get the URL from the DC.Identifier value in the document
+        try:
+            tags = self.tree.findall('//meta')
+            for tag in tags:
+                if 'name' in tag.attrib and tag.attrib['name'] == 'DC.Identifier':
+                    uri = tag.attrib['content']
+                    return uri.replace(' ','%20')
+        except:
+            pass
+        # else, construct it from the base value + filename
+        if self.base and not self.base.endswith('/'):
+            return self.base + '/' + self.filename
+        if self.base:
+            return self.base + self.filename
+        # the fall back is the use the filename
+        return self.filename
+
     def _getVisibleText(self, element):
         """Remove all markup from the element text content and return the text.
         """
@@ -133,9 +154,10 @@ class HtmlPage(object):
     def getDigitalObjectUrl(self):
         """
         Get the URL to the digital object representation.
+        @todo UPDATE THOS F
         """
         try:
-            thumbnail = self.soup.find('div',{'class':'image-caption'}).find('a').find('img')
+            thumbnail = self.tree.find('div',{'class':'image-caption'}).find('a').find('img')
             if thumbnail:
                 url = thumbnail['src']
                 if 'http' in url:
@@ -152,13 +174,14 @@ class HtmlPage(object):
         """
         Get the URL to the EAC-CPF alternate representation of this page.
         """
-        meta = self.soup.findAll('meta', {'name':'EAC'})
         try:
-            # we need to deal with relative URLs in this reference
-            # by appending the parent directory path
-            return str(meta[0].get('content'))
+            tags = self.tree.findall('//meta')
+            for tag in tags:
+                if 'name' in tag.attrib and tag.attrib['name'] == 'EAC':
+                    return tag.text
         except:
-            return None
+            pass
+        return None
 
     def getFilename(self):
         """
@@ -180,66 +203,74 @@ class HtmlPage(object):
         Extract HTML metadata and content for indexing.
         """
         data = {}
-        data['id'] = self.getRecordId()
-        data['uri'] = self.getUrl()
-        try:
-            title = self.soup.find('title')
-            if title:
-                data['title'] = title.text.encode("utf-8")
-        except:
-            data['title'] = ''
-        dctype = self.soup.find('meta',{'name':'DC.Type'})
-        if dctype:
-            data['type'] = dctype.text.encode("utf-8")
-        # text
-        try:
-            texts = self.soup.findAll(text=True)
-            visible_elements = [self._getVisibleText(elem) for elem in texts]
-            data['abstract'] = ' '.join(visible_elements)
-        except:
-            data['abstract'] = re.sub('<[^<]+?>', '', self.data)
-            # msg = 'Could not extract text content for record {0}'.format(self.id)
-            # raise Exception(msg)
+        _id = self.getRecordId()
+        _uri = self.getUrl()
+        _title = self.getTitle()
+        _type = self.getType()
+        _text = self.getText()
+        data['id'] = '' if _id is None else _id
+        data['uri'] = '' if _uri is None else _uri
+        data['title'] = '' if _title is None else _title
+        data['type'] = '' if _type is None else _type
+        data['text'] = '' if _text is None else _text
         return data
     
     def getRecordId(self):
         """
-        Get the record identifier for the record represented by the HTML page. 
-        If the page does not have an identifier ID then None is returned.
+        Older HTML record pages do not have EAC-CPF alternate representations,
+        and have no consistently identifying metadata attributes. Consequently,
+        we will always return a page record id as the filename without the
+        extension.
         """
-        uri = self.getUrl()
-        filename = self._getFileName(uri)
-        name = filename.split('.')
+        name = self.filename.split('.')
         return name[0]
+
+    def getText(self):
+        """
+        Get body text with tags stripped out.
+        """
+        text = re.sub('<[^<]+?>', '', self.data)
+        text = text.replace('\r\n', ' ')
+        return text.replace('\t', ' ')
+
+    def getTitle(self):
+        """
+        Get the document title.
+        """
+        try:
+            title = self.tree.findall('//title')
+            return title[0].text
+        except:
+            pass
+        return None
+
+    def getType(self):
+        """
+        Get the record entity type.
+        """
+        try:
+            tags = self.tree.findall('//meta')
+            for tag in tags:
+                if 'name' in tag.attrib and tag.attrib['name'] == 'DC.Type':
+                    return tag.attrib['content']
+        except:
+            pass
+        return None
 
     def getUrl(self):
         """
-        Get the document URI. If a URI has been assigned to the document, then 
-        use that as the default. If not, attempt to extract the DC.Identifier 
-        value from the HTML meta tag. Return None if nothing is found.
+        Get the document URI.
         """
-        if hasattr(self, 'url'):
-            return self.url
-        else:
-            meta = self.soup.findAll('meta', {'name':'DC.Identifier'})
-            try:
-                uri = meta[0].get('content')
-                return uri.replace(' ','%20').encode("utf-8")
-            except:
-                return None
-    
+        return self.url
+
     def hasEacCpfAlternate(self):
         """
         Determine if this page has an EAC-CPF alternate representation.
         """
-        meta = self.soup.findAll('meta', {'name':'EAC'})
-        try:
-            alt = meta[0].get('content')
-            if alt:
-                return True
-            return False
-        except:
-            return False
+        url = self.getEacCpfUrl()
+        if url:
+            return True
+        return False
 
     def hasRecord(self):
         """
@@ -251,13 +282,10 @@ class HtmlPage(object):
     
     def write(self, Path):
         """
-        Write data to the file in the specified path.
+        Write document to the specified path.
         """
-        outfile = open(Path + os.sep + self.getFilename(),'w')
-        outfile.write(str(self.data))
+        outfile = codecs.open(Path + os.sep + self.getFilename(), 'w', 'utf-8')
+        outfile.write(self.data)
         outfile.close()
-        record = self.getRecordId()
-        if record:
-            self.logger.info("Stored HTML document " + record)
-        else:
-            self.logger.info("Stored HTML document " + self.getFilename())
+        msg = "Stored HTML document {0}".format(self.filename)
+        self.logger.info(msg)
