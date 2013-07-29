@@ -154,7 +154,7 @@ class HtmlPage(object):
     def getDigitalObjectUrl(self):
         """
         Get the URL to the digital object representation.
-        @todo UPDATE THOS F
+        @todo finish this!!!! its a remenant of BeautifulSoup
         """
         try:
             thumbnail = self.tree.find('div',{'class':'image-caption'}).find('a').find('img')
