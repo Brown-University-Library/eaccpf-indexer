@@ -42,37 +42,6 @@ class EacCpfUnitTests(unittest.TestCase):
             self.assertNotEqual(doc, None)
             self.assertNotEqual(doc.data, None)
 
-    def test__getFilename(self):
-        """
-        It should return the file name from the URL.
-        """
-        cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205.xml',
-                  }
-        for case in cases:
-            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
-            filename = doc.getFileName()
-            self.assertNotEqual(filename, None)
-            self.assertEquals(filename,cases[case])
-    
-    def test__getId(self):
-        """
-        It should return the entity identifier from the URL or filename.
-        """
-        cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
-                  }
-        for case in cases:
-            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
-            self.assertNotEqual(doc, None)
-            self.assertEquals(doc.getRecordId(),cases[case])
-
     def test_getAbstract(self):
         """
         It should return the content of description/biogHist/abstract.
@@ -87,7 +56,7 @@ class EacCpfUnitTests(unittest.TestCase):
             doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
             self.assertNotEqual(doc, None)
             abstract = doc.getAbstract()
-            self.assertNotEqual(abstract,None)
+            self.assertNotEqual(abstract, None)
 
     def test_getDigitalObject(self):
         """
@@ -163,6 +132,22 @@ class EacCpfUnitTests(unittest.TestCase):
             self.assertEqual(fromDate,expectFromDate)
             self.assertEqual(toDate,expectToDate)
 
+    def test_getFilename(self):
+        """
+        It should return the file name from the URL.
+        """
+        cases = {
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416.xml',
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123.xml',
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203.xml',
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205.xml',
+                  }
+        for case in cases:
+            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
+            filename = doc.getFileName()
+            self.assertNotEqual(filename, None)
+            self.assertEquals(filename,cases[case])
+
     def test_getFunctions(self):
         """
         It should get the record functions.
@@ -178,6 +163,21 @@ class EacCpfUnitTests(unittest.TestCase):
             functions = doc.getFunctions()
             self.assertNotEqual(functions,None)
             self.assertEqual(len(functions),cases[case])
+
+    def test_getId(self):
+        """
+        It should return the entity identifier from the URL or filename.
+        """
+        cases = {
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
+                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
+                  }
+        for case in cases:
+            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
+            self.assertNotEqual(doc, None)
+            self.assertEquals(doc.getRecordId(),cases[case])
 
     def test_getLocalType(self):
         """
@@ -226,7 +226,9 @@ class EacCpfUnitTests(unittest.TestCase):
                  "E000005.xml": True,
                  "E000006.xml": True,
                  }
-        for filename in os.listdir(self.path):
+        files = os.listdir(self.path)
+        files.sort()
+        for filename in files:
             if filename in cases:
                 doc = EacCpf(self.path + os.sep + filename,'http://www.findandconnect.gov.au')
                 self.assertNotEqual(doc,None)

@@ -3,10 +3,6 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-try:
-    from BeautifulSoup import BeautifulSoup as bs4
-except:
-    from bs4 import BeautifulSoup as bs4
 from DigitalObject import DigitalObject
 from lxml import etree
 
@@ -41,8 +37,9 @@ class EacCpf(object):
             self.data = Data
         else:
             self.data = self._load(Source)
-        self.soup = bs4(self.data)
         self.xml = etree.fromstring(self.data)
+        self.ns = { "doc": "urn:isbn:1-931666-33-4",
+        }
 
     def _getTagString(self, Tag):
         """
@@ -82,115 +79,125 @@ class EacCpf(object):
         Get document abstract.
         """
         try:
-            return str(self.soup.find('description').find('bioghist').find('abstract').string)
+            abstract = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:abstract", namespaces=self.ns)
+            if abstract:
+                return abstract[0].text
         except:
-            return ''
-        
+            pass
+        return None
+
+    def getBiogHist(self):
+        """
+        Get the non-abstract portion of the biogHist entry.
+        """
+        try:
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:p", namespaces=self.ns)
+            if val:
+                ps = []
+                for p in val:
+                    ps.append(p.text)
+                return ' '.join(ps)
+        except:
+            pass
+        return None
+
     def getCpfRelations(self):
         """
         Get list of CPF relations.
         """
+        relations = []
         try:
-            relations = []
-            cpfr = self.soup.findAll('cpfrelation')
-            for rel in cpfr:
-                relation = {}
-                for attr, val in rel.attrs:
-                    if attr == 'cpfrelationtype':
-                        relation['type'] = str(rel['cpfrelationtype'])
-                    elif attr == 'xlink:type':
-                        relation['xlink:type'] = str(rel['xlink:type'])
-                    elif attr == 'xlink:href':
-                        relation['xlink:href'] = str(rel['xlink:href'])
-                relationEntry = rel.find('relationentry')
-                if relationEntry:
-                    relation['relationentry'] = str(relationEntry.text)
-                    relation['relationentry_localtype'] = str(relationEntry['localtype'])
-                note = rel.find('descriptivenote')
-                if note:
-                    relation['descriptivenote'] = str(rel.find('descriptivenote').text)
-                relations.append(relation)
-            return relations
+            cpfr = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation", namespaces=self.ns)
+            if cpfr:
+                for rel in cpfr:
+                    relations.append(rel)
         except:
-            return []
-        
-    def getDigitalObject(self, Record, Thumbnail=False):
-        """
-        Transform the metadata contained in the HTML page to an intermediate 
-        YML digital object representation.
-        """
-        try:
-            # if the resource contains a relationEntry with localType attribute = 'digitalObject'
-            entry = Record.find('relationentry', {'localtype':'digitalObject'})
-            if entry:
-                if Thumbnail:
-                    note = Record.find('descriptivenote')
-                    # if the entry does not have a descriptiveNote or the descriptiveNote
-                    # does not contain the string "<p>Include in Gallery</p>", then it is
-                    # not a thumbnail for this record
-                    if not note or not "Include in Gallery" in note.text:
-                        return None
-                presentation = Record['xlink:href'].encode("utf-8")
-                title = str(entry.string)
-                abstract = self._getTagString(Record.find('abstract'))
-                entitytype = self.getEntityType()
-                localtype = self.getLocalType()
-                # @todo location
-                unitdate = self._getTagString(Record.find('unitdate'))
-                dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, entitytype, localtype, unitdate)
-                return dobj
-            # no digital object found
-            return None
-        except:
-            return None
+            pass
+        return relations
 
     def getDigitalObjects(self, Thumbnail=False):
         """
         Get the list of digital objects referenced in the document.
+        Transform the metadata contained in the HTML page to an intermediate
+        YML digital object representation.
         """
         dobjects = []
-        resources = self.soup.findAll('resourcerelation')
-        for resource in resources:
-            dobject = self.getDigitalObject(resource, Thumbnail)
-            if dobject:
-                dobjects.append(dobject)
+        rels = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)
+        for rel in rels:
+            try:
+                if 'resourceRelationType' in rel.attrib and rel.attrib['resourceRelationType'] == 'other':
+                    relEntry = rel.xpath("./doc:relationEntry", namespaces=self.ns)
+                    descNote = rel.xpath("./doc:descriptiveNote/doc:p", namespaces=self.ns)
+                    if relEntry and descNote and 'localType' in relEntry[0].attrib and relEntry[0].attrib['localType'] == 'digitalObject':
+                        # if the descriptiveNote does not contain the string "<p>Include in Gallery</p>",
+                        # then it is not a thumbnail for this record
+                        if Thumbnail and not "Include in Gallery" in descNote[0].text:
+                            continue
+                        title = relEntry[0].text
+                        presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']
+                        nz = {
+                            "doc": "urn:isbn:1-931666-33-4",
+                            "obj": "urn:isbn:1-931666-22-9",
+                        }
+                        abstract = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
+                        if abstract:
+                            abstract = abstract[0].text
+                        entitytype = self.getEntityType()
+                        localtype = self.getLocalType()
+                        unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
+                        if unitdate:
+                            unitdate = unitdate[0].text
+                        dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, entitytype, localtype, unitdate)
+                        dobjects.append(dobj)
+            except:
+                pass
         return dobjects
-    
+
     def getEntityId(self):
         """
-        Get the record entity Id
+        Get the record entity Id. If a value can not be found None is returned.
         """
         try:
-            val = self.soup.find('identity').find('entityid').string
-            return str(val)
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId", namespaces=self.ns)
+            if val:
+                return val[0].text
         except:
-            return None
-    
+            pass
+        return None
+
     def getEntityType(self):
         """
         Get the entity type.
         """
         try:
-            val = self.soup.find('entitytype').string
-            return str(val)
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType", namespaces=self.ns)
+            if val:
+                return val[0].text
         except:
-            return None
+            pass
+        return None
 
     def getExistDates(self):
         """
         Get entity exist dates. Returns 'from date', 'to date' list.
         """
         try:
-            existDates = self.soup.find('existdates')
-            fromDate = existDates.find('daterange').find('fromdate')
-            toDate = existDates.find('daterange').find('todate')
-            if fromDate and 'standarddate' in dict(fromDate.attrs):
-                fromDate = fromDate['standarddate']
-            if toDate and 'standarddate' in dict(toDate.attrs):
-                toDate = toDate['standarddate']
-            return fromDate, toDate
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates", namespaces=self.ns)
+            if val:
+                fromDate = val[0].xpath("./doc:dateRange/doc:fromDate", namespaces=self.ns)
+                toDate = val[0].xpath("./doc:dateRange/doc:toDate", namespaces=self.ns)
+                if fromDate and len(fromDate) > 0 and 'standardDate' in fromDate[0].attrib:
+                    fromDate = fromDate[0].attrib['standardDate']
+                else:
+                    fromDate = None
+                if toDate and len(toDate) > 0 and 'standardDate' in toDate[0].attrib:
+                    toDate = toDate[0].attrib['standardDate']
+                else:
+                    toDate = None
+                return fromDate, toDate
         except:
-            return None
+            pass
+        return None, None
 
     def getFileName(self):
         """
@@ -206,50 +213,37 @@ class EacCpf(object):
         Get content from free text fields.
         """
         freeText = ''
-        # /eac-cpf/identity/nameEntry/part
-        try:
-            parts = self.soup.find('nameentry').findAll('part')
-            for p in parts:
-                freeText += Utils.cleanText(p.getString())
-        except:
-            pass
-        # /eac-cpf/description/biogHist/abstract
-        try:
-            abstract = self.soup.find('bioghist').find('abstract')
-            freeText += Utils.cleanText(abstract.getText())
-        except:
-            pass
-        # /eac-cpf/description/biogHist/p
-        try:
-            ps = self.soup.find('bioghist').findAll('p')
-            for p in ps:
-                freeText += Utils.cleanText(p.getString())
-        except:
-            pass
-        # /eac-cpf/description/function/descNote/p
-        try:
-            functions = self.soup.find('function').findAll('p')
-            for f in functions:
-                freeText += Utils.cleanText(f.getString())
-        except:
-            pass
-        # return
+        names = self.getNameEntries()
+        if names:
+            for name in names:
+                freeText += name + ' '
+        abstract = self.getAbstract()
+        if abstract:
+            freeText += self.getAbstract() + ' '
+        biog = self.getBiogHist()
+        if biog:
+            freeText += biog + ' '
+        functions = self.getFunctions()
+        if functions:
+            for func in functions:
+                freeText += func + ' '
         return freeText
 
     def getFunctions(self):
         """
         Get the functions.
         """
-        functions = self.soup.findAll('function')
-        result = []
-        for function in functions:
-            try:
-                term = function.find("term")
-                result.append(str(term.string))
-            except:
-                pass
-        return result
-    
+        try:
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function/doc:term", namespaces=self.ns)
+            if val:
+                functions = []
+                for func in val:
+                    functions.append(func.text)
+                return functions
+        except:
+            pass
+        return None
+
     def getHash(self):
         """
         Get a secure hash for the content in hexadecimal format.
@@ -263,10 +257,12 @@ class EacCpf(object):
         Get the local type.
         """
         try:
-            ltype = self.soup.find('localcontrol').find('term')
-            return ltype.string.encode("utf-8")
+            val = self.xml.xpath("//doc:eac-cpf/doc:control/doc:localControl/doc:term", namespaces=self.ns)
+            if val:
+                return val[0].text
         except:
-            return None
+            pass
+        return None
 
     def getLocations(self):
         """
@@ -274,31 +270,29 @@ class EacCpf(object):
         """
         locations = []
         try:
-            chronItems = self.soup.findAll('chronitem')
+            chronItems = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:chronList/doc:chronItem", namespaces=self.ns)
             for chronItem in chronItems:
                 location = {}
-                dateRange = chronItem.find('daterange')
-                placeEntry = chronItem.find('placeentry')
-                event = chronItem.find('event')
-                if dateRange:
-                    fromDate = dateRange.find('fromdate')
-                    toDate = dateRange.find('todate')
-                    if fromDate and 'standarddate' in dict(fromDate.attrs):
-                        fromDate = fromDate['standarddate']
-                        fromDate = Utils.fixIncorrectDateEncoding(fromDate)
-                    if toDate and 'standarddate' in dict(toDate.attrs):
-                        toDate = toDate['standarddate']
-                        toDate = Utils.fixIncorrectDateEncoding(toDate)
-                    location['fromDate'] = str(fromDate)
-                    location['toDate'] = str(toDate)
+                fromDate = chronItem.xpath("./doc:dateRange/doc:fromDate", namespaces=self.ns)
+                toDate = chronItem.xpath("./doc:dateRange/doc:toDate", namespaces=self.ns)
+                if fromDate and len(fromDate) > 0 and 'standardDate' in fromDate[0].attrib:
+                    fromDate = fromDate[0].attrib['standardDate']
+                    fromDate = Utils.fixIncorrectDateEncoding(fromDate)
+                    location['fromDate'] = fromDate
+                if toDate and len(toDate) and 'standardDate' in toDate[0].attrib:
+                    toDate = toDate[0].attrib['standardDate']
+                    toDate = Utils.fixIncorrectDateEncoding(toDate)
+                    location['toDate'] = toDate
+                placeEntry = chronItem.xpath("./doc:placeEntry", namespaces=self.ns)
                 if placeEntry:
-                    location['placeentry'] = str(placeEntry.text)
-                    if 'latitude' in dict(placeEntry.attrs):
-                        location['latitude'] = placeEntry['latitude']
-                    if 'longitude' in dict(placeEntry.attrs):
-                        location['longitude'] = placeEntry['longitude']
+                    location['placeentry'] = placeEntry[0].text
+                    if 'latitude' in placeEntry[0].attrib:
+                        location['latitude'] = placeEntry[0].attrib['latitude']
+                    if 'longitude' in placeEntry[0].attrib:
+                        location['longitude'] = placeEntry[0].attrib['longitude']
+                event = chronItem.xpath("./doc:event", namespaces=self.ns)
                 if event:
-                    location['event'] = str(event.text)
+                    location['event'] = event[0].text
                 locations.append(location)
         except:
             pass
@@ -318,77 +312,71 @@ class EacCpf(object):
         except:
             return None
 
+    def getNameEntries(self):
+        """
+        Get name entry.
+        """
+        try:
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part", namespaces=self.ns)
+            if val:
+                names = []
+                for part in val:
+                    names.append(part)
+                return names
+        except:
+            pass
+        return None
+
     def getPresentationUrl(self):
         """
         Get the URL to the HTML presentation of the EAC-CPF document.
         """
+        if self.presentation:
+            return self.presentation
         try:
-            if self.presentation:
-                return self.presentation
-            else:
-                entityid = self.soup.find('entityid')
-                url = entityid.text
-                return str(url)
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId", namespaces=self.ns)
+            if val:
+                return val[0].text
         except:
-            return None
+            pass
+        return None
 
     def getRecordId(self):
         """
         Get the record identifier.
-        @todo the identifier should come from the data rather than the file name
         """
         try:
-            record = self.soup.find("recordid")
-            if record:
-                return record.text
-            return None
+            val = self.xml.xpath("//doc:eac-cpf/doc:control/doc:recordId", namespaces=self.ns)
+            if val:
+                return val[0].text
         except:
-            return None
+            pass
+        return None
 
     def getResourceRelations(self):
         """
         Get list of resource relations.
         """
+        relations = []
         try:
-            relations = []
-            rels = self.soup.findAll('resourcerelation')
-            for rel in rels:
-                relation = {}
-                for attr, val in rel.attrs:
-                    if attr == 'resourcerelationtype':
-                        relation['type'] = str(rel['resourcerelationtype'])
-                    elif attr == 'xlink:type':
-                        relation['xlink:type'] = str(rel['xlink:type'])
-                    elif attr == 'xlink:href':
-                        relation['xlink:href'] = str(rel['xlink:href'])
-                relationEntry = rel.find('relationentry')
-                if relationEntry:
-                    relation['relationentry'] = str(relationEntry.text)
-                    relation['relationentry_localtype'] = str(relationEntry['localtype'])
-                note = rel.find('descriptivenote')
-                if note:
-                    relation['descriptivenote'] = str(rel.find('descriptivenote').text)
-                relations.append(relation)
-            return relations
+            val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)
+            if val:
+                for rel in val:
+                    relations.append(rel)
         except:
-            return []
-    
+            pass
+        return relations
+
     def getTitle(self):
         """
         Get the record title.
         """
-        try:
-            identity = self.soup.find('identity')
-            nameentry = identity.find('nameentry')
-            nameparts = nameentry.findAll('part')
-            if nameparts:
-                title = ''
-                for part in nameparts:
-                    title = title + part.string + ' '
-                return str(title)
-        except:
-            return None
-    
+        names = self.getNameEntries()
+        title = ''
+        for name in names:
+            title += name + ' '
+        return title[:-1]
+
     def getThumbnail(self):
         """
         Get the digital object that acts as a thumbnail image for this record.
@@ -422,27 +410,22 @@ class EacCpf(object):
         Determine if the record has a maintenance history section.
         """
         try:
-            events = self.soup.find('control').find('maintenancehistory').findAll('maintenanceevent')
-            if len(events) > 0:
+            val = self.xml.xpath("//doc:eac-cpf/doc:control/doc:maintenanceHistory/doc:maintenanceEvent", namespaces=self.ns)
+            if val and len(val) > 0:
                 return True
-            return False
         except:
-            return False
+            pass
+        return False
 
     def hasResourceRelations(self):
         """
         Determine if the record has one or more resource relations.
         """
-        try:
-            rels = self.soup.find('relations')
-            if rels:
-                cpf = rels.findAll('cpfrelation')
-                rrel = rels.findAll('resourcerelation')
-                if len(cpf) + len(rrel) > 0:
-                    return True
-            return False
-        except:
-            return False
+        cr = self.getCpfRelations()
+        rr = self.getResourceRelations()
+        if cr and rr and len(cr) > 0 and len(rr) > 0:
+            return True
+        return False
 
     def write(self, Path):
         """

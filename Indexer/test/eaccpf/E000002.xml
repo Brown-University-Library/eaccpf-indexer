@@ -119,12 +119,10 @@ The Who Am I? Project (2009 - 2012)
 </bibref>
 </objectXMLWrap>
 </resourceRelation>
-<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000013.htm">
-<relationEntry localType="digitalObject">CRISSP Forum for Senior Sector Managers and DHS, Notes</relationEntry>
 
-<descriptiveNote>
-<p>Include in Gallery</p>
-</descriptiveNote>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000013.htm">
+    <relationEntry localType="digitalObject">CRISSP Forum for Senior Sector Managers and DHS, Notes</relationEntry>
+    <descriptiveNote><p>Include in Gallery</p></descriptiveNote>
 
 <objectXMLWrap>
 <archref xmlns="urn:isbn:1-931666-22-9">
