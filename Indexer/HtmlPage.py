@@ -178,7 +178,7 @@ class HtmlPage(object):
             tags = self.tree.findall('//meta')
             for tag in tags:
                 if 'name' in tag.attrib and tag.attrib['name'] == 'EAC':
-                    return tag.text
+                    return tag.attrib['content']
         except:
             pass
         return None
