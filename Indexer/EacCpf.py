@@ -100,7 +100,7 @@ class EacCpf(object):
         except:
             pass
         return None
-
+ 
     def getCpfRelations(self):
         """
         Get list of CPF relations.
@@ -319,7 +319,8 @@ class EacCpf(object):
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part", namespaces=self.ns)
             if val:
                 for part in val:
-                    names.append(part.text)
+                    if part != None:
+                        names.append(part.text)
                 return names
         except:
             pass
