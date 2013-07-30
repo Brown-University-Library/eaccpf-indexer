@@ -41,23 +41,6 @@ class EacCpf(object):
         self.ns = { "doc": "urn:isbn:1-931666-33-4",
         }
 
-    def _getTagString(self, Tag):
-        """
-        Get tag string value.
-        :param Tag:
-        """
-        if Tag and Tag.string:
-            return str(Tag.string)
-        return None
-
-    def _isEACCPF(self):
-        """
-        Determines if the file at the specified path is EAC-CPF. 
-        """
-        if "<eac-cpf" in self.data and "</eac-cpf>" in self.data:
-            return True
-        return False
-
     def _load(self, Source):
         """
         Load the document content.
@@ -95,7 +78,8 @@ class EacCpf(object):
             if val:
                 ps = []
                 for p in val:
-                    ps.append(p.text)
+                    if p.text is not None:
+                        ps.append(p.text)
                 return ' '.join(ps)
         except:
             pass
@@ -213,8 +197,7 @@ class EacCpf(object):
         freeText = ''
         names = self.getNameEntries()
         if names:
-            for name in names:
-                freeText += name + ' '
+            freeText = ' '.join(names)
         abstract = self.getAbstract()
         if abstract:
             freeText += self.getAbstract() + ' '
@@ -223,8 +206,7 @@ class EacCpf(object):
             freeText += biog + ' '
         functions = self.getFunctions()
         if functions:
-            for func in functions:
-                freeText += func + ' '
+            freeText += ' '.join(functions)
         return freeText
 
     def getFunctions(self):
@@ -234,10 +216,10 @@ class EacCpf(object):
         functions = []
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function/doc:term", namespaces=self.ns)
-            if val:
-                for func in val:
+            for func in val:
+                if func.text is not None:
                     functions.append(func.text)
-                return functions
+            return functions
         except:
             pass
         return functions
@@ -319,7 +301,7 @@ class EacCpf(object):
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part", namespaces=self.ns)
             if val:
                 for part in val:
-                    if part != None:
+                    if part.text is not None:
                         names.append(part.text)
                 return names
         except:
