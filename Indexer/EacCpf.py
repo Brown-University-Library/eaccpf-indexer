@@ -105,15 +105,13 @@ class EacCpf(object):
         """
         Get list of CPF relations.
         """
-        relations = []
         try:
             cpfr = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation", namespaces=self.ns)
             if cpfr:
-                for rel in cpfr:
-                    relations.append(rel)
+                return cpfr
         except:
             pass
-        return relations
+        return []
 
     def getDigitalObjects(self, Thumbnail=False):
         """
@@ -321,7 +319,7 @@ class EacCpf(object):
             if val:
                 names = []
                 for part in val:
-                    names.append(part)
+                    names.append(part.text)
                 return names
         except:
             pass
@@ -357,25 +355,22 @@ class EacCpf(object):
         """
         Get list of resource relations.
         """
-        relations = []
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)
             if val:
-                for rel in val:
-                    relations.append(rel)
+                return val
         except:
             pass
-        return relations
+        return []
 
     def getTitle(self):
         """
         Get the record title.
         """
         names = self.getNameEntries()
-        title = ''
-        for name in names:
-            title += name + ' '
-        return title[:-1]
+        if names:
+            return ' '.join(names)
+        return None
 
     def getThumbnail(self):
         """
