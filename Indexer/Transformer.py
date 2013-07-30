@@ -290,6 +290,9 @@ class Transformer(object):
         output = Params.get("transform","output")
         sources = Params.get("transform","inputs").split(",")
         fields = Params.get("transform","set-fields").split(",")
+        # exit if there are no actions to execute
+        if len(actions) < 1:
+            return
         # check stateWrote
         for source in sources:
             assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)

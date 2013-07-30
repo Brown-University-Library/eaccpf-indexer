@@ -105,13 +105,13 @@ class EacCpf(object):
         """
         Get list of CPF relations.
         """
+        rels = []
         try:
             cpfr = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation", namespaces=self.ns)
-            if cpfr:
-                return cpfr
+            rels.extend(cpfr)
         except:
             pass
-        return []
+        return rels
 
     def getDigitalObjects(self, Thumbnail=False):
         """
@@ -231,16 +231,16 @@ class EacCpf(object):
         """
         Get the functions.
         """
+        functions = []
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function/doc:term", namespaces=self.ns)
             if val:
-                functions = []
                 for func in val:
                     functions.append(func.text)
                 return functions
         except:
             pass
-        return None
+        return functions
 
     def getHash(self):
         """
@@ -314,16 +314,16 @@ class EacCpf(object):
         """
         Get name entry.
         """
+        names = []
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part", namespaces=self.ns)
             if val:
-                names = []
                 for part in val:
                     names.append(part.text)
                 return names
         except:
             pass
-        return None
+        return names
 
     def getPresentationUrl(self):
         """
@@ -355,13 +355,13 @@ class EacCpf(object):
         """
         Get list of resource relations.
         """
+        rels = []
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)
-            if val:
-                return val
+            rels.extend(val)
         except:
             pass
-        return []
+        return rels
 
     def getTitle(self):
         """

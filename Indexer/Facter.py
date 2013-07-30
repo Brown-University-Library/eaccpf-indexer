@@ -216,7 +216,7 @@ class Facter(object):
                         self.logger.error("Could not complete text analysis " + filename, exc_info=True)
                 # write inferred data to file
                 Utils.writeYaml(Output, inferred_filename, inferred)
-                self.logger.info("Wrote inferred locations to " + inferred_filename)
+                self.logger.info("Wrote inferred data to " + inferred_filename)
                 # sleep between requests
                 time.sleep(Sleep)
         # return list of processed records
@@ -231,6 +231,10 @@ class Facter(object):
         output = Params.get("infer", "output")
         sleep = Params.getfloat("infer", "sleep")
         source = Params.get("infer", "input")
+        # exit if there are no actions to execute
+        if len(actions) < 1:
+            return
+        # load api keys, services for specified operations
         if 'named-entities' in actions:
             try:
                 self.alchemy_api_key = Params.get("infer", "alchemy_api_key")
@@ -249,7 +253,7 @@ class Facter(object):
         # clear output folder
         if not Update:
             Utils.cleanOutputFolder(output)
-        # check state before starting
+        # check state before running
         assert os.path.exists(source), self.logger.error("Input path does not exist: " + source)
         assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # create an index of file hashes, so that we can track what has changed

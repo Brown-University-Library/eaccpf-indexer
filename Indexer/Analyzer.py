@@ -52,12 +52,6 @@ class Analyzer(object):
         relations = tree.findall('//relations')
         return relations.findChildren()
 
-    def _getResourceRelationsCount(self, Data):
-        """
-        Get the number of resource relations in the document.
-        """
-        return len(self._getResourceRelations(Data))
-    
     def _getSectionContentCount(self, Tag, Data):
         """
         Get the number of characters between the open and closing section tags.
@@ -163,7 +157,8 @@ class Analyzer(object):
             analysis['the entity type'] = doc.getEntityType()
             analysis['the entity local type'] = doc.getLocalType()
             analysis['the parsing errors'] = errors
-            analysis['the resource relations count'] = self._getResourceRelationsCount(doc.data) # @todo move to eaccpf
+            rrels = doc.getResourceRelations()
+            analysis['the resource relations count'] = len(rrels) if rrels != None else 0
             analysis['the section content counts'] = self._getSectionContentCounts(doc.data) # @todo move to eaccpf
             analysis['the total content count'] = self._getTotalContentCount(doc.data) # @todo move to eaccpf
             # @todo check paths for validity
