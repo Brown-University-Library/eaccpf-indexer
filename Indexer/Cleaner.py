@@ -96,10 +96,10 @@ class Cleaner(object):
         xml = etree.XML(Text)
         tree = etree.ElementTree(xml)
         for item in tree.findall('//fromDate'):
-            if item.text is None or item.text == '':
+            if item.text is None:
                 item.getparent().remove(item)
         for item in tree.findall('//toDate'):
-            if item.text is None or item.text == '':
+            if item.text is None:
                 item.getparent().remove(item)
         return etree.tostring(xml,pretty_print=True)
     
@@ -110,12 +110,10 @@ class Cleaner(object):
         xml = etree.XML(Text)
         tree = etree.ElementTree(xml)
         for item in tree.findall('//fromDate'):
-            date = item.attrib['standardDate']
-            if date is None or date == '':
+            if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
                 item.attrib.pop('standardDate')
         for item in tree.findall('//toDate'):
-            date = item.attrib['standardDate']
-            if date is None or date == '':
+            if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
                 item.attrib.pop('standardDate')
         return etree.tostring(xml,pretty_print=True)
     

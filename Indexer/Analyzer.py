@@ -94,7 +94,7 @@ class Analyzer(object):
         """
         try:
             etree.parse(StringIO(Data), self.parser)
-            return True, ''
+            return True, []
         except:
             errors = []
             for entry in self.parser.error_log:
