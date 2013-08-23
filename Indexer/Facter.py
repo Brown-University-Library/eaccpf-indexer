@@ -251,6 +251,8 @@ class Facter(object):
                 self.calais_api_key = ''
                 self.calais = None
         # clear output folder
+        if not os.path.exists(output):
+            os.makedirs(output)
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state before running

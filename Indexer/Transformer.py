@@ -297,6 +297,8 @@ class Transformer(object):
         for source in sources:
             assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
         # create output folder
+        if not os.path.exists(output):
+            os.makedirs(output)
         Utils.cleanOutputFolder(output)
         # check state
         assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)

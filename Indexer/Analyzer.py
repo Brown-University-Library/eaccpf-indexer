@@ -237,6 +237,8 @@ class Analyzer(object):
         source = Params.get("analyze", "input")
         output = Params.get("analyze", "output")
         # make output folder
+        if not os.path.exists(output):
+            os.makedirs(output)
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state

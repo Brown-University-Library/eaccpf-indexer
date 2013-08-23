@@ -214,6 +214,8 @@ class Cleaner(object):
         if Update:
             hashIndex = Utils.loadFileHashIndex(output)
         # clear output folder
+        if not os.path.exists(output):
+            os.makedirs(output)
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state

@@ -121,8 +121,9 @@ class Crawler(object):
         sleep = Params.getfloat("crawl", "sleep")
         # check state before starting
         assert os.path.exists(source), self.logger.error("Input path does not exist: " + source)
-        if os.path.exists(output):
-            Utils.cleanOutputFolder(output, Update=Update)
+        if not os.path.exists(output):
+            os.makedirs(output)
+        Utils.cleanOutputFolder(output, Update=Update)
         self.cache = DigitalObjectCache(cache, cacheUrl)
         assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
         # create an index of file hashes, so that we can track what has changed
