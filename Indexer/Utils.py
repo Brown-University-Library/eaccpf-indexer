@@ -22,22 +22,17 @@ def cleanList(L):
         item = cleanText(item)
     return list
 
-def cleanOutputFolder(Path):
+def cleanOutputFolder(Path, Update=False):
     """
     Clear all files from the output folder. If the folder does not exist
     then create it.
     """
-    if os.path.exists(Path):
-        files = os.listdir(Path)
-        for filename in files:
-            path = Path + os.sep + filename
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                os.remove(path)
-    else:
+    if not os.path.exists(Path):
         os.makedirs(Path)
-    #self.logger.info("Cleared output folder at " + Path)
+        return
+    if not Update:
+        shutil.rmtree(Path)
+        os.makedirs(Path)
 
 def cleanText(Val):
     """

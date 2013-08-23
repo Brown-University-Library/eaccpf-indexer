@@ -133,17 +133,14 @@ class HtmlPage(object):
         """
         Load the document content.
         """
-        try:
-            if 'http://' in Source or 'https://' in Source:
-                response = urllib2.urlopen(Source)
-                return response.read()
-            else:
-                infile = open(Source)
-                data = infile.read()
-                infile.close()
-                return data
-        except:
-            return None
+        if 'http://' in Source or 'https://' in Source:
+            response = urllib2.urlopen(Source)
+            return response.read()
+        else:
+            infile = open(Source)
+            data = infile.read()
+            infile.close()
+            return data
 
     def getContent(self):
         """
@@ -154,34 +151,29 @@ class HtmlPage(object):
     def getDigitalObjectUrl(self):
         """
         Get the URL to the digital object representation.
-        @todo finish this!!!! its a remenant of BeautifulSoup
         """
         try:
-            thumbnail = self.tree.find('div',{'class':'image-caption'}).find('a').find('img')
-            if thumbnail:
-                url = thumbnail['src']
-                if 'http' in url:
-                    # absolute url reference
-                    return str(url)
-                else:
-                    # relative url reference
-                    pageurl = self.getUrl()
-                    return str(urlparse.urljoin(pageurl,url))
+            thumbnail = self.tree.findall("//div[@class='image-caption']/a/img")
+            url = thumbnail[0].attrib['src']
+            if 'http' in url:
+                # absolute url reference
+                return str(url)
+            else:
+                # relative url reference
+                pageurl = self.getUrl()
+                return str(urlparse.urljoin(pageurl,url))
         except:
-            return None
-        
+            pass
+        return None
+
     def getEacCpfUrl(self):
         """
         Get the URL to the EAC-CPF alternate representation of this page.
         """
-        try:
-            tags = self.tree.findall('//meta')
-            for tag in tags:
-                if 'name' in tag.attrib and tag.attrib['name'] == 'EAC':
-                    return tag.attrib['content']
-        except:
-            pass
-        return None
+        tags = self.tree.findall('//meta')
+        for tag in tags:
+            if 'name' in tag.attrib and tag.attrib['name'] == 'EAC':
+                return tag.attrib['content']
 
     def getFilename(self):
         """
@@ -237,25 +229,17 @@ class HtmlPage(object):
         """
         Get the document title.
         """
-        try:
-            title = self.tree.findall('//title')
-            return title[0].text
-        except:
-            pass
-        return None
+        title = self.tree.findall('//title')
+        return title[0].text
 
     def getType(self):
         """
         Get the record entity type.
         """
-        try:
-            tags = self.tree.findall('//meta')
-            for tag in tags:
-                if 'name' in tag.attrib and tag.attrib['name'] == 'DC.Type':
-                    return tag.attrib['content']
-        except:
-            pass
-        return None
+        tags = self.tree.findall('//meta')
+        for tag in tags:
+            if 'name' in tag.attrib and tag.attrib['name'] == 'DC.Type':
+                return tag.attrib['content']
 
     def getUrl(self):
         """

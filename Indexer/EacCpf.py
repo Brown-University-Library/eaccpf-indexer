@@ -107,10 +107,10 @@ class EacCpf(object):
         rels = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)
         for rel in rels:
             try:
-                if 'resourceRelationType' in rel.attrib and rel.attrib['resourceRelationType'] == 'other':
+                if rel.attrib['resourceRelationType'] == 'other':
                     relEntry = rel.xpath("./doc:relationEntry", namespaces=self.ns)
                     descNote = rel.xpath("./doc:descriptiveNote/doc:p", namespaces=self.ns)
-                    if relEntry and descNote and 'localType' in relEntry[0].attrib and relEntry[0].attrib['localType'] == 'digitalObject':
+                    if relEntry[0].attrib['localType'] == 'digitalObject':
                         # if the descriptiveNote does not contain the string "<p>Include in Gallery</p>",
                         # then it is not a thumbnail for this record
                         if Thumbnail and not "Include in Gallery" in descNote[0].text:
@@ -127,7 +127,7 @@ class EacCpf(object):
                         entitytype = self.getEntityType()
                         localtype = self.getLocalType()
                         unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
-                        if unitdate:
+                        if unitdate and not hasattr(unitdate,'lower'):
                             unitdate = unitdate[0].text
                         dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, entitytype, localtype, unitdate)
                         dobjects.append(dobj)
