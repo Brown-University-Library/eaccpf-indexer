@@ -5,11 +5,15 @@ LICENSE file, which is part of this source code package.
 
 from lxml import etree
 import hashlib
+import inspect
+import logging
 import os
 import shutil
 import urllib2
 import yaml
 
+
+log = logging.getLogger()
 
 HASH_INDEX_FILENAME = '.index.yaml'
 
@@ -87,6 +91,41 @@ def getFilenameWithAlternateExtension(Filename, Extension):
     name, _ = os.path.splitext(Filename)
     return name + "." + Extension
 
+def isDigitalObjectYaml(Path):
+    """
+    Determines if the file at the specified path is an image record in
+    YAML format.
+    """
+    if Path.endswith("yml"):
+        infile = open(Path,'r')
+        data = infile.read()
+        infile.close()
+        if "cache_id" in data:
+            return True
+    return False
+
+def isInferredYaml(Path):
+    """
+    Determines if the file at the specified path is an inferred data
+    record in YAML format.
+    """
+    if Path.endswith("yml"):
+        return True
+    return False
+
+def isSolrInputDocument(Path):
+    """
+    Determines if the file at the specified path is a Solr Input
+    Document.
+    """
+    if Path.endswith("xml"):
+        infile = open(Path, 'r')
+        data = infile.read()
+        infile.close()
+        if "<add>" in data and "<doc>" in data:
+            return True
+    return False
+
 def isUrl(Path):
     """
     Determine if the source is a URL or a file system path.
@@ -107,6 +146,21 @@ def loadFileHashIndex(Path):
         if index != None:
             return index
     return {}
+
+def loadTransform(Filename):
+    """
+    Load the specified XSLT file and return an LXML transformer.
+    """
+    modpath = os.path.abspath(__file__)
+    xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + Filename
+    xslt_file = open(xslt, 'r')
+    xslt_data = xslt_file.read()
+    xslt_root = etree.XML(xslt_data)
+    xslt_file.close()
+    try:
+        return etree.XSLT(xslt_root)
+    except:
+        log.error("Could not load XSLT file {0}".format(xslt))
 
 def purgeFolder(Folder, HashIndex):
     """

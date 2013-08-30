@@ -94,6 +94,15 @@ Revision History
  > Generate a graph of document relations
  > Write graph to web readable format
 
+1.4.1
+
+* On crawl, add document source, metadata/presentation URLs as attributes to
+  the eac-cpf root node
+* Transform accepts an optional custom XSLT file
+* Transform operation uses source, metadata/presentation URLs from eac-cpf
+  root node
+* Created ESRC specific EAC-CPF to SID XSLT transform files
+
 1.4.0
 
  * Updated eaccfp-to-solr.xslt to account for the full note appearing

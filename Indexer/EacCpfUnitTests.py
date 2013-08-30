@@ -3,11 +3,17 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-import inspect
-import os
-import unittest
-from EacCpf import EacCpf
 from HtmlPage import HtmlPage
+from lxml import etree
+
+import EacCpf
+import inspect
+import logging
+import os
+import shutil
+import tempfile
+import unittest
+
 
 class EacCpfUnitTests(unittest.TestCase):
     """
@@ -18,14 +24,17 @@ class EacCpfUnitTests(unittest.TestCase):
         """
         Setup the test environment.
         """
-        modulepath = os.path.abspath(inspect.getfile(self.__class__))
-        self.path = os.path.dirname(modulepath) + os.sep + 'test' + os.sep + 'eaccpf'
+        module_path = os.path.abspath(inspect.getfile(self.__class__))
+        self.log = logging.getLogger()
+        self.path = os.path.dirname(module_path) + os.sep + 'test' + os.sep + 'eaccpf'
+        self.temp = tempfile.mkdtemp()
 
     def tearDown(self):
         """
         Tear down the test environment.
         """
-        pass
+        if os.path.exists(self.temp):
+            shutil.rmtree(self.temp)
 
     def test___init__(self):
         """
@@ -38,7 +47,7 @@ class EacCpfUnitTests(unittest.TestCase):
                  'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00205b.htm',
                   }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
+            doc = EacCpf.EacCpf(case, 'http://www.example.com')
             self.assertNotEqual(doc, None)
             self.assertNotEqual(doc.data, None)
 
@@ -53,7 +62,7 @@ class EacCpfUnitTests(unittest.TestCase):
                  'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
                   }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
+            doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             self.assertNotEqual(doc, None)
             abstract = doc.getAbstract()
             self.assertNotEqual(abstract, None)
@@ -70,7 +79,7 @@ class EacCpfUnitTests(unittest.TestCase):
                  'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
                   }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
+            doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             self.assertNotEqual(doc, None)
     
     def test_getDigitalObjects(self):
@@ -89,11 +98,11 @@ class EacCpfUnitTests(unittest.TestCase):
             html = HtmlPage(case)
             if html.hasEacCpfAlternate():
                 url = html.getEacCpfUrl()
-                doc = EacCpf(url,'http://www.example.com')
-                self.assertNotEqual(doc,None)
+                doc = EacCpf.EacCpf(url, 'http://www.example.com')
+                self.assertNotEqual(doc, None)
                 objects = doc.getDigitalObjects()
-                self.assertNotEqual(objects,None)
-                self.assertEqual(len(objects),cases[case])
+                self.assertNotEqual(objects, None)
+                self.assertEqual(len(objects), cases[case])
             else:
                 self.assertEqual(0,cases[case])
 
@@ -107,11 +116,11 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml":"corporateBody",
                  }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
-            self.assertNotEqual(doc,None)
+            doc = EacCpf.EacCpf(case, 'http://www.example.com')
+            self.assertNotEqual(doc, None)
             entitytype = doc.getEntityType()
-            self.assertNotEqual(entitytype,None)
-            self.assertEqual(entitytype,cases[case])
+            self.assertNotEqual(entitytype, None)
+            self.assertEqual(entitytype, cases[case])
 
     def test_getExistDates(self):
         """
@@ -125,12 +134,12 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/vic/eac/E000582.xml":("1942-01-01","1965-12-31")
                  }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
-            self.assertNotEqual(doc,None)
+            doc = EacCpf.EacCpf(case, 'http://www.example.com')
+            self.assertNotEqual(doc, None)
             fromDate, toDate = doc.getExistDates()
             expectFromDate, expectToDate = cases[case]
-            self.assertEqual(fromDate,expectFromDate)
-            self.assertEqual(toDate,expectToDate)
+            self.assertEqual(fromDate, expectFromDate)
+            self.assertEqual(toDate, expectToDate)
 
     def test_getFilename(self):
         """
@@ -143,10 +152,10 @@ class EacCpfUnitTests(unittest.TestCase):
                  'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205.xml',
                   }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
+            doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             filename = doc.getFileName()
             self.assertNotEqual(filename, None)
-            self.assertEquals(filename,cases[case])
+            self.assertEquals(filename, cases[case])
 
     def test_getFunctions(self):
         """
@@ -158,11 +167,11 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 4,
                  }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
-            self.assertNotEqual(doc,None)
+            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc, None)
             functions = doc.getFunctions()
-            self.assertNotEqual(functions,None)
-            self.assertEqual(len(functions),cases[case])
+            self.assertNotEqual(functions, None)
+            self.assertEqual(len(functions), cases[case])
 
     def test_getId(self):
         """
@@ -175,9 +184,9 @@ class EacCpfUnitTests(unittest.TestCase):
                  'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
                   }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com/metadata.xml','http://www.example.com/presentation.html')
+            doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             self.assertNotEqual(doc, None)
-            self.assertEquals(doc.getRecordId(),cases[case])
+            self.assertEquals(doc.getRecordId(), cases[case])
 
     def test_getLocalType(self):
         """
@@ -189,10 +198,10 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": "Organisation",
                  }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
-            self.assertNotEqual(doc,None)
+            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc, None)
             localtype = doc.getLocalType()
-            self.assertEqual(localtype,cases[case])
+            self.assertEqual(localtype, cases[case])
 
     def test_getLocations(self):
         """
@@ -207,11 +216,11 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 1,
                  }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
-            self.assertNotEqual(doc,None)
+            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc, None)
             locations = doc.getLocations()
-            self.assertNotEqual(locations,None)
-            self.assertEqual(cases[case],len(locations))
+            self.assertNotEqual(locations, None)
+            self.assertEqual(cases[case], len(locations))
 
     def test_getThumbnail(self):
         """
@@ -230,8 +239,8 @@ class EacCpfUnitTests(unittest.TestCase):
         files.sort()
         for filename in files:
             if filename in cases:
-                doc = EacCpf(self.path + os.sep + filename,'http://www.findandconnect.gov.au')
-                self.assertNotEqual(doc,None)
+                doc = EacCpf.EacCpf(self.path + os.sep + filename,'http://www.findandconnect.gov.au')
+                self.assertNotEqual(doc, None)
                 thumb = doc.getThumbnail()
                 if thumb != None:
                     self.assertEqual(True, cases[filename])
@@ -249,11 +258,54 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
                  }
         for case in cases:
-            doc = EacCpf(case,'http://www.example.com')
-            self.assertNotEqual(doc,None)
+            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            self.assertNotEqual(doc, None)
             location = doc.hasLocation()
-            self.assertNotEqual(location,None)
-            self.assertEqual(cases[case],location)
+            self.assertNotEqual(location, None)
+            self.assertEqual(cases[case], location)
+
+    def test_write(self):
+        """
+        It should write out the eac-cpf document to the specified file system
+        path. The output document should include additional attributes in the
+        root element for the metadata and presentation source URLs.
+        """
+        cases = {
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": True,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": False,
+                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
+                 }
+        metadata_url = 'http://www.example.com/metadata.xml'
+        presentation_url = 'http://www.example.com/presentation.html'
+        for case in cases:
+            doc = EacCpf.EacCpf(case, metadata_url, presentation_url)
+            self.assertNotEqual(doc, None)
+            path = doc.write(self.temp)
+            self.assertEquals(os.path.exists(path), True)
+            # read the file and try to extract the attributes
+            try:
+                tree = etree.parse(path)
+                ns = {
+                    EacCpf.DOC_KEY: EacCpf.DOC_NS,
+                    EacCpf.ESRC_KEY: EacCpf.ESRC_NS,
+                }
+                # get the url to the metadata file
+                metadata = tree.xpath("//doc:eac-cpf/@" + EacCpf.ESRC_KEY + ":metadata", namespaces=ns)
+                self.assertNotEqual(metadata, None)
+                self.assertEqual(metadata[0], metadata_url)
+                # get the url to the presentation file
+                presentation = tree.xpath("//doc:eac-cpf/@" + EacCpf.ESRC_KEY + ":presentation", namespaces=ns)
+                self.assertNotEqual(presentation, None)
+                self.assertEqual(presentation[0], presentation_url)
+                # get the url to the source file
+                source = tree.xpath("//doc:eac-cpf/@" + EacCpf.ESRC_KEY + ":source", namespaces=ns)
+                self.assertNotEqual(source, None)
+                self.assertEqual(source[0], case)
+            except:
+                msg = "Failed to complete parsing of {0}".format(case)
+                self.log.error(msg, exc_info=True)
+                self.fail(msg)
+
 
 if __name__ == "__main__":
     unittest.main()

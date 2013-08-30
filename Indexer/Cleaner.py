@@ -67,28 +67,6 @@ class Cleaner(object):
             return Text
         return re.sub("&#?\w+;", fixup, Html)
 
-    def _getSourceAndReferrerValues(self, Path):
-        """
-        Get source, metadata and presentation URL values from comment embedded
-        in the document.
-        """
-        infile = open(Path,'r')
-        lines = infile.readlines()
-        infile.close()
-        for line in lines:
-            try:
-                src = line.index("@source")
-                meta = line.index("@metadata")
-                pres = line.index("@presentation")
-                source = line[src+len("@source="):meta-1]
-                metadata = line[meta+len("@metadata="):pres-1]
-                presentation = line[pres+len("@presentation="):-4]
-                return (source, metadata, presentation)
-            except:
-                pass
-        # default case
-        return ('', '', '')
-    
     def _removeEmptyDateFields(self, Text):
         """
         Remove any empty fromDate or toDate tags.
@@ -157,12 +135,7 @@ class Cleaner(object):
                 HashIndex[filename] = fileHash
                 # fix problems
                 if filename.endswith(".xml"):
-                    # the source/referrer values comment gets deleted by the XML 
-                    # parser, so we'll save it here temporarily while we do our cleanup
-                    src, meta, pres = self._getSourceAndReferrerValues(Source + os.sep + filename)
                     data = self.fixEacCpf(data)
-                    # write source/referrer comment back at the end of the file
-                    data += '\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' % {"source":src, "metadata": meta, "presentation":pres}
                 elif filename.endswith(".htm") or filename.endswith(".html"):
                     data = self.fixHtml(data)
                 else:
@@ -205,6 +178,7 @@ class Cleaner(object):
     def run(self, Params, Update=False):
         """
         Execute the clean operation using specified parameters.
+        @todo this needs to be cleaned up and simplified
         """
         # get parameters
         source = Params.get("clean","input")

@@ -29,8 +29,14 @@ class CrawlerUnitTests(unittest.TestCase):
         """
         crawler = Crawler()
         self.assertNotEqual(crawler, None)
+
+    def test_crawl(self):
+        """
+        It should retrieve files that exist. For each EAC-CPF file, it should
+        add the metadata and presentation URLs as attributes to the eac-cpf
+        node.
+        """
+        pass
     
 if __name__ == '__main__':
     unittest.main()
-
-    

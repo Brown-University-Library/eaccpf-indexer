@@ -6,7 +6,6 @@ LICENSE file, which is part of this source code package.
 from lxml import etree
 import HtmlPage
 import Utils
-import inspect
 import logging
 import os
 import re 
@@ -15,23 +14,14 @@ import yaml
 
 class Transformer(object):
     """
-    Merge and transform source data to Solr Input Document format.
+    Transform and merge source data to Solr Input Document format.
     """
 
     def __init__(self):
         """
         Constructor
         """
-        self.logger = logging.getLogger('Transformer')
-
-    def _getFileName(self, Url):
-        """
-        Get the filename from the specified URI or path.
-        """
-        if "/" in Url:
-            parts = Url.split("/")
-            return parts[-1]
-        return Url
+        self.log = logging.getLogger('Transformer')
 
     def _getIdFromFilename(self,Filename):
         """
@@ -39,64 +29,6 @@ class Transformer(object):
         """
         recordId, _ = os.path.splitext(Filename)
         return recordId
-
-    def _getSourceAndReferrerValues(self, Path):
-        """
-        Get document source and referrer URI values from the comment embedded 
-        at the end of the document.
-        """
-        infile = open(Path,'r')
-        lines = infile.readlines()
-        infile.close()
-        # process lines
-        for line in lines:
-            try:
-                src = line.index("@source")
-                meta = line.index("@metadata")
-                pres = line.index("@presentation")
-                source = line[src+len("@source="):meta-1]
-                metadata = line[meta+len("@metadata="):pres-1]
-                presentation = line[pres+len("@presentation="):-4]
-                return (source, metadata, presentation)
-            except:
-                pass
-        # default case
-        return ('', '')
-    
-    def _isDigitalObjectYaml(self, Path):
-        """
-        Determines if the file at the specified path is an image record in
-        YAML format.
-        """
-        if Path.endswith("yml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "cache_id" in data:
-                return True
-        return False
-
-    def _isInferredYaml(self, Path):
-        """
-        Determines if the file at the specified path is an inferred data
-        record in YAML format.
-        """
-        if Path.endswith("yml"):
-            return True
-        return False
-    
-    def _isSolrInputDocument(self, Path):
-        """
-        Determines if the file at the specified path is a Solr Input
-        Document.
-        """
-        if Path.endswith("xml"):
-            infile = open(Path,'r')
-            data = infile.read()
-            infile.close()
-            if "<add>" in data and "<doc>" in data:
-                return True
-        return False
 
     def _removeNameSpaces(self, Text):
         """
@@ -125,7 +57,7 @@ class Transformer(object):
             data = infile.read()
             dobj = yaml.load(data)
             infile.close()
-            filename = self._getFileName(Source).replace('.yml','.xml')
+            filename = Utils.getFileName(Source).replace('.yml','.xml')
             # if there is an existing SID file, then read it into memory
             if os.path.exists(Output + os.sep + filename):
                 parser = etree.XMLParser(remove_blank_text=True)
@@ -142,9 +74,9 @@ class Transformer(object):
                 outfile = open(Output + os.sep + filename,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.logger.info("Merged digital object into " + filename)
+                self.log.info("Merged digital object into " + filename)
         except:
-            self.logger.error("Could not complete merge processing for " + filename, exc_info=True)
+            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=True)
     
     def mergeDigitalObjectsIntoSID(self, Sources, Output):
         """
@@ -153,7 +85,7 @@ class Transformer(object):
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
-                if self._isDigitalObjectYaml(source + os.sep + filename):
+                if Utils.isDigitalObjectYaml(source + os.sep + filename):
                     path = source + os.sep + filename
                     self.mergeDigitalObjectIntoSID(path, Output)
                     
@@ -165,11 +97,11 @@ class Transformer(object):
         filename = ''
         try:
             # read input (inferred) data file
-            infile = open(Source,'r')
+            infile = open(Source, 'r')
             data = infile.read()
             inferred = yaml.load(data)
             infile.close()
-            filename = self._getFileName(Output)
+            filename = Utils.getFileName(Output)
             # if there is an existing SID file, then read it into memory, 
             # otherwise create an XML tree to 
             if not os.path.exists(Output):
@@ -263,9 +195,9 @@ class Transformer(object):
                 outfile = open(Output,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.logger.info("Merged inferred data into " + filename)
+                self.log.info("Merged inferred data into " + filename)
         except Exception:
-            self.logger.error("Could not complete merge processing for " + filename, exc_info=True)
+            self.log.error("Could not complete merge processing for " + filename, exc_info=True)
     
     def mergeInferredRecordsIntoSID(self, Sources, Output):
         """
@@ -275,7 +207,7 @@ class Transformer(object):
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
-                if self._isInferredYaml(source + os.sep + filename):
+                if Utils.isInferredYaml(source + os.sep + filename):
                     outputFileName = self._getIdFromFilename(filename) + ".xml"
                     self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + outputFileName)
     
@@ -286,37 +218,20 @@ class Transformer(object):
         """
         # get parameters
         actions = Params.get("transform","actions").split(',')
-        boosts = Params.get("transform","boost").split(',')
         output = Params.get("transform","output")
         sources = Params.get("transform","inputs").split(",")
-        fields = Params.get("transform","set-fields").split(",")
-        # exit if there are no actions to execute
-        if len(actions) < 1:
-            return
-        # check stateWrote
-        for source in sources:
-            assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
         # create output folder
         if not os.path.exists(output):
             os.makedirs(output)
         Utils.cleanOutputFolder(output)
         # check state
-        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
+        assert os.path.exists(output), self.log.error("Output path does not exist: " + output)
+        for source in sources:
+            assert os.path.exists(source), self.log.error("Source path does not exist: " + source)
         # execute actions in order
-        source = None
-        transform = None
         if "eaccpf-to-sid" in actions:
-            # load schema
-            modpath = os.path.abspath(inspect.getfile(self.__class__))
-            xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + "eaccpf-to-solr.xsl"
-            xslt_file = open(xslt,'r')
-            xslt_data = xslt_file.read()
-            xslt_root = etree.XML(xslt_data)
-            xslt_file.close()
-            try:
-                transform = etree.XSLT(xslt_root)
-            except:
-                self.logger.critical("Could not load XSLT file " + xslt)    
+            # if an xslt is specified, use that instead
+            transform = Utils.loadTransform('esrc-eaccpf-to-solr.xsl')
             self.transformEacCpfsToSID(sources, output, transform)
         if "html-to-sid" in actions:
             self.transformHtmlsToSid(sources, output)
@@ -326,18 +241,17 @@ class Transformer(object):
             self.transformDigitalObjectsToSID(sources, output)
         if "merge-inferred" in actions:
             self.mergeInferredRecordsIntoSID(sources, output)
-        if "set-fields" in actions and not ('' in fields):
-            self.setFieldValue(output, fields)
-        # boost fields
-        if boosts:
+        if "set-fields" in actions:
+            fields = Params.get("transform", "set-fields").split(",")
+            if not ('' in fields):
+                self.setFieldValue(output, fields)
+        if 'boost' in actions:
+            boosts = Params.get("transform", "boost").split(',')
             self.setBoosts(output, boosts)
-        # validate output
-        try:
-            schema = Params.get("transform","schema")
-            # self.validate(output,schema)
-        except:
-            self.logger.debug("No schema file specified")
-    
+        if "validate" in actions:
+            pass
+            # schema = Params.get("transform","schema")
+
     def setBoosts(self, Source, Boosts):
         """
         Boost the specified field for all Solr Input Documents.
@@ -345,7 +259,7 @@ class Transformer(object):
         files = os.listdir(Source)
         for filename in files:
             path = Source + os.sep + filename
-            if self._isSolrInputDocument(path):
+            if Utils.isSolrInputDocument(path):
                 try:
                     # parse the document
                     xml = etree.parse(path)
@@ -356,14 +270,14 @@ class Transformer(object):
                             field.attrib['boost'] = boostval
                     # save the document
                     outfile = open(path, 'w')
-                    data = etree.tostring(xml, pretty_print=True)
+                    data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
                     outfile.write(data)
                     outfile.close()
                     msg = "Set boosts: {0}".format(filename)
-                    self.logger.info(msg)
+                    self.log.info(msg)
                 except:
                     msg = "Could not set boosts: {0}".format(filename)
-                    self.logger.error(msg, exc_info=True)
+                    self.log.error(msg, exc_info=True)
 
     def setFieldValue(self, Source, FieldValue):
         """
@@ -372,7 +286,7 @@ class Transformer(object):
         files = os.listdir(Source)
         parser = etree.XMLParser(remove_blank_text=True)
         for filename in files:
-            if self._isSolrInputDocument(Source + os.sep + filename):
+            if Utils.isSolrInputDocument(Source + os.sep + filename):
                 try:
                     # load the document
                     xml = etree.parse(Source + os.sep + filename, parser)
@@ -392,12 +306,12 @@ class Transformer(object):
                             doc.append(newfield)
                     # save the updated document
                     outfile = open(Source + os.sep + filename,'w')
-                    data = etree.tostring(xml, pretty_print=True)
+                    data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
                     outfile.write(data)
                     outfile.close()
-                    self.logger.info("Set fields in " + filename)
+                    self.log.info("Set fields in " + filename)
                 except:
-                    self.logger.error("Could not set field in " + filename)
+                    self.log.error("Could not set field in " + filename)
 
     def transformDigitalObjectsToSID(self,Sources,Output):
         """
@@ -407,13 +321,13 @@ class Transformer(object):
         for source in Sources:
             files = os.listdir(source)
             for filename in files:
-                if self._isDigitalObjectYaml(source + os.sep + filename):
+                if Utils.isDigitalObjectYaml(source + os.sep + filename):
                     path = source + os.sep + filename
                     try:
                         self.transformDigitalObjectToSID(path,Output)
                     except:
                         msg = "Could not transform DObject to SID: {0}".format(filename)
-                        self.logger.error(msg, exc_info=True)
+                        self.log.error(msg, exc_info=True)
 
     def transformDigitalObjectToSID(self, Source, Output):
         """
@@ -433,10 +347,10 @@ class Transformer(object):
         # write XML
         filename = data['id'] + ".xml"
         outfile = open(Output + os.sep + filename,'w')
-        xml = etree.tostring(root, pretty_print=True)
+        xml = etree.tostring(root, pretty_print=True, xml_declaration=True)
         outfile.write(xml)
         outfile.close()
-        self.logger.info("Transformed DObject to SID: " + filename)
+        self.log.info("Transformed DObject to SID: " + filename)
 
     def transformEacCpfsToSID(self, Sources, Output, Transform):
         """
@@ -451,43 +365,25 @@ class Transformer(object):
                         self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
                     except Exception:
                         msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
-                        self.logger.error(msg, exc_info=True)
+                        self.log.error(msg, exc_info=True)
 
     def transformEacCpfToSID(self, Source, Output, Transform):
         """
-        Transform document to Solr Input Document format using the
+        Transform EAC-CPF document to Solr Input Document format using the
         specified XSLT transform file.
         """
-        # read source data
-        infile = open(Source,'r')
-        data = infile.read()
-        infile.close()
         # ISSUE #4: remove namespaces in the XML document before transforming
-        data = self._removeNameSpaces(data)
-        # create document tree
-        xml = etree.XML(data)
-        # transform the document
+        # data = self._removeNameSpaces(data)
+        xml = etree.parse(Source)
         result = Transform(xml)
-        # get the doc element
-        sid = result.find('doc')
-        # get the document source and referrer values from the embedded comment
-        _, meta_val, pres_val = self._getSourceAndReferrerValues(Source)
-        # append the source and referrer values to the SID
-        if meta_val:
-            src_field = etree.Element('field',name='metadata_url')
-            src_field.text = meta_val
-            sid.append(src_field)
-        if pres_val:
-            ref_field = etree.Element('field',name='presentation_url')
-            ref_field.text = pres_val
-            sid.append(ref_field)
         # write the output file
-        filename = self._getFileName(Source)
+        filename = Utils.getFileName(Source)
         outfile = open(Output + os.sep + filename, 'w')
-        result.write(outfile, pretty_print=True, xml_declaration=True)
+        data = etree.tostring(result, pretty_print=True, xml_declaration=True)
+        # result.write(outfile, pretty_print=True, xml_declaration=True)
+        outfile.write(data)
         outfile.close()
-        msg = "Transformed to SID: {0}".format(filename)
-        self.logger.info(msg)
+        self.log.info("Transformed to SID: {0}".format(filename))
 
     def transformHtmlsToSid(self, Sources, Output):
         """
@@ -503,7 +399,7 @@ class Transformer(object):
                         self.transformHtmlToSid(html, Output)
                     except:
                         msg = "Could not transform HTML to SID: {0}".format(filename)
-                        self.logger.error(msg)
+                        self.log.error(msg)
 
     def transformHtmlToSid(self, Html, Output):
         """
@@ -525,4 +421,4 @@ class Transformer(object):
         outfile.write(xml)
         outfile.close()
         msg = "Transformed HTML to SID: {0}".format(filename)
-        self.logger.info(msg)
+        self.log.info(msg)

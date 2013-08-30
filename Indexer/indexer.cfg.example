@@ -27,7 +27,7 @@ output=/var/lib/indexer/PROJ/graph
 graph=/var/lib/indexer/PROJ/graph.gexf
 
 [transform]
-actions=eaccpf-to-sid,merge-digitalobjects,merge-inferred,set-fields
+actions=eaccpf-to-sid,merge-digitalobjects,merge-inferred,set-fields,boost
 boost=title:1000
 inputs=/var/lib/indexer/PROJ/clean,/var/lib/indexer/PROJ/infer
 output=/var/lib/indexer/PROJ/post

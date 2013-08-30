@@ -26,7 +26,7 @@ class Crawler(object):
         """
         self.cache = None
         self.hashIndexFilename = ".index.yml"
-        self.logger = logging.getLogger('Crawler')
+        self.log = logging.getLogger(__name__)
 
     def crawlFileSystem(self, Source, Output, Actions, HashIndex, Base=None, Sleep=0.0, UpdateOnly=False):
         """
@@ -40,13 +40,13 @@ class Crawler(object):
         # make sure that Base has a trailing /
         if not Base.endswith('/'):
             Base += '/'
-            # walk the file system and look for html files
+        # walk the file system and look for html files
         for path, _, files in os.walk(Source):
             # construct the public url for the file
             baseurl = Base + path.replace(Source, '')
             if not baseurl.endswith('/'):
                 baseurl += '/'
-            self.logger.info('Current source ' + path + ' (' + baseurl + ')')
+            self.log.info("Current source {0} ({1})".format(path, baseurl))
             # for each file in the current path
             for filename in files:
                 if filename.endswith(".htm") or filename.endswith(".html"):
@@ -54,14 +54,13 @@ class Crawler(object):
                         html = HtmlPage(path + os.sep + filename, baseurl)
                         # if the page represents a record
                         if html.hasEacCpfAlternate():
-                            self.logger.debug("Record found at " + path + os.sep + filename)
+                            self.log.debug("Record found at " + path + os.sep + filename)
                             # get the eaccpf document
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
                             src = Source + metadata.replace(Base, '')
                             if not Utils.resourceExists(src):
-                                msg = "Resource not available {0}".format(src)
-                                raise Exception(msg)
+                                raise Exception("Resource not available {0}".format(src))
                             eaccpf = EacCpf(src, metadata, presentation)
                             # we will check the eaccpf document to see if its changed
                             record_filename = eaccpf.getFileName()
@@ -70,7 +69,7 @@ class Crawler(object):
                             # if the file has not changed since the last run then skip it
                             if UpdateOnly:
                                 if record_filename in HashIndex and HashIndex[record_filename] == fileHash:
-                                    self.logger.info("No change since last update " + record_filename)
+                                    self.log.info("No change since last update {0}".format(record_filename))
                                     continue
                             HashIndex[record_filename] = fileHash
                             if 'eaccpf' in Actions:
@@ -91,8 +90,7 @@ class Crawler(object):
                         elif 'html-all' in Actions:
                             html.write(Output)
                     except:
-                        msg = "Could not complete processing for {0}".format(filename)
-                        self.logger.error(msg, exc_info=True)
+                        self.log.error("Could not complete processing for {0}".format(filename), exc_info=True)
                     finally:
                         time.sleep(Sleep)
         # return the list of processed records
@@ -104,7 +102,7 @@ class Crawler(object):
         execute the specified indexing actions. Store files to the output path.
         Sleep for the specified number of seconds after fetching data.
         """
-        self.logger.error("Web site crawling is not implemented")
+        self.log.error("Web site crawling is not implemented")
         return []
 
     def run(self, Params, Update=False):
@@ -113,19 +111,18 @@ class Crawler(object):
         """
         # parameters
         actions = Params.get("crawl", "actions").split(",")
-        base = Params.get("crawl", "base")
         cache = Params.get("crawl", "cache")
         cacheUrl = Params.get("crawl", "cache-url")
         source = Params.get("crawl", "input")
         output = Params.get("crawl", "output")
         sleep = Params.getfloat("crawl", "sleep")
         # check state before starting
-        assert os.path.exists(source), self.logger.error("Input path does not exist: " + source)
+        assert os.path.exists(source), self.log.error("Input path does not exist: " + source)
         if not os.path.exists(output):
             os.makedirs(output)
         Utils.cleanOutputFolder(output, Update=Update)
         self.cache = DigitalObjectCache(cache, cacheUrl)
-        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
+        assert os.path.exists(output), self.log.error("Output path does not exist: " + output)
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:
@@ -134,14 +131,15 @@ class Crawler(object):
         if 'http://' in source or 'https://' in source:
             records = self.crawlWebSite(source, output, actions, hashIndex, sleep, Update)
         else:
+            base = Params.get("crawl", "base")
             records = self.crawlFileSystem(source, output, actions, hashIndex, base, sleep, Update)
         # remove records from the index that were deleted in the source
         if Update:
-            self.logger.info("Clearing orphaned records from the file hash index")
+            self.log.info("Clearing orphaned records from the file hash index")
             Utils.purgeIndex(records, hashIndex)
         # remove files from the output folder that are not in the index
         if Update:
-            self.logger.info("Clearing orphaned files from the output folder")
+            self.log.info("Clearing orphaned files from the output folder")
             Utils.purgeFolder(output, hashIndex)
         # write the updated file hash index
         Utils.writeFileHashIndex(hashIndex, output)

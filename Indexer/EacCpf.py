@@ -12,6 +12,16 @@ import logging
 import os
 import urllib2
 
+# namespaces
+DOC_KEY = "doc"
+DOC_NS = "urn:isbn:1-931666-33-4"
+
+ESRC_KEY = "ns0"
+ESRC_NS = "http://www.esrc.unimelb.edu.au"
+
+XLINK = "http://www.w3.org/1999/xlink"
+XSI = "http://www.w3.org/2001/XMLSchema-instance"
+
 
 class EacCpf(object):
     """
@@ -22,24 +32,19 @@ class EacCpf(object):
     document, referred to here as the presentation.
     """
 
-    def __init__(self, Source, MetadataUrl=None, PresentationUrl=None, Data=None):
+    def __init__(self, Source, MetadataUrl=None, PresentationUrl=None):
         """
         Source is a file system path or URL to the EAC-CPF document file. The
         Source is used to load the content of the document. MetadataUrl is the
         public URL to the EAC-CPF document. PresentationUrl is the public URL
         to the HTML presentation.
         """
-        self.logger = logging.getLogger('EacCpf')
-        self.source = Source
+        self.log = logging.getLogger(__name__)
         self.metadata = MetadataUrl
+        self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS }
         self.presentation = PresentationUrl
-        if Data:
-            self.data = Data
-        else:
-            self.data = self._load(Source)
-        self.xml = etree.fromstring(self.data)
-        self.ns = { "doc": "urn:isbn:1-931666-33-4",
-        }
+        self.source = Source
+        self.xml = etree.fromstring(self._load(Source))
 
     def _load(self, Source):
         """
@@ -229,7 +234,8 @@ class EacCpf(object):
         Get a secure hash for the content in hexadecimal format.
         """
         h = hashlib.sha1()
-        h.update(self.data)
+        data = etree.tostring(self.xml)
+        h.update(data)
         return h.hexdigest()
 
     def getLocalType(self):
@@ -407,12 +413,24 @@ class EacCpf(object):
 
     def write(self, Path):
         """
-        Write the EAC-CPF data to the specified path.
+        Write the EAC-CPF data to the specified path. Add the metadata,
+        presentation source URLs as attributes to the eac-cpf node.
         """
+        # add the metadata and presentation source URLs to the eac-cpf node
+        root = self.xml.xpath('//doc:eac-cpf', namespaces=self.ns)
+        metadata = '{' + ESRC_NS + '}metadata'
+        presentation = '{' + ESRC_NS + '}presentation'
+        source = '{' + ESRC_NS + '}source'
+        root[0].set(metadata, self.metadata)
+        root[0].set(presentation, self.presentation)
+        root[0].set(source, self.source)
+        # write the data to the specified path
         path = Path + os.sep + self.getFileName()
         outfile = open(path, 'w')
-        outfile.write(self.data)
-        outfile.write('\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' %
-                      {"source":self.source, "metadata":self.metadata, "presentation":self.presentation})
+        data = etree.tostring(self.xml, pretty_print=True)
+        outfile.write(data)
+        #outfile.write('\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' %
+        #              {"source":self.source, "metadata":self.metadata, "presentation":self.presentation})
         outfile.close()
-        self.logger.info("Stored EAC-CPF document " + self.getFileName())
+        self.log.info("Stored EAC-CPF document " + self.getFileName())
+        return path
