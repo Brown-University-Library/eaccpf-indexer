@@ -102,11 +102,17 @@ class EacCpf(object):
             pass
         return rels
 
+    def getData(self):
+        """
+        Get the raw XML data.
+        """
+        return etree.tostring(self.xml, pretty_print=True)
+
     def getDigitalObjects(self, Thumbnail=False):
         """
-        Get the list of digital objects referenced in the document.
-        Transform the metadata contained in the HTML page to an intermediate
-        YML digital object representation.
+        Get the list of digital objects referenced in the document. Transform
+        the metadata contained in the HTML page to an intermediate YML digital
+        object representation.
         """
         dobjects = []
         rels = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)

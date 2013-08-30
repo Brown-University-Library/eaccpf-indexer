@@ -32,6 +32,7 @@ boost=title:1000
 inputs=/var/lib/indexer/PROJ/clean,/var/lib/indexer/PROJ/infer
 output=/var/lib/indexer/PROJ/post
 set-fields=x:y
+xslt=/srv/ha/web/FACP/etc/esrc-eaccpf-to-sid.xsl
 
 [post]
 actions=flush.post,commit,optimize

@@ -32,8 +32,8 @@ class Analyzer(object):
         # load validation schema
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         path = os.path.dirname(modpath)
+        schema = path + os.sep + 'transform' + os.sep + 'eaccpf.xsd'
         try:
-            schema = path + os.sep + 'transform' + os.sep + 'eaccpf.xsd'
             infile = open(schema, 'r')
             schema_data = infile.read()
             schema_root = etree.XML(schema_data)
@@ -134,7 +134,7 @@ class Analyzer(object):
             # analyze the file
             analysis = {}
             analysis['the analysis date'] = datetime.now()
-            conformance, errors = self._isConformantToEacCpfSchema(doc.data) # @todo move to eaccpf
+            conformance, errors = self._isConformantToEacCpfSchema(doc.getData()) # @todo move to eaccpf
             analysis['conforms to schema'] = conformance
             # look for duplicate locations
             locations = doc.getLocations()
@@ -159,8 +159,8 @@ class Analyzer(object):
             analysis['the parsing errors'] = errors
             rrels = doc.getResourceRelations()
             analysis['the resource relations count'] = len(rrels) if rrels != None else 0
-            analysis['the section content counts'] = self._getSectionContentCounts(doc.data) # @todo move to eaccpf
-            analysis['the total content count'] = self._getTotalContentCount(doc.data) # @todo move to eaccpf
+            analysis['the section content counts'] = self._getSectionContentCounts(doc.getData()) # @todo move to eaccpf
+            analysis['the total content count'] = self._getTotalContentCount(doc.getData()) # @todo move to eaccpf
             # @todo check paths for validity
             # @todo field level quality checks
             # write analysis file to the output path
