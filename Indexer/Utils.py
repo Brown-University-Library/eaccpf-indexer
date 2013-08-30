@@ -147,13 +147,11 @@ def loadFileHashIndex(Path):
             return index
     return {}
 
-def loadTransform(Filename):
+def loadTransform(Path):
     """
     Load the specified XSLT file and return an LXML transformer.
     """
-    modpath = os.path.abspath(__file__)
-    xslt = os.path.dirname(modpath) + os.sep + "schema" + os.sep + Filename
-    xslt_file = open(xslt, 'r')
+    xslt_file = open(Path, 'r')
     xslt_data = xslt_file.read()
     xslt_root = etree.XML(xslt_data)
     xslt_file.close()

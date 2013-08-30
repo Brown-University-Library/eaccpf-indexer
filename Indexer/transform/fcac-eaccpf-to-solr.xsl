@@ -11,7 +11,7 @@
 	            	<field name="metadata_url"><xsl:value-of select="/doc:eac-cpf/@ns0:metadata" /></field>
                 </xsl:if>
 	            <xsl:if test="/doc:eac-cpf/@ns0:presentation != ''">
-	            	<field name="presentation_url">https://www.facp.esrc.unimelb.edu.au/guides/qld/<xsl:value-of select="/doc:eac-cpf/doc:control/doc:recordId" /></field>
+	            	<field name="presentation_url">https://www.facp.esrc.unimelb.edu.au/guide/act/<xsl:value-of select="/doc:eac-cpf/doc:control/doc:recordId" /></field>
                 </xsl:if>
 	            <xsl:if test="/doc:eac-cpf/@ns0:source != ''">
 	            	<field name="source"><xsl:value-of select="/doc:eac-cpf/@ns0:source" /></field>
@@ -21,7 +21,6 @@
 	            <xsl:if test="/doc:eac-cpf/doc:control/doc:localControl/@doc:localType != ''">
 	            	<field name="localtype"><xsl:value-of select="/doc:eac-cpf/doc:control/doc:localControl/doc:term" /></field>
 	            </xsl:if>
-
 	        	<!-- identity -->
 	            <field name="entityId"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId" /></field>
 	            <field name="type"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType" /></field>

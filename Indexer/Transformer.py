@@ -30,26 +30,10 @@ class Transformer(object):
         recordId, _ = os.path.splitext(Filename)
         return recordId
 
-    def _removeNameSpaces(self, Text):
-        """
-        Remove namespace references from XML data.
-        
-        ISSUE #4: When the XML/XSLT parser encounters a problem, it fails 
-        silently and does not return any results. We've found that the 
-        problem occurs due to namespace declarations in source files. 
-        Because these are not important in the transformation to SID 
-        format, we strip them out here before processing.
-        """
-        for ns in re.findall("\w*:\w*=\".*\"", Text):
-            Text = Text.replace(ns,'')
-        for ns in re.findall("xmlns=\".*\"", Text):
-            Text = Text.replace(ns,'')
-        return Text
-    
     def mergeDigitalObjectIntoSID(self, Source, Output):
         """
-        Merge the digital object record into the Solr Input Document.
-        Do not overwrite existing id, presentation_url and metadata_url fields.        
+        Merge the digital object record into the Solr Input Document. Do not
+        overwrite existing id, presentation_url and metadata_url fields.
         """
         filename = ''
         try:
@@ -230,8 +214,12 @@ class Transformer(object):
             assert os.path.exists(source), self.log.error("Source path does not exist: " + source)
         # execute actions in order
         if "eaccpf-to-sid" in actions:
-            # if an xslt is specified, use that instead
-            transform = Utils.loadTransform('esrc-eaccpf-to-solr.xsl')
+            if Params.has_option("transform", "xslt"):
+                xslt = Params.get("transform", "xslt")
+            else:
+                modpath = os.path.abspath(__file__)
+                xslt = os.path.dirname(modpath) + os.sep + "transform" + os.sep + 'esrc-eaccpf-to-solr.xsl'
+            transform = Utils.loadTransform(xslt)
             self.transformEacCpfsToSID(sources, output, transform)
         if "html-to-sid" in actions:
             self.transformHtmlsToSid(sources, output)

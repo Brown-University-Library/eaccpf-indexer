@@ -33,7 +33,7 @@ class Analyzer(object):
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         path = os.path.dirname(modpath)
         try:
-            schema = path + os.sep + 'schema' + os.sep + 'eaccpf.xsd'
+            schema = path + os.sep + 'transform' + os.sep + 'eaccpf.xsd'
             infile = open(schema, 'r')
             schema_data = infile.read()
             schema_root = etree.XML(schema_data)
