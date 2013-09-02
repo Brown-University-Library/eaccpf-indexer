@@ -84,7 +84,8 @@ class Crawler(object):
                                 dobjects = eaccpf.getDigitalObjects()
                                 for dobject in dobjects:
                                     cacherecord = self.cache.put(dobject)
-                                    dobject.write(Output, CacheRecord=cacherecord)
+                                    identifier = dobject.getObjectId()
+                                    dobject.write(Output, Name=identifier, CacheRecord=cacherecord)
                             if 'html' in Actions:
                                 html.write(Output)
                         elif 'html-all' in Actions:

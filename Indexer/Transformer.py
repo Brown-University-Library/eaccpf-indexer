@@ -8,7 +8,6 @@ import HtmlPage
 import Utils
 import logging
 import os
-import re 
 import yaml
 
 
@@ -18,9 +17,6 @@ class Transformer(object):
     """
 
     def __init__(self):
-        """
-        Constructor
-        """
         self.log = logging.getLogger('Transformer')
 
     def _getIdFromFilename(self,Filename):
@@ -41,7 +37,7 @@ class Transformer(object):
             data = infile.read()
             dobj = yaml.load(data)
             infile.close()
-            filename = Utils.getFileName(Source).replace('.yml','.xml')
+            filename = Utils.getFileName(Source).replace('.yml', '.xml')
             # if there is an existing SID file, then read it into memory
             if os.path.exists(Output + os.sep + filename):
                 parser = etree.XMLParser(remove_blank_text=True)
@@ -58,7 +54,7 @@ class Transformer(object):
                 outfile = open(Output + os.sep + filename,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.log.info("Merged digital object into " + filename)
+                self.log.info("Merged digital object into {0}".format(filename))
         except:
             self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=True)
     
@@ -179,9 +175,9 @@ class Transformer(object):
                 outfile = open(Output,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
                 outfile.close()
-                self.log.info("Merged inferred data into " + filename)
+                self.log.info("Merged inferred data into {0}".format(filename))
         except Exception:
-            self.log.error("Could not complete merge processing for " + filename, exc_info=True)
+            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=True)
     
     def mergeInferredRecordsIntoSID(self, Sources, Output):
         """
@@ -201,17 +197,17 @@ class Transformer(object):
         to the output path.
         """
         # get parameters
-        actions = Params.get("transform","actions").split(',')
-        output = Params.get("transform","output")
-        sources = Params.get("transform","inputs").split(",")
+        actions = Params.get("transform", "actions").split(',')
+        output = Params.get("transform", "output")
+        sources = Params.get("transform", "inputs").split(",")
         # create output folder
         if not os.path.exists(output):
             os.makedirs(output)
         Utils.cleanOutputFolder(output)
         # check state
-        assert os.path.exists(output), self.log.error("Output path does not exist: " + output)
+        assert os.path.exists(output), self.log.error("Output path does not exist: {0}".format(output))
         for source in sources:
-            assert os.path.exists(source), self.log.error("Source path does not exist: " + source)
+            assert os.path.exists(source), self.log.error("Source path does not exist: {0}".format(source))
         # execute actions in order
         if "eaccpf-to-sid" in actions:
             if Params.has_option("transform", "xslt"):
@@ -297,29 +293,13 @@ class Transformer(object):
                     data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
                     outfile.write(data)
                     outfile.close()
-                    self.log.info("Set fields in " + filename)
+                    self.log.info("Set fields in {0}".format(filename))
                 except:
-                    self.log.error("Could not set field in " + filename)
+                    self.log.error("Could not set field in {0}".format(filename))
 
-    def transformDigitalObjectsToSID(self,Sources,Output):
+    def transformDigitalObjectToSID(self, Source, Output, Transform=None):
         """
-        Transform zero or more paths with digital object YAML records to Solr 
-        Input Document format.
-        """
-        for source in Sources:
-            files = os.listdir(source)
-            for filename in files:
-                if Utils.isDigitalObjectYaml(source + os.sep + filename):
-                    path = source + os.sep + filename
-                    try:
-                        self.transformDigitalObjectToSID(path,Output)
-                    except:
-                        msg = "Could not transform DObject to SID: {0}".format(filename)
-                        self.log.error(msg, exc_info=True)
-
-    def transformDigitalObjectToSID(self, Source, Output):
-        """
-        Transform a single digital object YAML record to Solr Input Document 
+        Transform a single digital object YAML record to Solr Input Document
         format.
         """
         # read digital object data
@@ -331,19 +311,52 @@ class Transformer(object):
         doc = etree.SubElement(root, "doc")
         for key in data:
             f = etree.SubElement(doc, "field")
-            f.text = data[key]
+            f.attrib['name'] = key
+            if len(data[key]) > 0:
+                f.text = data[key]
         # write XML
         filename = data['id'] + ".xml"
         outfile = open(Output + os.sep + filename,'w')
         xml = etree.tostring(root, pretty_print=True, xml_declaration=True)
         outfile.write(xml)
         outfile.close()
-        self.log.info("Transformed DObject to SID: " + filename)
+        self.log.info("Transformed dobject to SID: {0}".format(filename))
+
+    def transformDigitalObjectsToSID(self, Sources, Output, Transform=None):
+        """
+        Transform zero or more paths with digital object YAML records to Solr 
+        Input Document format.
+        """
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                path = source + os.sep + filename
+                if filename.startswith('D') and Utils.isDigitalObjectYaml(path):
+                    try:
+                        self.transformDigitalObjectToSID(path, Output)
+                    except:
+                        msg = "Could not transform DObject to SID: {0}".format(filename)
+                        self.log.error(msg, exc_info=True)
+
+    def transformEacCpfToSID(self, Source, Output, Transform):
+        """
+        Transform EAC-CPF document to Solr Input Document format using the
+        specified XSLT transform file.
+        """
+        xml = etree.parse(Source)
+        result = Transform(xml)
+        # write the output file
+        filename = Utils.getFileName(Source)
+        outfile = open(Output + os.sep + filename, 'w')
+        data = etree.tostring(result, pretty_print=True, xml_declaration=True)
+        outfile.write(data)
+        outfile.close()
+        self.log.info("Transformed to SID: {0}".format(filename))
 
     def transformEacCpfsToSID(self, Sources, Output, Transform):
         """
         Transform zero or more paths containing EAC-CPF documents to Solr Input
-        Document format. 
+        Document format.
         """
         for source in Sources:
             files = os.listdir(source)
@@ -354,40 +367,6 @@ class Transformer(object):
                     except Exception:
                         msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
                         self.log.error(msg, exc_info=True)
-
-    def transformEacCpfToSID(self, Source, Output, Transform):
-        """
-        Transform EAC-CPF document to Solr Input Document format using the
-        specified XSLT transform file.
-        """
-        # ISSUE #4: remove namespaces in the XML document before transforming
-        # data = self._removeNameSpaces(data)
-        xml = etree.parse(Source)
-        result = Transform(xml)
-        # write the output file
-        filename = Utils.getFileName(Source)
-        outfile = open(Output + os.sep + filename, 'w')
-        data = etree.tostring(result, pretty_print=True, xml_declaration=True)
-        # result.write(outfile, pretty_print=True, xml_declaration=True)
-        outfile.write(data)
-        outfile.close()
-        self.log.info("Transformed to SID: {0}".format(filename))
-
-    def transformHtmlsToSid(self, Sources, Output):
-        """
-        Transform HTML documents to Solr Input Document format.
-        """
-        for source in Sources:
-            files = os.listdir(source)
-            for filename in files:
-                if filename.endswith('htm') or filename.endswith('html'):
-                    path = source + os.sep + filename
-                    html = HtmlPage.HtmlPage(path)
-                    try:
-                        self.transformHtmlToSid(html, Output)
-                    except:
-                        msg = "Could not transform HTML to SID: {0}".format(filename)
-                        self.log.error(msg)
 
     def transformHtmlToSid(self, Html, Output):
         """
@@ -410,3 +389,20 @@ class Transformer(object):
         outfile.close()
         msg = "Transformed HTML to SID: {0}".format(filename)
         self.log.info(msg)
+
+    def transformHtmlsToSid(self, Sources, Output):
+        """
+        Transform HTML documents to Solr Input Document format.
+        """
+        for source in Sources:
+            files = os.listdir(source)
+            for filename in files:
+                if filename.endswith('htm') or filename.endswith('html'):
+                    path = source + os.sep + filename
+                    html = HtmlPage.HtmlPage(path)
+                    try:
+                        self.transformHtmlToSid(html, Output)
+                    except:
+                        msg = "Could not transform HTML to SID: {0}".format(filename)
+                        self.log.error(msg)
+

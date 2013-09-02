@@ -5,6 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from HtmlPage import HtmlPage
 
+import Utils
 import logging
 import os
 import urlparse
@@ -118,6 +119,16 @@ class DigitalObject(object):
         """
         return self.record['metadata_url']
 
+    def getObjectId(self):
+        """
+        Get the digital object identifier.
+        """
+        name = Utils.getFileName(self.record['presentation_url'])
+        if '.' in name:
+            parts = name.split('.')
+            name = parts[0]
+        return name
+
     def getPresentationUrl(self):
         """
         Get the public URL to the HTML presentation.
@@ -132,7 +143,7 @@ class DigitalObject(object):
 
     def getRecordId(self):
         """
-        Get the record identifier.
+        Get the parent record identifier.
         """
         filename = self.getFileName()
         recordid, _ = os.path.splitext(filename)
@@ -158,7 +169,7 @@ class DigitalObject(object):
                 return 'video'
         return 'other'
     
-    def write(self, Path, Id=None, CacheRecord=None):
+    def write(self, Path, Name=None, CacheRecord=None):
         """
         Write a YML representation of the digital object to the specified path.
         """
@@ -166,13 +177,13 @@ class DigitalObject(object):
         if CacheRecord:
             for key in CacheRecord:
                 record[key] = CacheRecord[key]
-        if Id:
-            filename = Id + '.yml'
-            record['id'] = Id
+        if Name:
+            filename = Name + '.yml'
+            record['id'] = Name
         else:
             filename = self.getRecordId() + '.yml'
         data = yaml.dump(record, default_flow_style=False, indent=4)
         outfile = open(Path + os.sep + filename,'w')
         outfile.write(data)
         outfile.close()
-        self.logger.info("Stored digital object YML " + filename)
+        self.logger.info("Stored digital object {0}".format(filename))
