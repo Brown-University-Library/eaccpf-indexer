@@ -37,7 +37,6 @@
 	            <xsl:if test="/doc:eac-cpf/doc:control/doc:localControl/@doc:localType != ''">
 	            	<field name="localtype"><xsl:value-of select="/doc:eac-cpf/doc:control/doc:localControl/doc:term" /></field>
 	            </xsl:if>
-
 	        	<!-- identity -->
 	            <field name="entityId"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId" /></field>
 	            <field name="type"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType" /></field>
@@ -49,9 +48,7 @@
 	            <xsl:if test="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates/doc:dateRange/doc:toDate/@doc:standardDate != ''">
 	                <field name="toDate"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates/doc:dateRange/doc:toDate/@doc:standardDate"/>T00:00:00Z</field>
 	            </xsl:if>
-	            <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function">
-	            	<field name="function"><xsl:value-of select="doc:term"/></field>
-	            </xsl:for-each>
+                <xsl:apply-templates select="functions" />
                 <!-- abstract: will appear in /biogHist or /biogHist/abstract -->
                 <xsl:choose>
                     <xsl:when test="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:abstract">
@@ -65,4 +62,9 @@
 	        </doc>
         </add>
     </xsl:template>    
+
+    <xsl:template name="functions" match="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function">
+        <field name="function"><xsl:value-of select="doc:term"/></field>
+    </xsl:template>
+
 </xsl:stylesheet>

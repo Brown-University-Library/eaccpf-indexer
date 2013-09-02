@@ -65,24 +65,8 @@ required for the following services:
 Usage
 -----
 
-The tool is run from the command line. Starting at the seed page or pages, it 
-will visit all pages within the seed domain that are linked to that starting 
-page. Where an HTML page provides an EAC-CPF alternate representation, the
-crawler will fetch, parse and transform the EAC-CPF document into a Solr Input
-Document, then insert the record into Solr.  In addition, the crawler can
-generate a report on the quality of the EAC-CPF that is indexed.
-
- > python indexer.py config [OPTIONS]
- >
- > --analyze    Analyze EAC-CPF for quality indicators and generate an HTML
- >              report
- > --clean      Clean input files of common errors before further processing
- > --crawl      Crawl file system or web site for metadata files
- > --infer      Infer concepts, entities, locations from free text fields
- > --post       Post Solr Input Documents to Apache Solr index
- > --transform  Transform metadata files to Solr Input Document format
-
-Copy indexer.cfg.example into a new configuration file and edit as needed.
+Run python Indexer.py -h for a list of options. Copy the indexer.cfg.example
+files to a new location edit it as needed.
 
 
 Revision History
@@ -102,6 +86,7 @@ Revision History
 * Transform operation uses source, metadata/presentation URLs from eac-cpf
   root node
 * Created ESRC specific EAC-CPF to SID XSLT transform files
+* Added support for console execution of Poster.py
 
 1.4.0
 

@@ -158,7 +158,7 @@ def loadTransform(Path):
     try:
         return etree.XSLT(xslt_root)
     except:
-        log.error("Could not load XSLT file {0}".format(xslt))
+        log.error("Could not load XSLT file {0}".format(Path))
 
 def purgeFolder(Folder, HashIndex):
     """
