@@ -21,7 +21,6 @@
 	            <xsl:if test="/doc:eac-cpf/doc:control/doc:localControl/@doc:localType != ''">
 	            	<field name="localtype"><xsl:value-of select="/doc:eac-cpf/doc:control/doc:localControl/doc:term" /></field>
 	            </xsl:if>
-
 	        	<!-- identity -->
 	            <field name="entityId"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId" /></field>
 	            <field name="type"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType" /></field>

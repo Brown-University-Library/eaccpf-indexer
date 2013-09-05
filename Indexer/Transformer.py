@@ -33,7 +33,7 @@ class Transformer(object):
         """
         filename = ''
         try:
-            infile = open(Source,'r')
+            infile = open(Source, 'r')
             data = infile.read()
             dobj = yaml.load(data)
             infile.close()
@@ -263,7 +263,7 @@ class Transformer(object):
                     msg = "Could not set boosts: {0}".format(filename)
                     self.log.error(msg, exc_info=True)
 
-    def setFieldValue(self, Source, FieldValue):
+    def setFieldValue(self, Source, Values):
         """
         Set the specified field value for all Solr Input Documents.
         """
@@ -277,7 +277,7 @@ class Transformer(object):
                     root = xml.getroot()
                     doc = root.getchildren()[0]
                     # set the field values
-                    for fieldvalue in FieldValue:
+                    for fieldvalue in Values:
                         fieldname, value = fieldvalue.split(":")
                         fields = doc.findall('field[@name="' + fieldname + '"]')
                         # if the field exists, change its value

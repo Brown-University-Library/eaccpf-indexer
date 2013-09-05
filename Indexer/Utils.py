@@ -122,7 +122,7 @@ def isSolrInputDocument(Path):
         infile = open(Path, 'r')
         data = infile.read()
         infile.close()
-        if "<add>" in data and "<doc>" in data:
+        if "<doc>" in data and "</doc>" in data:
             return True
     return False
 
