@@ -19,6 +19,7 @@
                 xmlns:doc="urn:isbn:1-931666-33-4"
                 xmlns:ns0="http://www.esrc.unimelb.edu.au"
                 version="1.0">
+    <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
 	        <doc>
@@ -34,7 +35,7 @@
                 </xsl:if>
 	        	<!-- control -->
 	            <field name="id"><xsl:value-of select="/doc:eac-cpf/doc:control/doc:recordId" /></field>
-	            <xsl:if test="/doc:eac-cpf/doc:control/doc:localControl/@doc:localType != ''">
+	            <xsl:if test="/doc:eac-cpf/doc:control/doc:localControl/@localType != ''">
 	            	<field name="localtype"><xsl:value-of select="/doc:eac-cpf/doc:control/doc:localControl/doc:term" /></field>
 	            </xsl:if>
 	        	<!-- identity -->
