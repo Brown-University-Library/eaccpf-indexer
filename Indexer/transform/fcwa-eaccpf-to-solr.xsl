@@ -28,7 +28,7 @@
 	            	<field name="metadata_url"><xsl:value-of select="/doc:eac-cpf/@ns0:metadata" /></field>
                 </xsl:if>
 	            <xsl:if test="/doc:eac-cpf/@ns0:presentation != ''">
-	            	<field name="presentation_url">https://www.facp.esrc.unimelb.edu.au/guide/wa/<xsl:value-of select="/doc:eac-cpf/@ns0:presentation" /></field>
+	            	<field name="presentation_url">https://www.facp.esrc.unimelb.edu.au/guide/wa/<xsl:value-of select="/doc:eac-cpf/doc:control/doc:recordId" /></field>
                 </xsl:if>
 	            <xsl:if test="/doc:eac-cpf/@ns0:source != ''">
 	            	<field name="source"><xsl:value-of select="/doc:eac-cpf/@ns0:source" /></field>
