@@ -71,7 +71,7 @@ class Indexer(object):
         formatter = logging.Formatter(self.logFormat)
         sh = logging.StreamHandler()
         sh.setFormatter(formatter)
-        sh.setLevel(logging.INFO)
+        sh.setLevel(logging.ERROR)
         self.logger.addHandler(sh)
         # log file handler
         fh = None
