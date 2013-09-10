@@ -26,7 +26,7 @@ class DigitalObject(object):
     @see https://bitbucket.org/esrc/eaccpf-solr
     """
 
-    def __init__(self, Source, MetadataUrl, PresentationUrl, Title, Abstract, EntityType, LocalType, UnitDate):
+    def __init__(self, Source, MetadataUrl, PresentationUrl, Title, Abstract, LocalType, UnitDate, AlternateTitle=None):
         """
         Source is a file system path or URL to the EAC-CPF document that 
         defines the digital object. MetadataUrl is a publc URL to the 
@@ -41,9 +41,11 @@ class DigitalObject(object):
         self.record['presentation_url'] = PresentationUrl
         self.record['title'] = Title
         self.record['abstract'] = Abstract
-        self.record['type'] = EntityType
+        self.record['type'] = 'Digital Object' # ISSUE #23
         self.record['localtype'] = LocalType
         self.record['unitdate'] = UnitDate
+        if AlternateTitle:
+            self.record['alternate_title'] = AlternateTitle
         # parse the unit date into from and to dates
         fromDate, toDate = self._getDateRange(UnitDate)
         if fromDate:

@@ -136,12 +136,12 @@ class EacCpf(object):
                         abstract = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
                         if abstract:
                             abstract = abstract[0].text
-                        entitytype = self.getEntityType()
                         localtype = self.getLocalType()
+                        alternate_title = self.getTitle()
                         unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
                         if unitdate and not hasattr(unitdate,'lower'):
                             unitdate = unitdate[0].text
-                        dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, entitytype, localtype, unitdate)
+                        dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, unitdate, AlternateTitle=alternate_title)
                         dobjects.append(dobj)
             except:
                 pass
