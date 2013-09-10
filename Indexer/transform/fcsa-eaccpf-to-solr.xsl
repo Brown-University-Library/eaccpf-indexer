@@ -33,8 +33,8 @@
 	            <xsl:if test="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates/doc:dateRange/doc:toDate/@doc:standardDate != ''">
 	                <field name="toDate"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates/doc:dateRange/doc:toDate/@doc:standardDate"/>T00:00:00Z</field>
 	            </xsl:if>
-                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function">
-                    <field name="function"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function/doc:term"/></field>
+                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function/doc:term">
+                    <field name="function"><xsl:value-of select='.'/></field>
                 </xsl:for-each>
                 <!-- abstract: will appear in /biogHist or /biogHist/abstract -->
                 <xsl:choose>
