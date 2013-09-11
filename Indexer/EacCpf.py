@@ -127,7 +127,6 @@ class EacCpf(object):
                         if Thumbnail and not "Include in Gallery" in descNote[0].text:
                             continue
                         title = relEntry[0].text
-                        # @todo add parent entity title
                         presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']
                         nz = {
                             "doc": "urn:isbn:1-931666-33-4",

@@ -46,8 +46,8 @@ class DigitalObjectCache(object):
         """
         Get the path relative to the cache root.
         """
-        Path = Path.replace(self.path,'')
-        return Path.replace('/pairtree_root/','')
+        Path = Path.replace(self.path, '')
+        return Path.replace('/pairtree_root/', '')
     
     def _resizeImageAndSaveToNewFile(self, Source, Width, Height):
         """
@@ -113,11 +113,11 @@ class DigitalObjectCache(object):
         digitalObject = tempfile.mktemp(suffix="." + ext)
         if (Utils.isUrl(source)):
             # replace spaces in URL before downloading
-            url = source.replace(' ','%20')
+            url = source.replace(' ', '%20')
             # download file
             response = urllib2.urlopen(url)
             data = response.read()
-            outfile = open(digitalObject,'w')
+            outfile = open(digitalObject, 'w')
             outfile.write(data)
             outfile.close()
         else:
@@ -135,9 +135,9 @@ class DigitalObjectCache(object):
             # create a new cache object
             obj = self.storage.get_object(cacheid, create_if_doesnt_exist=True)
             # set object source location, file name and extension 
-            obj.add_bytestream("dobj_url",source)
-            obj.add_bytestream("dobj_file_name",filename)
-            obj.add_bytestream("dobj_file_extension",ext)
+            obj.add_bytestream("dobj_url", source)
+            obj.add_bytestream("dobj_file_name", filename)
+            obj.add_bytestream("dobj_file_extension", ext)
             # create alternate representations
             large = digitalObject # no change
             medium = self._resizeImageAndSaveToNewFile(digitalObject, 260, 180)
@@ -147,18 +147,18 @@ class DigitalObjectCache(object):
             medium_filename = "medium." + ext
             small_filename = "small." + ext
             with open(large,'rb') as stream:
-                obj.add_bytestream(large_filename,stream)
+                obj.add_bytestream(large_filename, stream)
             with open(medium,'rb') as stream:
-                obj.add_bytestream(medium_filename,stream)
+                obj.add_bytestream(medium_filename, stream)
             with open(small,'rb') as stream:
-                obj.add_bytestream(small_filename,stream)
+                obj.add_bytestream(small_filename, stream)
             # store URLs to alternates
             large_url = url + large_filename
             medium_url = url + medium_filename
             small_url = url + small_filename
-            obj.add_bytestream("dobj_proxy_large",large_url)
-            obj.add_bytestream("dobj_proxy_medium",medium_url)
-            obj.add_bytestream("dobj_proxy_small",small_url)
+            obj.add_bytestream("dobj_proxy_large", large_url)
+            obj.add_bytestream("dobj_proxy_medium", medium_url)
+            obj.add_bytestream("dobj_proxy_small", small_url)
             # delete the temporary files
             os.remove(large)
             os.remove(medium)

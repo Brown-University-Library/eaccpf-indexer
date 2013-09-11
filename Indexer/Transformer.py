@@ -331,7 +331,7 @@ class Transformer(object):
             files = os.listdir(source)
             for filename in files:
                 path = source + os.sep + filename
-                if filename.startswith('D') and Utils.isDigitalObjectYaml(path):
+                if Utils.isDigitalObjectYaml(path):
                     try:
                         self.transformDigitalObjectToSID(path, Output)
                     except:
