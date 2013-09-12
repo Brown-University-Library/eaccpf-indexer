@@ -351,7 +351,7 @@ class Transformer(object):
         data = etree.tostring(result, pretty_print=True, xml_declaration=True)
         outfile.write(data)
         outfile.close()
-        self.log.info("Transformed to SID: {0}".format(filename))
+        self.log.info("Transformed EAC-CPF to SID: {0}".format(filename))
 
     def transformEacCpfsToSID(self, Sources, Output, Transform):
         """
