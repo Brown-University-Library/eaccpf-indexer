@@ -209,6 +209,8 @@ class Transformer(object):
         for source in sources:
             assert os.path.exists(source), self.log.error("Source path does not exist: {0}".format(source))
         # execute actions in order
+        if "digitalobjects-to-sid" in actions:
+            self.transformDigitalObjectsToSID(sources, output)
         if "eaccpf-to-sid" in actions:
             if Params.has_option("transform", "xslt"):
                 xslt = Params.get("transform", "xslt")
@@ -221,8 +223,6 @@ class Transformer(object):
             self.transformHtmlsToSid(sources, output)
         if 'merge-digitalobjects' in actions:
             self.mergeDigitalObjectsIntoSID(sources, output)
-        if "digitalobjects-to-sid" in actions:
-            self.transformDigitalObjectsToSID(sources, output)
         if "merge-inferred" in actions:
             self.mergeInferredRecordsIntoSID(sources, output)
         if "set-fields" in actions:
