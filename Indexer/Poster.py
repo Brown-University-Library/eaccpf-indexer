@@ -34,10 +34,9 @@ class Poster(object):
             url = Url + '/update'
         resp = requests.post(url, msg, headers=self.headers)
         if resp.status_code == 200:
-            self.logger.info("Committed staged data to " + Url)
+            self.logger.info("Committed staged data to {0}".format(Url))
         else:
-            self.logger.error("Something went wrong trying to commit the changes.")
-            self.logger.error("\n%s" % resp.text)
+            self.logger.error("Commit failed for {0}\n{1}".format(Url, resp.content))
 
     def flush(self, Url):
         """
@@ -50,10 +49,9 @@ class Poster(object):
             url = Url + '/update'
         resp = requests.post(url, msg, headers=self.headers)
         if resp.status_code == 200:
-            self.logger.info("Flushed data from " + Url)
+            self.logger.info("Flushed {0}".format(Url))
         else:
-            self.logger.error("Something went wrong trying to submit a request to wipe the index.")
-            self.logger.error("\n%s" % resp.text)
+            self.logger.error("Flush failed for {0}\n{1}".format(Url, resp.content))
 
     def optimize(self, Url):
         """
@@ -67,10 +65,9 @@ class Poster(object):
             url = Url + '/update'
         resp = requests.post(url, msg, headers=self.headers)
         if resp.status_code == 200:
-            self.logger.info("Optimized " + Url)
+            self.logger.info("Optimized {0}".format(Url))
         else:
-            self.logger.error("Something went wrong trying to optimize the index.")
-            self.logger.error("\n%s" % resp.text)
+            self.logger.error("Optimize failed for {0}\n{1}".format(Url, resp.content))
 
     def post(self, Source, Url):
         """
@@ -78,7 +75,7 @@ class Poster(object):
         they have all required fields.
         """
         # check state
-        assert os.path.exists(Source), self.logger.error("Source path does not exist: " + Source)
+        assert os.path.exists(Source), self.logger.error("Source path does not exist: {0}".format(Source))
         # ensure that the posting URL is correct
         if Url.endswith('/'):
             url = Url + 'update'
@@ -94,11 +91,11 @@ class Poster(object):
                     f.close()
                     resp = requests.post(url, data=data, headers=self.headers)
                     if resp.status_code == 200:
-                        self.logger.info("Posted " + filename)
+                        self.logger.info("Posted {0}".format(filename))
                     else:
-                        self.logger.error("Submission of %s failed with error %s." % (filename, resp.status_code))
+                        self.logger.error("Post failed for {0}\n{1}".format(filename, resp.content))
                 except:
-                    self.logger.error("Could not complete post operation for " + filename, exc_info=True)
+                    self.logger.error("Post failed for {0}".format(filename), exc_info=True)
 
     def run(self, Params):
         """

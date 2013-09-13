@@ -33,23 +33,29 @@ class Transformer(object):
         """
         filename = ''
         try:
+            # read the digital object metadata file
             infile = open(Source, 'r')
             data = infile.read()
             dobj = yaml.load(data)
             infile.close()
             filename = Utils.getFileName(Source).replace('.yml', '.xml')
-            # if there is an existing SID file, then read it into memory
+            # if there is an existing SID file, then read it
             if os.path.exists(Output + os.sep + filename):
                 parser = etree.XMLParser(remove_blank_text=True)
                 xml = etree.parse(Output + os.sep + filename, parser)
                 root = xml.getroot()
                 doc = root.getchildren()[0]
-                # add fields
-                for field in dobj.keys():
-                    if field.startswith('dobj'):
-                        dobjfield = etree.Element("field", name=field)
-                        dobjfield.text = dobj[field]
-                        doc.append(dobjfield)
+                # add fields that are not already present in the SID file
+                for fieldname in dobj.keys():
+                    if fieldname.startswith('dobj'):
+                        # if the field already exists then update it, otherwise add it
+                        node = doc.xpath("//field[@name='{0}']".format(fieldname))
+                        if node and len(node) > 0:
+                            node[0].text = dobj[fieldname]
+                        else:
+                            dobjfield = etree.Element("field", name=fieldname)
+                            dobjfield.text = dobj[fieldname]
+                            doc.append(dobjfield)
                 # write the updated file
                 outfile = open(Output + os.sep + filename,'w')
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
