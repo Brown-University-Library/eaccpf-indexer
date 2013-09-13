@@ -35,8 +35,13 @@ def cleanOutputFolder(Path, Update=False):
         os.makedirs(Path)
         return
     if not Update:
-        shutil.rmtree(Path)
-        os.makedirs(Path)
+        files = os.listdir(Path)
+        for filename in files:
+            path = Path + os.sep + filename
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
 
 def cleanText(Val):
     """
@@ -70,19 +75,23 @@ def getFileName(Url):
     """
     Get the filename from the specified URI or path.
     """
-    if "/" in Url:
-        parts = Url.split("/")
+    name = str(Url)
+    if 'http' and '?' in name:
+        i = name.find('?')
+        name = name[:i]
+    if "/" in name:
+        parts = name.split("/")
         return parts[-1]
-    return Url
+    return name
 
 def getFileNameExtension(Filename):
     """
-    Get the filename extension. If an extension is not found, return None.
+    Get the filename extension. If an extension is not found, return ''.
     """
     if "." in Filename:
         parts = Filename.split(".")
         return parts[-1]
-    return None
+    return ''
 
 def getFilenameWithAlternateExtension(Filename, Extension):
     """
@@ -230,27 +239,6 @@ def tryReadYaml(Path, Filename):
     except:
         pass
     return {}
-
-def trySetFieldByAttributeNameValue(Dict, Field, AttributeName, Source):
-    """
-    Try to set the dictionary field with the attribute value from the source
-    object.
-    """
-    try:
-        if hasattr(Source, AttributeName):
-            val = cleanText(Source[AttributeName])
-            Dict[Field] = val
-    except:
-        pass
-
-def trySetFieldValue(Dict, FieldName, Source):
-    """
-    Try to set the named field value with the specified source object.
-    """
-    try:
-        Dict[FieldName] = cleanText(Source.string)
-    except:
-        pass
 
 def validate(Source, Schema):
     """

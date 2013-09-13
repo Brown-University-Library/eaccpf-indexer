@@ -1,0 +1,245 @@
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://www.esrc.unimelb.edu.au" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd" ns0:metadata="http://www.findandconnect.gov.au/vic/eac/E000004.xml" ns0:presentation="http://www.findandconnect.gov.au/vic/biogs/E000004b.htm" ns0:source="/srv/ha/web/FCVC/LIVE/eac/E000004.xml">
+<control>
+<recordId>E000004</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p/>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-01-30">2009-01-30</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription/>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-07-20">2012-07-20</eventDateTime>
+<agentType>human</agentType>
+<agent/>
+<eventDescription/>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000004b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>MacKillop Family Services</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1997-01-01">1997</fromDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Community Service Organisation</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Catholic</term>
+</function>
+</functions>
+<biogHist>
+<abstract>MacKillop Family Services was established in 1997 to continue the services (foster care, residential care and specialised home-based care services) to children, young people and families previously undertaken by the Sisters of Mercy, the Christian Brothers, and the Sisters of St Joseph.</abstract>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000209b.htm">
+<relationEntry localType="Organisation">
+Heritage and Information Service, MacKillop Family Services (1997 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000383b.htm">
+<relationEntry localType="Organisation">
+St Vincent de Paul Child and Family Services (1992 - 1997)
+</relationEntry>
+<descriptiveNote>
+<p>In 1997, St Vincent de Paul Child and Family Services became part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000381b.htm">
+<relationEntry localType="Organisation">
+St Vincent de Paul's Boys' Home (1967 - 1997?)
+</relationEntry>
+<descriptiveNote>
+<p>In 1997, St Vincent de Paul's Boys' Home became part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000064b.htm">
+<relationEntry localType="Organisation">
+St Augustine's Adolescent and Family Services (1988 - 1997)
+</relationEntry>
+<descriptiveNote>
+<p>In 1997, St Augustine's Adolescent and Family Services became part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000056b.htm">
+<relationEntry localType="Organisation">
+Mercy Family Care Centre (c. 1975 - 1997)
+</relationEntry>
+<descriptiveNote>
+<p>In 1997, Mercy Family Care Centre became part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000047b.htm">
+<relationEntry localType="Organisation">
+St Anthony's Family Service (1976 - 1997)
+</relationEntry>
+<descriptiveNote>
+<p>In 1997, St Anthony's Family Service became part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000044b.htm">
+<relationEntry localType="Organisation">
+Christian Brothers' Child Youth and Family Services (1995 - 1997)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000206b.htm">
+<relationEntry localType="Organisation">
+St Joseph's Babies' and Family Service (1985 - 1997)
+</relationEntry>
+<descriptiveNote>
+<p>In 1997, St Joseph's Babies' and Family Service became part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
+<relationEntry localType="Organisation">
+The Who Am I? Project (2009 - 2012)
+</relationEntry>
+<descriptiveNote>
+<p>MacKillop Family Services is a partner Community Service Organisation (CSO) in the Who Am I? project.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000045b.htm">
+<relationEntry localType="Organisation">
+Sisters of St Joseph (1890 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000042b.htm">
+<relationEntry localType="Organisation">
+Sisters of Mercy, Melbourne (1857 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000043b.htm">
+<relationEntry localType="Organisation">
+Christian Brothers (1868 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000209b.htm">
+<relationEntry localType="Organisation">
+Heritage and Information Service, MacKillop Family Services (1997 - )
+</relationEntry>
+<descriptiveNote>
+<p>The Heritage and Information Service is part of MacKillop Family Services.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000691b.htm">
+<relationEntry localType="Archival Collection">
+Records held by MacKillop Family Services (1857 - 1997)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'MacKillop Family Services', in Find &amp;amp;amp; Connect - Victoria, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">MacKillop Family Services</title>
+<bibseries>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000004b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000049.htm">
+<relationEntry localType="published">Article: "A Secure Safeguard of the Children's Morals": Catholic Child Welfare in Nineteenth-Century Victoria</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Barnard, Jill</name>
+<title render="quoted">"A Secure Safeguard of the Children's Morals": Catholic Child Welfare in Nineteenth-Century Victoria</title>
+<imprint>
+<date>2005</date>
+</imprint>
+<bibseries>
+<title render="italic">Provenance</title>
+<num type="issue">4</num>
+</bibseries>
+<extptr linktype="simple" href="http://prov.vic.gov.au/wp-content/uploads/2011/05/ProvenanceIssue4.pdf"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000027.htm">
+<relationEntry localType="published">Resource Section: St Vincent de Paul Orphanage</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Twigg, Karen</name>
+<title render="quoted">St Vincent de Paul Orphanage</title>
+<imprint>
+<publisher>The University of Melbourne</publisher>
+<date>2008</date>
+</imprint>
+<bibseries>
+<title render="italic">eMelbourne: the city past and present</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.emelbourne.net.au/biogs/EM01317b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000007.htm">
+<relationEntry localType="published">Book: Holding on to Hope: a history of the founding agencies of MacKillop Family Services 1854-1997</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Barnard, Jill; Twigg, Karen</name>
+<title render="italic">Holding on to Hope: a history of the founding agencies of MacKillop Family Services 1854-1997</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Australian Scholarly Publishing</publisher>
+<date>2004</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000355.htm">
+<relationEntry localType="digitalObject">150 years of children in care in Victoria, 150 years of MacKillop Family Services</relationEntry>
+
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>150 years of children in care in Victoria, 150 years of MacKillop Family Services</unittitle>
+<unitdate>c. 2006</unitdate>
+<abstract>This is a copy of a Wall Chart produced by MacKillop Family Services to document its involvement in the child welfare sector from 1855-2005.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

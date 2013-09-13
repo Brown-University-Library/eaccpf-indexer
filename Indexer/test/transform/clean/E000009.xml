@@ -1,0 +1,202 @@
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://www.esrc.unimelb.edu.au" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd" ns0:metadata="http://www.findandconnect.gov.au/vic/eac/E000009.xml" ns0:presentation="http://www.findandconnect.gov.au/vic/biogs/E000009b.htm" ns0:source="/srv/ha/web/FCVC/LIVE/eac/E000009.xml">
+<control>
+<recordId>E000009</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p/>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-02-05">2009-02-05</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription/>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-06-13">2012-06-13</eventDateTime>
+<agentType>human</agentType>
+<agent/>
+<eventDescription/>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000009b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Anglicare Victoria</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1997-01-01">1997</fromDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Community Service Organisation</term>
+</function>
+<function>
+<term>Records Service</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Adoption Agency</term>
+</function>
+<function>
+<term>Repository</term>
+</function>
+<function>
+<term>Protestant</term>
+</function>
+<function>
+<term>Anglican</term>
+</function>
+</functions>
+<biogHist>
+<abstract>Anglicare Victoria was formed in 1997 following the amalgamation of three Anglican child and family welfare agencies - the Mission to St James and St John, St John's Homes for Boys and Girls and the Mission to the Streets and Lanes. At its establishment it carried on the work of providing care and support services to children, young people and families through services like foster care, emergency food and crisis accommodation, as well as indirectly through family and community support services such as financial counselling, parent education and group work.</abstract>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000097b.htm">
+<relationEntry localType="Organisation">
+Mission to the Streets and Lanes (1886 - 1997)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1997-01-01">1997</fromDate>
+<toDate standardDate="1997-12-31">1997</toDate>
+</dateRange>
+<descriptiveNote>
+<p>In 1997, the Mission to the Streets and Lanes amalgamated with the Mission of St James and St John and St John's Home for Boys and Girls to form Anglicare Victoria.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000077b.htm">
+<relationEntry localType="Organisation">
+Mission of St James and St John (1919 - 1997)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1997-01-01">1997</fromDate>
+<toDate standardDate="1997-12-31">1997</toDate>
+</dateRange>
+<descriptiveNote>
+<p>In 1997, Mission of St James and St John amalgamated with the Mission to the Streets and Lanes and St John's Home for Boys and Girls to form Anglicare Victoria.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000211b.htm">
+<relationEntry localType="Organisation">
+St John's Home for Boys and Girls (1958 - 1997)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1997-01-01">1997</fromDate>
+<toDate standardDate="1997-12-31">1997</toDate>
+</dateRange>
+<descriptiveNote>
+<p>In 1997, St John's Home for Boys and Girls amalgamated with the Mission of St James and St John and the Mission to the Streets and Lanes to form Anglicare Victoria.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000730b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Anglicare Victoria (1886 - 1997)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
+<relationEntry localType="Organisation">
+The Who Am I? Project (2009 - 2012)
+</relationEntry>
+<descriptiveNote>
+<p>Anglicare Victoria is a Linkage Partner to the Who Am I? project.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000234b.htm">
+<relationEntry localType="Organisation">
+Anglican Church of Australia (1788 - )
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Anglicare Victoria', in Find &amp;amp;amp; Connect - Victoria, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Anglicare Victoria</title>
+<bibseries>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000009b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000660.htm">
+<relationEntry localType="published">Book: For the record : background information on the work of the Anglican Church with Aboriginal children and directory of Anglican agencies providing residential care to children from 1830 to 1980</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Boyce, J.</name>
+<title render="italic">For the record : background information on the work of the Anglican Church with Aboriginal children and directory of Anglican agencies providing residential care to children from 1830 to 1980</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Anglicare Australia</publisher>
+<date>2003</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000596.htm">
+<relationEntry localType="published">Resource: Serving the Future: The Creation of Anglicare Victoria</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Judi Cleary</name>
+<title render="italic">Serving the Future: The Creation of Anglicare Victoria</title>
+<imprint>
+<publisher>Anglicare Victoria</publisher>
+<date>2007</date>
+</imprint>
+<extptr linktype="simple" href="http://www.anglicarevic.org.au/index.php?action=filemanager&amp;amp;doc_form_name=download&amp;amp;folder_id=877&amp;amp;doc_id=3946"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000107.htm">
+<relationEntry localType="published">Resource Section: Mission of St James and St John</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Swain, Shurlee</name>
+<title render="quoted">Mission of St James and St John</title>
+<imprint>
+<publisher>The University of Melbourne</publisher>
+<date>2008</date>
+</imprint>
+<bibseries>
+<title render="italic">eMelbourne: the city past and present</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.emelbourne.net.au/biogs/EM00984b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

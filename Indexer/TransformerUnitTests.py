@@ -171,52 +171,6 @@ class TransformerUnitTests(unittest.TestCase):
         result = self.transformer._isDigitalObjectYaml(self.digitalObject)
         self.assertEqual(result, True)
 
-    def test_isEACCPF(self):
-        """
-        It should correctly determine if a file is an EAC-CPF record.
-        """
-        """
-        # no match
-        result = self.transformer._isEACCPF(self.junk)
-        self.assertEqual(result, False)
-        # matches extension but not content
-        result = self.transformer._isEACCPF(self.xml)
-        self.assertEqual(result, False)
-        # matches extension and content
-        result = self.transformer._isEACCPF(self.eaccpf)
-        self.assertEqual(result, True)
-        """
-        pass
-    
-    def test_isInferredYaml(self):
-        """
-        It should correctly determine if a file is an inferred data record in
-        YAML format.
-        """
-        # no match
-        result = self.transformer._isInferredYaml(self.junk)
-        self.assertEqual(result, False)
-        # matches extension but not content
-        result = self.transformer._isInferredYaml(self.yml)
-        self.assertEqual(result, False)
-        # matches extension and content
-        result = self.transformer._isInferredYaml(self.inferred)
-        self.assertEqual(result, True)
-    
-    def test_isSolrInputDocument(self):
-        """
-        It should correctly determine if a file is a Solr Input Document.
-        """
-        # no match
-        result = self.transformer._isSolrInputDocument(self.junk)
-        self.assertEqual(result, False)
-        # matches extension but not content
-        result = self.transformer._isSolrInputDocument(self.xml)
-        self.assertEqual(result, False)
-        # matches extension and content
-        result = self.transformer._isSolrInputDocument(self.solr)
-        self.assertEqual(result, True)
-    
     def test_mergeInferredRecordToSID(self):
         """
         Merge inferred data into Solr Input Document record.

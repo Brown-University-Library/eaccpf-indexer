@@ -1,0 +1,23 @@
+locations:
+- address: Geelong VIC 3220, Australia
+  city: Geelong
+  coordinates: [-38.1485437, 144.3613479]
+  country: Australia
+  event: Glastonbury Child and Family Services opens in Geelong
+  fromDate: '1984-01-01T00:00:00Z'
+  placeentry: Geelong
+  postal_code: '3220'
+  region: VIC
+  street: ''
+  toDate: '1984-01-01T00:00:00Z'
+- address: Geelong VIC, Australia
+  city: Geelong
+  coordinates: [-38.15, 144.35]
+  country: Australia
+  event: Glastonbury Child and Family Services opens in Geelong
+  fromDate: '1984-01-01T00:00:00Z'
+  placeentry: Geelong
+  postal_code: ''
+  region: VIC
+  street: ''
+  toDate: '1984-01-01T00:00:00Z'

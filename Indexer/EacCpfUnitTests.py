@@ -49,7 +49,7 @@ class EacCpfUnitTests(unittest.TestCase):
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com')
             self.assertNotEqual(doc, None)
-            self.assertNotEqual(doc.data, None)
+            self.assertNotEqual(doc.xml, None)
 
     def test_getAbstract(self):
         """
@@ -90,7 +90,7 @@ class EacCpfUnitTests(unittest.TestCase):
                  "http://www.findandconnect.gov.au/nsw/" : 0,
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : 1,
                  "http://www.findandconnect.gov.au/nsw/biogs/NE00280b.htm" : 3,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00124b.htm" : 0,
+                 "http://www.findandconnect.gov.au/nsw/biogs/NE00124b.htm" : 1,
                  "http://www.findandconnect.gov.au/nsw/biogs/NE01217b.htm" : 1,
                  "http://www.findandconnect.gov.au/nsw/browse_h.htm": 0,
                  }
@@ -104,7 +104,7 @@ class EacCpfUnitTests(unittest.TestCase):
                 self.assertNotEqual(objects, None)
                 self.assertEqual(len(objects), cases[case])
             else:
-                self.assertEqual(0,cases[case])
+                self.assertEqual(0, cases[case])
 
     def test_getEntityType(self):
         """
