@@ -321,7 +321,8 @@ class Transformer(object):
             if data[key] and len(data[key]) > 0:
                 f.text = data[key]
         # write XML
-        filename = data['id'] + ".xml"
+        filename = Utils.getFileName(Source)
+        filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
         outfile = open(Output + os.sep + filename,'w')
         xml = etree.tostring(root, pretty_print=True, xml_declaration=True)
         outfile.write(xml)

@@ -130,7 +130,7 @@ class DigitalObject(object):
 
     def getRecordId(self):
         """
-        Get the parent record identifier.
+        Get the record identifier.
         """
         filename = self.getFileName()
         recordid, _ = os.path.splitext(filename)
@@ -168,7 +168,9 @@ class DigitalObject(object):
             filename = Name + '.yml'
             record['id'] = Name
         else:
-            filename = self.getRecordId() + '.yml'
+            url = self.getPresentationUrl()
+            filename = Utils.getFileName(url)
+            filename = Utils.getFilenameWithAlternateExtension(filename, "yml")
         data = yaml.dump(record, default_flow_style=False, indent=4)
         outfile = open(Path + os.sep + filename,'w')
         outfile.write(data)
