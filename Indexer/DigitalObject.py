@@ -26,7 +26,7 @@ class DigitalObject(object):
     @see https://bitbucket.org/esrc/eaccpf-solr
     """
 
-    def __init__(self, Source, MetadataUrl, PresentationUrl, Title, Abstract, LocalType, UnitDate, AlternateTitle=None):
+    def __init__(self, Source, MetadataUrl, PresentationUrl, Title, Abstract, LocalType, FromDate=None, ToDate=None, UnitDate=None, AlternateTitle=None):
         """
         Source is a file system path or URL to the EAC-CPF document that 
         defines the digital object. MetadataUrl is a publc URL to the 
@@ -43,15 +43,13 @@ class DigitalObject(object):
         self.record['abstract'] = Abstract
         self.record['type'] = 'Digital Object' # ISSUE #23
         self.record['localtype'] = LocalType
-        self.record['unitdate'] = UnitDate
+        if UnitDate:
+            self.record['unitdate'] = UnitDate
+            self.record['fromDate'], self.record['toDate']= Utils.parseUnitDate(UnitDate)
+        self.record['fromDate'] = FromDate
+        self.record['toDate'] = ToDate
         if AlternateTitle:
             self.record['alternate_title'] = AlternateTitle
-        # parse the unit date into from and to dates
-        fromDate, toDate = self._getDateRange(UnitDate)
-        if fromDate:
-            self.record['fromDate'] = fromDate
-        if toDate:
-            self.record['toDate'] = toDate
         # determine the source and public URL for the digital object
         if 'http://' in self.source or 'https://' in self.source:
             self.record['dobj_url'] = self._getObjectSourceUrl() 
@@ -86,15 +84,6 @@ class DigitalObject(object):
         self.record['dobj_type'] = self.getType()
         self.record['id'] = self.getRecordId()
 
-    def _getDateRange(self, UnitDate):
-        """
-        Parse unit date field to produce fromDate and toDate field values.
-        @todo need to figure out what form these dates should be in!!!
-        """
-        if UnitDate:
-            return '0000-01-01T00:00:00Z', '0000-01-01T00:00:00Z'
-        return None, None
-
     def _getObjectSourceUrl(self):
         """
         Extract the digital object source file URL from its HTML record page.
@@ -109,10 +98,7 @@ class DigitalObject(object):
         """
         Get the metadata file name.
         """
-        if "/" in self.record['metadata_url']:
-            parts = self.record['metadata_url'].split("/")
-            return parts[-1]
-        return self.record['metadata_url']
+        return Utils.getFileName(self.record['metadata_url'])
 
     def getMetadataUrl(self):
         """
@@ -126,10 +112,7 @@ class DigitalObject(object):
         Get the digital object identifier.
         """
         name = Utils.getFileName(self.record['presentation_url'])
-        if '.' in name:
-            parts = name.split('.')
-            name = parts[0]
-        return name
+        return Utils.getRecordIdFromFilename(name)
 
     def getPresentationUrl(self):
         """

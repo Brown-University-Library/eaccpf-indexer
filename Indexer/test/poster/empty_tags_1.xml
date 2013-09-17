@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ASCII'?>
+<add>
+  <doc>
+    <field name="metadata_url">http://www.findandconnect.gov.au/vic/eac/E000100.xml</field>
+    <field name="presentation_url">https://www.facp.esrc.unimelb.edu.au/guide/vic/E000100</field>
+    <field name="id">E000100</field>
+    <field name="localtype">Organisation</field>
+    <field name="entityId">http://www.findandconnect.gov.au/vic/biogs/E000100b.htm</field>
+    <field name="type">corporateBody</field>
+    <field name="fromDate">1894-01-01T00:00:00Z</field>
+    <field name="toDate">1968-12-31T00:00:00Z</field>
+    <field name="function">Children's Home</field>
+    <field name="function">Care Provider</field>
+    <field name="function">Hostel</field>
+    <field name="function">Protestant</field>
+    <field name="function">Anglican</field>
+    <field name="region">VIC</field>
+  </doc>
+</add>

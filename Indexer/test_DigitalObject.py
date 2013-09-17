@@ -5,7 +5,8 @@ LICENSE file, which is part of this source code package.
 
 import unittest
 
-class DigitalObjectUnitTests(unittest.TestCase):
+
+class TestDigitalObject(unittest.TestCase):
     """
     Unit tests for DigitalObject module.
     """

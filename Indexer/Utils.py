@@ -4,8 +4,9 @@ LICENSE file, which is part of this source code package.
 """
 
 from lxml import etree
+import calendar
+import datetime
 import hashlib
-import inspect
 import logging
 import os
 import shutil
@@ -100,6 +101,13 @@ def getFilenameWithAlternateExtension(Filename, Extension):
     name, _ = os.path.splitext(Filename)
     return name + "." + Extension
 
+def getRecordIdFromFilename(Filename):
+    """
+    Get the record ID from a filename. The record ID is the filename without
+    the three character extension.
+    """
+    return None
+
 def isDigitalObjectYaml(Path):
     """
     Determines if the file at the specified path is an image record in
@@ -168,6 +176,44 @@ def loadTransform(Path):
         return etree.XSLT(xslt_root)
     except:
         log.error("Could not load XSLT file {0}".format(Path))
+
+def parseUnitDate(Date):
+    """
+    Parse unit date field to produce fromDate and toDate field values.
+    """
+    formats = [
+        "%Y-%m-%d", # 1976-01-01
+        "%Y %m %d", # 1976 01 01
+        "%d %B %Y", # 12 January 1997
+        "%B %Y",    # February 1998
+        "%Y",       # 2004
+        "c. %Y",    # c. 2004
+        "c.%Y",     # c.2004
+        "c %Y",     # c 2004
+        "c%Y",      # c2004
+        "circa %Y", # circa 2004
+        "%Y?",      # 2004?
+    ]
+    Date = Date.replace('?', '')
+    for i in range(len(formats)):
+        try:
+            f = formats[i]
+            fromDate = datetime.datetime.strptime(Date, f)
+            toDate = datetime.datetime.strptime(Date, f)
+            if i > 2:
+                _, day = calendar.monthrange(toDate.year, toDate.month)
+                toDate = toDate.replace(day=day)
+            if i > 3:
+                toDate = toDate.replace(month=12)
+            fromDate = "{0}Z".format(str(fromDate).replace(' ', 'T'))
+            toDate = "{0}Z".format(str(toDate).replace(' 00:00:00', 'T23:59:59'))
+            # ensure that the new date conforms to Solr's requirements
+            _ = datetime.datetime.strptime(fromDate, "%Y-%m-%dT%H:%M:%SZ")
+            _ = datetime.datetime.strptime(toDate, "%Y-%m-%dT%H:%M:%SZ")
+            return fromDate, toDate
+        except:
+            pass
+    return None, None
 
 def purgeFolder(Folder, HashIndex):
     """

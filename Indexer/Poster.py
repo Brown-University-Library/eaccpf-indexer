@@ -3,6 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from lxml import etree
 import argparse
 import logging
 import os
@@ -37,6 +38,7 @@ class Poster(object):
             self.logger.info("Committed staged data to {0}".format(Url))
         else:
             self.logger.error("Commit failed for {0}\n{1}".format(Url, resp.content))
+        return resp.status_code
 
     def flush(self, Url):
         """
@@ -52,6 +54,7 @@ class Poster(object):
             self.logger.info("Flushed {0}".format(Url))
         else:
             self.logger.error("Flush failed for {0}\n{1}".format(Url, resp.content))
+        return resp.status_code
 
     def optimize(self, Url):
         """
@@ -68,6 +71,7 @@ class Poster(object):
             self.logger.info("Optimized {0}".format(Url))
         else:
             self.logger.error("Optimize failed for {0}\n{1}".format(Url, resp.content))
+        return resp.status_code
 
     def post(self, Source, Url):
         """
@@ -86,9 +90,11 @@ class Poster(object):
         for filename in files:
             if filename.endswith(".xml"):
                 try:
-                    f = open(Source + os.sep + filename)
-                    data = f.read()
-                    f.close()
+                    # load the xml document and strip empty tags
+                    xml = etree.parse(Source + os.sep + filename)
+                    self.strip_empty_elements(xml)
+                    data = etree.tostring(xml)
+                    # post the document to the index
                     resp = requests.post(url, data=data, headers=self.headers)
                     if resp.status_code == 200:
                         self.logger.info("Posted {0}".format(filename))
@@ -115,6 +121,19 @@ class Poster(object):
         if 'optimize' in actions:
             self.optimize(index)
 
+    def strip_empty_elements(self, doc):
+        """Remove empty elements from the document.
+
+        Solr date fields don't like to be empty - hence why this
+        method exists. As it turns out, it can't hurt to ditch empty
+        elements - less to submit. Hence why it's generic
+
+        @params:
+        doc: the XML document
+        """
+        for elem in doc.iter('field'):
+            if elem.text is None:
+                elem.getparent().remove(elem)
 
 if __name__ == '__main__':
     # parse console arguments

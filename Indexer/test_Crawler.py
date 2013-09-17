@@ -6,7 +6,8 @@ LICENSE file, which is part of this source code package.
 import unittest
 from Crawler import Crawler
 
-class CrawlerUnitTests(unittest.TestCase):
+
+class TestCrawler(unittest.TestCase):
     """
     Test cases for the Crawler module.
     """

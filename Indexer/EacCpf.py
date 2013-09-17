@@ -140,7 +140,10 @@ class EacCpf(object):
                         unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
                         if unitdate and not hasattr(unitdate,'lower'):
                             unitdate = unitdate[0].text
-                        dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, unitdate, AlternateTitle=alternate_title)
+                            dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, UnitDate=unitdate, AlternateTitle=alternate_title)
+                        else:
+                            fromDate, toDate = self.getExistDates()
+                            dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, FromDate=fromDate, ToDate=toDate, AlternateTitle=alternate_title)
                         dobjects.append(dobj)
             except:
                 pass
@@ -172,7 +175,7 @@ class EacCpf(object):
 
     def getExistDates(self):
         """
-        Get entity exist dates. Returns 'from date', 'to date' list.
+        Get entity exist dates. Returns 'from date', 'to date' tuple.
         """
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates", namespaces=self.ns)
@@ -196,11 +199,8 @@ class EacCpf(object):
         """
         Get document file name.
         """
-        if "/" in self.source:
-            parts = self.source.split("/")
-            return parts[-1]
-        return self.source
-    
+        return Utils.getFileName(self.source)
+
     def getFreeText(self):
         """
         Get content from free text fields.
@@ -299,10 +299,9 @@ class EacCpf(object):
                 return self.source
             elif self.metadata:
                 return self.metadata
-            else:
-                return None
         except:
-            return None
+            pass
+        return None
 
     def getNameEntries(self):
         """
@@ -372,8 +371,8 @@ class EacCpf(object):
         Get the digital object that acts as a thumbnail image for this record.
         """
         try:
-            objs = self.getDigitalObjects(Thumbnail=True)
-            return objs[0]
+            obj = self.getDigitalObjects(Thumbnail=True)
+            return obj[0]
         except:
             return None
     
@@ -435,8 +434,6 @@ class EacCpf(object):
         outfile = open(path, 'w')
         data = etree.tostring(self.xml, pretty_print=True)
         outfile.write(data)
-        #outfile.write('\n<!-- @source=%(source)s @metadata=%(metadata)s @presentation=%(presentation)s -->' %
-        #              {"source":self.source, "metadata":self.metadata, "presentation":self.presentation})
         outfile.close()
         self.log.info("Stored EAC-CPF document " + self.getFileName())
         return path

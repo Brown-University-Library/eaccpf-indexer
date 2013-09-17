@@ -15,7 +15,7 @@ import tempfile
 import unittest
 
 
-class EacCpfUnitTests(unittest.TestCase):
+class TestEacCpf(unittest.TestCase):
     """
     Unit tests for EacCpf module.
     """

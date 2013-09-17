@@ -11,7 +11,7 @@ import unittest
 import Utils
 
 
-class UtilsTests(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     pass
 
     def setUp(self):
@@ -86,7 +86,7 @@ class UtilsTests(unittest.TestCase):
         s2 = Utils.cleanText(s1)
         self.assertNotEqual(s2, None)
         self.assertNotEqual(len(s1), len(s2))
-        self.assertNotEqual(s1[0], ' ')
+        self.assertNotEqual(s2[0], ' ')
 
     def test_fixIncorrectDateEncoding(self):
         pass
@@ -137,7 +137,7 @@ class UtilsTests(unittest.TestCase):
         ]
         for case in cases:
             filename, ext, newname = case
-            renamed = Utils.getFilenameWithAlternateExtension(filename, "yml")
+            renamed = Utils.getFilenameWithAlternateExtension(filename, ext)
             self.assertEquals(newname, renamed)
 
     def test_isDigitalObjectYaml(self):
@@ -183,6 +183,27 @@ class UtilsTests(unittest.TestCase):
 
     def test_loadFileHashIndex(self):
         pass
+
+    def test_parseUnitDate(self):
+        """
+        Parse unit date value into fromDate, toDate values.
+        """
+        cases = [
+            ('1976-03-05','1976-03-05T00:00:00Z','1976-03-05T23:59:59Z'),
+            ('1976 03 05','1976-03-05T00:00:00Z','1976-03-05T23:59:59Z'),
+            ('5 March 1976','1976-03-05T00:00:00Z','1976-03-05T23:59:59Z'),
+            ('March 1976','1976-03-01T00:00:00Z','1976-03-31T23:59:59Z'),
+            ('1976','1976-01-01T00:00:00Z','1976-12-31T23:59:59Z'),
+            ('c.1960','1960-01-01T00:00:00Z','1960-12-31T23:59:59Z'),
+            ('c. 1960','1960-01-01T00:00:00Z','1960-12-31T23:59:59Z'),
+            ('c 1960','1960-01-01T00:00:00Z','1960-12-31T23:59:59Z'),
+            ('circa 1960','1960-01-01T00:00:00Z','1960-12-31T23:59:59Z')
+        ]
+        for case in cases:
+            unitDate, fromDate, toDate = case
+            r_fromDate, r_toDate = Utils.parseUnitDate(unitDate)
+            self.assertEquals(fromDate, r_fromDate)
+            self.assertEquals(toDate, r_toDate)
 
     def test_purgeFolder(self):
         pass

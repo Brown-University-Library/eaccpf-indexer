@@ -7,7 +7,7 @@ import unittest
 from Facter import Facter
 
 
-class FacterUnitTests(unittest.TestCase):
+class TestFacter(unittest.TestCase):
     """
     Unit tests for Facter module.
     """

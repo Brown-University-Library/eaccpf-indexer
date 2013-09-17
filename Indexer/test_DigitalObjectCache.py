@@ -12,7 +12,8 @@ import urllib2
 import tempfile
 from DigitalObjectCache import DigitalObjectCache
 
-class DigitalObjectCacheUnitTests(unittest.TestCase):
+
+class TestDigitalObjectCache(unittest.TestCase):
     """
     Executes unit tests against the digital object cache module.
     """

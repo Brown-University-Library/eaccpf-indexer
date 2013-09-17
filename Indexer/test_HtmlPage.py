@@ -7,7 +7,8 @@ import HtmlPage
 import os
 import unittest
 
-class HtmlPageUnitTests(unittest.TestCase):
+
+class TestHtmlPage(unittest.TestCase):
     """
     Test cases for the HTML Page module.
     @todo Need test cases for when the page contains relative URLs throughout

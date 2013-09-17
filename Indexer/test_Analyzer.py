@@ -9,7 +9,8 @@ import tempfile
 import unittest
 from Analyzer import Analyzer
 
-class AnalyzerUnitTests(unittest.TestCase):
+
+class TestAnalyzer(unittest.TestCase):
     '''
     Unit tests for Analyzer module.
     '''

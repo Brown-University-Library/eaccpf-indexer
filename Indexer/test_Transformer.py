@@ -11,7 +11,7 @@ import unittest
 from Transformer import Transformer
 
 
-class TransformerUnitTests(unittest.TestCase):
+class TestTransformer(unittest.TestCase):
     """
     Executes unit tests against the transformer module.
     """

@@ -6,7 +6,8 @@ LICENSE file, which is part of this source code package.
 import unittest
 from Cleaner import Cleaner
 
-class CleanerUnitTests(unittest.TestCase):
+
+class TestCleaner(unittest.TestCase):
     '''
     Test cases for the Cleaner module.
     '''
