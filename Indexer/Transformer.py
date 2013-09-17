@@ -318,7 +318,7 @@ class Transformer(object):
         for key in data:
             f = etree.SubElement(doc, "field")
             f.attrib['name'] = key
-            if len(data[key]) > 0:
+            if data[key] and len(data[key]) > 0:
                 f.text = data[key]
         # write XML
         filename = data['id'] + ".xml"

@@ -46,8 +46,10 @@ class DigitalObject(object):
         if UnitDate:
             self.record['unitdate'] = UnitDate
             self.record['fromDate'], self.record['toDate']= Utils.parseUnitDate(UnitDate)
-        self.record['fromDate'] = FromDate
-        self.record['toDate'] = ToDate
+        if FromDate:
+            self.record['fromDate'] = FromDate
+        if ToDate:
+            self.record['toDate'] = ToDate
         if AlternateTitle:
             self.record['alternate_title'] = AlternateTitle
         # determine the source and public URL for the digital object
