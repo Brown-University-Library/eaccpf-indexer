@@ -138,7 +138,7 @@ class EacCpf(object):
                         localtype = self.getLocalType()
                         alternate_title = self.getTitle()
                         unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
-                        if unitdate and not hasattr(unitdate,'lower'):
+                        if unitdate and not hasattr(unitdate, 'lower'):
                             unitdate = unitdate[0].text
                             dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, UnitDate=unitdate, AlternateTitle=alternate_title)
                         else:
@@ -190,6 +190,11 @@ class EacCpf(object):
                     toDate = toDate[0].attrib['standardDate']
                 else:
                     toDate = None
+                # ensure dates are in ISO format
+                if fromDate and not 'T00:00:00Z' in fromDate:
+                    fromDate += "T00:00:00Z"
+                if toDate and not 'T00:00:00Z' in toDate:
+                    toDate += "T00:00:00Z"
                 return fromDate, toDate
         except:
             pass

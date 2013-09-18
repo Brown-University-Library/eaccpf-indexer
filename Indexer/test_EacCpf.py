@@ -124,14 +124,14 @@ class TestEacCpf(unittest.TestCase):
 
     def test_getExistDates(self):
         """
-        It should return the entity exist dates. If the exist date has a
-        standardDate attribute, the standardDate attribute value should be
-        return before the date value.
+        It should return the entity exist dates in ISO format. If the exist
+        date has a standardDate attribute, the standardDate attribute value
+        should be returned instead of the date value.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":("1900-01-01",None),
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":("1926-01-01",None),
-                 "http://www.findandconnect.gov.au/vic/eac/E000582.xml":("1942-01-01","1965-12-31")
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":("1900-01-01T00:00:00Z", None),
+                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":("1926-01-01T00:00:00Z", None),
+                 "http://www.findandconnect.gov.au/vic/eac/E000582.xml":("1942-01-01T00:00:00Z","1965-12-31T00:00:00Z")
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com')
