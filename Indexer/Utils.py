@@ -180,6 +180,7 @@ def loadTransform(Path):
 def parseUnitDate(Date):
     """
     Parse unit date field to produce fromDate and toDate field values.
+    @todo need to match c. 1900 - c. 1930
     """
     formats = [
         "%Y-%m-%d", # 1976-01-01
