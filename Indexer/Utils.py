@@ -106,7 +106,8 @@ def getRecordIdFromFilename(Filename):
     Get the record ID from a filename. The record ID is the filename without
     the three character extension.
     """
-    return None
+    name, _ = os.path.splitext(Filename)
+    return name
 
 def isDigitalObjectYaml(Path):
     """

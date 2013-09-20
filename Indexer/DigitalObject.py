@@ -84,7 +84,7 @@ class DigitalObject(object):
             self.dobjpath = pth_base + url[2]
         # extract metadata from the HTML document
         self.record['dobj_type'] = self.getType()
-        self.record['id'] = self.getRecordId()
+        self.record['id'] = self.getObjectId()
 
     def _getObjectSourceUrl(self):
         """
@@ -165,12 +165,10 @@ class DigitalObject(object):
             for key in CacheRecord:
                 record[key] = CacheRecord[key]
         if Name:
-            filename = Name + '.yml'
             record['id'] = Name
+            filename = record['id'] + ".yml"
         else:
-            url = self.getPresentationUrl()
-            filename = Utils.getFileName(url)
-            filename = Utils.getFilenameWithAlternateExtension(filename, "yml")
+            filename = self.getObjectId() + ".yml"
         data = yaml.dump(record, default_flow_style=False, indent=4)
         outfile = open(Path + os.sep + filename,'w')
         outfile.write(data)
