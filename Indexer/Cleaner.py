@@ -71,41 +71,53 @@ class Cleaner(object):
         """
         Remove any empty fromDate or toDate tags.
         """
-        xml = etree.XML(Text)
-        tree = etree.ElementTree(xml)
-        for item in tree.findall('//fromDate'):
-            if item.text is None:
-                item.getparent().remove(item)
-        for item in tree.findall('//toDate'):
-            if item.text is None:
-                item.getparent().remove(item)
-        return etree.tostring(xml,pretty_print=True)
+        try:
+            xml = etree.XML(Text)
+            tree = etree.ElementTree(xml)
+            for item in tree.findall('//fromDate'):
+                if item.text is None:
+                    item.getparent().remove(item)
+            for item in tree.findall('//toDate'):
+                if item.text is None:
+                    item.getparent().remove(item)
+            return etree.tostring(xml,pretty_print=True)
+        except:
+            self.logger.error("Exception when trying to remove empty date fields")
+            return Text
     
     def _removeEmptyStandardDateFields(self, Text):
         """
         Remove any fromDate or toDate tags that have empty standardDate attributes.
         """
-        xml = etree.XML(Text)
-        tree = etree.ElementTree(xml)
-        for item in tree.findall('//fromDate'):
-            if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
-                item.attrib.pop('standardDate')
-        for item in tree.findall('//toDate'):
-            if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
-                item.attrib.pop('standardDate')
-        return etree.tostring(xml,pretty_print=True)
+        try:
+            xml = etree.XML(Text)
+            tree = etree.ElementTree(xml)
+            for item in tree.findall('//fromDate'):
+                if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
+                    item.attrib.pop('standardDate')
+            for item in tree.findall('//toDate'):
+                if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
+                    item.attrib.pop('standardDate')
+            return etree.tostring(xml,pretty_print=True)
+        except:
+            self.logger.error("Exception when trying to remove empty standardDate fields")
+            return Text
     
     def _removeSpanTags(self, Text):
         """
         Remove all <span> and </span> tags from the markup.
         """
-        # replace simple cases first
-        Text = Text.replace("<span>","")
-        Text = Text.replace("</span>","")
-        # replace spans with attributes
-        for span in re.findall("<span \w*=\".*\">",Text):
-            Text = Text.replace(span,'')
-        return Text
+        try:
+            # replace simple cases first
+            Text = Text.replace("<span>","")
+            Text = Text.replace("</span>","")
+            # replace spans with attributes
+            for span in re.findall("<span \w*=\".*\">",Text):
+                Text = Text.replace(span,'')
+        except:
+            self.logger.error("Exception when trying to remove span tags")
+        finally:
+            return Text
 
     def clean(self, Source, Output, HashIndex, Update):
         """

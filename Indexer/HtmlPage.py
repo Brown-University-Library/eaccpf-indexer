@@ -251,9 +251,12 @@ class HtmlPage(object):
         """
         Determine if this page has an EAC-CPF alternate representation.
         """
-        url = self.getEacCpfUrl()
-        if url:
-            return True
+        try:
+            url = self.getEacCpfUrl()
+            if url:
+                return True
+        except:
+            pass
         return False
 
     def hasRecord(self):
