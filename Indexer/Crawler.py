@@ -40,6 +40,8 @@ class Crawler(object):
         # make sure that Base has a trailing /
         if not Base.endswith('/'):
             Base += '/'
+        if not Source.endswith('/'):
+            Source += '/'
         # walk the file system and look for html files
         for path, _, files in os.walk(Source):
             # construct the public url for the file
