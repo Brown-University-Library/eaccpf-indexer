@@ -60,7 +60,7 @@ class Crawler(object):
                             presentation = html.getUrl()
                             src = Source + metadata.replace(Base, '')
                             if not Utils.resourceExists(src):
-                                raise Exception("Resource not available")
+                                raise Exception("Resource not available {0}".format(src))
                             eaccpf = EacCpf(src, metadata, presentation)
                             # we will check the eaccpf document to see if its changed
                             record_filename = eaccpf.getFileName()
