@@ -10,6 +10,8 @@ import logging
 import os
 import yaml
 
+LOG_EXC_INFO = False
+
 
 class Transformer(object):
     """
@@ -62,7 +64,7 @@ class Transformer(object):
                 outfile.close()
                 self.log.info("Merged digital object into {0}".format(filename))
         except:
-            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=True)
+            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=LOG_EXC_INFO)
     
     def mergeDigitalObjectsIntoSID(self, Sources, Output):
         """
@@ -183,7 +185,7 @@ class Transformer(object):
                 outfile.close()
                 self.log.info("Merged inferred data into {0}".format(filename))
         except Exception:
-            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=True)
+            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=LOG_EXC_INFO)
     
     def mergeInferredRecordsIntoSID(self, Sources, Output):
         """
@@ -267,7 +269,7 @@ class Transformer(object):
                     self.log.info(msg)
                 except:
                     msg = "Could not set boosts: {0}".format(filename)
-                    self.log.error(msg, exc_info=True)
+                    self.log.error(msg, exc_info=LOG_EXC_INFO)
 
     def setFieldValue(self, Source, Values):
         """
@@ -343,7 +345,7 @@ class Transformer(object):
                         self.transformDigitalObjectToSID(path, Output)
                     except:
                         msg = "Could not transform DObject to SID: {0}".format(filename)
-                        self.log.error(msg, exc_info=True)
+                        self.log.error(msg, exc_info=LOG_EXC_INFO)
 
     def transformEacCpfToSID(self, Source, Output, Transform):
         """
@@ -373,7 +375,7 @@ class Transformer(object):
                         self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
                     except Exception:
                         msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
-                        self.log.error(msg, exc_info=True)
+                        self.log.error(msg, exc_info=LOG_EXC_INFO)
 
     def transformHtmlToSid(self, Html, Output):
         """

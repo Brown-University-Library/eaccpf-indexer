@@ -14,6 +14,8 @@ import logging
 import os
 import shutil
 
+LOG_EXC_INFO = False
+
 
 class Analyzer(object):
     """
@@ -170,7 +172,7 @@ class Analyzer(object):
             Utils.writeYaml(Output, output_filename, report)
             self.logger.info("Wrote analysis to " + output_filename)
         except:
-            self.logger.error("Could not complete analysis for " + Filename, exc_info=True)
+            self.logger.error("Could not complete analysis for " + Filename, exc_info=LOG_EXC_INFO)
         
     def analyzeFiles(self, Source, Output, HashIndex, Update):
         """
@@ -227,7 +229,7 @@ class Analyzer(object):
             Utils.write(Output, 'index.html', data)
             self.logger.info("Wrote HTML report file")
         except:
-            self.logger.error("Could not write HTML report file", exc_info=True)
+            self.logger.error("Could not write HTML report file", exc_info=LOG_EXC_INFO)
 
     def run(self, Params, Update=False):
         """

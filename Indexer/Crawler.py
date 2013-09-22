@@ -11,6 +11,8 @@ import logging
 import os
 import time
 
+LOG_EXC_INFO = False
+
 
 class Crawler(object):
     """
@@ -93,7 +95,7 @@ class Crawler(object):
                         elif 'html-all' in Actions:
                             html.write(Output)
                     except:
-                        self.log.error("Could not complete processing for {0}".format(filename), exc_info=True)
+                        self.log.error("Could not complete processing for {0}".format(filename), exc_info=LOG_EXC_INFO)
                     finally:
                         time.sleep(Sleep)
         # return the list of processed records

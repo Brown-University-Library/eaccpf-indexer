@@ -11,6 +11,8 @@ import logging
 import os
 import time
 
+LOG_EXC_INFO = False
+
 
 class Facter(object):
     """
@@ -195,25 +197,25 @@ class Facter(object):
                         locations = self.inferLocations(places)
                         inferred['locations'] = locations
                     except:
-                        self.logger.error("Could not complete location processing " + filename, exc_info=True)
+                        self.logger.error("Could not complete location processing " + filename, exc_info=LOG_EXC_INFO)
                 if 'entities' in Actions:
                     try:
                         entities = self.inferEntitiesWithCalais(freeText)
                         inferred['entities'] = entities
                     except:
-                        self.logger.error("Could not complete entity processing " + filename, exc_info=True)
+                        self.logger.error("Could not complete entity processing " + filename, exc_info=LOG_EXC_INFO)
                 if 'named-entities' in Actions:
                     try:
                         namedEntities = self.inferEntitiesWithAlchemy(freeText)
                         inferred['named-entities'] = namedEntities
                     except:
-                        self.logger.error("Could not complete named entity processing " + filename, exc_info=True)
+                        self.logger.error("Could not complete named entity processing " + filename, exc_info=LOG_EXC_INFO)
                 if 'text-analysis' in Actions:
                     try:
                         textAnalysis = self.inferEntitiesWithNLTK(freeText)
                         inferred['text-analysis'] = textAnalysis
                     except:
-                        self.logger.error("Could not complete text analysis " + filename, exc_info=True)
+                        self.logger.error("Could not complete text analysis " + filename, exc_info=LOG_EXC_INFO)
                 # write inferred data to file
                 Utils.writeYaml(Output, inferred_filename, inferred)
                 self.logger.info("Wrote inferred data to " + inferred_filename)

@@ -9,6 +9,8 @@ import logging
 import os
 import requests
 
+LOG_EXC_INFO = False
+
 
 class Poster(object):
     """
@@ -101,7 +103,7 @@ class Poster(object):
                     else:
                         self.logger.error("Post failed for {0}\n{1}".format(filename, resp.content))
                 except:
-                    self.logger.error("Post failed for {0}".format(filename), exc_info=True)
+                    self.logger.error("Post failed for {0}".format(filename), exc_info=LOG_EXC_INFO)
 
     def run(self, Params):
         """

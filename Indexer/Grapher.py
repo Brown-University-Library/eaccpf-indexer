@@ -10,6 +10,8 @@ import networkx as nx
 import os
 import yaml
 
+LOG_EXC_INFO = False
+
 
 class Grapher(object):
     """

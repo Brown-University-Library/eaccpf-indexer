@@ -11,6 +11,8 @@ import logging
 import os
 import re
 
+LOG_EXC_INFO = False
+
 
 class Cleaner(object):
     """
@@ -82,7 +84,7 @@ class Cleaner(object):
                     item.getparent().remove(item)
             return etree.tostring(xml,pretty_print=True)
         except:
-            self.logger.error("Exception when trying to remove empty date fields")
+            self.logger.error("Could not remove empty date fields")
             return Text
     
     def _removeEmptyStandardDateFields(self, Text):
@@ -100,7 +102,7 @@ class Cleaner(object):
                     item.attrib.pop('standardDate')
             return etree.tostring(xml,pretty_print=True)
         except:
-            self.logger.error("Exception when trying to remove empty standardDate fields")
+            self.logger.error("Could not remove empty standardDate fields")
             return Text
     
     def _removeSpanTags(self, Text):
@@ -115,7 +117,7 @@ class Cleaner(object):
             for span in re.findall("<span \w*=\".*\">",Text):
                 Text = Text.replace(span,'')
         except:
-            self.logger.error("Exception when trying to remove span tags")
+            self.logger.error("Could not remove span tags")
         finally:
             return Text
 
@@ -159,7 +161,7 @@ class Cleaner(object):
                 outfile.close()
                 self.logger.info("Stored document " + filename)
             except Exception:
-                self.logger.error("Could not complete processing on " + filename, exc_info=True)
+                self.logger.error("Could not complete processing on " + filename, exc_info=LOG_EXC_INFO)
         # return the list of processed records
         return records
 
