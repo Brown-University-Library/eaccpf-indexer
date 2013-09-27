@@ -176,51 +176,42 @@ class Facter(object):
         files = os.listdir(Source)
         for filename in files:
             if filename.endswith('.xml'):
-                records.append(filename)
-                # read source data
-                eaccpf = EacCpf(Source + os.sep + filename)
-                fileHash = eaccpf.getHash()
-                # if the file has not changed since the last run then skip it
-                if Update:
-                    if filename in HashIndex and HashIndex[filename] == fileHash:
-                        self.logger.info("No change since last update " + filename)
-                        continue
-                # process the file
-                HashIndex[filename] = fileHash
-                # load the inferred data file if it already exists
-                inferred_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
-                inferred = Utils.tryReadYaml(Output, inferred_filename)
-                freeText = eaccpf.getFreeText()
-                if 'locations' in Actions:
-                    try:
-                        places = eaccpf.getLocations()
+                try:
+                    doc = EacCpf(Source + os.sep + filename)
+                    fileHash = doc.getHash()
+                    # if the file has not changed since the last run then skip it
+                    if Update:
+                        if filename in HashIndex and HashIndex[filename] == fileHash:
+                            self.logger.info("No change since last update " + filename)
+                            continue
+                    # process the file
+                    HashIndex[filename] = fileHash
+                    # load the inferred data file if it already exists
+                    inferred_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
+                    inferred = Utils.tryReadYaml(Output, inferred_filename)
+                    freeText = doc.getFreeText()
+                    if 'locations' in Actions:
+                        places = doc.getLocations()
                         locations = self.inferLocations(places)
                         inferred['locations'] = locations
-                    except:
-                        self.logger.error("Could not complete location processing " + filename, exc_info=LOG_EXC_INFO)
-                if 'entities' in Actions:
-                    try:
+                    if 'entities' in Actions:
                         entities = self.inferEntitiesWithCalais(freeText)
                         inferred['entities'] = entities
-                    except:
-                        self.logger.error("Could not complete entity processing " + filename, exc_info=LOG_EXC_INFO)
-                if 'named-entities' in Actions:
-                    try:
+                    if 'named-entities' in Actions:
                         namedEntities = self.inferEntitiesWithAlchemy(freeText)
                         inferred['named-entities'] = namedEntities
-                    except:
-                        self.logger.error("Could not complete named entity processing " + filename, exc_info=LOG_EXC_INFO)
-                if 'text-analysis' in Actions:
-                    try:
+                    if 'text-analysis' in Actions:
                         textAnalysis = self.inferEntitiesWithNLTK(freeText)
                         inferred['text-analysis'] = textAnalysis
-                    except:
-                        self.logger.error("Could not complete text analysis " + filename, exc_info=LOG_EXC_INFO)
-                # write inferred data to file
-                Utils.writeYaml(Output, inferred_filename, inferred)
-                self.logger.info("Wrote inferred data to " + inferred_filename)
-                # sleep between requests
-                time.sleep(Sleep)
+                    # write inferred data to file
+                    Utils.writeYaml(Output, inferred_filename, inferred)
+                    self.logger.info("Wrote inferred data to " + inferred_filename)
+                    # record the name of the file
+                    records.append(filename)
+                    # sleep between requests
+                    time.sleep(Sleep)
+                except:
+                    self.logger.error("Inference failed {0}".format(filename), exc_info=LOG_EXC_INFO)
         # return list of processed records
         return records
 
