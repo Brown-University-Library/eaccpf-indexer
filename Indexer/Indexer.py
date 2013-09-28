@@ -84,14 +84,17 @@ class Indexer(object):
         # override default log level with user specified value
         if self.args.loglevel:
             if self.args.loglevel == 'DEBUG':
+                self.logger.setLevel(logging.DEBUG)
                 sh.setLevel(logging.DEBUG)
                 if fh:
                     fh.setLevel(logging.DEBUG)
             elif self.args.loglevel == 'INFO':
+                self.logger.setLevel(logging.INFO)
                 sh.setLevel(logging.INFO)
                 if fh:
                     fh.setLevel(logging.INFO)
             elif self.args.loglevel == 'ERROR':
+                self.logger.setLevel(logging.ERROR)
                 sh.setLevel(logging.ERROR)
                 if fh:
                     fh.setLevel(logging.ERROR)
