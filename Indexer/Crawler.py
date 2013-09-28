@@ -58,7 +58,7 @@ class Crawler(object):
                         html = HtmlPage(path + os.sep + filename, baseurl)
                         # if the page represents a record
                         if html.hasEacCpfAlternate():
-                            self.log.debug("Record found at " + path + os.sep + filename)
+                            self.log.debug("EAC-CPF found at {0}".format(path + os.sep + filename))
                             # get the eaccpf document
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
@@ -81,12 +81,14 @@ class Crawler(object):
                             if 'eaccpf-thumbnail' in Actions:
                                 thumbnail = eaccpf.getThumbnail()
                                 if thumbnail:
+                                    self.log.debug("Thumbnail found for {0}".format(filename))
                                     cacherecord = self.cache.put(thumbnail)
                                     dobj_id = eaccpf.getRecordId()
                                     thumbnail.write(Output, dobj_id, cacherecord)
                             if 'digitalobject' in Actions:
                                 dobjects = eaccpf.getDigitalObjects()
                                 for dobject in dobjects:
+                                    self.log.debug("Digital object found for {0}".format(filename))
                                     cacherecord = self.cache.put(dobject)
                                     identifier = dobject.getObjectId()
                                     dobject.write(Output, Name=identifier, CacheRecord=cacherecord)
