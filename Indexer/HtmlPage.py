@@ -153,8 +153,14 @@ class HtmlPage(object):
         Get the URL to the digital object representation.
         """
         try:
+            # old style dobject embedding standard
             thumbnail = self.tree.findall("//div[@class='image-caption']/a/img")
-            url = thumbnail[0].attrib['src']
+            if thumbnail and len(thumbnail) > 0:
+                url = thumbnail[0].attrib['src']
+            # new style dobject embedding standard
+            thumbnail = self.tree.findall("//img[@id='dothumb']")
+            if thumbnail and len(thumbnail) > 0:
+                url = thumbnail[0].attrib['src']
             if 'http' in url:
                 # absolute url reference
                 return str(url)
