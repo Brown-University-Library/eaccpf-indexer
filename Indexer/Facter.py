@@ -177,6 +177,8 @@ class Facter(object):
         for filename in files:
             if filename.endswith('.xml'):
                 try:
+                    # record the name of the file
+                    records.append(filename)
                     doc = EacCpf(Source + os.sep + filename)
                     fileHash = doc.getHash()
                     # if the file has not changed since the last run then skip it
@@ -206,8 +208,6 @@ class Facter(object):
                     # write inferred data to file
                     Utils.writeYaml(Output, inferred_filename, inferred)
                     self.logger.info("Wrote inferred data to " + inferred_filename)
-                    # record the name of the file
-                    records.append(filename)
                     # sleep between requests
                     time.sleep(Sleep)
                 except:
