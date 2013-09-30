@@ -28,7 +28,7 @@ class HtmlPage(object):
         be. If the document contains absolute URLs, then the URL parameter is 
         ignored.
         """
-        self.logger = logging.getLogger('HtmlPage')
+        self.log = logging.getLogger('HtmlPage')
         self.base = BaseUrl
         self.data = self._load(Source)
         self.filename = self._getFileName(Source)
@@ -153,14 +153,8 @@ class HtmlPage(object):
         Get the URL to the digital object representation.
         """
         try:
-            # old style dobject embedding standard
-            thumbnail = self.tree.findall("//div[@class='image-caption']/a/img")
-            if thumbnail and len(thumbnail) > 0:
-                url = thumbnail[0].attrib['src']
-            # new style dobject embedding standard
             thumbnail = self.tree.findall("//img[@id='dothumb']")
-            if thumbnail and len(thumbnail) > 0:
-                url = thumbnail[0].attrib['src']
+            url = thumbnail[0].attrib['src']
             if 'http' in url:
                 # absolute url reference
                 return str(url)
@@ -169,7 +163,7 @@ class HtmlPage(object):
                 pageurl = self.getUrl()
                 return str(urlparse.urljoin(pageurl,url))
         except:
-            pass
+            self.log.debug("Digital object not found in {0}".format(self.url))
         return None
 
     def getEacCpfUrl(self):
@@ -281,4 +275,4 @@ class HtmlPage(object):
         outfile.write(self.data)
         outfile.close()
         msg = "Stored HTML document {0}".format(self.filename)
-        self.logger.info(msg)
+        self.log.info(msg)
