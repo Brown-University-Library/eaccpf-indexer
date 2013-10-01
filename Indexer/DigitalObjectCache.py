@@ -22,16 +22,16 @@ class DigitalObjectCache(object):
     throw a pairtree.storage_exceptions.NotAPairtreeStoreException
     """
 
-    def __init__(self, Path, BaseUrl='', Init=False):
+    def __init__(self, Path, UrlRoot='', Init=False):
         """
         Constructor
         """
         self.logger = logging.getLogger('DigitalObjectCache')
         self.path = Path
-        if BaseUrl.endswith('/'):
-            self.base = BaseUrl
+        if UrlRoot.endswith('/'):
+            self.url_root = UrlRoot
         else:
-            self.base = BaseUrl + '/'
+            self.url_root = UrlRoot + '/'
         if Init and os.path.exists(self.path):
             shutil.rmtree(self.path)
         # create the pairtree storage instance
@@ -79,7 +79,7 @@ class DigitalObjectCache(object):
         return filepath
 
     def get(self, Id):
-        """url
+        """
         Get the source URI, source filename and file data as identified by
         the specified key. If no object is found, return None.
         """
@@ -88,7 +88,7 @@ class DigitalObjectCache(object):
             if obj:
                 record = {}
                 record['cache_id'] = Id
-                record['dobj_url'] = obj.get_bytestream("dobj_url")
+                record['dobj_source'] = obj.get_bytestream("dobj_source")
                 record['dobj_file_name'] = obj.get_bytestream("dobj_file_name")
                 record['dobj_file_extension'] = obj.get_bytestream("dobj_file_extension")
                 record['dobj_proxy_large'] = obj.get_bytestream("dobj_proxy_large")
@@ -98,80 +98,62 @@ class DigitalObjectCache(object):
         except:
             return None
 
-    def put(self, DigitalObject):
+    def put(self, Source):
         """
-        Store the digital object located at the specified Source location in 
-        the file storage. Generate alternate image representations of the 
-        digital object. Return a record with the cache identifier, object 
-        source URL, and URLs to the cached alternate representations.
+        Store the digital object located at the specified file system source
+        location in the file storage. Generate alternate image representations
+        of the digital object. Return a record with the cache identifier,
+        object source URL, and URLs to the cached alternate representations.
         """
-        # source file name
-        source = DigitalObject.getSourceUrl()
-        filename = Utils.getFileName(source)
-        ext = Utils.getFileNameExtension(filename)
-        # write source object to temporary file
-        digitalObject = tempfile.mktemp(suffix="." + ext)
-        if (Utils.isUrl(source)):
-            # replace spaces in URL before downloading
-            url = source.replace(' ', '%20')
-            # download file
-            response = urllib2.urlopen(url)
-            data = response.read()
-            outfile = open(digitalObject, 'w')
-            outfile.write(data)
-            outfile.close()
-        else:
-            shutil.copyfile(source, digitalObject)
         # generate an id for the object
-        cacheid = Utils.getFileHash(digitalObject)
+        cache_id = Utils.getFileHash(Source)
         # determine the URL for the cache root
-        path = self.storage._id_to_dirpath(cacheid) + os.sep
+        path = self.storage._id_to_dirpath(cache_id) + os.sep
         path = self._getPathRelativeToCacheRoot(path)
-        if self.base:
-            url = self.base + path
+        if self.url_root:
+            url = self.url_root + path
         else:
             url = path
-        try:
-            # create a new cache object
-            obj = self.storage.get_object(cacheid, create_if_doesnt_exist=True)
-            # set object source location, file name and extension 
-            obj.add_bytestream("dobj_url", source)
-            obj.add_bytestream("dobj_file_name", filename)
-            obj.add_bytestream("dobj_file_extension", ext)
-            # create alternate representations
-            large = digitalObject # no change
-            medium = self._resizeImageAndSaveToNewFile(digitalObject, 260, 180)
-            small = self._resizeImageAndSaveToNewFile(digitalObject, 130, 90)
-            # create alternate representations for the object
-            large_filename = "large." + ext
-            medium_filename = "medium." + ext
-            small_filename = "small." + ext
-            with open(large,'rb') as stream:
-                obj.add_bytestream(large_filename, stream)
-            with open(medium,'rb') as stream:
-                obj.add_bytestream(medium_filename, stream)
-            with open(small,'rb') as stream:
-                obj.add_bytestream(small_filename, stream)
-            # store URLs to alternates
-            large_url = url + large_filename
-            medium_url = url + medium_filename
-            small_url = url + small_filename
-            obj.add_bytestream("dobj_proxy_large", large_url)
-            obj.add_bytestream("dobj_proxy_medium", medium_url)
-            obj.add_bytestream("dobj_proxy_small", small_url)
-            # delete the temporary files
-            os.remove(large)
-            os.remove(medium)
-            os.remove(small)
-            # return the object record
-            record = {}
-            record['cache_id'] = cacheid
-            record['dobj_url'] = source
-            record['dobj_file_name'] = filename
-            record['dobj_file_extension'] = ext
-            record['dobj_proxy_large'] = large_url
-            record['dobj_proxy_medium'] = medium_url
-            record['dobj_proxy_small'] = small_url
-            return record
-        except:
-            self.logger.error("Could not write %s to the cache" % source)
+        # create a new cache object
+        obj = self.storage.get_object(cache_id, create_if_doesnt_exist=True)
+        # set object source location, file name and extension
+        filename = Utils.getFileName(Source)
+        ext = Utils.getFileNameExtension(filename)
+        obj.add_bytestream("dobj_source", Source)
+        obj.add_bytestream("dobj_file_name", filename)
+        obj.add_bytestream("dobj_file_extension", ext)
+        # create alternate representations
+        large = Source # no change
+        medium = self._resizeImageAndSaveToNewFile(Source, 260, 180)
+        small = self._resizeImageAndSaveToNewFile(Source, 130, 90)
+        # create alternate representations for the object
+        large_filename = "large." + ext
+        medium_filename = "medium." + ext
+        small_filename = "small." + ext
+        with open(large,'rb') as stream:
+            obj.add_bytestream(large_filename, stream)
+        with open(medium,'rb') as stream:
+            obj.add_bytestream(medium_filename, stream)
+        with open(small,'rb') as stream:
+            obj.add_bytestream(small_filename, stream)
+        # store URLs to alternates
+        large_url = url + large_filename
+        medium_url = url + medium_filename
+        small_url = url + small_filename
+        obj.add_bytestream("dobj_proxy_large", large_url)
+        obj.add_bytestream("dobj_proxy_medium", medium_url)
+        obj.add_bytestream("dobj_proxy_small", small_url)
+        # delete the temporary files
+        # os.remove(large)
+        os.remove(medium)
+        os.remove(small)
+        # return the object record
+        record = {}
+        record['cache_id'] = cache_id
+        record['dobj_source'] = Source
+        record['dobj_file_name'] = filename
+        record['dobj_file_extension'] = ext
+        record['dobj_proxy_large'] = large_url
+        record['dobj_proxy_medium'] = medium_url
+        record['dobj_proxy_small'] = small_url
+        return record

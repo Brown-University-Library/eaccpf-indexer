@@ -105,7 +105,7 @@ class Poster(object):
                 except:
                     self.logger.error("Post failed for {0}".format(filename), exc_info=LOG_EXC_INFO)
 
-    def run(self, Params):
+    def run(self, Params, StackTrace=False):
         """
         Post Solr Input Documents to Solr core and perform index maintenance 
         operations.

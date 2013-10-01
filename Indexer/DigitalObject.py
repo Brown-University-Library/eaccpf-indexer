@@ -36,25 +36,25 @@ class DigitalObject(object):
         """
         self.logger = logging.getLogger('DigitalObject')
         self.source = Source
-        self.record = {}
-        self.record['metadata_url'] = MetadataUrl
-        self.record['presentation_url'] = PresentationUrl
-        self.record['title'] = Title
-        self.record['abstract'] = Abstract
-        self.record['type'] = 'Digital Object' # ISSUE #23
-        self.record['localtype'] = LocalType
+        self.metadata_url = MetadataUrl
+        self.presentation_url = PresentationUrl
+        self.title = Title
+        self.abstract = Abstract
+        self.type = 'Digital Object' # ISSUE #23
+        self.localtype = LocalType
         if UnitDate:
-            self.record['unitdate'] = UnitDate
-            self.record['fromDate'], self.record['toDate']= Utils.parseUnitDate(UnitDate)
+            self.unitdate = UnitDate
+            self.fromDate, self.toDate= Utils.parseUnitDate(UnitDate)
         if FromDate:
-            self.record['fromDate'] = FromDate
+            self.fromDate = FromDate
         if ToDate:
-            self.record['toDate'] = ToDate
+            self.toDate = ToDate
         if AlternateTitle:
-            self.record['alternate_title'] = AlternateTitle
+            self.alternate_title = AlternateTitle
         # determine the source and public URL for the digital object
         if 'http://' in self.source or 'https://' in self.source:
-            self.record['dobj_url'] = self._getObjectSourceUrl() 
+            html = HtmlPage(self.presentation_url)
+            self.dobj_source = html.getDigitalObjectUrl()
         else:
             # The documents are being indexed through the file system. 
             # Consequently, we need to determine what the file system paths are 
@@ -65,7 +65,7 @@ class DigitalObject(object):
             url = MetadataUrl.replace('http://','').replace('https://','').split('/')
             pth.reverse()
             url.reverse()
-            for a,b in zip(pth,url):
+            for a,b in zip(pth, url):
                 if a == b:
                     pth.remove(a) 
                     url.remove(b)
@@ -76,57 +76,66 @@ class DigitalObject(object):
             url_base = 'http://' + '/'.join(url)
             # the file system path to the HTML document
             html_path = pth_base + PresentationUrl.replace(url_base,'')
-            # get the URL to the digital object file
+            # the next step is to determine the file system path to the digital
+            # object file with the information we have on hand
             html = HtmlPage(html_path)
-            self.record['dobj_url'] = html.getDigitalObjectUrl() 
-            url = urlparse.urlparse(self.record['dobj_url'])
-            # determine the path to the digital object file
-            self.dobjpath = pth_base + url[2]
+            dobj_url = html.getDigitalObjectUrl()
+            dobj_path = pth_base + dobj_url.replace(url_base, '')
+            self.dobj_source = dobj_path
         # extract metadata from the HTML document
-        self.record['dobj_type'] = self.getType()
-        self.record['id'] = self.getObjectId()
-
-    def _getObjectSourceUrl(self):
-        """
-        Extract the digital object source file URL from its HTML record page.
-        
-        If the digital object was indexed from the file system, then we need
-        to convert between 
-        """
-        html = HtmlPage(self.record['presentation_url'])
-        return html.getDigitalObjectUrl()
+        self.dobj_type = self.getType()
+        self.id = self.getObjectId()
 
     def getFileName(self):
         """
         Get the metadata file name.
         """
-        return Utils.getFileName(self.record['metadata_url'])
+        return Utils.getFileName(self.metadata_url)
 
     def getMetadataUrl(self):
         """
         Get the public URL to the EAC-CPF metadata document that identifies
         this digital object.
         """
-        return self.record['metadata_url']
+        return self.metadata_url
 
     def getObjectId(self):
         """
         Get the digital object identifier.
         """
-        name = Utils.getFileName(self.record['presentation_url'])
+        name = Utils.getFileName(self.presentation_url)
         return Utils.getRecordIdFromFilename(name)
 
     def getPresentationUrl(self):
         """
         Get the public URL to the HTML presentation.
         """
-        return self.record['presentation_url']
+        return self.presentation_url
 
     def getRecord(self):
         """
         Get the metadata record.
         """
-        return self.record
+        record = {}
+        record['id'] = self.id
+        record['source'] = self.source
+        record['metadata_url'] = self.metadata_url
+        record['presentation_url'] = self.presentation_url
+        record['title'] = self.title
+        record['abstract'] = self.abstract
+        record['type'] = self.type
+        record['localtype'] = self.localtype
+        if hasattr(self, 'unitdate'):
+            record['unitdate'] = self.unitdate
+        if hasattr(self, 'fromDate'):
+            record['fromDate'] = self.fromDate
+        if hasattr(self, 'toDate'):
+            record['toDate'] = self.toDate
+        if hasattr(self, 'alternate_title'):
+            record['alternate_title'] = self.alternate_title
+        record['dobj_source'] = self.dobj_source
+        record['dobj_type'] = self.dobj_type
+        return record
 
     def getRecordId(self):
         """
@@ -140,7 +149,7 @@ class DigitalObject(object):
         """
         Get the public URL for the digital object file.
         """
-        return self.record['dobj_url']
+        return self.dobj_source
 
     def getType(self):
         """
@@ -148,7 +157,7 @@ class DigitalObject(object):
         """
         images = ['.gif','.jpg','.jpeg','.png']
         video = ['.avi','.mp4','.mpg','.mepg']
-        _, ext = os.path.splitext(self.record['dobj_url'])
+        _, ext = os.path.splitext(self.dobj_source)
         if ext: 
             if ext.lower() in images:
                 return 'image'
@@ -156,21 +165,21 @@ class DigitalObject(object):
                 return 'video'
         return 'other'
     
-    def write(self, Path, Name=None, CacheRecord=None):
+    def write(self, Path, Id=None, CacheRecord=None):
         """
         Write a YML representation of the digital object to the specified path.
         """
-        record = self.record
+        filename = self.getObjectId() + ".yml"
+        record = self.getRecord()
+        if Id:
+            record['id'] = Id
+            filename = record['id'] + ".yml"
         if CacheRecord:
             for key in CacheRecord:
                 record[key] = CacheRecord[key]
-        if Name:
-            record['id'] = Name
-            filename = record['id'] + ".yml"
-        else:
-            filename = self.getObjectId() + ".yml"
+        # write the file
         data = yaml.dump(record, default_flow_style=False, indent=4)
-        outfile = open(Path + os.sep + filename,'w')
+        outfile = open(Path + os.sep + filename, 'w')
         outfile.write(data)
         outfile.close()
         self.logger.info("Stored digital object {0}".format(filename))

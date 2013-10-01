@@ -73,7 +73,7 @@ class TestDigitalObjectCache(unittest.TestCase):
         cache = DigitalObjectCache(self.path, 'http://www.example.com/')
         self.assertNotEqual(cache,None)
         self.assertEquals(cache.path,self.path)
-        self.assertEquals('http://www.example.com/',cache.base)
+        self.assertEquals('http://www.example.com/',cache.url_root)
     
     def test_getFileName(self):
         """

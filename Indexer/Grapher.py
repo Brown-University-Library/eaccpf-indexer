@@ -70,7 +70,7 @@ class Grapher(object):
         """
         pass
 
-    def run(self, Params, Update):
+    def run(self, Params, Update=False, StackTrace=False):
         """
         Execute analysis operations using specified parameters.
         """

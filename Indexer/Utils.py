@@ -11,6 +11,7 @@ import logging
 import os
 import shutil
 import urllib2
+import urlparse
 import yaml
 
 
@@ -62,6 +63,20 @@ def fixIncorrectDateEncoding(Date):
     if 'T00:00:00Z' in Date:
         return Date
     return Date + "T00:00:00Z"
+
+def getCommonStartString(A, B):
+    """
+    Get the common starting substring for strings A and B.
+    """
+    common = []
+    i = 0
+    while i < len(A) and i < len(B):
+        if A[i] == B[i]:
+            common.append(A[i])
+        else:
+            break
+        i += 1
+    return ''.join(common)
 
 def getFileHash(Path):
     """
@@ -287,6 +302,18 @@ def tryReadYaml(Path, Filename):
     except:
         pass
     return {}
+
+def urlToFileSystemPath(Url, FileSystemBase):
+    """
+    Attempt to translate the URL to a local file system path. The file system
+    base is the root of the web site. This method assumes that the file system
+    base corresponds with the root of the web site.
+    """
+    # remove the host and domain portion of the URL
+    parts = urlparse.urlparse(Url)
+    if FileSystemBase.endswith('/'):
+        FileSystemBase = FileSystemBase[:-1]
+    return "{0}{1}".format(FileSystemBase, parts.path)
 
 def validate(Source, Schema):
     """

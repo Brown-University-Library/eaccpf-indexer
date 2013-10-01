@@ -215,7 +215,7 @@ class Facter(object):
         # return list of processed records
         return records
 
-    def run(self, Params, Update=False):
+    def run(self, Params, Update=False, StackTrace=False):
         """
         Execute analysis using the specified parameters.
         """

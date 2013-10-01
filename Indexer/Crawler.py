@@ -11,7 +11,7 @@ import logging
 import os
 import time
 
-LOG_EXC_INFO = False
+LOG_EXC_INFO = True
 
 
 class Crawler(object):
@@ -80,24 +80,24 @@ class Crawler(object):
                                 eaccpf.write(Output)
                             if 'eaccpf-thumbnail' in Actions:
                                 try:
-                                    thumbnail = eaccpf.getThumbnail()
-                                    if thumbnail:
+                                    thumbnail_record = eaccpf.getThumbnail()
+                                    if thumbnail_record:
                                         self.log.debug("Thumbnail found for {0}".format(filename))
-                                        cacherecord = self.cache.put(thumbnail)
-                                        dobj_id = eaccpf.getRecordId()
-                                    thumbnail.write(Output, dobj_id, cacherecord)
+                                        cache_record = self.cache.put(thumbnail_record.dobj_source)
+                                        eaccpf_id = eaccpf.getRecordId()
+                                        thumbnail_record.write(Output, Id=eaccpf_id, CacheRecord=cache_record)
                                 except:
-                                    self.log.error("Could not write thumbnail for {0}".format(filename))
+                                    self.log.error("Could not write thumbnail for {0}".format(filename), exc_info=LOG_EXC_INFO)
                             if 'digitalobject' in Actions:
                                 dobjects = eaccpf.getDigitalObjects()
                                 try:
                                     for dobject in dobjects:
                                         self.log.debug("Digital object found for {0}".format(filename))
-                                        cacherecord = self.cache.put(dobject)
-                                        identifier = dobject.getObjectId()
-                                        dobject.write(Output, Name=identifier, CacheRecord=cacherecord)
+                                        cache_record = self.cache.put(dobject.dobj_source)
+                                        dobj_id = dobject.getObjectId()
+                                        dobject.write(Output, Id=dobj_id, CacheRecord=cache_record)
                                 except:
-                                    self.log.error("Could not write digital object for {0}".format(filename))
+                                    self.log.error("Could not write digital object for {0}".format(filename), exc_info=LOG_EXC_INFO)
                             if 'html' in Actions:
                                 html.write(Output)
                         elif 'html-all' in Actions:

@@ -189,7 +189,7 @@ class Cleaner(object):
         data = data.replace('&', 'and')
         return data
     
-    def run(self, Params, Update=False):
+    def run(self, Params, Update=False, StackTrace=False):
         """
         Execute the clean operation using specified parameters.
         @todo this needs to be cleaned up and simplified

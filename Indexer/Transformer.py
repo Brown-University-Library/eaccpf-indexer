@@ -199,7 +199,7 @@ class Transformer(object):
                     outputFileName = self._getIdFromFilename(filename) + ".xml"
                     self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + outputFileName)
     
-    def run(self, Params):
+    def run(self, Params, StackTrace=False):
         """
         Execute transformations on source documents as specified. Write results 
         to the output path.

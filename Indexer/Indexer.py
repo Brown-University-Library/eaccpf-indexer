@@ -56,9 +56,6 @@ class Indexer(object):
                                  help="set the logging level",
                                  choices=['DEBUG','INFO','ERROR'],
                                  )
-        self.parser.add_argument('--stacktrace',
-                                 help="print the stack trace in logging output",
-                                 choices=['true','false'])
         # defaults
         self.logger = logging.getLogger('')
         self.logger.setLevel(logging.INFO) # don't know why this has to be set but its the only way I can get it to work
