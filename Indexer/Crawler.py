@@ -79,19 +79,25 @@ class Crawler(object):
                             if 'eaccpf' in Actions:
                                 eaccpf.write(Output)
                             if 'eaccpf-thumbnail' in Actions:
-                                thumbnail = eaccpf.getThumbnail()
-                                if thumbnail:
-                                    self.log.debug("Thumbnail found for {0}".format(filename))
-                                    cacherecord = self.cache.put(thumbnail)
-                                    dobj_id = eaccpf.getRecordId()
+                                try:
+                                    thumbnail = eaccpf.getThumbnail()
+                                    if thumbnail:
+                                        self.log.debug("Thumbnail found for {0}".format(filename))
+                                        cacherecord = self.cache.put(thumbnail)
+                                        dobj_id = eaccpf.getRecordId()
                                     thumbnail.write(Output, dobj_id, cacherecord)
+                                except:
+                                    self.log.error("Could not write thumbnail for {0}".format(filename))
                             if 'digitalobject' in Actions:
                                 dobjects = eaccpf.getDigitalObjects()
-                                for dobject in dobjects:
-                                    self.log.debug("Digital object found for {0}".format(filename))
-                                    cacherecord = self.cache.put(dobject)
-                                    identifier = dobject.getObjectId()
-                                    dobject.write(Output, Name=identifier, CacheRecord=cacherecord)
+                                try:
+                                    for dobject in dobjects:
+                                        self.log.debug("Digital object found for {0}".format(filename))
+                                        cacherecord = self.cache.put(dobject)
+                                        identifier = dobject.getObjectId()
+                                        dobject.write(Output, Name=identifier, CacheRecord=cacherecord)
+                                except:
+                                    self.log.error("Could not write digital object for {0}".format(filename))
                             if 'html' in Actions:
                                 html.write(Output)
                         elif 'html-all' in Actions:
