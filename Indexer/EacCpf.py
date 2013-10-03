@@ -45,6 +45,13 @@ class EacCpf(object):
         self.presentation = PresentationUrl
         self.source = Source
         self.xml = etree.fromstring(self._load(Source))
+        # some documents may be missing the fully specified eac-cpf document
+        # namespace attributes, which will result in failures during subsequent
+        # operations. we'll check for the missing attribute here so that we can
+        # make the problem and its resolution obvious in the log
+        root = self.xml.xpath('//doc:eac-cpf', namespaces=self.ns)
+        if len(root) == 0:
+            raise Exception("Missing EAC-CPF namespace declaration {0}".format(Source))
 
     def _load(self, Source):
         """

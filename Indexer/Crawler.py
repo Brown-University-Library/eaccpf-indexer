@@ -116,7 +116,6 @@ class Crawler(object):
         Sleep for the specified number of seconds after fetching data.
         """
         self.log.error("Web site crawling is not implemented")
-        return []
 
     def run(self, Params, Update=False):
         """
@@ -130,12 +129,12 @@ class Crawler(object):
         output = Params.get("crawl", "output")
         sleep = Params.getfloat("crawl", "sleep")
         # check state before starting
-        assert os.path.exists(source), self.log.error("Input path does not exist: " + source)
+        assert os.path.exists(source), self.log.error("Input path does not exist: {0}".format(source))
         if not os.path.exists(output):
             os.makedirs(output)
         Utils.cleanOutputFolder(output, Update=Update)
         self.cache = DigitalObjectCache(cache, cacheUrl)
-        assert os.path.exists(output), self.log.error("Output path does not exist: " + output)
+        assert os.path.exists(output), self.log.error("Output path does not exist: {0}".format(output))
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:
