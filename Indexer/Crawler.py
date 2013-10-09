@@ -100,7 +100,7 @@ class Crawler(object):
                                     self.log.error("Could not write digital object for {0}".format(filename), exc_info=LOG_EXC_INFO)
                             if 'html' in Actions:
                                 html.write(Output)
-                        elif 'html-all' in Actions:
+                        if 'html-all' in Actions:
                             html.write(Output)
                     except:
                         self.log.error("Could not complete processing for {0}".format(filename), exc_info=LOG_EXC_INFO)

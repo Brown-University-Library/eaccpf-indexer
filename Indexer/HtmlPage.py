@@ -201,10 +201,10 @@ class HtmlPage(object):
         _type = self.getType()
         _text = self.getText()
         data['id'] = '' if _id is None else _id
-        data['uri'] = '' if _uri is None else _uri
+        data['presentation_url'] = '' if _uri is None else _uri
         data['title'] = '' if _title is None else _title
         data['type'] = '' if _type is None else _type
-        data['text'] = '' if _text is None else _text
+        data['abstract'] = '' if _text is None else _text
         return data
     
     def getRecordId(self):
