@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-	EAC-CPF to Apache Solr Input Document Format Transform
-	Copyright 2013 eScholarship Research Centre, University of Melbourne
-	
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at
-	
-	    http://www.apache.org/licenses/LICENSE-2.0
-	
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
--->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:doc="urn:isbn:1-931666-33-4"
                 xmlns:ns0="http://www.esrc.unimelb.edu.au"
@@ -41,7 +25,12 @@
 	        	<!-- identity -->
 	            <field name="entityId"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId" /></field>
 	            <field name="type"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType" /></field>
-	            <field name="title"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part" /></field>
+	            <field name="title">
+                    <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part">
+                        <xsl:value-of select="." />
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
+                </field>
 	        	<!-- description -->
 	            <xsl:if test="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates/doc:dateRange/doc:fromDate/@doc:standardDate != ''">
 	                <field name="fromDate"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:existDates/doc:dateRange/doc:fromDate/@doc:standardDate"/>T00:00:00Z</field>

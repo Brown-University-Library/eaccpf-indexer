@@ -28,7 +28,12 @@
 	        	<!-- identity -->
 	            <field name="entityId"><xsl:value-of select="/eac-cpf/cpfDescription/identity/entityId" /></field>
 	            <field name="type"><xsl:value-of select="/eac-cpf/cpfDescription/identity/entityType" /></field>
-	            <field name="title"><xsl:value-of select="/eac-cpf/cpfDescription/identity/nameEntry/part" /></field>
+	            <field name="title">
+                    <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part">
+                        <xsl:value-of select="." />
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
+                </field>
 	        	<!-- description -->
 	            <xsl:if test="/eac-cpf/cpfDescription/description/existDates/dateRange/fromDate/@standardDate != ''">
 	                <field name="fromDate"><xsl:value-of select="/eac-cpf/cpfDescription/description/existDates/dateRange/fromDate/@standardDate"/>T00:00:00Z</field>
