@@ -51,7 +51,8 @@ class EacCpf(object):
         # make the problem and its resolution obvious in the log
         root = self.xml.xpath('//doc:eac-cpf', namespaces=self.ns)
         if len(root) == 0:
-            raise Exception("Missing EAC-CPF namespace declaration {0}".format(Source))
+            self.log.error("Missing EAC-CPF namespace declaration in {0}".format(Source))
+            raise Exception
 
     def _load(self, Source):
         """

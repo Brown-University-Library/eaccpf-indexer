@@ -27,6 +27,7 @@ class HtmlPage(object):
         file system, and is used to determine what the file's public URL should
         be. If the document contains absolute URLs, then the URL parameter is 
         ignored.
+        @todo We need to get rid of self.data and work only off the tree representation
         """
         self.log = logging.getLogger('HtmlPage')
         self.base = BaseUrl

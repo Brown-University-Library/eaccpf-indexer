@@ -224,6 +224,11 @@ class Facter(object):
         output = Params.get("infer", "output")
         sleep = Params.getfloat("infer", "sleep")
         source = Params.get("infer", "input")
+        # clear output folder
+        if not os.path.exists(output):
+            os.makedirs(output)
+        if not Update:
+            Utils.cleanOutputFolder(output)
         # exit if there are no actions to execute
         if len(actions) < 1:
             return
@@ -243,14 +248,9 @@ class Facter(object):
             except:
                 self.calais_api_key = ''
                 self.calais = None
-        # clear output folder
-        if not os.path.exists(output):
-            os.makedirs(output)
-        if not Update:
-            Utils.cleanOutputFolder(output)
         # check state before running
-        assert os.path.exists(source), self.logger.error("Input path does not exist: " + source)
-        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
+        assert os.path.exists(source), self.logger.error("Input path does not exist: {0}".format(source))
+        assert os.path.exists(output), self.logger.error("Output path does not exist: {0}".format(output))
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:

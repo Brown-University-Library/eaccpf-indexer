@@ -50,21 +50,23 @@ class Crawler(object):
             baseurl = Base + path.replace(Source, '')
             if not baseurl.endswith('/'):
                 baseurl += '/'
-            self.log.info("Current source {0} ({1})".format(path, baseurl))
+            self.log.info("Source {0} ({1})".format(path, baseurl))
             # for each file in the current path
             for filename in files:
                 if filename.endswith(".htm") or filename.endswith(".html"):
                     try:
                         html = HtmlPage(path + os.sep + filename, baseurl)
-                        # if the page represents a record
-                        if html.hasEacCpfAlternate():
+                        if 'html-all' in Actions:
+                            html.write(Output)
+                        elif html.hasEacCpfAlternate():
                             self.log.debug("EAC-CPF found at {0}".format(path + os.sep + filename))
                             # get the eaccpf document
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
                             src = Source + metadata.replace(Base, '')
                             if not Utils.resourceExists(src):
-                                raise Exception("Resource not available {0}".format(src))
+                                self.log.warning("Resource not available {0}".format(src))
+                                continue
                             eaccpf = EacCpf(src, metadata, presentation)
                             # we will check the eaccpf document to see if its changed
                             record_filename = eaccpf.getFileName()
@@ -100,8 +102,6 @@ class Crawler(object):
                                     self.log.error("Could not write digital object for {0}".format(filename), exc_info=LOG_EXC_INFO)
                             if 'html' in Actions:
                                 html.write(Output)
-                        if 'html-all' in Actions:
-                            html.write(Output)
                     except:
                         self.log.error("Could not complete processing for {0}".format(filename), exc_info=LOG_EXC_INFO)
                     finally:

@@ -138,7 +138,21 @@ class TestHtmlPage(unittest.TestCase):
             html = HtmlPage.HtmlPage(case)
             result = html.hasEacCpfAlternate()
             self.assertEqual(result, cases[case])
-    
+
+    def test_getContent(self):
+        """
+        It should return the HTML content.
+        """
+        cases = [
+            "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",     # organization case
+            "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm"   # digital object
+        ]
+        for case in cases:
+            html = HtmlPage.HtmlPage(case)
+            self.assertNotEqual(html, None)
+            content = html.getContent()
+            self.assertNotEqual(content, None)
+
     def test_getDocumentParentUrl(self):
         """
         It should return the URL of the first parent directory where a file is
