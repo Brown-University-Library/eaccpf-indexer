@@ -62,11 +62,11 @@ class EacCpf(object):
             if 'http://' in Source or 'https://' in Source:
                 response = urllib2.urlopen(Source)
                 data = response.read()
-                return unicode(data, errors='replace')
+                return str(data)
             else:
                 with open(Source, 'r') as f:
                     data = f.read()
-                    return unicode(data, errors='replace')
+                    return str(data)
         except:
             return None
 
