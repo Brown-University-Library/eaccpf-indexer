@@ -136,12 +136,12 @@ class HtmlPage(object):
         """
         if 'http://' in Source or 'https://' in Source:
             response = urllib2.urlopen(Source)
-            return response.read()
+            data = response.read()
+            return unicode(data, errors='replace')
         else:
-            infile = open(Source)
-            data = infile.read()
-            infile.close()
-            return data
+            with open(Source, 'r') as f:
+                data = f.read()
+                return unicode(data, errors='replace')
 
     def getContent(self):
         """
