@@ -59,7 +59,10 @@ class Crawler(object):
                         if 'html-all' in Actions:
                             html.write(Output)
                         elif html.hasEacCpfAlternate():
-                            self.log.debug("EAC-CPF found at {0}".format(path + os.sep + filename))
+                            self.log.debug("Document found at {0}".format(path + os.sep + filename))
+                            if 'html' in Actions:
+                                html.write(Output)
+                                continue
                             # get the eaccpf document
                             metadata = html.getEacCpfUrl()
                             presentation = html.getUrl()
@@ -100,8 +103,6 @@ class Crawler(object):
                                         dobject.write(Output, Id=dobj_id, CacheRecord=cache_record)
                                 except:
                                     self.log.error("Could not write digital object for {0}".format(filename), exc_info=LOG_EXC_INFO)
-                            if 'html' in Actions:
-                                html.write(Output)
                     except:
                         self.log.error("Could not complete processing for {0}".format(filename), exc_info=LOG_EXC_INFO)
                     finally:
