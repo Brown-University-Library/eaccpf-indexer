@@ -74,9 +74,8 @@ Revision History
 
 1.5.0
 
- > Reimplemented option to specify XML transform
- > Generate a graph of document relations
- > Write graph to web readable format
+ * Can specify a custom EAC-CPF to SID XSLT
+ * Resolved problem of XML namespace declarations in EAC-CPF data
 
 1.4.1
 
@@ -167,7 +166,3 @@ Revision History
 Known Issues
 ------------
 
-- Namespace declarations in the EAC-CPF document cause the XML parser
-  to fail while transforming the document to Solr Input Document format.
-  See https://bitbucket.org/esrc/eac-transforms/src/079d6030367ebeea3e24a800e196a76ba917a470/FCVC/transform.xsl?at=master
-  for an example of how to properly handle transforms.
