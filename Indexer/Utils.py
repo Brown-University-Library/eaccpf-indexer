@@ -188,10 +188,7 @@ def loadTransform(Path):
     xslt_data = xslt_file.read()
     xslt_root = etree.XML(xslt_data)
     xslt_file.close()
-    try:
-        return etree.XSLT(xslt_root)
-    except:
-        log.error("Could not load XSLT file {0}".format(Path))
+    return etree.XSLT(xslt_root)
 
 def parseUnitDate(Date):
     """
