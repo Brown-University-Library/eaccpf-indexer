@@ -65,7 +65,8 @@ class EacCpf(object):
             else:
                 with open(Source, 'r') as f:
                     data = f.read()
-            return unicode(data, errors='replace')
+            return str(data)
+            # return unicode(data, errors='replace')
         except:
             return None
 
