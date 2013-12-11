@@ -57,7 +57,7 @@ class Indexer(object):
                                  choices=['DEBUG','INFO','ERROR'],
                                  )
         # defaults
-        self.logger = logging.getLogger('')
+        self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO) # don't know why a default has to be set but its the only that it works
         self.logFormat = '%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s'
         self.update = False
