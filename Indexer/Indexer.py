@@ -7,7 +7,6 @@ import ConfigParser
 import argparse
 import datetime
 import logging
-import os
 import sys
 
 
@@ -57,28 +56,26 @@ class Indexer(object):
                                  choices=['DEBUG','INFO','ERROR'],
                                  )
         # defaults
-        self.logger = logging.getLogger()
-        self.logger.setLevel(logging.INFO) # don't know why a default has to be set but its the only that it works
-        self.logFormat = '%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s'
         self.update = False
 
-    def _configureLogging(self):
+    def configureLogging(self):
         """
         Configure logging with console stream handler.
         """
-        formatter = logging.Formatter(self.logFormat)
+        self.logger = logging.getLogger()
+        formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
         sh = logging.StreamHandler(sys.stdout)
         sh.setFormatter(formatter)
-        self.logger.addHandler(sh)
+        # set the logging level on both the logger and the handler
         if self.args.loglevel and self.args.loglevel == 'DEBUG':
-            self.logger.setLevel(logging.DEBUG)
-            sh.setLevel(logging.DEBUG)
+            level = logging.DEBUG
         elif self.args.loglevel and self.args.loglevel == 'INFO':
-            self.logger.setLevel(logging.INFO)
-            sh.setLevel(logging.INFO)
+            level = logging.INFO
         else:
-            self.logger.setLevel(logging.ERROR)
-            sh.setLevel(logging.ERROR)
+            level = logging.ERROR
+        sh.setLevel(level)
+        self.logger.addHandler(sh)
+        self.logger.setLevel(level)
 
     def run(self):
         """
@@ -87,7 +84,7 @@ class Indexer(object):
         # parse the command line arguments and set logging
         try:
             self.args = self.parser.parse_args()
-            self._configureLogging()
+            self.configureLogging()
             self.logger.info('Started with ' + ' '.join(sys.argv[1:]))
         except Exception, e:
             self.parser.print_help()
