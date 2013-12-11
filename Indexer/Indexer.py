@@ -67,7 +67,7 @@ class Indexer(object):
         Configure logging with console stream handler.
         """
         formatter = logging.Formatter(self.logFormat)
-        sh = logging.StreamHandler()
+        sh = logging.StreamHandler(sys.stdout)
         sh.setFormatter(formatter)
         self.logger.addHandler(sh)
         if self.args.loglevel and self.args.loglevel == 'DEBUG':
