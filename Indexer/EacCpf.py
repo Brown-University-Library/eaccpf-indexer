@@ -65,8 +65,9 @@ class EacCpf(object):
             else:
                 with open(Source, 'r') as f:
                     data = f.read()
+            # lxml parser won't accept unicode encoded strings and throws an exception
+            # pass it a str instead
             return str(data)
-            # return unicode(data, errors='replace')
         except:
             return None
 
