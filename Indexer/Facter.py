@@ -5,7 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from AlchemyAPI import AlchemyAPI
 from EacCpf import EacCpf
-from geopy import *
+from geopy.geocoders import *
 import Utils
 import logging
 import os
@@ -25,9 +25,8 @@ class Facter(object):
         """
         Initialize class
         """
-        self.geocoder = geocoders.GoogleV3()
         self.hashIndexFilename = ".index.yml"
-        self.logger = logging.getLogger('Facter')
+        self.logger = logging.getLogger()
 
     def _addValueToDictionary(self,dic,key,value):
         """
@@ -130,27 +129,30 @@ class Facter(object):
         """
         return {}
 
-    def inferLocations(self, Places):
+    def inferLocations(self, places, sleep=1.0, timeout=2.0):
         """
         For each EAC-CPF input file, extract the address from each cronitem and
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
         @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md.
         """
+        # geolocator = GoogleV3()
+        geolocator = Nominatim(country_bias='au')
         locations = []
-        for place in Places:
+        for place in places:
             # if there is an existing GIS attribute attached to the record then
             # don't process it
             if 'longitude' in place and 'latitude' in place:
                 locations.append(place)
-                self.logger.info("Record has existing location data")
+                self.logger.debug("Record has existing location data")
             else:
                 # ISSUE #5 the geocoder can return multiple locations when an address is
-                # not specific enough. We create a record for each address, with the intent
+                # not specific enough. Here we record each returned address, with the intent
                 # that an archivist review the inferred data at a later date and then
                 # manually select the appropriate address to retain for the record.
                 try:
-                    for address, (lat, lng) in self.geocoder.geocode(place['placeentry'],exactly_one=False,region='au'):
+                    # for address, (lat, lng) in geolocator.geocode(place['placeentry'], exactly_one=False, region='au', timeout=sleep):
+                    for address, (lat, lng) in geolocator.geocode(place['placeentry'], exactly_one=False, timeout=timeout):
                         location = place.copy()
                         location['address'] = Utils.cleanText(address)
                         location['coordinates'] = [lat, lng]
@@ -162,8 +164,10 @@ class Facter(object):
                         location['city'] = city
                         location['street'] = street
                         locations.append(location)
-                except:
-                    pass
+                        self.logger.debug("Found location {0}, {1}, {2}".format(city, region, country))
+                        time.sleep(sleep)
+                except Exception as e:
+                    self.logger.warning("Geocoding error", exc_info=True)
         return locations
 
     def infer(self, Source, Output, Actions, HashIndex, Sleep, Params, Update):
@@ -194,7 +198,7 @@ class Facter(object):
                     freeText = doc.getFreeText()
                     if 'locations' in Actions:
                         places = doc.getLocations()
-                        locations = self.inferLocations(places)
+                        locations = self.inferLocations(places, sleep=Sleep)
                         inferred['locations'] = locations
                     if 'entities' in Actions:
                         entities = self.inferEntitiesWithCalais(freeText)

@@ -29,7 +29,7 @@ class Grapher(object):
         """
         Constructor
         """
-        self.logger = logging.getLogger('Grapher')
+        self.logger = logging.getLogger()
 
     def graph(self, Source, Output):
         """

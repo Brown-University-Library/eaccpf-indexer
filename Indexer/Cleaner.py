@@ -25,7 +25,7 @@ class Cleaner(object):
         Initialize
         """
         self.hashIndexFilename = ".index.yml"
-        self.logger = logging.getLogger('Cleaner')
+        self.logger = logging.getLogger()
         
     def _fixAttributeURLEncoding(self, Xml):
         """

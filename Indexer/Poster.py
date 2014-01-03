@@ -11,6 +11,8 @@ import requests
 
 LOG_EXC_INFO = False
 
+__description__ = """Posts Solr Input Documents to a Solr core. Performs flush, delete, commit and optimize commands."""
+
 
 class Poster(object):
     """
@@ -24,7 +26,7 @@ class Poster(object):
         Constructor
         """
         self.headers = { 'Content-type': 'text/xml; charset=utf-8' }
-        self.logger = logging.getLogger('Poster')
+        self.logger = logging.getLogger()
         
     def commit(self, Url):
         """
@@ -139,11 +141,11 @@ class Poster(object):
 
 if __name__ == '__main__':
     # parse console arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--commit", help="Commit data in the Solr core at the specified URL")
+    parser = argparse.ArgumentParser(description=__description__)
+    parser.add_argument("--commit", help="Commit data in the Solr core at the specified URL", action='store')
     parser.add_argument("--flush", help="Flush data from the Solr core at the specified URL")
     parser.add_argument("--optimize", help="Optimize data in the Solr core at the specified URL")
-    parser.add_argument("--post", help="Post data from the specified source to the Solr core at the specified URL")
+    parser.add_argument("--post", help="Post data from the specified file source to the Solr core at the specified URL")
     parser.add_argument("source", help="Post data from the specified source to the Solr core at the specified URL", nargs='?')
     args = parser.parse_args()
     # execute actions
@@ -158,3 +160,4 @@ if __name__ == '__main__':
         poster.post(args.source, args.post)
     else:
         parser.print_help()
+

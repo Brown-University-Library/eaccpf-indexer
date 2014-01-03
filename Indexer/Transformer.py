@@ -19,7 +19,7 @@ class Transformer(object):
     """
 
     def __init__(self):
-        self.log = logging.getLogger('Transformer')
+        self.log = logging.getLogger()
 
     def _getIdFromFilename(self,Filename):
         """

@@ -29,7 +29,7 @@ class Analyzer(object):
         """
         Constructor
         """
-        self.logger = logging.getLogger('Analyzer')
+        self.logger = logging.getLogger()
         self.coordinates = {} # dictionary for geocoordinates
         # load validation schema
         modpath = os.path.abspath(inspect.getfile(self.__class__))
