@@ -29,7 +29,7 @@ class HtmlPage(object):
         ignored.
         @todo We need to get rid of self.data and work only off the tree representation
         """
-        self.log = logging.getLogger('HtmlPage')
+        self.log = logging.getLogger()
         self.base = BaseUrl
         self.data = self._load(Source)
         self.filename = self._getFileName(Source)

@@ -34,7 +34,7 @@ class DigitalObject(object):
         PresentationUrl is a public URL to the HTML page the presents the 
         digital object.
         """
-        self.logger = logging.getLogger('DigitalObject')
+        self.logger = logging.getLogger()
         self.source = Source
         self.metadata_url = MetadataUrl
         self.presentation_url = PresentationUrl

@@ -39,7 +39,7 @@ class EacCpf(object):
         public URL to the EAC-CPF document. PresentationUrl is the public URL
         to the HTML presentation.
         """
-        self.log = logging.getLogger(__name__)
+        self.log = logging.getLogger()
         self.metadata = MetadataUrl
         self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS }
         self.presentation = PresentationUrl

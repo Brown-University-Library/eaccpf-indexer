@@ -26,7 +26,7 @@ class DigitalObjectCache(object):
         """
         Constructor
         """
-        self.logger = logging.getLogger('DigitalObjectCache')
+        self.logger = logging.getLogger()
         self.path = Path
         if UrlRoot.endswith('/'):
             self.url_root = UrlRoot

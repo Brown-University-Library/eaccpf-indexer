@@ -28,7 +28,7 @@ class Crawler(object):
         """
         self.cache = None
         self.hashIndexFilename = ".index.yml"
-        self.log = logging.getLogger(__name__)
+        self.log = logging.getLogger()
 
     def crawlFileSystem(self, Source, Output, Actions, HashIndex, Base=None, Sleep=0.0, UpdateOnly=False):
         """
@@ -54,12 +54,13 @@ class Crawler(object):
             # for each file in the current path
             for filename in files:
                 if filename.endswith(".htm") or filename.endswith(".html"):
+                    self.log.debug("Scanning {0}".format(filename))
                     try:
                         html = HtmlPage(path + os.sep + filename, baseurl)
                         if 'html-all' in Actions:
                             html.write(Output)
                         elif html.hasEacCpfAlternate():
-                            self.log.debug("Document found at {0}".format(path + os.sep + filename))
+                            self.log.debug("Entity document found at {0}".format(path + os.sep + filename))
                             if 'html' in Actions:
                                 html.write(Output)
                                 continue
