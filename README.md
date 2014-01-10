@@ -74,6 +74,8 @@ Revision History
 
 1.5.0
 
+ * Send all logging to STDOUT
+ * Updated geopy module, switched to OpenStreetMaps for geocoding
  * Can specify a custom EAC-CPF to SID XSLT
  * Resolved problem of XML namespace declarations in EAC-CPF data
 

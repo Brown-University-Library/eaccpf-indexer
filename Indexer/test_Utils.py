@@ -233,6 +233,22 @@ class TestUtils(unittest.TestCase):
     def test_resourceExists(self):
         pass
 
+    def test_strip_quotes(self):
+        """
+        It should return the source string with leading and trailing quotation
+        marks removed.
+        """
+        cases = [
+            ("""'This is a quote'""", "This is a quote"),
+            ('"This is a quote"', "This is a quote"),
+            ("This is a quote", "This is a quote"),
+        ]
+        for case in cases:
+            s, expected = case
+            result = Utils.strip_quotes(s)
+            self.assertNotEqual(result, None)
+            self.assertEqual(result, expected)
+
     def test_tryYamlRead(self):
         pass
 

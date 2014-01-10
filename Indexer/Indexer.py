@@ -22,7 +22,7 @@ class Indexer(object):
         Set logging options, create a configuration file parser, command line
         argument parser.
         """
-        # configuration parser
+        # configuration file parser
         self.config = ConfigParser.SafeConfigParser()
         # configure command line options
         self.parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to an Apache Solr index.")
