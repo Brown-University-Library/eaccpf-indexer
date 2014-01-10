@@ -285,6 +285,16 @@ def resourceExists(Resource):
         else:
             return False
 
+def strip_quotes(S):
+    """
+    String leading and trailing quotation marks
+    """
+    if '"' in S[0] or "'" in S[0]:
+        S = S[1:]
+    if '"' in S[-1] or "'" in S[-1]:
+        S = S[:-1]
+    return S
+
 def tryReadYaml(Path, Filename):
     """
     Try to load the specified data file. If it does not exist, return an empty

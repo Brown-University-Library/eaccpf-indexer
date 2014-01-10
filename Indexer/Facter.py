@@ -3,9 +3,12 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from AlchemyAPI import AlchemyAPI
+# from AlchemyAPI import AlchemyAPI
 from EacCpf import EacCpf
-from geopy.geocoders import *
+# from geopy.geocoders.bing import Bing
+from geopy.geocoders.googlev3 import GoogleV3
+from geopy.geocoders.mapquest import MapQuest
+from geopy.geocoders.osm import Nominatim
 import Utils
 import logging
 import os
@@ -136,8 +139,10 @@ class Facter(object):
         number of seconds between requests.
         @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md.
         """
-        # geolocator = GoogleV3()
-        geolocator = Nominatim(country_bias='au')
+        # geolocator = Bing(api_key=self.geocoder_api_key)
+        # geolocator = MapQuest(api_key=self.geocoder_api_key)
+        # geolocator = Nominatim(country_bias='au')
+        geolocator = GoogleV3()
         locations = []
         for place in places:
             # if there is an existing GIS attribute attached to the record then
@@ -151,8 +156,8 @@ class Facter(object):
                 # that an archivist review the inferred data at a later date and then
                 # manually select the appropriate address to retain for the record.
                 try:
-                    # for address, (lat, lng) in geolocator.geocode(place['placeentry'], exactly_one=False, region='au', timeout=sleep):
-                    for address, (lat, lng) in geolocator.geocode(place['placeentry'], exactly_one=False, timeout=timeout):
+                    # for address, (lat, lng)  in geolocator.geocode(place['placeentry'], exactly_one=False, timeout=timeout):
+                    for address, (lat, lng) in geolocator.geocode(place['placeentry'], exactly_one=False, region='au', timeout=timeout):
                         location = place.copy()
                         location['address'] = Utils.cleanText(address)
                         location['coordinates'] = [lat, lng]
@@ -164,7 +169,7 @@ class Facter(object):
                         location['city'] = city
                         location['street'] = street
                         locations.append(location)
-                        self.logger.debug("Found location {0}, {1}, {2}".format(city, region, country))
+                        self.logger.debug("Found location {} {} {} {}".format(street, city, region, country))
                         time.sleep(sleep)
                 except Exception as e:
                     self.logger.warning("Geocoding error", exc_info=True)
@@ -188,7 +193,7 @@ class Facter(object):
                     # if the file has not changed since the last run then skip it
                     if Update:
                         if filename in HashIndex and HashIndex[filename] == fileHash:
-                            self.logger.info("No change since last update " + filename)
+                            self.logger.info("No change since last update {0}".format(filename))
                             continue
                     # process the file
                     HashIndex[filename] = fileHash
@@ -211,7 +216,7 @@ class Facter(object):
                         inferred['text-analysis'] = textAnalysis
                     # write inferred data to file
                     Utils.writeYaml(Output, inferred_filename, inferred)
-                    self.logger.info("Wrote inferred data to " + inferred_filename)
+                    self.logger.info("Wrote inferred data to {0}".format(inferred_filename))
                     # sleep between requests
                     time.sleep(Sleep)
                 except:
@@ -228,6 +233,7 @@ class Facter(object):
         output = Params.get("infer", "output")
         sleep = Params.getfloat("infer", "sleep")
         source = Params.get("infer", "input")
+        self.geocoder_api_key = Params.get("infer", "geocoder_api_key")
         # clear output folder
         if not os.path.exists(output):
             os.makedirs(output)
