@@ -3,9 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+import logging
 import os
-import random
-import string
 import tempfile
 import unittest
 import Utils
@@ -151,6 +150,27 @@ class TestUtils(unittest.TestCase):
             filename, ext, newname = case
             renamed = Utils.getFilenameWithAlternateExtension(filename, ext)
             self.assertEquals(newname, renamed)
+
+    def test_getTemporaryFileFromResource(self):
+        """
+        It should retrieve the web or file system resource and write it to a
+        temporary file on the local file system, then return the path to the
+        temporary file. It should throw an exception if any step in the
+        procedure fails.
+        """
+        cases = [
+            ("http://www.findandconnect.gov.au/assets/img/footer-logo.png", True),
+            ("http://www.findandconnect.gov.au/assets/img/by-nc-sa.png", True),
+            ("http://www.example.com/missing-image.png", False),
+        ]
+        for case in cases:
+            source, expected = case
+            try:
+                result = Utils.getTemporaryFileFromResource(source)
+                self.assertEqual(os.path.exists(result), expected)
+            except:
+                self.assertEqual(False, expected)
+                # logging.error("Could not create temporary resource", exc_info=True)
 
     def test_isDigitalObjectYaml(self):
         """

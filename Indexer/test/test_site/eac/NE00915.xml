@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00915</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Archival Collection</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-08-31">2011-08-31</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-09">2013-12-09</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00915b.htm</entityId>
+<entityType>concept</entityType>
+<nameEntry><part>Records held by Burnside Archives</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><places>
+</places>
+<biogHist>
+<abstract>The Burnside Archive includes records dating back to the establishment of the Burnside children's homes in 1911. Records include client files, admission records, and hospital admission registers. Burnside is committed to an open file policy with as few restrictions as possible, and past or present clients may access their files. If the client is deceased, their next of kin may access the file. Past clients may access their records free of charge, however a small fee may apply in the case of records requested numerous times. Family members of those formerly in care are charged a nominal fee to copy a file.</abstract>
+<p><span style="font-weight:bold">Access Conditions</span><br />
+Burnside is committed to an open file policy with as few restrictions as possible. If you are a past or present client, you will have access to your file as readily as possible, taking into account your needs and best interests.</p>
+<list><item>Files are generally available only to the person whose name appears on the front of the file.</item>
+<item>If the client is deceased, the file will be shown to the next of kin. You will need to supply their death certificate and evidence of next-of-kin relationship.</item>
+<item>For adopted persons who are past or present clients, the provisions of the Adoption Act 2000 apply.</item>
+<item>For current out-of-home care clients, access to files is supervised by the appropriate unit coordinator or foster care caseworker.</item>
+<item>For past clients, access to files is through the Aftercare Coordinator.</item>
+<item>You must provide proof of identity (e.g. birth certificate, driver's licence).</item>
+<item>As a file may be stored off-site, you will need to allow for some delay in gaining access.</item>
+<item>How you will have access will be determined by the Aftercare Coordinator.</item></list>
+<p><br />
+The Burnside collection includes:</p>
+<list><item>Historical photographs (1911-1986). Indexed in original format. Quantity: c.600.</item>
+<item>Annual Reports (1911-2011). Quantity: c.300 records.</item>
+<item>Items and Memorabilia (1911-1986). Original items used on-site at Burnside, includes items on display at Burnside Museum. Quantity: 350 items.</item>
+<item>Oral histories from previous residents at Burnside (1911-). Some are transcribed on paper. Unindexed. Quantity: three large boxes.</item>
+<item>Newspaper clippings (1911-). Unindexed. Quantity: three small boxes.</item>
+<item>Child Migration (Scottish, Irish and Cambodian), original paper records (1921-mid-1980s). Unindexed. Quantity: two boxes.</item></list>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00279b.htm">
+<relationEntry localType="Organisation">
+Burnside Archives
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00696b.htm">
+<relationEntry localType="Archival Series">
+Admission register, Burnside (1930 - 1947)
+</relationEntry>
+<descriptiveNote>
+<p>The Admission Register, Burnside is part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00695b.htm">
+<relationEntry localType="Archival Series">
+Admission committee records, Burnside (1911 - 1962)
+</relationEntry>
+<descriptiveNote>
+<p>The Admission Committee Records are part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01470b.htm">
+<relationEntry localType="Archival Series">
+Margaret Harris Hospital Admission Registers (1962 - 1982)
+</relationEntry>
+<descriptiveNote>
+<p>The Margaret Harris Hospital Admission Registers are part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00694b.htm">
+<relationEntry localType="Archival Series">
+Client files, Burnside (1911 - )
+</relationEntry>
+<descriptiveNote>
+<p>The Client Files are part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00699b.htm">
+<relationEntry localType="Archival Series">
+Statistical register of children in long-term care, Burnside (1974 - 1977)
+</relationEntry>
+<descriptiveNote>
+<p>The Statistical Register of Children in Long-Term Care is part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00698b.htm">
+<relationEntry localType="Archival Series">
+Statistical register of children in short-term care, Burnside (1972 - 1977)
+</relationEntry>
+<descriptiveNote>
+<p>The Statistical Register of Children in Short-Term Care is part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00697b.htm">
+<relationEntry localType="Archival Series">
+Admission and discharge registers, Burnside (1945 - 1977)
+</relationEntry>
+<descriptiveNote>
+<p>The Admission and Discharge registers are part of the archival collection held by Burnside Archives.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00276b.htm">
+<relationEntry localType="Organisation">
+Byrnes Family Group Home (1983 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00253b.htm">
+<relationEntry localType="Organisation">
+Burnside Homes for Children (1978 - 1986)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00254b.htm">
+<relationEntry localType="Organisation">
+Burnside (1986 - 2000)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00258b.htm">
+<relationEntry localType="Organisation">
+Airlie (1914 - c. 1971)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00256b.htm">
+<relationEntry localType="Organisation">
+Cumbrae (1912 - 1987)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00251b.htm">
+<relationEntry localType="Organisation">
+Burnside Presbyterian Orphan Homes (1911 - 1955)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00255b.htm">
+<relationEntry localType="Organisation">
+Blairgowrie (1911 - 1952)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01101b.htm">
+<relationEntry localType="Organisation">
+UnitingCare Burnside (2000 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00267b.htm">
+<relationEntry localType="Organisation">
+Reid Home (1922 - 1977)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00266b.htm">
+<relationEntry localType="Organisation">
+War Memorial Home (1922 - 1982)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00259b.htm">
+<relationEntry localType="Organisation">
+Eskdale (1915 - 1953)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00275b.htm">
+<relationEntry localType="Organisation">
+Minnamurra Family Group Home (1975 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00260b.htm">
+<relationEntry localType="Organisation">
+Novar (1916 - 1952)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01471b.htm">
+<relationEntry localType="Organisation">
+Margaret Harris Hospital (1917 - 1982?)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00277b.htm">
+<relationEntry localType="Organisation">
+Ritchie Family Group Home (1984 - 1986)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00270b.htm">
+<relationEntry localType="Organisation">
+Troup (1933 - 1976)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00268b.htm">
+<relationEntry localType="Organisation">
+Ritchie Home (1928 - 1941)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00261b.htm">
+<relationEntry localType="Organisation">
+Glencoe (1918 - 1949)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00265b.htm">
+<relationEntry localType="Organisation">
+Blackwood (1921 - 1984)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00264b.htm">
+<relationEntry localType="Organisation">
+Son of the Rock (1920 - 1979)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00263b.htm">
+<relationEntry localType="Organisation">
+Ivanhoe (1919 - 1984)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00252b.htm">
+<relationEntry localType="Organisation">
+Burnside Presbyterian Homes for Children (1955 - 1978)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00257b.htm">
+<relationEntry localType="Organisation">
+Dunkeld (1913 - 2000)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00269b.htm">
+<relationEntry localType="Organisation">
+Lincluden (1931 - 1989)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00271b.htm">
+<relationEntry localType="Organisation">
+Ross (1935 - 1985)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00272b.htm">
+<relationEntry localType="Organisation">
+Christina Campbell Farm Home (1941 - 1952)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00273b.htm">
+<relationEntry localType="Organisation">
+Montrose Family Group Home (1965 - 2013)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00274b.htm">
+<relationEntry localType="Organisation">
+Gordon Family Group Home (1967 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00240b.htm">
+<relationEntry localType="Organisation">
+St Andrew's Home (c. 1960 - 1986)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01436b.htm">
+<relationEntry localType="Contact Details">
+Aftercare, UnitingCare Burnside - Contact Details
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00262b.htm">
+<relationEntry localType="Organisation">
+Robertson (1919 - 1977)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Records held by Burnside Archives', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Records held by Burnside Archives</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00915b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

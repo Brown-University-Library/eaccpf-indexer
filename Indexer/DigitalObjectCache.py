@@ -3,14 +3,14 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from pairtree import PairtreeStorageFactory
 from PIL import Image
+from pairtree import PairtreeStorageFactory
+
 import Utils
 import logging
 import os
 import shutil
 import tempfile
-import urllib2
 
 
 class DigitalObjectCache(object):
@@ -59,7 +59,7 @@ class DigitalObjectCache(object):
         """
         # set output file
         ext = Utils.getFileNameExtension(Source)
-        filepath = tempfile.mktemp(suffix="." + ext)
+        filepath = tempfile.mktemp(suffix=".{0}".format(ext))
         # load the image
         im = Image.open(Source)
         # convert color mode

@@ -4,12 +4,14 @@ LICENSE file, which is part of this source code package.
 """
 
 from lxml import etree
+
 import calendar
 import datetime
 import hashlib
 import logging
 import os
 import shutil
+import tempfile
 import urllib2
 import urlparse
 import yaml
@@ -123,6 +125,22 @@ def getRecordIdFromFilename(Filename):
     """
     name, _ = os.path.splitext(Filename)
     return name
+
+def getTemporaryFileFromResource(source):
+    """
+    Retrieve the web or file system resource and write it to a temporary file
+    in the local file system. Return the path to the temporary file.
+    """
+    ext = getFileNameExtension(source)
+    temp = tempfile.mktemp(suffix=".{0}".format(ext))
+    if 'http://' in source or 'https://' in source:
+        response = urllib2.urlopen(source)
+        data = response.read()
+        with open(temp, 'wb') as f:
+            f.write(data)
+    else:
+        shutil.copy(source, temp)
+    return temp
 
 def isDigitalObjectYaml(Path):
     """
@@ -280,10 +298,7 @@ def resourceExists(Resource):
         except:
             return False
     else:
-        if os.path.exists(Resource):
-            return True
-        else:
-            return False
+        return True if os.path.exists(Resource) else False
 
 def strip_quotes(S):
     """

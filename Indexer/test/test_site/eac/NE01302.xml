@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01302</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2013-05-14">2013-05-14</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-09">2013-12-09</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01302b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>St Alban's Boys' Home, Murrurundi</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>St Alban's Home for Boys</part>
+<useDates>
+<dateRange>
+<fromDate standardDate="1954-01-01">1954</fromDate>
+<toDate standardDate="1986-12-31">1986</toDate>
+</dateRange>
+</useDates>
+</nameEntry>
+<nameEntry localType=""><part>St Alban's Boys' Home</part>
+</nameEntry>
+<nameEntry localType=""><part>St Alban's</part>
+</nameEntry>
+<nameEntry localType=""><part>St Albans</part>
+</nameEntry>
+<nameEntry localType=""><part>St Alban's School</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1942-01-01">1942</fromDate>
+<toDate standardDate="1952-12-31">1952</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Anglican</term>
+</function>
+<function>
+<term>Children's Home</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>St Albans Boys' Home, at Haydon Street Murrurundi, was founded in 1942. St Alban's, also known as Morpeth Home for Children, had moved from its original site at Morpeth. St Alban's Murrurundi was run by the Church Army until 1948 and then by the Anglican Diocese of Newcastle.</abstract>
+<p><span style="font-style:italic">The Muswellbrook Chronicle</span> reported in May 1942 that the St Alban's Boys Home was moving to Murrurundi, to a property Myo'a in Haydon Street that had been bought by the Diocese of Newcastle:</p>
+<p>'Useful additions and alterations have been carried out, including two large dormitories and glassed-in verandahs. Rooms have been enlarged, making it a comfortable and suitable home for the boys and staff. There are 35 boys in the home. They are in charge of Captain and Mrs Roberts. Later the grounds will be improved by the planting of trees and shrubs.</p>
+<p>The home was officially opened and blessed by the Bishop of Newcastle. The Bishop was accompanied by Archdeacon Wood and the Rev M Redman.'</p>
+<p>The Anglican Diocese of Newcastle assumed the management of the home in 1948. Rev AR McFarland was priest-in-charge of St Albans Home for Boys at Murrurundi from 1948 until 1950.</p>
+<p>The Murrurundi property proved inadequate for the needs of the Home, and it was moved in 1952 to 'Winncourt', Mayfield, which had formerly been St Elizabeth's Girls' Home.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1942-01-01">1942</fromDate>
+<toDate standardDate="1952-12-31">1952</toDate>
+</dateRange>
+<placeEntry>Murrurundi</placeEntry>
+<event>Morpeth Home for Children was situated at Haydon Street, Murrurundi</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00085b.htm">
+<relationEntry localType="Organisation">
+St Alban's Home for Boys, Morpeth (1920 - 1942)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00084b.htm">
+<relationEntry localType="Organisation">
+Church Army (1932 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1942-01-01">1942</fromDate>
+<toDate standardDate="1948-12-31">1948</toDate>
+</dateRange>
+<descriptiveNote>
+<p>The Anglican Church Army ran St Alban's Boys' Home, Murrurundi.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00078b.htm">
+<relationEntry localType="Organisation">
+Anglican Diocese of Newcastle (c. 1800 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1948-01-01">1948</fromDate>
+<toDate standardDate="1964-12-31">1964</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Morpeth Home for Children was run by staff directly appointed by the Diocesan Council of Newcastle.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00533b.htm">
+<relationEntry localType="Archival Series">
+Register of names, Morpeth Home for Children [St Alban's Home for Boys] (1962 - 1966)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00534b.htm">
+<relationEntry localType="Archival Series">
+Register of admissions, Morpeth Home for Children [St Alban's Home for Boys] (1971 - 1984)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00530b.htm">
+<relationEntry localType="Archival Series">
+General correspondence files [Morpeth Home for Children (St Alban's Home for Boys)] (1919 - 1973)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00531b.htm">
+<relationEntry localType="Archival Series">
+Register, Morpeth Home for Children [St Alban's Home for Boys] (1920 - 1929)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00532b.htm">
+<relationEntry localType="Archival Series">
+Lists of children's names and miscellanea, Morpeth Home for Children [St Alban's Home for Boys] (1926 - 1927)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00081b.htm">
+<relationEntry localType="Organisation">
+St Christopher's Home for Little Children (1928 - 1978)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1942-01-01">1942</fromDate>
+<toDate standardDate="1952-12-31">1952</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Once children at St Christopher's Home for Little Children reached the age of seven they were sent to St Alban's.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01303b.htm">
+<relationEntry localType="Organisation">
+St Alban's Boys' Home, Mayfield (1952 - 1964)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'St Alban's Boys' Home, Murrurundi', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">St Alban's Boys' Home, Murrurundi</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01302b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000563.htm">
+<relationEntry localType="published">Newspaper Article: St Alban's Muswellbrook</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">St Alban's Muswellbrook</title>
+<imprint>
+<date>1942</date>
+</imprint>
+<bibseries>
+<title render="italic">The Muswellbrook Chronicle</title>
+</bibseries>
+<extptr linktype="simple" href="http://trove.nla.gov.au/ndp/del/article/107694611"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000562.htm">
+<relationEntry localType="published">Newspaper Article: 280 enrolled at play centre. Free milk given every day.</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">280 enrolled at play centre. Free milk given every day.</title>
+<imprint>
+<date>1942</date>
+</imprint>
+<bibseries>
+<title render="italic">The Muswellbrook Chronicle</title>
+</bibseries>
+<extptr linktype="simple" href="http://trove.nla.gov.au/ndp/del/article/107765863"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000561.htm">
+<relationEntry localType="published">Newspaper Article: Boys' Home at Murrurundi</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Boys' Home at Murrurundi</title>
+<imprint>
+<date>1942</date>
+</imprint>
+<bibseries>
+<title render="italic">The Muswellbrook Chronicle</title>
+</bibseries>
+<extptr linktype="simple" href="http://trove.nla.gov.au/ndp/del/article/107692780"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000555.htm">
+<relationEntry localType="published">Newspaper Article: Rev AR McFarland inducted at Jerry's Plains</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Rev AR McFarland inducted at Jerry's Plains</title>
+<imprint>
+<date>1952</date>
+</imprint>
+<bibseries>
+<title render="italic">Singleton Argus</title>
+</bibseries>
+<extptr linktype="simple" href="http://trove.nla.gov.au/ndp/del/article/82767378"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

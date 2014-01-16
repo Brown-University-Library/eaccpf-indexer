@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00500</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Legislation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-05-25">2011-05-25</eventDateTime>
+<agentType>human</agentType>
+<agent>Melissa Downing</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-03-04">2013-03-04</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00500b.htm</entityId>
+<entityType>concept</entityType>
+<nameEntry><part>Custody of Children and Children's Settlements Act</part>
+<part localType="parent">Colony of New South Wales</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1894-01-01">1894</fromDate>
+<toDate standardDate="1894-12-31">1894</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<biogHist>
+<abstract>Where a parent applies for an order for the return of a child the court may refuse the order where it is of the opinion that the parent has abandoned or deserted or neglected the child or otherwise so conducted himself or herself that the court should refuse to enforce the parent's right to custody; or where the tender age or state of health of the child render it expedient that the child should remain with the child's mother or some other person. Repealed by Infants Custody and Settlements Act 1899.</abstract>
+
+</biogHist>
+</description>
+<relations><resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Custody of Children and Children's Settlements Act', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Custody of Children and Children's Settlements Act</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00500b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000059.htm">
+<relationEntry localType="published">Statute: Custody of Children and Children's Settlements Act 1894 (NSW)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Custody of Children and Children's Settlements Act 1894 (NSW)</title>
+<imprint>
+<date>1894</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000016.htm">
+<relationEntry localType="published">Resource: To Remove and Protect</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">To Remove and Protect</title>
+<imprint>
+<publisher>Australian Institute of Aboriginal and Torres Strait Islander Studies</publisher>
+</imprint>
+<bibseries>
+<title render="italic">New South Wales: Legislation</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.aiatsis.gov.au/collections/exhibitions/remove/NSW/legislation.html"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000096.htm">
+<relationEntry localType="digitalObject">An Act to amend the Law relating to the Custody of Children, and to provide for Settlements for the benefit of Children in certain cases. [14th March, 1894.]</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Australian Institute of Aboriginal and Torres Strait Islander Studies (AIATSIS)</repository>
+<unittitle>An Act to amend the Law relating to the Custody of Children, and to provide for Settlements for the benefit of Children in certain cases. [14th March, 1894.]</unittitle>
+<unitdate>14 March 1894</unitdate>
+<abstract>This is a copy of the Custody of Children and Children's Settlements Act, 1894.</abstract>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

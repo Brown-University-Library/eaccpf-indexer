@@ -174,7 +174,7 @@ class Analyzer(object):
         except:
             self.logger.error("Could not complete analysis for " + Filename, exc_info=LOG_EXC_INFO)
         
-    def analyzeFiles(self, Source, Output, HashIndex, Update):
+    def analyzeFiles(self, Source, Output, HashIndex, Update=False):
         """
         Analyze EAC-CPF files in the specified source paths. Write a YML file
         with analysis data to the output path.

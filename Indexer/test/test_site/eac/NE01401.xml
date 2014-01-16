@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01401</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2013-08-28">2013-08-28</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-09-11">2013-09-11</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01401b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Avona Hostel</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1947-01-01">1947</fromDate>
+<toDate standardDate="1962-12-31">c. 1962</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Home</term>
+</function>
+<function>
+<term>Hostel</term>
+</function>
+<function>
+<term>Anglican</term>
+</function>
+</functions>
+<biogHist>
+<abstract>Avona Hostel, in Glebe, was set up by the Anglican Home Mission Society in 1947. It was for boys aged 15 to 18 who had appeared before the Children's Court and were described by the Home Mission Society as 'neglected, homeless or unwanted.' The hostel held 25 boys. Avona Hostel closed around 1962.</abstract>
+<p>Avona Hostel was situated adjacent to the Charlton Memorial Home. It was staffed by Mr and Mrs Brooker, who had earlier run a hostel in Redfern.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1947-01-01">1947</fromDate>
+<toDate standardDate="1962-12-31">1962</toDate>
+</dateRange>
+<placeEntry>Glebe</placeEntry>
+<event>Avona Hostel was situated in Avona Street, Glebe</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00050b.htm">
+<relationEntry localType="Organisation">
+Home Mission Society of the Diocese of Sydney (1857 - 1997)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00069b.htm">
+<relationEntry localType="Organisation">
+Charlton Memorial Home (1942 - 1966)
+</relationEntry>
+<descriptiveNote>
+<p>Avona Hostel was situated next to Charlton Memorial Home.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Avona Hostel', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Avona Hostel</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01401b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000699.htm">
+<relationEntry localType="published">Report: Annual report of the Home Mission Society of the Diocese of Sydney</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Annual report of the Home Mission Society of the Diocese of Sydney</title>
+<imprint>
+<publisher>Home Mission Society (NSW)</publisher>
+<date>1912-1971</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

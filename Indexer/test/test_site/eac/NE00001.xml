@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00001</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Legislation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-02-21">2011-02-21</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-06">2013-12-06</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm</entityId>
+<entityType>concept</entityType>
+<nameEntry><part>Reformatory Schools Act 1866</part>
+<part localType="parent">Colony of New South Wales</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>An Act to establish Juvenile Reformatories</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1869-01-01">1869</fromDate>
+<toDate standardDate="1869-12-31">1869</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<biogHist>
+<abstract>The <span style="font-style:italic">Reformatory Schools Act 1866</span> [30 Victoria, Act No. 4, 1866] came into operation in 1869. Under the Act, any child under the age of sixteen who had been convicted of a criminal offence and sentenced to fourteen or more days imprisonment could be sent to a reformatory for one to five years. There were to be separate reformatories for boys and girls, and parents were asked to pay maintenance for children, if possible, while they served time.</abstract>
+<p>Reformatories were controlled by the Comptroller General of Prisons until the 1880s, when they were transferred to the Department of Public Instruction.</p>
+<p>This Act was repealed by the <span style="font-style:italic">Reformatory and Industrial Schools Act 1901</span>.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01071b.htm">
+<relationEntry localType="Organisation">
+Shaftesbury Reformatory School (1880 - 1904)
+</relationEntry>
+<descriptiveNote>
+<p>Shaftesbury Reformatory School was established under the <span style="font-style:italic">Reformatory Schools Act.</span></p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00444b.htm">
+<relationEntry localType="Organisation">
+Biloela Industrial School, Cockatoo Island (1867 - 1887)
+</relationEntry>
+<descriptiveNote>
+<p>Biloela was established under the <span style="font-style:italic">Reformatory Schools Act.</span></p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00443b.htm">
+<relationEntry localType="Organisation">
+Parramatta Girls Industrial School (1887 - 1912)
+</relationEntry>
+<descriptiveNote>
+<p>Parramatta Girls Industrial School was established under the <span style="font-style:italic">Reformatory Schools Act.</span></p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00985b.htm">
+<relationEntry localType="Glossary Term">
+Industrial Schools
+</relationEntry>
+<descriptiveNote>
+<p>Industrial schools were established under the <span style="font-style:italic">Reformatory Schools Act.</span></p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01070b.htm">
+<relationEntry localType="Organisation">
+Newcastle Industrial School for Females (1867 - 1871)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1869-01-01">1869</fromDate>
+<toDate standardDate="1871-12-31">1871</toDate>
+</dateRange>
+<descriptiveNote>
+<p>The Newcastle Industrial School for Females was established under the <span style="font-style:italic">Reformatory Schools Act.</span></p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01079b.htm">
+<relationEntry localType="Organisation">
+'Sobraon' Training Ship (1892 - 1911)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1892-01-01">1892</fromDate>
+<toDate standardDate="1905-12-31">1905</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Boys were committed to the <span style="font-style:italic">Sobraon</span> under the <span style="font-style:italic">Reformatory Schools Act</span>.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00007b.htm">
+<relationEntry localType="Legislation">
+Reformatory and Industrial Schools Act 1901, State of New South Wales
+</relationEntry>
+<descriptiveNote>
+<p>The <span style="font-style:italic">Reformatory and Industrial Schools Act 1901</span> replaced the <span style="font-style:italic">Reformatory Schools Act.</span></p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Reformatory Schools Act 1866', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Reformatory Schools Act 1866</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000666.htm">
+<relationEntry localType="published">Resource Section: Establishment of the Children's Court</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Crawford, John</name>
+<title render="quoted">Establishment of the Children's Court</title>
+<imprint>
+<publisher>Lawlink NSW</publisher>
+<date>2012</date>
+</imprint>
+<bibseries>
+<title render="italic">History of the Children's Court</title>
+<name type="author">Lawlink</name>
+</bibseries>
+<extptr linktype="simple" href="http://www.childrenscourt.lawlink.nsw.gov.au/childrenscourt/history.html"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000664.htm">
+<relationEntry localType="published">Resource Section: History of Children's Legislation in New South Wales - The Children's Court</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Blackmore, Rod</name>
+<title render="quoted">History of Children's Legislation in New South Wales - The Children's Court</title>
+<imprint>
+<publisher>Lawlink NSW</publisher>
+<date>2012</date>
+</imprint>
+<bibseries>
+<title render="italic">History of the Children's Court</title>
+<name type="author">Lawlink</name>
+</bibseries>
+<extptr linktype="simple" href="http://www.childrenscourt.lawlink.nsw.gov.au/agdbasev7wr/_assets/childrenscourt/m410051l1/aaa%20history%20of%20the%20childrens%20court%20-%20blackmore.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000663.htm">
+<relationEntry localType="published">Resource Section: Children of the Perishing Class</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Crawford, John</name>
+<title render="quoted">Children of the Perishing Class</title>
+<imprint>
+<publisher>Lawlink NSW</publisher>
+<date>2009</date>
+</imprint>
+<bibseries>
+<title render="italic">History of the Children's Court</title>
+<name type="author">Lawlink</name>
+</bibseries>
+<extptr linktype="simple" href="http://www.childrenscourt.lawlink.nsw.gov.au/childrenscourt/history.html"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000571.htm">
+<relationEntry localType="published">Resource Section: Carpentarian Reformatory for Boys (1894-1908) / Brush Farm Home for Boys (1909-1913) / Farm Home for Boys, Gosford (1914-1946) / Mount Penang Training School for Boys, Gosford (1946-1990) / Mount Penang Juvenile Justice Centre (1990- )</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Carpentarian Reformatory for Boys (1894-1908) / Brush Farm Home for Boys (1909-1913) / Farm Home for Boys, Gosford (1914-1946) / Mount Penang Training School for Boys, Gosford (1946-1990) / Mount Penang Juvenile Justice Centre (1990- )</title>
+<imprint>
+<publisher>State Records Authority of New South Wales</publisher>
+</imprint>
+<bibseries>
+<title render="italic">Archives Investigator Agency Detail 486, Juvenile Justice Centre</title>
+</bibseries>
+<extptr linktype="simple" href="http://investigator.records.nsw.gov.au/entity.aspx?path=%5Cagency%5C486"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000148.htm">
+<relationEntry localType="published">Resource: History of the Children's Court [extracted from Blackmore, R., <span style="font-style:italic">The Children's Court and Community Welfare in NSW</span></relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">History of the Children's Court [extracted from Blackmore, R., <span style="font-style:italic">The Children's Court and Community Welfare in NSW</span></title>
+<imprint>
+<publisher>Lawlink NSW</publisher>
+<date>2009</date>
+</imprint>
+<extptr linktype="simple" href="http://www.lawlink.nsw.gov.au/lawlink/childrens_court/ll_cc.nsf/pages/CC_aboutushistoryofthechildrenscourtchildpage"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000127.htm">
+<relationEntry localType="published">Resource Section: Newcastle Reformatory School for Females (1869-1871) / Biloela Reformatory School for Females (1871-1880) / Shaftesbury Reformatory (1880-1904)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Newcastle Reformatory School for Females (1869-1871) / Biloela Reformatory School for Females (1871-1880) / Shaftesbury Reformatory (1880-1904)</title>
+<imprint>
+<publisher>State Records Authority of New South Wales</publisher>
+</imprint>
+<bibseries>
+<title render="italic">State Records Archives Investigator</title>
+</bibseries>
+<extptr linktype="simple" href="http://investigator.records.nsw.gov.au/entity.aspx?path=\agency\461"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000119.htm">
+<relationEntry localType="published">Journal Article: Life in the industrial and reformatory school for girls in New South Wales [Series of two parts]: Part 1: 1867 to 1887. 'Hymns, songs and blackguard verses'. Part 2: 1887 to 1910. Laundry maids or ladies?</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Williamson, Noeline</name>
+<title render="quoted">Life in the industrial and reformatory school for girls in New South Wales [Series of two parts]: Part 1: 1867 to 1887. 'Hymns, songs and blackguard verses'. Part 2: 1887 to 1910. Laundry maids or ladies?</title>
+<imprint>
+<date>1982-1983</date>
+</imprint>
+<bibseries>
+<title render="italic">Journal of the Royal Australian Historical Society</title>
+<num type="volume">67-68</num>
+<num type="issue">March</num>
+<num type="pages">375-386, 312-324</num>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000030.htm">
+<relationEntry localType="published">Statute: Reformatory Schools Act 1866 (NSW)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Reformatory Schools Act 1866 (NSW)</title>
+<imprint>
+<date>1866</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

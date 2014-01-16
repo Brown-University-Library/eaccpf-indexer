@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01000</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Glossary Term</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-10-27">2011-10-27</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-11-26">2013-11-26</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01000b.htm</entityId>
+<entityType>concept</entityType>
+<nameEntry><part>Orphanage</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><places>
+</places>
+<biogHist>
+<abstract>A place where children who have lost their parents, through death or illness and abandonment, are cared for.</abstract>
+<p>The Catholic and Protestant Orphanages in Sydney, which cared for thousands of children, were founded in the 1820s, with government support. However the State Children's Relief Act of 1881 was intended to remove children from dormitory-style accommodation and board them out and the orphanages closed within a few years of the new legislation. From then on, religious organisations ran smaller orphanages in the city and regional areas.</p>
+<p>Orphanages were, to some, sites of benevolence, but to the children who lived in them they could be sites of deprivation and abuse.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00025b.htm">
+<relationEntry localType="Legislation">
+Orphan Schools Act 1826, Colony of New South Wales
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00025b.htm">
+<relationEntry localType="Legislation">
+Orphan Schools Act 1826, Colony of New South Wales
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Orphanage', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Orphanage</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01000b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000162.htm">
+<relationEntry localType="published">Site Exhibition: Orphan schools</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Orphan schools</title>
+<imprint>
+<publisher>State Library of New South Wales</publisher>
+<date>2012</date>
+</imprint>
+<extptr linktype="simple" href="http://www.sl.nsw.gov.au/discover_collections/history_nation/religion/charity/opphan_schools.html"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01201</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Person</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2012-10-19">2012-10-19</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-09">2013-12-09</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01201b.htm</entityId>
+<entityType>person</entityType>
+<nameEntry><part localType="familyname">Green</part>
+<part localType="givenname">AW</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>Green, Alfred William</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1858-01-01">1858</fromDate>
+<toDate standardDate="1935-08-21">21 August 1935</toDate>
+</dateRange>
+</existDates>
+<places>
+<place>
+<placeRole>Place of Death</placeRole>
+<placeEntry>Ashfield</placeEntry>
+</place>
+</places>
+<occupations>
+<occupation>
+<term>Protestant</term>
+</occupation>
+<occupation>
+<term>Public Servant</term>
+</occupation>
+<occupation>
+<term>Philanthropist</term>
+</occupation>
+</occupations>
+<biogHist>
+<abstract>AW Green was a New South Wales public servant for who spent his retirement working privately in child welfare. His life shows the many links between public and private agencies in New South Wales.</abstract>
+<p>Green began his government career in 1872 and in 1884 joined the State Children's Relief Board and later became Boarding Out Officer under Charles Mackellar. Green succeeded Mackellar as President of the State Children's Relief Board in 1914, continuing many of Mackellar's ideas. He was highly sympathetic to single mothers, and believed the state should pay destitute mothers to board their own children: during his time more than half the foster children in New South Wales were actually living with their own mothers or near relatives. He extended Mackellar's system of building residential homes for working mothers with babies. He was a strong critic of the Aborigines Protection Board from 1915-1917, claiming too many Aboriginal children ended up in Mittagong and other State Children's Relief Board homes, but later came to a working arrangement with that agency.</p>
+<p>Green believed the boarding-out system in New South Wales was 'the best in the world.' He said child welfare work was charity, disagreeing with reformers who argued the education of state children would reduce poverty and disadvantage. Green retired in 1922, at the time the State Children's Relief Department was replaced by the Child Welfare Department.</p>
+<p>After his retirement Green, an Anglican, joined the Aborigines Protection Board and chaired the executive committee of Dr Barnardo's Australia. He was president of the Church of England Orphanage from 1922 until 1927, then of the Church of England Children's Homes until his death. He was also involved with children's homes run by the Masons at Lewisham and Baulkham Hills, and set up Mowbray Park Home at Picton.</p>
+<p>As well as this, Green was president of the Parks and Playgrounds Movement, assistant secretary of the British Medical Association (New South Wales) and of the Medical Union of New South Wales. He was associated with hospitals and musical societies and was intensely involved with cricket, serving 40 years on the New South Wales Cricket Association and as president of Western Suburbs Club. He also served on the committees of western Sydney bowling clubs and rugby union clubs.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00979b.htm">
+<relationEntry localType="Glossary Term">
+Foster Care (1881 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01012b.htm">
+<relationEntry localType="Glossary Term">
+Unmarried Mothers
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00966b.htm">
+<relationEntry localType="Glossary Term">
+Boarding Out (1881 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01008b.htm">
+<relationEntry localType="Glossary Term">
+Stolen Generations
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00038b.htm">
+<relationEntry localType="Organisation">
+State Children's Relief Department (1881 - 1923)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1884-01-01">1884</fromDate>
+<toDate standardDate="1922-12-31">1922</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green was employed by the State Children's Relief Department from 1884 and president of it from 1914 until 1922</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00037b.htm">
+<relationEntry localType="Organisation">
+State Children's Relief Board (1881 - 1923)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1884-01-01">1884</fromDate>
+<toDate standardDate="1922-12-31">1922</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green was employed by the State Children's Relief Board from 1884 and president of the State Children's Relief Board</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00034b.htm">
+<relationEntry localType="Organisation">
+Aborigines Protection Board (1883 - 1940)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1922-01-01">1922</fromDate>
+<toDate standardDate="1935-12-31">1935</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green was a member of the Aborigines Protection Board</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00092b.htm">
+<relationEntry localType="Organisation">
+Church of England Orphanage (1893 - 1927)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1922-01-01">1922</fromDate>
+<toDate standardDate="1935-12-31">1935</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green was president of the Council of the Church of England Orphanage</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00293b.htm">
+<relationEntry localType="Organisation">
+Dr Barnardo's Homes (Australia Branch) (1883 - 1966)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1923-01-01">1923?</fromDate>
+<toDate standardDate="1935-12-31">1935</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green served as chairman of the executive committee of Dr Barnardo's Homes</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00394b.htm">
+<relationEntry localType="Organisation">
+William Thompson Masonic School (c. 1924 - 1972)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1924-01-01">1924</fromDate>
+<toDate standardDate="1935-12-31">1935</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00091b.htm">
+<relationEntry localType="Organisation">
+Church of England Children's Homes, Burwood (1927 - 1993)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1927-01-01">1927</fromDate>
+<toDate standardDate="1935-12-31">1935</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green was president of Church of England Children's Homes</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00295b.htm">
+<relationEntry localType="Organisation">
+Mowbray Park (1929 - 1959)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1929-01-01">1929</fromDate>
+<toDate standardDate="1935-12-31">1935</toDate>
+</dateRange>
+<descriptiveNote>
+<p>Green set up Mowbray Park</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Green, AW', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Green, AW</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01201b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000636.htm">
+<relationEntry localType="published">Newspaper Article: Dr. Barnardo's Homes. Founder's Day.</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Dallen, Robert A</name>
+<title render="quoted">Dr. Barnardo's Homes. Founder's Day.</title>
+<imprint>
+<date>1937</date>
+</imprint>
+<extptr linktype="simple" href="http://trove.nla.gov.au/ndp/del/article/17384147"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000306.htm">
+<relationEntry localType="published">Newspaper Article: Mr. A.W. Green: Cricket President's Death.</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="quoted">Mr. A.W. Green: Cricket President's Death.</title>
+<imprint>
+<date>1935</date>
+</imprint>
+<bibseries>
+<title render="italic">The Sydney Morning Herald</title>
+</bibseries>
+<extptr linktype="simple" href="http://trove.nla.gov.au/ndp/del/article/17184543"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000064.htm">
+<relationEntry localType="published">Thesis: 'Such a longing': Black and white children in welfare in New South Wales and Tasmania, 1880 to 1920</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Parry, Naomi</name>
+<title render="italic">'Such a longing': Black and white children in welfare in New South Wales and Tasmania, 1880 to 1920</title>
+<imprint>
+<publisher>Department of History, University of New South Wales</publisher>
+<date>2007</date>
+</imprint>
+<extptr linktype="simple" href="http://trove.nla.gov.au/work/4033481"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000296.htm">
+<relationEntry localType="digitalObject">A.W. Green</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia: Trove</repository>
+<unittitle>A.W. Green</unittitle>
+<unitdate>c. 1935</unitdate>
+<abstract>This is a digital copy of an image that appeared in the <span style="font-style:italic">Sydney Morning Herald</span> on 22 August 1935</abstract>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

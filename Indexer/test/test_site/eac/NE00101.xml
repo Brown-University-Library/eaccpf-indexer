@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00101</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-03-04">2011-03-04</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-02">2013-12-02</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00101b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Adolescent Program (Anglicare Canberra Goulburn)</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1986-01-01">1986</fromDate>
+<toDate standardDate="1994-12-31">1994</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Foster Care</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>The Adolescent Program, formerly run under the name of St Saviour's Cottage Home, operated at Goulburn until 1994. This service implemented individual care programs for children and young people with a goal of restoration and reconciliation with families as the option of first choice. The Program changed from a residential model in 1995 and in 1996 operated as a flexible community placement model.</abstract>
+<p>In 2012 Anglicare's Goulburn Child Protection Service was operating from 134 Cowper Street, providing counselling and other services to children aged 4 to 13 and their families.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1986-01-01">1986</fromDate>
+<toDate standardDate="1994-12-31">1994</toDate>
+</dateRange>
+<placeEntry>Goulburn</placeEntry>
+<event>Adolescent Program (Anglicare Canberra Goulburn) was situated at 134 Cowper Street</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00096b.htm">
+<relationEntry localType="Organisation">
+St Saviour's Neighbourhood Centre Goulburn (1980 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00100b.htm">
+<relationEntry localType="Organisation">
+St Saviour's Cottage Home (1982 - 1986)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Adolescent Program (Anglicare Canberra Goulburn)', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Adolescent Program (Anglicare Canberra Goulburn)</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00101b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000001.htm">
+<relationEntry localType="published">Resource: Connecting Kin: Guide to Records</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Thinee, Kristy and Bradford, Tracy</name>
+<title render="italic">Connecting Kin: Guide to Records</title>
+<imprint>
+<place>Sydney, New South Wales</place>
+<publisher>New South Wales Department of Community Services</publisher>
+<date>1998</date>
+</imprint>
+<extptr linktype="simple" href="http://www.community.nsw.gov.au/DOCSWR/_assets/main/documents/connectkin_guide.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

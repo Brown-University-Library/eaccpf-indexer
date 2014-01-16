@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00800</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Archival Series</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-08-10">2011-08-10</eventDateTime>
+<agentType>human</agentType>
+<agent>Melissa Downing</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-09-21">2013-09-21</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00800b.htm</entityId>
+<entityType>concept</entityType>
+<nameEntry><part>Confinement books</part>
+<part localType="parent">South Sydney Women's Hospital</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1947-01-01">1947</fromDate>
+<toDate standardDate="1949-12-31">1949</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<biogHist>
+<abstract>These books are similar to birth registers. They record the mother's name, date and time of birth, length and weight of the baby. (The records for the following dates are missing: 25 Jul.-Dec. 1948.)
+
+<span style="font-weight:bold">Access</span> Access to information relating to adoption cases is restricted to the adoptee and the birth parents. Requests for information relating to adoption cases are handled in accordance with the Adoption Act 2000. Requests must be made in writing, and the applicant must include certain information with their application before it can be processed. Details of what information is required can be obtained from the Medical Records Manager at the Hospital. Other requests for information will be treated in accordance with principles of the <span style="font-style:italic">Government Information (Public Access) Act 2009</span> (GIPAA). Information will only be released to the person to whom it relates.</abstract>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01464b.htm">
+<relationEntry localType="Contact Details">
+Prince of Wales Hospital - Contact Details
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00451b.htm">
+<relationEntry localType="Organisation">
+South Sydney Women's Hospital (1905 - 1976)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Confinement books', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Confinement books</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00800b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000001.htm">
+<relationEntry localType="published">Resource: Connecting Kin: Guide to Records</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Thinee, Kristy and Bradford, Tracy</name>
+<title render="italic">Connecting Kin: Guide to Records</title>
+<imprint>
+<place>Sydney, New South Wales</place>
+<publisher>New South Wales Department of Community Services</publisher>
+<date>1998</date>
+</imprint>
+<extptr linktype="simple" href="http://www.community.nsw.gov.au/DOCSWR/_assets/main/documents/connectkin_guide.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

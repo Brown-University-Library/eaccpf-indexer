@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00301</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-03-17">2011-03-17</eventDateTime>
+<agentType>human</agentType>
+<agent>Melissa Downing &amp; Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-09">2013-12-09</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00301b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Hartwell House</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1960-01-01">1960</fromDate>
+<toDate standardDate="1970-12-31">1970</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Non-denominational</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>Hartwell House was a Dr Barnardo's Home that opened in 1960 at Kiama. It closed in 1970.</abstract>
+<p>In 1994 a former housemaster of Hartwell House, Vic Holyoak, was sentenced to 10 years jail for sexually abusing children placed in his care.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00293b.htm">
+<relationEntry localType="Organisation">
+Dr Barnardo's Homes (Australia Branch) (1883 - 1966)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1960-01-01">1960</fromDate>
+<toDate standardDate="1966-12-31">1966</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00294b.htm">
+<relationEntry localType="Organisation">
+Dr Barnardos in Australia (1966 - c. 1995)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1966-01-01">1966</fromDate>
+<toDate standardDate="1970-12-31">1970</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00949b.htm">
+<relationEntry localType="Archival Collection">
+Records relating to Child and Youth Migration (NSW), Department of Family and Community Services
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00706b.htm">
+<relationEntry localType="Archival Collection">
+Barnardos Australia, Records (1883? - )
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Hartwell House', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Hartwell House</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00301b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000640.htm">
+<relationEntry localType="published">Site Exhibition: Nardy Old Boys &amp; Girls Reunion Club</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Remmer, Clifford</name>
+<title render="italic">Nardy Old Boys &amp; Girls Reunion Club</title>
+<imprint>
+<publisher>The Remmers</publisher>
+<date>2005</date>
+</imprint>
+<extptr linktype="simple" href="http://www.theremmers.com/index.php"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000100.htm">
+<relationEntry localType="published">Article: Reap as you sow</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Matthews, Bernie</name>
+<title render="quoted">Reap as you sow</title>
+<imprint>
+<date>2007</date>
+</imprint>
+<bibseries>
+<title render="italic">The Griffith Review, Edition 16: Unintended Consequences</title>
+<num type="pages">10</num>
+</bibseries>
+<extptr linktype="simple" href="http://griffithreview.com/images/stories/edition_articles/ed16_pdfs/matthews_%20ed16.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000105.htm">
+<relationEntry localType="published">Report: Mick's story</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Matthews, Bernie</name>
+<title render="italic">Mick's story</title>
+<imprint>
+<publisher>Online Opinion</publisher>
+<date>2007</date>
+</imprint>
+<extptr linktype="simple" href="http://www.onlineopinion.com.au/view.asp?article=6235"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000001.htm">
+<relationEntry localType="published">Resource: Connecting Kin: Guide to Records</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Thinee, Kristy and Bradford, Tracy</name>
+<title render="italic">Connecting Kin: Guide to Records</title>
+<imprint>
+<place>Sydney, New South Wales</place>
+<publisher>New South Wales Department of Community Services</publisher>
+<date>1998</date>
+</imprint>
+<extptr linktype="simple" href="http://www.community.nsw.gov.au/DOCSWR/_assets/main/documents/connectkin_guide.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000446.htm">
+<relationEntry localType="digitalObject">Nardy Old Boys &amp; Girls Reunion Club</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Nardy Old Boys &amp; Girls Reunion Club</unittitle>
+<unitdate>2005</unitdate>
+<abstract>A series of albums of photographs taken at homes run by Dr Barnardo's Homes in Australia.</abstract>
+<note label="rights">The Remmers</note>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

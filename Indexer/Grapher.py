@@ -4,13 +4,16 @@ LICENSE file, which is part of this source code package.
 """
 
 from EacCpf import EacCpf
+
+import Cfg
 import Utils
+
+import glob
 import logging
 import networkx as nx
 import os
 import yaml
 
-LOG_EXC_INFO = False
 
 
 class Grapher(object):
@@ -37,27 +40,24 @@ class Grapher(object):
         files.
         """
         g = nx.Graph()
-        files = os.listdir(Source)
-        for filename in files:
-            if filename.endswith('.yml'):
-                infile = open(Source + os.sep + filename,'r')
+        for filename in glob.glob(Source + os.sep + "*.yml"):
+            with open(Source + os.sep + filename,'r') as infile:
                 data = infile.read()
                 data = yaml.load(data)
-                infile.close()
-                # create the node
-                g.add_node(data['presentation_url'], label=data['id'], data=data)
-                # create the relationships
-                for rel in data['cpfrelations']:
-                    pass
-                for rel in data['resourcerelations']:
-                    # if the relation is to another document, then just create an edge
-                    if 'xlink:href' in rel:
-                        g.add_edge(data['presentation_url'], rel['xlink:href'])
-                    # else, create a node to represent the entity and then link to it
-                    else:
-                        rel['title'] = rel['relationentry']
-                        g.add_node(rel['relationentry'], data=rel)
-                        g.add_edge(data['presentation_url'], rel['title'])
+            # create the node
+            g.add_node(data['presentation_url'], label=data['id'], data=data)
+            # create the relationships
+            for rel in data['cpfrelations']:
+                pass
+            for rel in data['resourcerelations']:
+                # if the relation is to another document, then just create an edge
+                if 'xlink:href' in rel:
+                    g.add_edge(data['presentation_url'], rel['xlink:href'])
+                # else, create a node to represent the entity and then link to it
+                else:
+                    rel['title'] = rel['relationentry']
+                    g.add_node(rel['relationentry'], data=rel)
+                    g.add_edge(data['presentation_url'], rel['title'])
         # draw the graph
         nx.draw_spring(g)
         # write the graph file
@@ -95,25 +95,22 @@ class Grapher(object):
         Process the source directory and write all graph related metadata to
         the YAML intermediate files in the specified output folder.
         """
-        files = os.listdir(Source)
-        for filename in files:
-            if filename.endswith('.xml'):
-                doc = EacCpf(Source + os.sep + filename)
-                metadata = {}
-                metadata['id'] = doc.getRecordId()
-                metadata['title'] = doc.getTitle()
-                metadata['abstract'] = doc.getAbstract()
-                metadata['metadata_url'] = doc.getMetadataUrl()
-                metadata['presentation_url'] = doc.getPresentationUrl()
-                metadata['existdates'] = ''
-                metadata['function'] = doc.getFunctions()
-                metadata['entitytype'] = doc.getEntityType()
-                metadata['localtype'] = doc.getLocalType()
-                metadata['cpfrelations'] = doc.getCpfRelations()
-                metadata['resourcerelations'] = doc.getResourceRelations()
-                # write yaml file to output
-                outfile_name = doc.getFileName().replace('xml','yml')
-                outfile = open(Output + os.sep + outfile_name, 'w')
+        for filename in glob.glob(Source + os.sep + "*.xml"):
+            doc = EacCpf(Source + os.sep + filename)
+            metadata = {}
+            metadata['id'] = doc.getRecordId()
+            metadata['title'] = doc.getTitle()
+            metadata['abstract'] = doc.getAbstract()
+            metadata['metadata_url'] = doc.getMetadataUrl()
+            metadata['presentation_url'] = doc.getPresentationUrl()
+            metadata['existdates'] = ''
+            metadata['function'] = doc.getFunctions()
+            metadata['entitytype'] = doc.getEntityType()
+            metadata['localtype'] = doc.getLocalType()
+            metadata['cpfrelations'] = doc.getCpfRelations()
+            metadata['resourcerelations'] = doc.getResourceRelations()
+            # write yaml file to output
+            outfile_name = doc.getFileName().replace('xml','yml')
+            with open(Output + os.sep + outfile_name, 'w') as outfile:
                 yaml.dump(metadata,outfile)
-                outfile.close()
-                self.logger.info("Wrote graph data to " + outfile_name)
+            self.logger.info("Wrote graph data to {0}".format(outfile_name))

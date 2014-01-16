@@ -72,6 +72,11 @@ files to a new location edit it as needed.
 Revision History
 ----------------
 
+1.5.1
+
+ * Revised test cases to use local data in the package rather than on the web
+ * Added Cfg module to carry globals
+
 1.5.0
 
  * Send all logging to STDOUT

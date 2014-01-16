@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01500</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Archival Collection</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2013-12-02">2013-12-02</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-09">2013-12-09</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01500b.htm</entityId>
+<entityType>concept</entityType>
+<nameEntry><part>Weldon Centre Photographs</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1981-01-01">c. 1981</fromDate>
+<toDate standardDate="1981-12-31">c. 1981</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<biogHist>
+<abstract>The Weldon Centre photographs is a collection of around 100 colour snapshots taken by a former youth worker at the Weldon Centre in 1981. (The Weldon Centre was the new name for the Church of England Children's Homes in Burwood.) These photographs have the names of children and workers written on the back. The photographs were donated in 2012 to the National Orphanage Museum, run by the Care Leavers of Australia Network (CLAN).</abstract>
+<h4>Access Conditions</h4>
+<p>Access to some items in this collection might be restricted to protect the privacy of individuals.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01190b.htm">
+<relationEntry localType="Organisation">
+National Orphanage Museum (2000 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01501b.htm">
+<relationEntry localType="Contact Details">
+National Orphanage Museum - Contact Details
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00094b.htm">
+<relationEntry localType="Organisation">
+Wyatt Lodge (1980s - 1993)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00091b.htm">
+<relationEntry localType="Organisation">
+Church of England Children's Homes, Burwood (1927 - 1993)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Weldon Centre Photographs', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Weldon Centre Photographs</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01500b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

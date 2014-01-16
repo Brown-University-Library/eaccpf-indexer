@@ -41,10 +41,10 @@ class TestEacCpf(unittest.TestCase):
         It should create an instance of the class and load the file data.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00416b.htm',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00123b.htm',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00203b.htm',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00205b.htm',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00416.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00416b.htm',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00123.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00123b.htm',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00203.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00203b.htm',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00205.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00205b.htm',
                   }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com')
@@ -56,10 +56,10 @@ class TestEacCpf(unittest.TestCase):
         It should return the content of description/biogHist/abstract.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00416.xml':'NE00416',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00123.xml':'NE00123',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00203.xml':'NE00203',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00205.xml':'NE00205',
                   }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
@@ -73,10 +73,10 @@ class TestEacCpf(unittest.TestCase):
         digital object, then build a digital object metadata record.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00416.xml':'NE00416',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00123.xml':'NE00123',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00203.xml':'NE00203',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00205.xml':'NE00205',
                   }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
@@ -88,11 +88,10 @@ class TestEacCpf(unittest.TestCase):
         """
         cases = {
                  "http://www.findandconnect.gov.au/nsw/" : 0,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : 1,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00280b.htm" : 3,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00124b.htm" : 1,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE01217b.htm" : 1,
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": 0,
+                 "http://www.findandconnect.gov.au/ref/nsw/biogs/NE00200b.htm" : 1,
+                 "http://www.findandconnect.gov.au/ref/nsw/biogs/NE00280b.htm" : 3,
+                 "http://www.findandconnect.gov.au/ref/nsw/biogs/NE00124b.htm" : 1,
+                 "http://www.findandconnect.gov.au/ref/nsw/biogs/NE01217b.htm" : 1,
                  }
         for case in cases:
             html = HtmlPage(case)
@@ -111,9 +110,9 @@ class TestEacCpf(unittest.TestCase):
         It should get the record entity type.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":"corporateBody",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":"corporateBody",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml":"corporateBody",
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml":"corporateBody",
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml":"corporateBody",
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE01217.xml":"corporateBody",
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com')
@@ -129,9 +128,9 @@ class TestEacCpf(unittest.TestCase):
         should be returned instead of the date value.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":("1900-01-01T00:00:00Z", None),
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":("1926-01-01T00:00:00Z", None),
-                 "http://www.findandconnect.gov.au/vic/eac/E000582.xml":("1942-01-01T00:00:00Z","1965-12-31T00:00:00Z")
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml":("1900-01-01T00:00:00Z", None),
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml":("1926-01-01T00:00:00Z", None),
+                 "http://www.findandconnect.gov.au/ref/vic/eac/E000582.xml":("1942-01-01T00:00:00Z","1965-12-31T00:00:00Z")
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com')
@@ -146,10 +145,10 @@ class TestEacCpf(unittest.TestCase):
         It should return the file name from the URL.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205.xml',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00416.xml':'NE00416.xml',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00123.xml':'NE00123.xml',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00203.xml':'NE00203.xml',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00205.xml':'NE00205.xml',
                   }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
@@ -162,9 +161,9 @@ class TestEacCpf(unittest.TestCase):
         It should get the record functions.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": 4,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": 3,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 4,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml": 4,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml": 3,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE01217.xml": 4,
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case,'http://www.example.com')
@@ -178,10 +177,10 @@ class TestEacCpf(unittest.TestCase):
         It should return the entity identifier from the URL or filename.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00416.xml':'NE00416',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00123.xml':'NE00123',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00203.xml':'NE00203',
+                 'http://www.findandconnect.gov.au/ref/nsw/eac/NE00205.xml':'NE00205',
                   }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
@@ -193,9 +192,9 @@ class TestEacCpf(unittest.TestCase):
         It should get the record entity type.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": "Organisation",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": "Organisation",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": "Organisation",
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml": "Organisation",
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml": "Organisation",
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE01217.xml": "Organisation",
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case,'http://www.example.com')
@@ -211,9 +210,9 @@ class TestEacCpf(unittest.TestCase):
         event description.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": 3,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": 0,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 1,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml": 3,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml": 0,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE01217.xml": 1,
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case,'http://www.example.com')
@@ -253,9 +252,9 @@ class TestEacCpf(unittest.TestCase):
         otherwise.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": True,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": False,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml": True,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml": False,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE01217.xml": True,
                  }
         for case in cases:
             doc = EacCpf.EacCpf(case,'http://www.example.com')
@@ -271,9 +270,9 @@ class TestEacCpf(unittest.TestCase):
         root element for the metadata and presentation source URLs.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": True,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": False,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00280.xml": True,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE00124.xml": False,
+                 "http://www.findandconnect.gov.au/ref/nsw/eac/NE01217.xml": True,
                  }
         metadata_url = 'http://www.example.com/metadata.xml'
         presentation_url = 'http://www.example.com/presentation.html'

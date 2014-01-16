@@ -3,6 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+import Cfg
+
 import codecs
 import hashlib
 import logging
@@ -59,7 +61,7 @@ class HtmlPage(object):
         uri = self.getUrl()
         i = uri.rfind('/')
         url = uri[:i+1]
-        return url.replace(' ','%20').encode("utf-8")
+        return str(url.replace(' ','%20'))
 
     def _getFileName(self, Url):
         """
@@ -79,7 +81,7 @@ class HtmlPage(object):
             field = tag.find(Type)
             if field:
                 val = field[Attribute]
-                return val.encode("utf8")
+                return str(val)
         return None
 
     def _getTagContentByClass(self, Tags, Type, FieldName, Field='class'):
@@ -90,7 +92,7 @@ class HtmlPage(object):
         for tag in Tags:
             field = tag.find(Type,{Field:FieldName})
             if field:
-                return field.text.encode("utf8")
+                return str(field.text)
         return None
 
     def _getUrl(self):
@@ -164,7 +166,7 @@ class HtmlPage(object):
                 pageurl = self.getUrl()
                 return str(urlparse.urljoin(pageurl,url))
         except:
-            self.log.debug("Digital object not found in {0}".format(self.url))
+            self.log.debug("Digital object not found in {0}".format(self.url), exc_info=Cfg.LOG_EXC_INFO)
         return None
 
     def getEacCpfUrl(self):
@@ -253,12 +255,9 @@ class HtmlPage(object):
         Determine if this page has an EAC-CPF alternate representation.
         """
         try:
-            url = self.getEacCpfUrl()
-            if url:
-                return True
+            return True if self.getEacCpfUrl() else False
         except:
-            pass
-        return False
+            return False
 
     def hasRecord(self):
         """

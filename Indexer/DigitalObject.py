@@ -179,7 +179,6 @@ class DigitalObject(object):
                 record[key] = CacheRecord[key]
         # write the file
         data = yaml.dump(record, default_flow_style=False, indent=4)
-        outfile = open(Path + os.sep + filename, 'w')
-        outfile.write(data)
-        outfile.close()
+        with open(Path + os.sep + filename, 'w') as outfile:
+            outfile.write(data)
         self.logger.info("Stored digital object {0}".format(filename))

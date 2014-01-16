@@ -3,14 +3,16 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from DigitalObjectCache import DigitalObjectCache
+
 import Image
+import Utils
 import os
 import random
 import string
+import tempfile
 import unittest
 import urllib2
-import tempfile
-from DigitalObjectCache import DigitalObjectCache
 
 
 class TestDigitalObjectCache(unittest.TestCase):
@@ -40,6 +42,7 @@ class TestDigitalObjectCache(unittest.TestCase):
         """
         self.path = "/tmp/cache"
         self.temp = tempfile.mkdtemp()
+        self.url_root = "http://test.com/"
 
     def tearDown(self):
         """
@@ -54,94 +57,58 @@ class TestDigitalObjectCache(unittest.TestCase):
 
     def test_init(self):
         """
-        It should create an object instance and a concomitant file system put
-        for the image cache.
+        It should create an object instance and a concomitant file system for
+        the image cache.
         """
-        # no path specified, no init
+        # no path/urlroot specified, no init
         self.assertRaises(Exception, DigitalObjectCache(self.path))
-        # path specified, no init
-        cache = DigitalObjectCache(self.path, init=False)
-        self.assertNotEqual(cache,None)
-        self.assertEquals(cache.path,self.path)
-        self.assertEquals(os.path.exists(self.path),True)
-        # path specified, init
-        cache = DigitalObjectCache(self.path, init=True)
-        self.assertNotEqual(cache,None)
-        self.assertEquals(cache.path,self.path)
-        self.assertEquals(os.path.exists(self.path),True)
-        # base url specified
-        cache = DigitalObjectCache(self.path, 'http://www.example.com/')
-        self.assertNotEqual(cache,None)
-        self.assertEquals(cache.path,self.path)
-        self.assertEquals('http://www.example.com/',cache.url_root)
-    
-    def test_getFileName(self):
-        """
-        It should get the file name from a specified URL.
-        """
+        # path specified, no url_root or init
         cache = DigitalObjectCache(self.path)
-        paths = {
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png" : "tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.png" : "tn_Allandale%20Boys%20Cottage.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_aust_inland_mission.png" : "tn_aust_inland_mission.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kalumburu.png" : "tn_Kalumburu.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kartanup.png" : "tn_Kartanup.png",
-                 }
-        for path in paths:
-            filename = cache._getFileName(path)
-            self.assertNotEqual(filename, None)
-            self.assertEquals(filename, paths[path])
-    
-    def test_getFileNameExtension(self):
-        """
-        It should get the file name extension from a specified URL.
-        """
-        cache = DigitalObjectCache(self.path)
-        paths = {
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.htm" : "htm",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_aust_inland_mission.jpg" : "jpg",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kalumburu.png" : "png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kartanup.pdf" : "pdf",
-                 }
-        for path in paths:
-            extension = cache._getFileNameExtension(path)
-            self.assertNotEqual(extension, None)
-            self.assertEquals(extension, paths[path])
-            
+        self.assertNotEqual(cache, None)
+        self.assertEquals(cache.path, self.path)
+        self.assertEquals(cache.url_root, '/')
+        self.assertEquals(os.path.exists(self.path), True)
+        # path, url_root, init specified
+        cache = DigitalObjectCache(self.path, UrlRoot=self.url_root, Init=True)
+        self.assertNotEqual(cache, None)
+        self.assertEquals(cache.path, self.path)
+        self.assertEquals(cache.url_root, self.url_root)
+        self.assertEquals(os.path.exists(self.path),True)
+
     def test_getHash(self):
         """
         It should return the same hash for the file each time it is run.
         """
-        cache = DigitalObjectCache(self.path)
-        urls = [
-                 "http://www.findandconnect.gov.au/site/images/aus-logo.png",
-                 "http://www.findandconnect.gov.au/tas/site/images/logo-tasmania.png",
-                 "http://www.findandconnect.gov.au/tas/objects/images/barrington_lodge_exterior.jpg",
-                  "http://www.findandconnect.gov.au/vic/objects/thumbs/tn_TALLY%20HO%20VILLAGE%20-%20ADMINISTRATION%20BUILDING,%201980'S.png",
-                  "http://www.findandconnect.gov.au/vic/objects/images/BM1-12A%20(355bl).jpg",
-                  "http://www.findandconnect.gov.au/vic/objects/images/typing%20allambie.jpg",
-                ]
-        for url in urls:
-            # download the test file
-            response = urllib2.urlopen(url)
-            data = response.read()
-            ext = cache._getFileNameExtension(url)
-            temp = tempfile.mktemp(suffix="." + ext)
-            outfile = open(temp,'w')
-            outfile.write(data)
-            outfile.close()
-            # run multiple passes on the file and compare results
-            firsthash = cache._getHash(temp)
-            for _ in range(10):
-                newhash = cache._getHash(temp)
-                self.assertEqual(firsthash, newhash)
-            # delete the test file
-            os.remove(temp)
-            self.assertEqual(os.path.exists(temp),False)
+        # cache = DigitalObjectCache(self.path)
+        # urls = [
+        #          "http://www.findandconnect.gov.au/site/images/aus-logo.png",
+        #          "http://www.findandconnect.gov.au/tas/site/images/logo-tasmania.png",
+        #          "http://www.findandconnect.gov.au/tas/objects/images/barrington_lodge_exterior.jpg",
+        #          "http://www.findandconnect.gov.au/vic/objects/thumbs/tn_TALLY%20HO%20VILLAGE%20-%20ADMINISTRATION%20BUILDING,%201980'S.png",
+        #          "http://www.findandconnect.gov.au/vic/objects/images/BM1-12A%20(355bl).jpg",
+        #          "http://www.findandconnect.gov.au/vic/objects/images/typing%20allambie.jpg",
+        # ]
+        # for url in urls:
+        #     # download the test file
+        #     response = urllib2.urlopen(url)
+        #     data = response.read()
+        #     ext = cache._getFileNameExtension(url)
+        #     temp = tempfile.mktemp(suffix="." + ext)
+        #     outfile = open(temp,'w')
+        #     outfile.write(data)
+        #     outfile.close()
+        #     # run multiple passes on the file and compare results
+        #     firsthash = cache._getHash(temp)
+        #     for _ in range(10):
+        #         newhash = cache._getHash(temp)
+        #         self.assertEqual(firsthash, newhash)
+        #     # delete the test file
+        #     os.remove(temp)
+        #     self.assertEqual(os.path.exists(temp),False)
 
     def test_resizeImage(self):
         """
-        It should resize an case file to the specified dimensions.
+        It should resize the image to the specified dimensions.
         """
         cache = DigitalObjectCache(self.path)
         cases = [
@@ -155,12 +122,11 @@ class TestDigitalObjectCache(unittest.TestCase):
         for case in cases:
             response = urllib2.urlopen(case)
             data = response.read()
-            ext = cache._getFileNameExtension(case)
+            ext = Utils.getFileNameExtension(case)
             temp = tempfile.mktemp(suffix="." + ext)
             # write downloaded file
-            outfile = open(temp,'w')
-            outfile.write(data)
-            outfile.close()
+            with open(temp,'w') as f:
+                f.write(data)
             self.assertNotEqual(os.path.exists(temp),None)
             self.assertNotEqual(os.path.getsize(temp),0)
             # get the source case dimensions
@@ -185,32 +151,33 @@ class TestDigitalObjectCache(unittest.TestCase):
         return the source data when queried with the item key.
         """
         cases = [
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_All%20on%20Together%20Govt%20Rec%20Home%20photoarticle59448843-3-001.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Allandale%20Boys%20Cottage.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_aust_inland_mission.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kalumburu.png",
-                  "http://www.findandconnect.gov.au/wa/objects/thumbs/tn_Kartanup.png",
+                  "http://www.findandconnect.gov.au/cache/fcwa/8d/9b/d9/b6/de/b3/5f/17/ca/32/f7/7c/ba/86/4d/e0/11/c3/94/ff/obj/medium.png",
+                  "http://www.findandconnect.gov.au/cache/fcwa/41/32/f6/96/2c/09/f2/dd/74/23/8a/e9/71/b9/e4/c2/7b/65/63/11/obj/medium.png",
+                  "http://www.findandconnect.gov.au/cache/fcwa/02/8a/26/f7/6f/22/f7/a3/05/b9/e6/40/2e/13/41/c4/41/b4/8a/5b/obj/medium.png",
                   ]
         baseurl = "http://www.findandconnect.gov.au/cache"
         records = {}
         cache = DigitalObjectCache(self.path,baseurl)
         # add files to cache
         for case in cases:
-            record = cache.put(case)
-            self.assertNotEqual(record,None)
-            self.assertNotEqual(record['id'],None)
-            cacheid = record['id']
+            # #26 Image files must be accessible on the local disk before they
+            # can be processed
+            temp = Utils.getTemporaryFileFromResource(case)
+            record = cache.put(temp)
+            self.assertNotEqual(record, None)
+            self.assertNotEqual(record['cache_id'], None)
+            cacheid = record['cache_id']
             records[cacheid]= record
         # fetch cases from the cache using the key
         tmpdir = tempfile.mkdtemp()
         for key in records.keys():
             obj = cache.get(key)
-            self.assertNotEqual(obj['source'],None)
-            self.assertNotEqual(obj['file-name'],None)
-            self.assertNotEqual(obj['file-extension'],None)
-            self.assertNotEqual(obj['large-url'],None)
-            self.assertNotEqual(obj['medium-url'],None)
-            self.assertNotEqual(obj['small-url'],None)
+            self.assertNotEqual(obj['dobj_source'], None)
+            self.assertNotEqual(obj['dobj_file_name'], None)
+            self.assertNotEqual(obj['dobj_file_extension'], None)
+            self.assertNotEqual(obj['dobj_proxy_large'], None)
+            self.assertNotEqual(obj['dobj_proxy_medium'], None)
+            self.assertNotEqual(obj['dobj_proxy_small'], None)
         # delete temporary files
         self._rmdir(tmpdir)
         self.assertEqual(os.path.exists(tmpdir), False)
