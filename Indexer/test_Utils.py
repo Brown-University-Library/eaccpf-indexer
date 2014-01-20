@@ -3,9 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+import logging
 import os
-import random
-import string
 import tempfile
 import unittest
 import Utils
@@ -133,9 +132,9 @@ class TestUtils(unittest.TestCase):
             ("thisfilehasnoextension", "")
         ]
         for case in cases:
-            name, ext = case
-            x = Utils.getFileNameExtension(name)
-            self.assertEquals(ext, x)
+            filename, expected = case
+            result = Utils.getFileNameExtension(filename)
+            self.assertEquals(expected, result)
 
     def test_getFileNameWithAlternateExtension(self):
         """
@@ -151,6 +150,27 @@ class TestUtils(unittest.TestCase):
             filename, ext, newname = case
             renamed = Utils.getFilenameWithAlternateExtension(filename, ext)
             self.assertEquals(newname, renamed)
+
+    def test_getTemporaryFileFromResource(self):
+        """
+        It should retrieve the web or file system resource and write it to a
+        temporary file on the local file system, then return the path to the
+        temporary file. It should throw an exception if any step in the
+        procedure fails.
+        """
+        cases = [
+            ("http://www.findandconnect.gov.au/assets/img/footer-logo.png", True),
+            ("http://www.findandconnect.gov.au/assets/img/by-nc-sa.png", True),
+            ("http://www.example.com/missing-image.png", False),
+        ]
+        for case in cases:
+            source, expected = case
+            try:
+                result = Utils.getTemporaryFileFromResource(source)
+                self.assertEqual(os.path.exists(result), expected)
+            except:
+                self.assertEqual(False, expected)
+                # logging.error("Could not create temporary resource", exc_info=True)
 
     def test_isDigitalObjectYaml(self):
         """
@@ -195,6 +215,24 @@ class TestUtils(unittest.TestCase):
 
     def test_loadFileHashIndex(self):
         pass
+
+    def test_map_url_to_local_path(self):
+        """
+        It should return a local file system path, given the local file system
+        path to the root of a web site and a web URL.
+        """
+        cases = [
+            ("/var/www/TEST","http://www.example.com/image.jpg","/var/www/TEST/image.jpg"),
+            ("/var/www/TEST","http://www.example.com/","/var/www/TEST"),
+            ("/var/www/TEST","http://www.example.com/../","/var/www/TEST"),
+            ("/var/www/TEST","http://www.example.com/path/to/subdirectory/","/var/www/TEST/path/to/subdirectory"),
+            ("/var/www/TEST","http://www.example.com/path/to/subdirectory","/var/www/TEST/path/to/subdirectory"),
+        ]
+        for case in cases:
+            site_path, resource_url, expected = case
+            result = Utils.map_url_to_local_path(resource_url, site_path)
+            self.assertNotEqual(result, None)
+            self.assertEqual(result, expected)
 
     def test_parseUnitDate(self):
         """

@@ -14,8 +14,6 @@ schema=/var/lib/indexer/PROJ/eac.dtd
 [infer]
 actions=locations
 alchemy_api_key=
-calais_api_key=
-google_api_key=
 input=/var/lib/indexer/PROJ/clean
 output=/var/lib/indexer/PROJ/infer
 sleep=1.0

@@ -24,10 +24,12 @@ class TestEacCpf(unittest.TestCase):
         """
         Setup the test environment.
         """
-        module_path = os.path.abspath(inspect.getfile(self.__class__))
+        self.module = os.path.abspath(inspect.getfile(self.__class__))
+        self.module_path = os.path.dirname(self.module)
         self.log = logging.getLogger()
-        self.path = os.path.dirname(module_path) + os.sep + 'test' + os.sep + 'eaccpf'
         self.temp = tempfile.mkdtemp()
+        self.test_site = os.sep.join([self.module_path, "test", "test_site"])
+        self.test_eac = self.test_site + os.sep + 'eac' + os.sep
 
     def tearDown(self):
         """
@@ -41,11 +43,11 @@ class TestEacCpf(unittest.TestCase):
         It should create an instance of the class and load the file data.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00416b.htm',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00123b.htm',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00203b.htm',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'http://www.findandconnect.gov.au/nsw/biogs/NE00205b.htm',
-                  }
+            self.test_eac + 'NE00001.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00001b.htm',
+            self.test_eac + 'NE00201.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00201b.htm',
+            self.test_eac + 'NE00700.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00700b.htm',
+            self.test_eac + 'NE00915.xml':'http://www.findandconnect.gov.au/ref/nsw/biogs/NE00915b.htm',
+        }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com')
             self.assertNotEqual(doc, None)
@@ -56,71 +58,70 @@ class TestEacCpf(unittest.TestCase):
         It should return the content of description/biogHist/abstract.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
-                  }
+                 self.test_eac + 'NE00001.xml':'NE00001',
+                 self.test_eac + 'NE00100.xml':'NE00100',
+                 self.test_eac + 'NE00200.xml':'NE00200',
+                 self.test_eac + 'NE00600.xml':'NE00600',
+        }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             self.assertNotEqual(doc, None)
             abstract = doc.getAbstract()
             self.assertNotEqual(abstract, None)
 
-    def test_getDigitalObject(self):
+    def test_getData(self):
         """
-        It should take an individual digital object relation and retrieve the
-        digital object, then build a digital object metadata record.
+        It should return the raw XML source data for the document.
         """
-        cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
-                  }
+        cases = [
+            self.test_eac + 'NE01201.xml',
+            self.test_eac + 'NE00201.xml',
+            self.test_eac + 'NE00300.xml',
+            self.test_eac + 'NE00500.xml',
+        ]
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             self.assertNotEqual(doc, None)
-    
+            result = doc.getData()
+            self.assertNotEqual(result, None)
+            self.assertGreater(len(result), 0)
+
     def test_getDigitalObjects(self):
         """
         It should get the list of digital objects in the EAC-CPF document.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/" : 0,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : 1,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00280b.htm" : 3,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00124b.htm" : 1,
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE01217b.htm" : 1,
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": 0,
-                 }
+        cases = [
+            (self.test_eac + 'NE00001.xml', 0),
+            (self.test_eac + 'NE00100.xml', 1),
+            (self.test_eac + 'NE01101.xml', 15),
+            (self.test_eac + 'NE01400.xml', 1),
+        ]
         for case in cases:
-            html = HtmlPage(case)
-            if html.hasEacCpfAlternate():
-                url = html.getEacCpfUrl()
-                doc = EacCpf.EacCpf(url, 'http://www.example.com')
-                self.assertNotEqual(doc, None)
-                objects = doc.getDigitalObjects()
-                self.assertNotEqual(objects, None)
-                self.assertEqual(len(objects), cases[case])
-            else:
-                self.assertEqual(0, cases[case])
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
+            self.assertNotEqual(doc, None)
+            result = doc.getDigitalObjects()
+            self.assertNotEqual(result, None)
+            self.assertEqual(len(result), expected)
 
     def test_getEntityType(self):
         """
         It should get the record entity type.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":"corporateBody",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":"corporateBody",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml":"corporateBody",
-                 }
+        cases = [
+            (self.test_eac + "NE00001.xml","concept"),
+            (self.test_eac + "NE00700.xml","concept"),
+            (self.test_eac + "NE01400.xml","corporateBody"),
+            (self.test_eac + "NE00301.xml","corporateBody"),
+            (self.test_eac + "NE01201.xml","person"),
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case, 'http://www.example.com')
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com')
             self.assertNotEqual(doc, None)
-            entitytype = doc.getEntityType()
-            self.assertNotEqual(entitytype, None)
-            self.assertEqual(entitytype, cases[case])
+            result = doc.getEntityType()
+            self.assertNotEqual(result, None)
+            self.assertEqual(result, expected)
 
     def test_getExistDates(self):
         """
@@ -128,29 +129,29 @@ class TestEacCpf(unittest.TestCase):
         date has a standardDate attribute, the standardDate attribute value
         should be returned instead of the date value.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml":("1900-01-01T00:00:00Z", None),
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml":("1926-01-01T00:00:00Z", None),
-                 "http://www.findandconnect.gov.au/vic/eac/E000582.xml":("1942-01-01T00:00:00Z","1965-12-31T00:00:00Z")
-                 }
+        cases = [
+            (self.test_eac + "NE01201.xml","1858-01-01T00:00:00Z","1935-08-21T00:00:00Z"),
+            (self.test_eac + "NE00300.xml","1960-01-01T00:00:00Z","1977-12-31T00:00:00Z"),
+            (self.test_eac + "NE01500.xml","1981-01-01T00:00:00Z","1981-12-31T00:00:00Z")
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case, 'http://www.example.com')
+            source, expected_from_date, expected_to_date = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com')
             self.assertNotEqual(doc, None)
             fromDate, toDate = doc.getExistDates()
-            expectFromDate, expectToDate = cases[case]
-            self.assertEqual(fromDate, expectFromDate)
-            self.assertEqual(toDate, expectToDate)
+            self.assertEqual(fromDate, expected_from_date)
+            self.assertEqual(toDate, expected_to_date)
 
     def test_getFilename(self):
         """
         It should return the file name from the URL.
         """
         cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203.xml',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205.xml',
-                  }
+            self.test_eac + 'NE00401.xml':'NE00401.xml',
+            self.test_eac + 'NE00001.xml':'NE00001.xml',
+            self.test_eac + 'NE00701.xml':'NE00701.xml',
+            self.test_eac + 'NE01501.xml':'NE01501.xml',
+        }
         for case in cases:
             doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
             filename = doc.getFileName()
@@ -161,47 +162,53 @@ class TestEacCpf(unittest.TestCase):
         """
         It should get the record functions.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": 4,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": 3,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 4,
-                 }
+        cases = [
+            (self.test_eac + "NE01100.xml", 4),
+            (self.test_eac + "NE01101.xml", 8),
+            (self.test_eac + "NE01501.xml", 0),
+            (self.test_eac + "NE00001.xml", 0),
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com')
             self.assertNotEqual(doc, None)
-            functions = doc.getFunctions()
-            self.assertNotEqual(functions, None)
-            self.assertEqual(len(functions), cases[case])
+            result = doc.getFunctions()
+            self.assertNotEqual(result, None)
+            self.assertEqual(len(result), expected)
 
     def test_getId(self):
         """
         It should return the entity identifier from the URL or filename.
         """
-        cases = {
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00416.xml':'NE00416',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00123.xml':'NE00123',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00203.xml':'NE00203',
-                 'http://www.findandconnect.gov.au/nsw/eac/NE00205.xml':'NE00205',
-                  }
+        cases = [
+            (self.test_eac + 'NE00401.xml','NE00401'),
+            (self.test_eac + 'NE00101.xml','NE00101'),
+            (self.test_eac + 'NE00915.xml','NE00915'),
+            (self.test_eac + 'NE01001.xml','NE01001'),
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com/metadata.xml', 'http://www.example.com/presentation.html')
+            result = doc.getRecordId()
             self.assertNotEqual(doc, None)
-            self.assertEquals(doc.getRecordId(), cases[case])
+            self.assertEquals(result, expected)
 
     def test_getLocalType(self):
         """
         It should get the record entity type.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": "Organisation",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": "Organisation",
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": "Organisation",
-                 }
+        cases = [
+            (self.test_eac + "NE00800.xml", "Archival Series"),
+            (self.test_eac + "NE00916.xml", "Archival Collection"),
+            (self.test_eac + "NE01201.xml", "Person"),
+            (self.test_eac + "NE01000.xml", "Glossary Term"),
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            source, expected = case
+            doc = EacCpf.EacCpf(source,'http://www.example.com')
             self.assertNotEqual(doc, None)
-            localtype = doc.getLocalType()
-            self.assertEqual(localtype, cases[case])
+            result = doc.getLocalType()
+            self.assertEqual(result, expected)
 
     def test_getLocations(self):
         """
@@ -210,59 +217,58 @@ class TestEacCpf(unittest.TestCase):
         record should include the place name, and optional existence dates and
         event description.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": 3,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": 0,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": 1,
-                 }
+        cases = [
+            (self.test_eac + "NE00601.xml", 0),
+            (self.test_eac + "NE00100.xml", 1),
+            (self.test_eac + "NE00201.xml", 3),
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com')
             self.assertNotEqual(doc, None)
-            locations = doc.getLocations()
-            self.assertNotEqual(locations, None)
-            self.assertEqual(cases[case], len(locations))
+            result = doc.getLocations()
+            self.assertNotEqual(result, None)
+            self.assertEqual(len(result), expected)
 
     def test_getThumbnail(self):
         """
         It should return a digital object representing a thumbnail image for 
         the record, if one is available.
         """
-        cases = {
-                 "E000001.xml": False,
-                 "E000002.xml": True,
-                 "E000003.xml": False,
-                 "E000004.xml": False,
-                 "E000005.xml": True,
-                 "E000006.xml": True,
-                 }
-        files = os.listdir(self.path)
-        files.sort()
-        for filename in files:
-            if filename in cases:
-                doc = EacCpf.EacCpf(self.path + os.sep + filename,'http://www.findandconnect.gov.au')
-                self.assertNotEqual(doc, None)
-                thumb = doc.getThumbnail()
-                if thumb != None:
-                    self.assertEqual(True, cases[filename])
-                else:
-                    self.assertEqual(False, cases[filename])
+        cases = [
+            (self.test_eac + 'NE00001.xml', False),
+            (self.test_eac + 'NE00100.xml', True),
+            (self.test_eac + 'NE01101.xml', True),
+            (self.test_eac + 'NE01400.xml', True),
+        ]
+        for case in cases:
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.findandconnect.gov.au')
+            self.assertNotEqual(doc, None)
+            result = doc.getThumbnail()
+            self.assertEqual(result != None, expected)
 
     def test_hasLocation(self):
         """
         It should return true if the record has a location entry, false
         otherwise.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": True,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": False,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
-                 }
+        cases = [
+            (self.test_eac + "NE00601.xml", False),
+            (self.test_eac + "NE00100.xml", True),
+            (self.test_eac + "NE00201.xml", True),
+            (self.test_eac + "NE01302.xml", True),
+            (self.test_eac + "NE01101.xml", False),
+            (self.test_eac + "NE00916.xml", False),
+            (self.test_eac + "NE00201.xml", True),
+        ]
         for case in cases:
-            doc = EacCpf.EacCpf(case,'http://www.example.com')
+            source, expected = case
+            doc = EacCpf.EacCpf(source,'http://www.example.com')
             self.assertNotEqual(doc, None)
-            location = doc.hasLocation()
-            self.assertNotEqual(location, None)
-            self.assertEqual(cases[case], location)
+            result = doc.hasLocation()
+            self.assertNotEqual(result, None)
+            self.assertEqual(result, expected)
 
     def test_write(self):
         """
@@ -271,10 +277,10 @@ class TestEacCpf(unittest.TestCase):
         root element for the metadata and presentation source URLs.
         """
         cases = {
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00280.xml": True,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE00124.xml": False,
-                 "http://www.findandconnect.gov.au/nsw/eac/NE01217.xml": True,
-                 }
+            self.test_eac + "NE00401.xml": True,
+            self.test_eac + "NE01501.xml": False,
+            self.test_eac + "NE01302.xml": True,
+        }
         metadata_url = 'http://www.example.com/metadata.xml'
         presentation_url = 'http://www.example.com/presentation.html'
         for case in cases:

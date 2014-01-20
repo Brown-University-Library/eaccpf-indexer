@@ -129,8 +129,7 @@ class Cleaner(object):
         # list of records that have been discovered
         records = []
         # for each file in the source folder
-        files = os.listdir(Source)
-        for filename in files:
+        for filename in os.listdir(Source):
             try:
                 if filename.startswith('.'):
                     continue
@@ -156,9 +155,8 @@ class Cleaner(object):
                     pass
                 # write data to specified file in the output directory.
                 outfile_path = Output + os.sep + filename
-                outfile = open(outfile_path,'w')
-                outfile.write(data)
-                outfile.close()
+                with open(outfile_path,'w') as outfile:
+                    outfile.write(data)
                 self.logger.info("Stored document " + filename)
             except Exception:
                 self.logger.error("Could not complete processing on " + filename, exc_info=LOG_EXC_INFO)

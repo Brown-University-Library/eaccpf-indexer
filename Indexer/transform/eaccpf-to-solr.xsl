@@ -42,17 +42,15 @@
 	                <field name="toDate"><xsl:value-of select="/eac-cpf/cpfDescription/description/existDates/dateRange/toDate/@standardDate"/>T00:00:00Z</field>
 	            </xsl:if>
                 <xsl:apply-templates select="functions" />
-                <!-- abstract: will appear in /biogHist or /biogHist/abstract -->
-                <xsl:choose>
-                    <xsl:when test="/eac-cpf/cpfDescription/description/biogHist/abstract">
-                        <field name="abstract"><xsl:value-of select="/eac-cpf/cpfDescription/description/biogHist/abstract" /></field>
-                    </xsl:when>
-                    <xsl:otherwise>
-	                    <field name="abstract"><xsl:value-of select="/eac-cpf/cpfDescription/description/biogHist" /></field>
-                    </xsl:otherwise>
-                </xsl:choose>
+                <!-- abstract: include all content from the biogHist -->
+                <field name="abstract">
+                    <xsl:for-each select="/eac-cpf/cpfDescription/description/biogHist/*">
+                        <xsl:value-of select="." />
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
+                </field>
 	        	<!-- relations -->
-	        </doc>                
+	        </doc>
         </add>
     </xsl:template>
 

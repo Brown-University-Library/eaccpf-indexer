@@ -44,7 +44,8 @@ class EacCpf(object):
         self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS }
         self.presentation = PresentationUrl
         self.source = Source
-        self.xml = etree.fromstring(self._load(Source))
+        data = self._load(Source)
+        self.xml = etree.fromstring(data)
         # some documents may be missing the fully specified eac-cpf document
         # namespace attributes, which will result in failures during subsequent
         # operations. we'll check for the missing attribute here so that we can
@@ -58,18 +59,16 @@ class EacCpf(object):
         """
         Load the document content.
         """
-        try:
-            if 'http://' in Source or 'https://' in Source:
-                response = urllib2.urlopen(Source)
-                data = response.read()
-            else:
-                with open(Source, 'r') as f:
-                    data = f.read()
-            # lxml parser won't accept unicode encoded strings and throws an exception
-            # pass it a str instead
-            return str(data)
-        except:
-            return None
+        if 'http://' in Source or 'https://' in Source:
+            response = urllib2.urlopen(Source)
+            data = response.read()
+        else:
+            assert os.path.exists(Source), "Resource does not exist {0}".format(Source)
+            with open(Source, 'r') as f:
+                data = f.read()
+        # lxml parser won't accept unicode encoded strings and throws an
+        # exception. pass it a str instead
+        return str(data)
 
     def getAbstract(self):
         """
@@ -77,11 +76,9 @@ class EacCpf(object):
         """
         try:
             abstract = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:abstract", namespaces=self.ns)
-            if abstract:
-                return abstract[0].text
+            return abstract[0].text if abstract[0].text else None
         except:
             pass
-        return None
 
     def getBiogHist(self):
         """
@@ -133,7 +130,7 @@ class EacCpf(object):
                     if relEntry[0].attrib['localType'] == 'digitalObject':
                         # if the descriptiveNote does not contain the string "<p>Include in Gallery</p>",
                         # then it is not a thumbnail for this record
-                        if Thumbnail and not "Include in Gallery" in descNote[0].text:
+                        if Thumbnail and len(descNote) > 0 and not "Include in Gallery" in descNote[0].text:
                             continue
                         title = relEntry[0].text
                         presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']
@@ -141,9 +138,9 @@ class EacCpf(object):
                             "doc": "urn:isbn:1-931666-33-4",
                             "obj": "urn:isbn:1-931666-22-9",
                         }
+                        # unit_title = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unittitle", namespaces=nz)
                         abstract = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
-                        if abstract:
-                            abstract = abstract[0].text
+                        abstract = abstract[0].text if abstract else ''
                         localtype = self.getLocalType()
                         alternate_title = self.getTitle()
                         unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
@@ -164,11 +161,9 @@ class EacCpf(object):
         """
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId", namespaces=self.ns)
-            if val:
-                return val[0].text
+            return val[0].text if val[0].text else None
         except:
             pass
-        return None
 
     def getEntityType(self):
         """
@@ -176,11 +171,9 @@ class EacCpf(object):
         """
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType", namespaces=self.ns)
-            if val:
-                return val[0].text
+            return val[0].text if val[0].text else None
         except:
             pass
-        return None
 
     def getExistDates(self):
         """
@@ -264,11 +257,9 @@ class EacCpf(object):
         """
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:control/doc:localControl/doc:term", namespaces=self.ns)
-            if val:
-                return val[0].text
+            return val[0].text if val[0].text else None
         except:
             pass
-        return None
 
     def getLocations(self):
         """
@@ -341,11 +332,9 @@ class EacCpf(object):
             return self.presentation
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId", namespaces=self.ns)
-            if val:
-                return val[0].text
+            return val[0].text if val[0].text else None
         except:
             pass
-        return None
 
     def getRecordId(self):
         """
@@ -353,11 +342,9 @@ class EacCpf(object):
         """
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:control/doc:recordId", namespaces=self.ns)
-            if val:
-                return val[0].text
+            return val[0].text if val[0].text else None
         except:
             pass
-        return None
 
     def getResourceRelations(self):
         """
@@ -445,9 +432,8 @@ class EacCpf(object):
         root[0].set(source, self.source)
         # write the data to the specified path
         path = Path + os.sep + self.getFileName()
-        outfile = open(path, 'w')
-        data = etree.tostring(self.xml, pretty_print=True)
-        outfile.write(data)
-        outfile.close()
+        with open(path, 'w') as outfile:
+            data = etree.tostring(self.xml, pretty_print=True)
+            outfile.write(data)
         self.log.info("Stored EAC-CPF document " + self.getFileName())
         return path

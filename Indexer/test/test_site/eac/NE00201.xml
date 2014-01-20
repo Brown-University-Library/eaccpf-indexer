@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE00201</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-03-09">2011-03-09</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-06">2013-12-06</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE00201b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>St Joseph's Providence</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>The House of Providence</part>
+</nameEntry>
+<nameEntry localType=""><part>The Home of Providence</part>
+</nameEntry>
+<nameEntry localType=""><part>The Providence</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1880-01-01">1880</fromDate>
+<toDate standardDate="1901-12-31">1901</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Children's Home</term>
+</function>
+<function>
+<term>Female Rescue Home</term>
+</function>
+<function>
+<term>Catholic</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>St Joseph's Providence, or The Providence, operated at Dawes Point from 1880 then moved to The Rocks in 1881. Run by Sisters of St Joseph of the Sacred Heart, The Providence took in boys and girls, and homeless women, as well as providing meals for destitute men. The Providence closed in 1901.</abstract>
+<p>The Sisters of St Joseph of the Sacred Heart operated The Providence at Dawes Point, near The Rocks, a notoriously poor slum area of Sydney. The Providence began in Gloucester Street then, a few months later, moved to Kent Street.</p>
+<p>In 1881 the Sisters of St Joseph acquired a three-storey stone building called 'Cheshunt', at 3 Cumberland Street. This house became The Providence, the Provincialate House for New South Wales, and, for a time, the base for the Institute of the Sisters of St Joseph.</p>
+<p>The Providence took in children, both boys and girls, and homeless women, as well as providing meals for destitute men. According to Kathleen Burford, in 1881 a <span style="font-style:italic">Daily Telegraph</span> letter by 'The Vagabond' wrote:</p>
+<p>'An institution has been founded which has for one of its chief objects the rescuing of semi-outcast children from the evil influences of neglected or vicious guardians &amp;hellip; the objects of the Sisterhood are the visitation of the sick, instruction of the young, providing a home for old women and neglected and destitute children, and for young girls who may be temporarily in want of such.'</p>
+<p>'The Vagabond' went on to describe some of the children in The Providence as 'the gutter-children type so common in the low neighbourhoods of Sydney.'</p>
+<p>The Sisters of St Joseph also ran St Brigid's Girls School and St John's School in Kent Street, and supported their work by begging support on the streets of Sydney.</p>
+<p>In 1887 the boys from The Providence were moved to a new residence at Kincumber South on the New South Wales central coast. Later the women were cared for by the Little Sisters of the Poor at Randwick in Sydney's eastern suburbs.</p>
+<p>By 1900 The Providence housed ten women and 68 children, as well as the nuns. In August 1900 the New South Wales Government resumed the land on which The Providence stood as part of The Rocks Resumption Area. It paid compensation to the Sisters of St Joseph, who withdrew from Cumberland Street on 19 March 1901. They used this to place a deposit on a property on the Pacific Highway (then known as Lane Cove Road) at Gore Hill, in Sydney's north. This home, 'Gladstone House', became known as St Joseph's Girls' Home.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1880-01-01">1880</fromDate>
+<toDate standardDate="1880-01-01">1880</toDate>
+</dateRange>
+<placeEntry>Dawes Point</placeEntry>
+<event>The Providence was situated at Gloucester Street, Dawes Point</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1880-01-01">1880</fromDate>
+<toDate standardDate="1881-12-31">1881</toDate>
+</dateRange>
+<placeEntry>Dawes Point</placeEntry>
+<event>The Providence was situated at Kent Street, Dawes Point</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1881-01-01">1881</fromDate>
+<toDate standardDate="1901-03-19">19 March 1901</toDate>
+</dateRange>
+<placeEntry>The Rocks</placeEntry>
+<event>The Providence was situated at 3 Cumberland Street, The Rocks</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00196b.htm">
+<relationEntry localType="Organisation">
+Sisters of Saint Joseph of the Sacred Heart (1872 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1880-01-01">1880</fromDate>
+<toDate standardDate="1900-12-31">1900</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00199b.htm">
+<relationEntry localType="Organisation">
+Archives of Mary MacKillop and the Sisters of St Joseph
+</relationEntry>
+<dateRange>
+<toDate standardDate="2013-01-17">17 January 2013</toDate>
+</dateRange>
+<descriptiveNote>
+<p>The Sisters of St Joseph managed the records of St Joseph's Providence until January 2013, when they were transferred to CatholicCare Adoption Services. Contact CatholicCare Adoption Services for information about these records.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00203b.htm">
+<relationEntry localType="Organisation">
+St Joseph's Orphanage, Kincumber (1887 - 1979)
+</relationEntry>
+<descriptiveNote>
+<p>In 1887, 22 boys from The Providence were transferred to Kincumber.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00634b.htm">
+<relationEntry localType="Archival Series">
+Admission Registers, St Joseph's Girls' Home (1880 - 1979)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00633b.htm">
+<relationEntry localType="Archival Series">
+Admission Forms (dates uncertain), St Joseph's Girls' Home (1880? - 1979?)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm">
+<relationEntry localType="Organisation">
+St Joseph's Girls' Home (1900 - 1979)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'St Joseph's Providence', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">St Joseph's Providence</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE00201b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000228.htm">
+<relationEntry localType="published">Resource: History</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">History</title>
+<imprint>
+<publisher>Sisters of Saint Joseph of the Sacred Heart</publisher>
+<date>2009</date>
+</imprint>
+<extptr linktype="simple" href="http://www.sosj.org.au/where-we-are/index.cfm?loadref=157"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000200.htm">
+<relationEntry localType="published">Book: Unfurrowed Fields: A Josephite Story NSW 1872-1972</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Burford, Kathleen E. RSJ</name>
+<title render="italic">Unfurrowed Fields: A Josephite Story NSW 1872-1972</title>
+<imprint>
+<date>1991</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000001.htm">
+<relationEntry localType="published">Resource: Connecting Kin: Guide to Records</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Thinee, Kristy and Bradford, Tracy</name>
+<title render="italic">Connecting Kin: Guide to Records</title>
+<imprint>
+<place>Sydney, New South Wales</place>
+<publisher>New South Wales Department of Community Services</publisher>
+<date>1998</date>
+</imprint>
+<extptr linktype="simple" href="http://www.community.nsw.gov.au/DOCSWR/_assets/main/documents/connectkin_guide.pdf"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000242.htm">
+<relationEntry localType="digitalObject">The presbytery at Kincumber where the sisters and 22 boys from the Providence, Dawes Point, took up residence in 1887</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>The presbytery at Kincumber where the sisters and 22 boys from the Providence, Dawes Point, took up residence in 1887</unittitle>
+<unitdate>c. 1887</unitdate>
+<abstract>This is a digital copy of an image reproduced in K.E. Burford's <span style="font-style:italic">Unfurrowed Fields</span>. Scanned 9 August 2012.</abstract>
+<note label="rights">Sisters of St Joseph</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

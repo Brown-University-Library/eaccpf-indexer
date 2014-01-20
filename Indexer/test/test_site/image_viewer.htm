@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<title>Find and Connect - Western Australia - Image Viewer</title>
+	<link rel="stylesheet" href="site/stylesheets/master.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="site/stylesheets/wa.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="site/stylesheets/print.css" type="text/css" media="print" />
+	<!--[if IE 5]><link rel="stylesheet" href="site/stylesheets/ie5.css" type="text/css" media="screen" /><![endif]-->
+	<!--[if IE 6]><link rel="stylesheet" href="site/stylesheets/ie6.css" type="text/css" media="screen" /><![endif]-->
+	<!--[if IE 7]><link rel="stylesheet" href="site/stylesheets/ie7.css" type="text/css" media="screen" /><![endif]-->
+
+<head>
+<!-- to use this file - 
+
+For Image display only;
+
+<a href="../image_viewer.htm?objects/images/P00658_00001.JPG" target="_blank">
+OR
+<a href="javascript:void(0);" onclick="window.open('../image_viewer.htm?objects/images/P00658_00001.JPG');" >
+OR 
+can combine with return=false;
+
+For Image and details;
+
+<a href="../image_viewer.htm?objects/images/P00658_00001.JPG,D000806" 
+	id = "D000806"
+	target="_blank"
+	title="Ah Moon family when they were living at Geraldton (now Innisfail)"
+	creator="Norma King Koi (example data only)"
+	date="1910"
+	source="Chinese Museum"
+	> 
+OR
+<a href="../image_viewer.htm?objects/images/P00658_00001.JPG,D000806" 
+	title="Ah Moon family when they were living at Geraldton (now Innisfail)"
+	creator="Norma King Koi (example data only)"
+	date="1910"
+	source="Chinese Museum"
+	onclick="window.open('../image_viewer.htm?objects/images/P00658_00001.JPG,D000806','name','height=600,width=600,top=100,resizable=yes,scrollbars=yes'); return false;" 		        >
+OR 
+
+Leave out completely any parameters that have no data.
+
+-->
+
+<script language='javascript'>
+<!--
+
+// variables
+var tmpPic = null
+var doid = null
+var tmpTitle = null 
+var tmpDate = null
+var tmpCreator = null
+var tmpSource = null
+var tmpControl = null 
+
+//parse the url query string
+var frag=document.location.search.substr(1);
+if(frag.length < 1)frag = null;
+
+var args = frag.split(',');
+tmpPic = args[0] 
+doid = args[1]
+
+
+// determine if this is dov image only by looking
+// for 'objects' in the query string fragment
+
+if(doid != null){
+	// check that window has been opened from page
+	// containing object data, otherwise redirect 
+	// to object page.
+ 
+	var pWin = top.opener
+	var pObj = "undefined"
+	var pDoc = "undefined"
+
+	if (pWin != "undefined" && pWin != null){
+		// get reference to the doid element in opener document
+		var pObj = pWin.document.getElementById(doid)
+	}
+	else{
+		// no opener, this page must be accessed from 'opener' which
+		// contains dobject specific details, redirect to dobject page.
+
+		document.location = "objects/" + doid + ".htm"
+		
+	}
+	
+	if (pObj == "undefined" || pObj == null ){
+		// This client doesnt support DOM,
+		// close window
+		top.close()
+
+	}
+	else{
+		// retrieve details from referring page
+		tmpTitle = pObj.getAttribute("title")
+		tmpDate = pObj.getAttribute("date")
+		tmpCreator = pObj.getAttribute("creator")
+		tmpSource = pObj.getAttribute("source")
+		tmpControl = pObj.getAttribute("control")
+	}
+}
+
+
+function writeCurrentPic(){
+  // create img tag for current picture
+  // with the full url to the current image
+
+  // tmpPic = document.location.search.substr(1)
+  var theStr='<img src="'+tmpPic+'" border="0" name="theimage"></img>'
+
+  document.write(theStr)
+  if (window.focus) {window.focus()};
+}
+
+function writeDetails(){
+  // create link to dobject page
+  var tmp = 'objects/' + doid + '.htm'
+  var tmpDetails = '<dl class="dolist">'
+  
+  //Title
+  if (tmpTitle != null){
+      tmpDetails = tmpDetails + '<dt>Title</dt><dd class="dotitle">' + tmpTitle + '</dd>';
+  } 
+
+  //Date
+  if (tmpDate != null) {
+      tmpDetails = tmpDetails + ' <dt>Date</dt><dd>' + tmpDate + '</dd>';
+  } 
+
+  //Creator
+  if (tmpCreator != null) {
+      tmpDetails = tmpDetails + ' <dt>Creator</dt><dd>' + tmpCreator + '</dd>';
+  }
+ 
+  //Control
+  if (tmpControl != null) {
+      tmpDetails = tmpDetails + ' <dt>Control</dt><dd>' + tmpControl+ '</dd>';
+  } 
+
+
+  //Source
+  if (tmpSource != null) {
+      tmpDetails = tmpDetails + ' <dt>Source</dt><dd>' + tmpSource+ '</dd>';
+  } 
+
+  //Details
+  if (doid != null) 	
+  	tmpDetails = tmpDetails + ' <dt></dt><dd><a href="javascript:load(%27'+tmp+'%27, top.opener)">Details</a></dd>';
+
+  tmpDetails = tmpDetails + '</dl>'
+  
+  document.write(tmpDetails);
+}
+
+function load(file,target) {
+    if (target != '')
+        target.window.location.href = file;
+    else
+        top.location.href = file;
+    top.close();
+}
+
+// -->
+</script>
+
+</head>
+<body id="imageviewer">
+<p id="close"><a href="javascript:top.close()">Close</a></p>
+
+
+<p>
+<script language='javascript'>
+<!--
+writeDetails();
+// -->
+</script>
+</p>
+
+
+<!-- the image -->
+<div id="image">
+<script language='javascript'>
+<!--
+writeCurrentPic();
+// -->
+</script>
+<p>Javascript must be enabled to view this image.</p>
+</div>
+</body>
+</html>

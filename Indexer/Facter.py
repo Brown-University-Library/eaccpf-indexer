@@ -9,12 +9,13 @@ from EacCpf import EacCpf
 from geopy.geocoders.googlev3 import GoogleV3
 from geopy.geocoders.mapquest import MapQuest
 from geopy.geocoders.osm import Nominatim
+
+import Cfg
 import Utils
+import glob
 import logging
 import os
 import time
-
-LOG_EXC_INFO = False
 
 
 class Facter(object):
@@ -182,29 +183,27 @@ class Facter(object):
         # the list of records that have been processed
         records = []
         # process files
-        files = os.listdir(Source)
-        for filename in files:
-            if filename.endswith('.xml'):
-                try:
-                    # record the name of the file
-                    records.append(filename)
-                    doc = EacCpf(Source + os.sep + filename)
-                    fileHash = doc.getHash()
-                    # if the file has not changed since the last run then skip it
-                    if Update:
-                        if filename in HashIndex and HashIndex[filename] == fileHash:
-                            self.logger.info("No change since last update {0}".format(filename))
-                            continue
-                    # process the file
-                    HashIndex[filename] = fileHash
-                    # load the inferred data file if it already exists
-                    inferred_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
-                    inferred = Utils.tryReadYaml(Output, inferred_filename)
+        for filename in glob.glob(Source + os.sep + "*.xml"):
+            try:
+                # record the name of the file so that we know we've processed it
+                records.append(filename)
+                doc = EacCpf(Source + os.sep + filename)
+                fileHash = doc.getHash()
+                # if the file has not changed since the last run then skip it
+                if Update and filename in HashIndex and HashIndex[filename] == fileHash:
+                    self.logger.info("No change since last update {0}".format(filename))
+                    continue
+                # process the file
+                HashIndex[filename] = fileHash
+                # load the inferred data file if it already exists
+                inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
+                inferred = Utils.tryReadYaml(Output, inferred_data_filename)
+                if 'locations' in Actions:
+                    places = doc.getLocations()
+                    locations = self.inferLocations(places, sleep=Sleep)
+                    inferred['locations'] = locations
+                else:
                     freeText = doc.getFreeText()
-                    if 'locations' in Actions:
-                        places = doc.getLocations()
-                        locations = self.inferLocations(places, sleep=Sleep)
-                        inferred['locations'] = locations
                     if 'entities' in Actions:
                         entities = self.inferEntitiesWithCalais(freeText)
                         inferred['entities'] = entities
@@ -214,13 +213,13 @@ class Facter(object):
                     if 'text-analysis' in Actions:
                         textAnalysis = self.inferEntitiesWithNLTK(freeText)
                         inferred['text-analysis'] = textAnalysis
-                    # write inferred data to file
-                    Utils.writeYaml(Output, inferred_filename, inferred)
-                    self.logger.info("Wrote inferred data to {0}".format(inferred_filename))
-                    # sleep between requests
-                    time.sleep(Sleep)
-                except:
-                    self.logger.error("Inference failed {0}".format(filename), exc_info=LOG_EXC_INFO)
+                # write inferred data to output file
+                Utils.writeYaml(Output, inferred_data_filename, inferred)
+                self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
+                # sleep between requests
+                time.sleep(Sleep)
+            except:
+                self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
         # return list of processed records
         return records
 

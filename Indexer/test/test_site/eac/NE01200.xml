@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01200</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2012-10-11">2012-10-11</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-11-19">2013-11-19</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01200b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>St Carthage's College for Young Ladies</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>St Carthage's Home</part>
+</nameEntry>
+<nameEntry localType=""><part>St Carthage's Convent of Mercy</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1907-09-24">24 September 1907</fromDate>
+<toDate standardDate="1931-12-31">1931</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Children's Home</term>
+</function>
+<function>
+<term>School</term>
+</function>
+<function>
+<term>Catholic</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>St Carthage's College for Young Ladies was established at Brooklyn in 1907 by the Sisters of Mercy North Sydney Congregation. It was a boarding school and home for girls from isolated properties. St Carthage's was converted to a residential children's home and renamed St Catherine's Orphanage in 1931.</abstract>
+<p>St Carthage's College for Young Ladies was established at Brooklyn in 1907, when a member of the Sisters of Mercy North Sydney Congregation inherited Lineham's Hotel. The hotel was converted to a Convent of Mercy and a section of the building was set aside as St Carthage's College for Young Ladies. The facility was opened by Cardinal Moran on 24 September 1907.</p>
+<p>Brooklyn was an isolated fishing village, located on the Lower Hawkesbury, between Hornsby and Gosford. Although tiny, it was an important river crossing, providing a punt service and inns for road traffic. It remained a stopping point after the railway and road bridge were built. The conversion of one of the riverside hotels to a Convent of Mercy was no small change in the nature of life in the village.</p>
+<p>The Mercy Sisters were already known in Brooklyn through their monthly visits by train from North Sydney. They taught religion and supplemented the work of priests who visited the area. The Hotel provided the Sisters with an opportunity to take up residence and make a new foundation in Brooklyn.</p>
+<p>St Carthage's was intended to provide isolated families in the area with education for girls. It was registered to take 40 children and offered care and a basic education, including to children with special needs. The school was eventually opened to day pupils.</p>
+<p>The Sisters of Mercy funded the school through an annual fete, together with some bequests, donations and the generous efforts of friends and volunteers. An old hall built in about 1914, opposite the Hotel, served as a school, church and an entertainment centre.</p>
+<p>As the unemployment and poverty caused by the 1930s Depression hit, the number of children entering institutions increased. The Sisters of Mercy became focused on child care and in 1931, the centenary of the foundation of the Sisters of Mercy, St Carthage's was renamed St Catherine's Orphanage, in honour of the founder of the order, Sister Catherine McAuley.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1907-01-01">1907</fromDate>
+<toDate standardDate="1931-12-31">1931</toDate>
+</dateRange>
+<placeEntry>Brooklyn</placeEntry>
+<event>St Carthage's College for Young Ladies was situated at Brooklyn</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00180b.htm">
+<relationEntry localType="Organisation">
+Sisters of Mercy, North Sydney Congregation (1865 - )
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00181b.htm">
+<relationEntry localType="Organisation">
+St Catherine's Orphanage (1931 - 1990)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'St Carthage's College for Young Ladies', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">St Carthage's College for Young Ladies</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01200b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000298.htm">
+<relationEntry localType="published">Manuscript: St Catherine's Home - Brooklyn</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Taylor, Lucy, RSM</name>
+<title render="italic">St Catherine's Home - Brooklyn</title>
+<imprint>
+<date>2012</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000274.htm">
+<relationEntry localType="digitalObject">St Catherine's Home, Brooklyn</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Supplied by Miriam Grech, Sisters of Mercy North Sydney</repository>
+<unittitle>St Catherine's Home, Brooklyn</unittitle>
+<unitdate>12 April 2012</unitdate>
+<abstract>Historical account of the development of St Catherine's Brooklyn, written by Lucy Taylor RSM, edited and updated by Miriam Grech RSM on 12 April 2012</abstract>
+<note label="rights">Sisters of Mercy North Sydney</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000276.htm">
+<relationEntry localType="digitalObject">Brooklyn Hotel, 1890s</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Sisters of Mercy North Sydney Congregation</repository>
+<unittitle>Brooklyn Hotel, 1890s</unittitle>
+<unitdate>1890s</unitdate>
+<abstract>This is a digital copy of an image made by the Sisters of Mercy, North Sydney Congregation, in April 2012. The Sisters of Mercy, North Sydney Congregation, are willing to make photographs available to people who passed through the home, on application. Please see the entry on <citation xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00180b.htm">Sisters of Mercy, North Sydney Congregation</citation>, for contact details.</abstract>
+<note label="rights">Sisters of Mercy North Sydney Congregation</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000275.htm">
+<relationEntry localType="digitalObject">Hotel that became St Carthage's College and Convent of Mercy</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Sisters of Mercy, North Sydney Congregation</repository>
+<unittitle>Hotel that became St Carthage's College and Convent of Mercy</unittitle>
+<unitdate>c. 1900 - </unitdate>
+<abstract>This is a digital copy of an image made by the Sisters of Mercy, North Sydney Congregation, in April 2012. The Sisters of Mercy, North Sydney Congregation, are willing to make photographs available to people who passed through the home, on application. Please see the entry on <citation xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00180b.htm">Sisters of Mercy, North Sydney Congregation</citation>, for contact details.</abstract>
+<note label="rights">Sisters of Mercy North Sydney Congregation</note>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

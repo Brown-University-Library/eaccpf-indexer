@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01400</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2013-08-27">2013-08-27</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-10-30">2013-10-30</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01400b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Tresillian Petersham</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>Tresillian</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1921-01-01">1921</fromDate>
+<toDate standardDate="1997-12-31">1997</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Babies' Home</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+<function>
+<term>Maternity Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>Tresillian, in Petersham, was the first 'Infant Welfare Training School' established in 1921 by the Royal Society for Mothers and Babies. It was located at 'Tresillian', a fine house in Shaw Street, Petersham. The house name became the name of the Royal Society for Mothers and Babies mothercraft facilities. Tresillian Petersham cared for up to 10 mothers with babies and up to eight unaccompanied babies at any one time. It was involved in adoptions as it housed babies who waiting for adoption. The Petersham Tresillian closed in 1997.</abstract>
+<p>The first Tresillian, at Petersham, was run by Dr Margaret Harper, the Society's first Medical Director. From that point the Society, and its nurses, adopted the name Tresillian.</p>
+<p>In the 1960s Tresillian Petersham housed 10 mothers with breastfed babies at any given time, along with eight artificially fed babies and, by the 1960s, five premature babies. Over the course of the year it cared for more than 130 mothers and 220 babies.</p>
+<p>Tresillian housed babies who were waiting for adoption in the 1960s. These babies were under the care of other agencies, including the Child Welfare Department.</p>
+<p>The Petersham site closed in 1997 and moved to a new site in the grounds of Canterbury Hospital. As well as the Willoughby and Wollstonecraft sites, in 2013 Tresillian also operates at Penrith.</p>
+<p><span style="font-weight:bold">Records</span><br />
+Medical records for Tresillian centres at Willoughby, Wollstonecraft, Canterbury and Penrith are kept for approximately 30 years. Medical records from Petersham are kept in secondary storage and date from the 1980s to 1997.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1921-01-01">1921</fromDate>
+<toDate standardDate="1997-12-31">1997</toDate>
+</dateRange>
+<placeEntry>Petersham</placeEntry>
+<event>Tresillian Petersham was situated at 2 Shaw Street, Petersham</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01192b.htm">
+<relationEntry localType="Organisation">
+Tresillian Mothercraft Homes, Royal Society for the Welfare of Mothers and Babies (1918 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1921-01-01">1921</fromDate>
+<toDate standardDate="1997-12-31">1997</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00959b.htm">
+<relationEntry localType="Glossary Term">
+Adoption
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00039b.htm">
+<relationEntry localType="Organisation">
+Child Welfare Department (1923 - 1970)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1960-01-01">1960s</fromDate>
+<toDate standardDate="1979-12-31">1970s</toDate>
+</dateRange>
+<descriptiveNote>
+<p>In the late 1960s and early 1970s Tresillian Petersham, and other Tresillian homes, housed babies who were waiting for adoption. The adoptions were arranged by other agencies, including the Child Welfare Department.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Tresillian Petersham', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Tresillian Petersham</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01400b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000291.htm">
+<relationEntry localType="published">Book: Tresillian mothercraft homes: fifty year jubilee, 1920-1970</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Royal Society for the Welfare of Mothers and Babies</name>
+<title render="italic">Tresillian mothercraft homes: fifty year jubilee, 1920-1970</title>
+<imprint>
+<place>Petersham</place>
+<date>1970</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000286.htm">
+<relationEntry localType="published">Resource: About Tresillian: The Tresillian Story</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">About Tresillian: The Tresillian Story</title>
+<imprint>
+<publisher>Tresillian Family Care Centres</publisher>
+<date>2000-2012</date>
+</imprint>
+<extptr linktype="simple" href="http://www.tresillian.net/about-us/our-history.html"></extptr>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000292.htm">
+<relationEntry localType="published">Report: Annual Report [Tresillian Mothercraft Homes]</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"></name>
+<title render="italic">Annual Report [Tresillian Mothercraft Homes]</title>
+<imprint>
+<place>Sydney</place>
+<publisher>The Society: Royal Society for the Welfare of Mothers and Babies</publisher>
+<date>1920-</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000265.htm">
+<relationEntry localType="digitalObject">Tresillian, Petersham</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Tresillian Family Care Centres website, accessed 21 September 2012</repository>
+<unittitle>Tresillian, Petersham</unittitle>
+<unitdate>c. 1970</unitdate>
+<abstract>The first Mothercraft Centre, Tresillian Petersham.</abstract>
+<note label="rights">Tresillian Family Care Centres</note>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

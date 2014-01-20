@@ -4,6 +4,8 @@ LICENSE file, which is part of this source code package.
 """
 
 import HtmlPage
+import inspect
+import logging
 import os
 import unittest
 
@@ -24,6 +26,11 @@ class TestHtmlPage(unittest.TestCase):
         """
         Setup the test environment.
         """
+        module = os.path.abspath(inspect.getfile(self.__class__))
+        module_path = os.path.dirname(module)
+        self.log = logging.getLogger()
+        self.test_html = os.sep.join([module_path, "test", "html", os.sep])
+        self.test_site = os.sep.join([module_path, "test", "test_site", os.sep])
         self.html = """<html>
             <head>
                 <title>TEST</title>
@@ -129,101 +136,80 @@ class TestHtmlPage(unittest.TestCase):
         specified for the HTML case. It should return false if none is 
         specified. 
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/" : False,                       # region home case
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : True,      # organization case
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm" : False   # digital object
-                 }
+        cases = [
+            (self.test_site + "browse.htm", False),
+            (self.test_site + "biogs" + os.sep + "NE00500b.htm", True),
+            (self.test_site + "biogs" + os.sep + "NE00001b.htm", True),
+            (self.test_site + "objects" + os.sep + "ND0000001.htm", False),
+        ]
         for case in cases:
-            html = HtmlPage.HtmlPage(case)
+            source, expected = case
+            html = HtmlPage.HtmlPage(source)
             result = html.hasEacCpfAlternate()
-            self.assertEqual(result, cases[case])
+            self.assertNotEqual(None, result)
+            self.assertEqual(expected, result)
 
     def test_getContent(self):
         """
         It should return the HTML content.
         """
         cases = [
-            "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",     # organization case
-            "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm"   # digital object
+            self.test_site + "objects" + os.sep + "ND0000001.htm",
+            self.test_site + "biogs" + os.sep + "NE00001b.htm",
         ]
         for case in cases:
             html = HtmlPage.HtmlPage(case)
-            self.assertNotEqual(html, None)
-            content = html.getContent()
-            self.assertNotEqual(content, None)
+            self.assertNotEqual(None, html)
+            result = html.getContent()
+            self.assertNotEqual(None, result)
+            self.assertLess(0, result)
 
-    def test_getDocumentParentUrl(self):
-        """
-        It should return the URL of the first parent directory where a file is
-        reference, and the directory itself where a directory is referenced.
-        """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/" : "http://www.findandconnect.gov.au/nsw/",                         
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "http://www.findandconnect.gov.au/nsw/biogs/", 
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm" : "http://www.findandconnect.gov.au/nsw/objects/"
-                 }
-        for case in cases:
-            html = HtmlPage.HtmlPage(case)
-            result = html._getDocumentParentUri(case)
-            self.assertEqual(result, cases[case])
-    
     def test_getDocumentUrl(self):
         """
-        It should return the document URI.
+        It should return the HTML document URL.
         @todo this is not functioning correctly for the case where a base url is provided!!!
         """
         cases = [
-                 "http://www.findandconnect.gov.au/nsw/index.php",
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm",
-                 "http://www.findandconnect.gov.au/vic/feedback.html",
-                 ]
+            (self.test_site + "biogs" + os.sep + "NE00001b.htm", "http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm"),
+            (self.test_site + "objects" + os.sep + "ND0000005.htm", "http://www.findandconnect.gov.au/nsw/objects/ND0000005.htm"),
+            (self.test_site + "browse.htm", "http://www.findandconnect.gov.au/nsw/browse.htm"),
+        ]
         for case in cases:
-            html = HtmlPage.HtmlPage(case)
+            source, expected = case
+            html = HtmlPage.HtmlPage(source)
             result = html.getUrl()
-            self.assertEqual(result, case)
-            # the url should not have any spaces in it
-            self.assertEqual(result.count(' '), 0)
-        # path to the test data folder
-        parentpath = self._getParentPath(HtmlPage.__file__)
-        if not parentpath.endswith('/'):
-            parentpath = parentpath + '/'
-        path = parentpath + 'test' + os.sep + 'html'
-        # test cases for where a base url is provided
-        bases = [
-                 "http://www.example.com",
-                 "http://www.example.com/",
-                 "http://www.example.com/path",
-                 "http://www.example.com/path/",
-                 ]
-        files = os.listdir(path)
-        for base in bases:
-            for filename in files:
-                html = HtmlPage.HtmlPage(path + os.sep + filename, base)
-                url = html.getUrl()
-                fn = html.getFilename()
-                if not base.endswith('/'):
-                    base = base + '/'
-                self.assertEqual(filename, fn)
-                self.assertEqual(url, base + fn)
+            self.assertEqual(expected, result)
+
+    def test_getDocumentUrl_with_base(self):
+        """
+        test cases for where a base url is provided
+        """
+        cases = [
+            (self.test_html + "E000001b.htm","http://www.example.com","http://www.example.com/vic/biogs/E000001b.htm"),
+            (self.test_html + "E000001b.htm","http://www.example.com/","http://www.example.com/vic/biogs/E000001b.htm"),
+            (self.test_html + "E000001b.htm","http://www.example.com/path","http://www.example.com/path/vic/biogs/E000001b.htm"),
+            (self.test_html + "E000001b.htm","http://www.example.com/path/","http://www.example.com/path/vic/biogs/E000001b.htm"),
+        ]
+        for case in cases:
+            source, base, expected = case
+            html = HtmlPage.HtmlPage(source, base)
+            url = html.getUrl()
+            self.assertEqual(expected, url)
 
     def test_getRecordId(self):
         """
-        It should return a record id for cases that represent a digital object
-        or that have an EAC-CPF alternate representation.
+        It should return a record id for cases that represent an entity.
         """
-        cases = {
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm" : "NE00200b",    # organization case
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000171.htm" : "ND0000171",# image
-                 "http://www.findandconnect.gov.au/vic/objects/D00000342.htm" : "D00000342",# VIDEO digital object
-                 "http://www.findandconnect.gov.au/nsw/browse_h.htm": "browse_h",                 # browse case
-                 }
+        cases = [
+            (self.test_site + "biogs" + os.sep + "NE00200b.htm", "NE00200b"),
+            (self.test_site + "objects" + os.sep + "ND0000171.htm", None),
+            (self.test_site + "browse.htm", None)
+        ]
         for case in cases:
-            html = HtmlPage.HtmlPage(case)
+            source, expected = case
+            html = HtmlPage.HtmlPage(source)
             result = html.getRecordId()
-            if result:
-                self.assertEqual(result,cases[case])
+            self.assertEqual(expected, result)
             
 if __name__ == '__main__':
     unittest.main()

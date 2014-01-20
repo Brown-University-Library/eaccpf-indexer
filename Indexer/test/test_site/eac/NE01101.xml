@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>NE01101</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCNS</agencyCode>
+<agencyName>Find &amp; Connect - New South Wales</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2012-03-28">2012-03-28</eventDateTime>
+<agentType>human</agentType>
+<agent>Naomi Parry</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-12-09">2013-12-09</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/nsw/biogs/NE01101b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>UnitingCare Burnside</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>Burnside</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="2000-01-01">2000</fromDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Foster Care</term>
+</function>
+<function>
+<term>Presbyterian</term>
+</function>
+<function>
+<term>Records Access Service</term>
+</function>
+<function>
+<term>Protestant</term>
+</function>
+<function>
+<term>Uniting Church</term>
+</function>
+<function>
+<term>Non Government Organisation</term>
+</function>
+<function>
+<term>Non-denominational</term>
+</function>
+</functions>
+<biogHist>
+<abstract>UnitingCare Burnside is a member of the UnitingCare Children, Young People and Families Service Group of UnitingCare New South Wales/Australian Capital Territory. It is one of the largest providers of child and family services in New South Wales and in 2010 worked with 13,000 children, young people and family members.
+
+UnitingCare Burnside holds the records of Burnside's various operations on the North Parramatta site, and of Burnside group homes and projects in and around Sydney.</abstract>
+<p>UnitingCare Burnside is the name of the organisation that began as Burnside Presbyterian Orphan Homes in 1911, and became Burnside Presbyterian Homes, Burnside Homes and Burnside. It is based on the North Parramatta site, where Burnside Homes were first established.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00254b.htm">
+<relationEntry localType="Organisation">
+Burnside (1986 - 2000)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00257b.htm">
+<relationEntry localType="Organisation">
+Dunkeld (1913 - 2000)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE01436b.htm">
+<relationEntry localType="Contact Details">
+Aftercare, UnitingCare Burnside - Contact Details
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00279b.htm">
+<relationEntry localType="Organisation">
+Burnside Archives
+</relationEntry>
+<descriptiveNote>
+<p>Burnside Archives are part of UnitingCare Burnside</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00915b.htm">
+<relationEntry localType="Archival Collection">
+Records held by Burnside Archives
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00266b.htm">
+<relationEntry localType="Organisation">
+War Memorial Home (1922 - 1982)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2000-01-01">c. 2000</fromDate>
+</dateRange>
+<descriptiveNote>
+<p>War Memorial is the administration building for UnitingCare Burnside</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00257b.htm">
+<relationEntry localType="Organisation">
+Dunkeld (1913 - 2000)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00276b.htm">
+<relationEntry localType="Organisation">
+Byrnes Family Group Home (1983 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2000-01-01">2000</fromDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00274b.htm">
+<relationEntry localType="Organisation">
+Gordon Family Group Home (1967 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2000-01-01">2000</fromDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00273b.htm">
+<relationEntry localType="Organisation">
+Montrose Family Group Home (1965 - 2013)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2000-01-01">2000</fromDate>
+<toDate standardDate="2013-12-31">2013</toDate>
+</dateRange>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/biogs/NE00275b.htm">
+<relationEntry localType="Organisation">
+Minnamurra Family Group Home (1975 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="2000-01-01">2000</fromDate>
+</dateRange>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'UnitingCare Burnside', in <span style="font-style:italic">Find &amp; Connect - New South Wales</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">UnitingCare Burnside</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - New South Wales</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/nsw/biogs/NE01101b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/bib/NP0000631.htm">
+<relationEntry localType="published">Report: Address to Uniting Church Historical Society</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Herbert, Harry (Rev)</name>
+<title render="italic">Address to Uniting Church Historical Society</title>
+<imprint>
+<publisher>UnitingCare NSW/ACT</publisher>
+<date>n.d. [2011]</date>
+</imprint>
+<extptr linktype="simple" href="http://www.unitingcarenswact.org.au/advocacy/executive_directors_comments//?a=65919"></extptr>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000444.htm">
+<relationEntry localType="digitalObject">Reverend Harry Herbert, Address to Uniting Church Historical Society</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Reverend Harry Herbert, Address to Uniting Church Historical Society</unittitle>
+<note label="rights">UnitingCare NSW/ACT</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000422.htm">
+<relationEntry localType="digitalObject">Troup</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Troup</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Troup, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000421.htm">
+<relationEntry localType="digitalObject">Ross</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Ross</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Ross, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000420.htm">
+<relationEntry localType="digitalObject">Robertson</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Robertson</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Robertson, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000419.htm">
+<relationEntry localType="digitalObject">Reid</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Reid</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Reid created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000418.htm">
+<relationEntry localType="digitalObject">Lincluden</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Lincluden</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Lincluden created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000417.htm">
+<relationEntry localType="digitalObject">Ivanhoe</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Ivanhoe</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Ivanhoe created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000416.htm">
+<relationEntry localType="digitalObject">Eskdale</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Eskdale</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Eskdale created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000415.htm">
+<relationEntry localType="digitalObject">Dunkeld</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Dunkeld</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Dunkeld, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000414.htm">
+<relationEntry localType="digitalObject">Cumbrae</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Cumbrae</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Cumbrae created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000413.htm">
+<relationEntry localType="digitalObject">Burnside Primary School</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Burnside Primary School</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Burnside Primary School, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000412.htm">
+<relationEntry localType="digitalObject">Blairgowrie</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Blairgowrie</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Blairgowrie, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000411.htm">
+<relationEntry localType="digitalObject">Blackwood</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Blackwood</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Blackwood, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000410.htm">
+<relationEntry localType="digitalObject">Airlie</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Airlie</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about Airlie, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/nsw/objects/ND0000409.htm">
+<relationEntry localType="digitalObject">War Memorial</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>War Memorial</unittitle>
+<unitdate>c. 2013</unitdate>
+<abstract>This is a copy of a document about War Memorial, created by UnitingCare Burnside.</abstract>
+<note label="rights">UnitingCare Burnside</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

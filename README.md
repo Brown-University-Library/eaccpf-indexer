@@ -72,6 +72,11 @@ files to a new location edit it as needed.
 Revision History
 ----------------
 
+1.5.1
+
+ * Added partial copy of FCNS data to enable local testing of modules
+ * Added Cfg module to carry globals
+
 1.5.0
 
  * Send all logging to STDOUT

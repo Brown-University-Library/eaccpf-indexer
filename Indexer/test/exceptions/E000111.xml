@@ -1,0 +1,365 @@
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://www.esrc.unimelb.edu.au" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd" ns0:metadata="http://www.asmp.esrc.unimelb.edu.au/eac/E000111.xml" ns0:presentation="http://www.asmp.esrc.unimelb.edu.au/biogs/biogs/E000111b.htm" ns0:source="/srv/ha/web/ASMP/LIVE/eac/E000111.xml">
+<control>
+<recordId>E000111</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>Insert EAC agentcode value here!</agencyCode>
+<agencyName>Arrowsmith's Australian Maps</agencyName>
+<descriptiveNote>
+<p/>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Map State</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-08-05">2011-08-05</eventDateTime>
+<agentType>human</agentType>
+<agent>Dorothy F. Prescott</agent>
+<eventDescription/>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-04-09">2013-04-09</eventDateTime>
+<agentType>human</agentType>
+<agent/>
+<eventDescription/>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.asmp.esrc.unimelb.edu.au/biogs/E000111b.htm</entityId>
+<entityType>culturalArtefact</entityType>
+<nameEntry><part>Eastern Portion of Australia, East 1856/1</part>
+<part localType="parent">Australia from surveys made by order of the British Government</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><places>
+</places>
+<biogHist>
+<abstract>Eastern portion of Australia by John Arrowsmith.
+London, Pubd. 1st Jany. 1856?, by John Arrowsmith, 10 Soho Sq.
+
+EAST SHEET Extent E 130&#176; to E 154&#176;
+
+<h4>OVERLAP</h4>
+The sheets are designed to be joined along E 134&#176;.The overlap of east and west sheets occurs from longitude E 130&#176;- E 137&#176;. Information in the area E 130&#176; to E 134&#176; is not updated on the east sheet indicating that the cartographer had designed the map in two sheets to be joined.
+
+<h4>INSETS:</h4>
+Torres Strait (upper right), Van Diemens Land (lower right)</abstract>
+<p>Shows</p>
+<h4>IMPRINT:</h4>
+<p>The date in the imprint has been changed to 1858?</p>
+<h4>COLONIES:</h4>
+<p>NEW SOUTH WALES, SOUTH AUSTRALIA, NORTH AUSTRALIA, VICTORIA</p>
+<h4>REGIONS:</h4>
+<p>ARNHEM LAND, AUSTRALIA FELIX, EYRE LAND, NEW ENGLAND, GIPPSLAND, CAPE YORK PENINSULA</p>
+<h4>PASTORAL DISTRICTS:</h4>
+<p>MORETON, DARLING DOWNS, CLARENCE, MACLEAY, LIVERPOOL PLAINS, NEW ENGLAND, BLIGH, WELLINGTON, GWYDIR, LOWER DARLING, LACHLAN</p>
+<h4>TABLE: COUNTIES:</h4>
+<p>Sixty-Seven counties are now shown in New South Wales and numbered on the map and listed in a marginal table.</p>
+<h4>TABLE: COUNTIES:</h4>
+<p>Twenty-four counties are listed in the Port Phillip District</p>
+<h4>BOUNDARIES:</h4>
+<p>South Australia extends from 26&#176;S to the south coast and from 132&#176;E to 141 E. A boundary between New South Wales and North Australia is first shown in the 1847/1 state of this map at 26&#176;S. (Letters Patent dated 17th February 1846, proclaimed at Sydney on 9th November 1846 and at Port Curtis 30th January 1847) (McLelland, M.H. 1971, 674)<br/>
+As from the 1847/1 state and onwards variant issues will be found with the northern boundary of South Australia either extended or not extended along 26&#176;S to meet the Western Australian /North Australia boundary at 129&#176;E creating an oblong of undesignated territory<br/>
+On 16th Jan. 1849 the Colony of North Australia was abolished. By letters patent of 28th Dec. 1846, Queen Victoria revoked the letters patent of 17th Feb 1846 erecting the Colony of North Australia. These however were not proclaimed until 16th Jan, 1849 at Sydney. (McLelland, M.H. 1971, v. 45, p. 674.) Arrowsmith appears to be unaware of the changes.<br/>
+The Victoria /New South Wales border appears. Victoria became a separate colony under the Australian Constitutions Act, 1850. Writs for the first election were issued on 1st July 1851. (McLelland, M. H. 1971, p .678)</p>
+<h4>EXPLORERS' ROUTES:</h4>
+<p>John Edward Eyre in 1839 and 1840, Paul Edmond Strzelecki in 1840, Ludwig Leichhardt in 1844-45, Thomas Livingstone Mitchell in 1845-47, Edmund Besley Court Kennedy in 1847-1848</p>
+<h4>NOTES ON COASTS:</h4>
+<p>See East sheet, 1838/1 imprint. The long note covering the eastern portion of Australia stating that Cook discovered this coast in 1770 was removed in the 1846/1 state.</p>
+<h4>REFERENCE:</h4>
+<p>Not in Tooley</p>
+<h4>NOTES</h4>
+<h5>Northern Territory</h5>
+<p>In the 1838/2 state of the map Coburg Pa (132&#176;E).</p>
+<p>In the 1842/2 state of the map the Beagle's boats during July and August of 1841 (Perry, T.M. 1982, p.97, plate 53).</p>
+<p>In the 1847/1 state of the map the three-line note on the Alligator R. has been removed to permit the insertion of tracks of Leichhardt's expedition from the Darling Downs region of Queensland, Jimba Oct 1st 1844 (Jimbour) to Port Essington on the Coburg Peninsula. The tracks traverse the southern coast of the Gulf of Carpentaria and then north-west across Arnhem Land and thence to the Coburg Peninsula.</p>
+<h5>Queensland</h5>
+<p>In the 1847/1 state of the map the tracks of both Leichhardt and Mitchell (un-named) appear in southern Queensland with their camps. The Leichhardt expedition heads north-west towards the Gulf of Carpentaria where a note on Gilbert's death (Mr Gilbert killed June 28th) [1845] appears to the west of the Mitchell River where it flows into the Gulf. The Victoria R. named by Thomas Mitchell, later to be named the [Barcoo] by Kennedy appears flowing west with tracks shown both sides of this river.<br/>
+Note on soils added to the Plains of Promise, Psammite or clayey ironsandstone at the base of the Gulf of Carpentaria and a further note Nonda Country Fine pasture appears below the Mitchell River. Many new features are named as a result of Leichhardt's expedition. The headwaters only of the R. Isaac and R. McKenzie appear. The supposed courses of the Boyne, the Dawson, Expedition Creek and the Burdekin rivers are shown draining east into the Pacific. Major rivers from north to south are the Mitchell, Lynd, Burdekin, Suttor, Isaac, McKenzie, Comet, Expedition Cr. (supposed), Dawson (supposed) and the Boyne (supposed).<br/>
+In the hinterland of Brisbane in the Darling Downs area, there are many new features and streams.</p>
+<p>In the 1848/1 state of the map Leichhardt's route from Jimba northwest of Brisbane to Port Essington on the Cobourg Peninsula now has topography inserted.</p>
+<p>The 1849/1(1848/2) state has further changes. Wording now added to Edmund Kennedy's route along the Victoria (Barcoo R.), [Sept.1847] shown as Mr. Kennedy's farthest south.<br/>
+Also shown to the west of the Victoria R. (Barcoo R.) is a five line written description of barren waste. The R. Thomson is shown flowing from the north-east into the Victoria R.</p>
+<p>In the 1850/1 state of the map Edmund Kennedy's route to Cape York from Rockingham Bay in 1847 is shown and many new place names occur in this region. In the north-west the supposed continuation of the Victoria R. (Barcoo) south to the Macleay Plains is shown. In the east the river systems in the hinterland of Hervey Bay and Wide Bay show development. The supposed course of Stephen Creek, a tributary of the Isaac R., extended to the Pacific and that of the course of the R. McKenzie extended. The rivers Dawson and Boyne are now shown as one river, the eastern branch shown on the previous state of the map having been removed. South of the Boyne River the River Burnett and its named tributaries appear, and further south the un-named Mary R. system.</p>
+<h5>Queensland and New South Wales</h5>
+<p>In the 1847/1 state of the map T. L. Mitchell's exploration of the inland river systems is shown in sketch map style with supposed stream courses and tracks of the exploration party. The courses of the Belyando, Condamine (supposed), Maranoa, Nive, Nogoa (supposed), Culgoa (supposed), Ballonne (149&#176;E.), Mooni (supposed) and Cogoon rivers appear.<br/>
+East of the junction of the Bogan with the Darling Narran Swamp appears south of the supposed courses of the Culgoaand Ballonne with Mooni R. shown as a tributary of the Ballonne. The Condamine, Maranoa and Cogoon R. are all linked to the Ballonne.<br/>
+The Karaula or Darling of the 1846 state has now been renamed the Karaula or Barwan. The supposed course of the Karaula north of its junction with the Dumaresque has been removed. This was previously linked with the Condamine River in the 1846/1 state.<br/>
+Immediately north of the Nammoy or Peel R., Snodgrass Lagoon is marked with Major Mitchell's track shown going due north to the Ballonne where St George's Br. Is marked on the Ballonne River.<br/>
+The hydrology is very confused in this state and many assumptions are made which are later corrected in further states of the map.<br/>
+New peaks appearing in this state are M. Mudge, Mts. Pluto, Hutton, and Playfair, M. P. P. King, Grafton Range Peak, M. Abundance (Bindango).</p>
+<p>In the 1847/2 state of the map Mounts Pluto, Hutton and Playfair and Buckland and Owen below M. P.P. King have been removed. The hydrology of the Maranoa system has been partially redrawn some place names removed including those of the Maranoa, Culgoa and Ambey rivers. The River Ballonne (now changed to Bonne 149&#176;E.), the Mooni and Cogoon rivers are no longer shown as tentative.<br/>
+The Condamine, an un-named stream south of it, the Karuala, Nammoy and lower reaches of the Gwydir are still shown as tentative.<br/>
+Corrections have been made to the hydrology in this area but there still remain many un-named portions of streams. New un-named hydrology appears to the west of M. P.P. King.</p>
+<p>In the 1848/1state the Belyando River with Mitchell's furthest 1846 now marked. The Victoria R (Barcoo) has been extended further (south of 26&#176;S.) to the south-west as a result of Kennedy's exploration in 1847. (Australian Encyclopedia 1983, v. 4, p. 71, Beale, Edgar 1967, p. 43).<br/>
+The Karaula or Barwon of the 1847/1 state, has now been renamed the R. Darling or R. Barwan R. Karaula. At about 29&#176;S/149&#176;E the rivers from west to east are the Culgoa, the Balonne and R. Bokhara (shown as the same stream), the R. Narran then the Darling.<br/>
+The Darling, Condamine, Maranoa and Narran are shown as significant rivers.<br/>
+There are many new place names, numbered campsites and dates.<br/>
+Kennedy's route down the Warrego River (named by Mitchell) from its headwaters in the Great Dividing Range on the western slopes of the Carnarvon Range 28&#176;35'S/145&#176;E appears. Although this river is a tributary of the Darling its course ran dry in 1847 and Kennedy abandoned his exploration at this point and crossed country to the Culgoa and then back to Sydney.</p>
+<p>In the 1849/1(1848/2) state of the map further wording appears along the Warrego R. and cross country to the Culgoaas Kennedy Nov. 1847, with more detail than in the first state (East 1848/1). Kennedy's Camp 27 Dec 1847 is shown on the R. Culgoa just south of where his cross country route encounters the Culgoa.</p>
+<h5>New South Wales</h5>
+<p>The 1838/1 state of the map shows the principal river systems of the Murray, Murrumbidgee, Lachlan and the Darling, Bogan, Macquarie, Namoi, Gwydir, Dumaresq and Condamine. There are notes on Mitchell's furthest north and south on the Darling 1832, Sturt and Hume's farthest north on the Darling, March 1829, and Oxley's furthest west on the Lachlan 1817. Sturt's Depot is shown on the Murrumbidgee from whence he descended the Murrumbidgee and Murray Rivers to the sea in 36 days and returned in 40 days. Dixon's furthest west 1833 (just west of the Bogan R.) and the spot where Richard Cunningham was killed (just west of the Bogan R.) also marked.</p>
+<p>In the 1841/1 state of the map the NEW ENGLAND region appears. Rivers flowing to the coast in this region are the Richmond R. (previous dotted line of river removed), the Evans R. the Clarence R. system, the Numbucka R. and McLeay R. R. Severn flows to the west of the dividing range. Ben Lomond and Mt. Mitchell appear to the east of the dividing range.</p>
+<p>In the 1846/1 state of the map the name NEW SOUTH WALES has been repositioned in two parts horizontally over the south east portion of the map. The NEW SOUTH appears between 28&#176;--30&#176;S, while the word WALESappears just below 32&#176;S.</p>
+<p>In the 1847/1 state of the map the regional name NEW ENGLAND has been moved and re-engraved in a north/south alignment instead of east/west alignment as shown in East 1846/1 state.</p>
+<p>In the 1849/1(1848/2) state Kennedy's Camp 27 Dec 1847 is shown on the R. Culgoa just south of where his cross country route encounters the Culgoa. More tributaries of the Murray River appear between the Murray and the Murrumbidgee.</p>
+<p>In the 1853/1 state of the map there are many new names along the north bank of the Murray River, Gogol Ra., Moontongue, Lundalhil, Euston, Turla, and tributaries flowing into the Murray are named, Coates R. , Kyalite R., R. Yakool, Merrang Cr. and Yarran Cr. The R. Lachlan named near its junction with the Murrumbidgee. The Murrumbidgee Pastoral District has been removed. The table of counties has been increased to 67.</p>
+<h5>New South Wales and South Australia</h5>
+<p>In the 1847/1 state of the map Lakes Victoriaand Bonneyappear on the east bank of the Murray west of the junction with the Darling. The River Murray has been realigned westwards and its junction with the Darling redrawn.<br/>
+To the east of L. Torrens at 29&#176;- 30&#176;S many new mounts are named in what will later become known as the Barrier Range e.g. Blackwood, Shannon, Arrowsmith, Browne, Stuart, Pool, Wood and King. Streams marked are the R. Frome, Torrens Cr, Evelyn Cr. and Burr Cr. South of this at 30&#176;-32&#176;S in what will later be named the Grey Range new un-named hydrology appears. M. Lyell of the 1846/1state has been removed.</p>
+<p>In the 1847/2 state of the map above and below Cooper Creek notes on the topography and vegetation appear.<br/>
+To the east of L. Torrens at 30&#176;-32&#176;S/142&#176;E in what will later be named the Grey Range (142&#176;E) the un-named hydrology of the previous state has been updated with the names of the creeks.</p>
+<p>In the 1848/1 state of the map in the far west of N. S. W. 'hairy caterpillar' style hachuring has been used to indicate the topography of the Barrier and Grey ranges (not yet named).</p>
+<p>In the 1849/1 (1848/2) state of the map in the far west the Barrier or Stanley Range is shown west of the Darling R. in proximity to the NSW/SA border. This was shown on the previous state (East 1848/1) but not named. Similarly due north of this is the Grey Range also shown on the previous state but not named.</p>
+<h5>Victoria</h5>
+<p>T. L. Mitchell's expeditions from Sydney to western Victoria (Glenelg R.) appear in the 1838/1 state of the map. AUSTRALIA FELIX named by him.</p>
+<p>In the 1840/2 state the middle and upper reaches of the River Murray in the Port Phillip District are named RIVER HUME, the name by which this river was first known. Four tributaries, the Goulburn, the Delangan, the Ovens or Burwang and the R. King are shown. The River Bayungun and the Violet River have been removed.</p>
+<p>In the 1841/1 state of the map the name HUME RIVER has been removed from the Murray River which again is shown as a dashed line and the rivers Bayungun and Violet have been reinstated.<br/>
+In GIPPSLAND the results of Paul Edmond Strzelecki's exploration [1840] of the Australian Alps is mapped. River systems flowing from the Australian Alps to the coast are Thomson, Riley, McArthur, Perry, Dunlop, Barney, Maconochie and Latrobe. Lake King appears. The Ovens or Burwang and the Mitta Mitta are shown flowing north. To the east of the Thomson River the map remains blank apart from Mt. Koschusko [Kosciusko] and Mt. Garrangura.<br/>
+In Westernport, French Island is named, and nearby Jameson and Berry. Dodd and McCraeappear on the Mornington Peninsula.<br/>
+On the west coast of Victoria new coastal names are Port Fairey, R. Barwon and Geelong. The R. Hopkins is extended to the coast. L. Colac, Mt. Gellibrand and Mt. Eccles appear and a number of places with aboriginal names, i.e. R. Garanbalatt, R. Parrunyallac. </p>
+<p>In the 1847/2 state of the map the first major revision of the Colony since the 1838 issue occurs. Many changes are to be found the major one being the complete redrawing of the Murray including its extensive tributary system. The course of the R. Murray and its tributaries the Campaspe, Goulburn, Ovens and the Mitta Mitta are detailed. Mt Buffalo (Mt. Aberdeen of the previous state) appears.<br/>
+In the east the area behind Cape Howe has been amended with much information. The river Snowy with its tributaries and river Jenoa appear, also Bruthen.</p>
+<p>In GIPPSLAND from east to west the rivers are, the Thomson, Riley, McArthur, Perry, Dunlop or Providence Ponds, Avon, Barney and Latrobe. Lakes Victoria, Reeve and Wellington appear. What was previously the R. Barney is now shown as the R. Avon. The R. Maconochie has disappeared and the Latrobeand Barney are redrawn as flowing into L. Wellington. Further west along the coast Merriman Cr., Running Cr., LaTrobe Is, Alberton, Torra R., Albert R., Franklin R., Anderson R., and Anderson Inlet appear. The Great Swamp (today's Kooweerup) and Mt Ararat are shown.<br/>
+On the west coast between C. Otway and Port Fairey are Gellibrand R., P. Campbell, and Gudje Gudje R. Portland appears.<br/>
+In the north-west the Wimmera R. has been extended to L. Hindmarsh and beyond. Further north the description Dense Scrub and Sand Ridges appears north of the Wimmera region.<br/>
+The coastline is virtually completed except for a small portion west of the Barwon River. The East Gippsland area and border area with New South Wales has new place names following Boyd's activities at Boydtown and Twofold Bay.</p>
+<p>New squatting districts in the Port Phillip District appear in the 1849/1(1848/2) state of the map: WIMMERA, WESTERN PORT, MURRAY, GIPPSLAND (relocated and enlarged), and PORTLAND BAY.</p>
+<p>In the 1850/1 state of the map the Colony of Victoria's boundary with New South Wales appears. The Colony has not yet been named on the map.</p>
+<p>In the 1853/1 state of the map the Port Phillip District of New South Wales has now been separated from that colony and named as the new colony of VICTORIA. Rivers flowing south to the coast from the Australian Alps show some name changes, e.g. the Thomson becomes the Tambo. Much new detail in the Mallee (un-named) region appears north of L. Hindmarsh e.g. Dense scrub, Sand ridges, High sand hills. Place names added are Copbeck, Outlet Cr., Mt. Jenkins, L. Albacutya, L. Coorong, Taylor, L. Tyrrell, Wirringren Pln., Pipe Clay Pln. On the south bank of the Murray River the names Rum, Crawford, L. Mournpol, Limma, Wemen, Mt Templar added and Mt Dispersion and Depot removed. The alternative name for the Loddon River has been removed. More of the rivers in north-east Victoria are named, and Howlong and Wodonga appear. The table of counties retains the old heading Counties in Port Phillip District.</p>
+<h5>South Australia</h5>
+<p>In the 1840/1(1838/4) state of the map the most notable change is the extensive updating of information in South Australia following the explorations of Edward John Eyre in 1839 and 1840. Three regions have been distinguished; BONNY LAND is the region adjacent to the current Victorian border (E 141&#176;) STURT LAND occupies the Fleurieu Peninsula and north to the Gouger Range, EYRE LAND occupies the currently named Eyre Peninsula.<br/>
+North of Mt. Arden at the head of Spencer Gulf the Flinders Range appears trending NE/SW. Mt. Eyre is marked to the immediate west of this range. Mt. Arden is shown at the southern end. Lake Torrens appears to the west with a note above it Extensive pl. of sandy soil destitute of vegetation with sandy ridges. At the southern end of the Flinders Range a Depot is marked on a hatched track labelled Overseers tract to the E. This track extends to the west to the coast at Streaky Bay where another Depot is shown and then continues along the coast to Pt. Bell.<br/>
+North-east of Gulf of St. Vincent the Gouger Ra., Mt. Pullen, Mt. Bryan, Slate Hill and Hawdon Plains appear while south of these the Rocky and Bernardranges and further south again the Barossa Ra.<br/>
+In the Fleurieu Peninsula the rivers Broughton, Hill, Light, Gawler, Torrens and Finnis are shown.<br/>
+Coastal names appearing for the first time in the 1840/1(1838/4) state on the Gulf of St Vincent are Port Gawler, Hurtle Vale, Onkaparinga B. The Field R. has been removed.<br/>
+On the Eyre Peninsula topographical features and notes on the nature of the land and vegetation also appear such as low and scrubby swamp, spring, lagoon, very dense scrub and land rises with intervals of open plain among the scrub. In the north of the peninsula Mt. Start and the Gawler Ra trending north-west / south-east and then east with numerous parallel ranges is shown. A track from Pt. Lincoln in the south-east of the Eyre Peninsula follows the coastline north-west. New names along this coast are Mt. Dutton, Mt. Hope, Wedge Hill, Mt. Cooper and Mt. Hall.<br/>
+On Encounter Bay Victor Harbour is marked.</p>
+<p>In the 1841/1 state of the map the results of Edward John Eyre's expeditions [1839-1840] include a postulated double horse- shoe shaped salt water Lake Torrens (dry) as the most notable additional feature. New place names occur north of the Flinders Range, i.e. Termination Hill, Mt. Scott, Mt. Deception, Mt. Serle, Mt. Hopeless. Also notes such as Water very salt, Barren Plains covd. By Salsolae, Brine springs, Eyre's furthest n. w. 1840 and Eyre's furthest n. e. 1840 are shown.</p>
+<p>In the 1841/2 state of the map Arrowsmith's modus operandi is demonstrated. He firstly inserts hydrology and then topography in a later issue of the map. In this second state topography has been inserted within the horseshoe shaped Lake Torrens with 'hairy caterpillar' type hachuring and in New England and Gippsland. Compare with East sheet, 1841/1 state.</p>
+<p>In the 1842/2 state the shape of L. Alexandrina has been changed. L. Albert, Malcolm and the Coorong appear on the south coast.</p>
+<p>In the 1847/1 state of the map there is much new information in South Australia. Sturt's expedition into the interior is shown with the furthest point reached being marked at 24&#176;S / 138&#176;E. by a note Sturt's farthest Sept. 8th 1845. Eyre Cr. appears just below this note. Part of Cooper's Creek is now shown. The outline of Lake Torrens has been completely redrawn so that the northernmost part of the horseshoe lies at 29&#176;S rather than 28&#176;S and extends from 138&#176;- 140&#176;30'E. Many previously shown features, notes and topography have been completely removed. In this state only hydrology, explorers' tracks and landmark peaks such as M. Hopeless, M. Distance, M. Serle, Prism Hill, M. Deception, Termination Hill and M. Norwest appear within the supposed outline of the L. Torrens.<br/>
+At the head of Spencer Gulf the track shown on the previous 1846/1 state Overseers track to the east has been removed and also the capital "R" of Rocky barren Ms leaving ocky barren Ms. Only M. Brown remains but the note accompanying it has been removed. To the east of M. Brown a new name Black Rk. Hill appears. South-east of this the Gouger Range has been replaced by Porcupine Hill. M. Pullen, Slate Hill and Bernard Ra. have been removed and M. Bryan repositioned further south with the new features of Razorback and Burra Cr.<br/>
+The internal information on the Fleurieu Peninsula has been revised and simplified so that the names become more legible. The R. Wakefield is shown flowing into the head of the Gulf of St. Vincent from the east. Below this feature the R. Gilbert, R. Light and Julia Cr. are all shown as part of the tributary system of a supposed stream which enters the Gulf of St. Vincent above Port Gawler. M. Rufus and Greenoch Ra. appear north of the Barossa Ra. Further redrawing shows the Gawler R. flowing west from the Barossa Ra. With the settlements of Gawler and Milnerlocated on it and Port Gawler at its mouth. Willunga appears south of Onkaparinga.<br/>
+The regional name STURT LAND has been removed.<br/>
+Much more detail now appears of the streams flowing into L. Alexandrina. Named from west to east these are the first unnamed, then the Finnis, Angas and Bremer. Goolwa is shown near the entrance to the Murray River.<br/>
+The course of the Murray River from its junction with the Darling has been redrawn with the elbow bend being placed more westerly than previously. New names appear on the river in this stretch e.g. Selente Pt., Moorundi, Mattala, Upr. Crossing and Wellington.<br/>
+In the extreme south-east the regional name BONNY LAND has been removed<br/>
+In the 1847/2 state of the map the supposed outline of the L. Torrens now shows a channel flowing north from the north-west part of the horse shoe. The area to the south and east of Lake Torrens 139&#176;E now has names added to the hydrology of the previous state, from north to south they are Reaping Hook H., Pasmore R., Prewett Sp., R. Siccus, M. Victor, Rowe Cr., Barren Plains, Henderson N &amp;Cr. Notes on the nature of the country appear west of the Darling and north of the Murray at Elbow Bend, Murray Scrub, Barren Country, Dense Scrub, Hakia Grass, No Wr. In summer and Genl. Dip w.</p>
+<p>In the 1848/1 state Lake Torrens is being modified, only the western and northern parts of the double horse shoe shape remain in light line work. Notes on Eyre's farthest removed.<br/>
+Names appear on the south-east coast, from north to south these are Granite Rock, Ross Cr., Mt. Benson, L. Hawdon, L. Eliza, L. George, L. Frome, M. Muirhead, M. Bur and L. Bonney.</p>
+<p>In the 1849/1(1848/2) state of the map the left part of the Torrens horseshoe is now named the Torrens Basin. This area is shown as stippled and extended northwards to 26&#176;S where it is named Stony Desert. A double parallel outline shows the supposed course which extends eastwards and then southwards retaining the 'horseshoe' shape.</p>
+<p>In the 1853/1 state of the map John Horrocks' track from un-named [Penwarthen] to Depot Creek appears. The area near the South Australia/Victoria border has new names. Lake Alexandrina now changed to Lake Victoria.</p>
+<p><h3 id="changes" class="article-title">Changes AND ADDITIONS</h3></p>
+<h4>IMPRINT:</h4>
+<p>The date in the imprint changed to 1st Jany 1856 or 58 ?<br/>
+Otherwise this state remains the same as (East sheet,1853 imprint, first state).<br/>
+ Following Arrowsmith's method of updating the imprint without incorporating any substantive change to the map information it is suggested that the uncertainty about the precise date be resolved to 1856 rather than 1858.<br/>
+Arguments in favour of this are the lack of any changes to information; the gap of three years between this and the previous issue, longer than any other gaps in his updating of this map; A.C. Gregory's 1855-6 expedition not included; John McDouall Stuart's explorations (1858) for pastoral lands in western South Australia lacking as are the explorations of Babbage and Goyder in 1856; the political boundaries for N.S.W. are as for 1847 (NSW/SA), NSW/NORTH AUSTRALIA and 1851 (NSW/VIC.); and the fact that the 1858 issue seen was probably closer to1860 than 1858 in its internal content.<br/>
+The matching western half sheet has 1856 in its title.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1606-01-01">1606</fromDate>
+<toDate standardDate="1856-12-31">1856</toDate>
+</dateRange>
+<event>Situation date</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1856-01-01">1 January 1856</fromDate>
+<toDate standardDate="1858-12-31">1858</toDate>
+</dateRange>
+<event>Map Publication Date</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000110b.htm">
+<relationEntry localType="Map State">
+Eastern Portion of Australia, East 1853/1, Australia from surveys made by order of the British Government
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000162b.htm">
+<relationEntry localType="Person">
+Dixon, Robert (1800 - 1858)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000138b.htm">
+<relationEntry localType="Person">
+Kennedy, Edmund Besley Court (1818 - 1848)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000094b.htm">
+<relationEntry localType="Map Summary">
+Eastern Portion of Australia, Australia from surveys made by order of the British Government
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000112b.htm">
+<relationEntry localType="Map State">
+Eastern Portion of Australia, East 1858/1, Australia from surveys made by order of the British Government
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Eastern Portion of Australia, East 1856/1', in Arrowsmith's Australian Maps, Dorothy Prescott</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Eastern Portion of Australia, East 1856/1</title>
+<imprint>
+<publisher/>
+</imprint>
+<bibseries>
+<title render="italic">Arrowsmith's Australian Maps</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000111b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000022.htm">
+<relationEntry localType="published">Book: The mapping of Australia and Antarctica</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Tooley, Ronald Vere</name>
+<title render="italic">The mapping of Australia and Antarctica</title>
+<imprint>
+<place>London</place>
+<publisher>Holland Press</publisher>
+<date>1985</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000023.htm">
+<relationEntry localType="published">Journal Article: Colonial and state boundaries in Australia</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">McClelland, M. H.</name>
+<title render="quoted">Colonial and state boundaries in Australia</title>
+<imprint>
+<date>1971</date>
+</imprint>
+<bibseries>
+<title render="italic">The Australian Law Journal</title>
+<num type="volume">45</num>
+<num type="pages">679</num>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000025.htm">
+<relationEntry localType="published">Book: The Australian encyclopaedia</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"/>
+<title render="italic">The Australian encyclopaedia</title>
+<edition>4th</edition>
+<imprint>
+<place>Sydney</place>
+<publisher>Grolier Society of Australia</publisher>
+<date>1983</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000024.htm">
+<relationEntry localType="published">Book: The discovery of Australia : the charts and maps of the navigators and explorers</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Perry, T. M.</name>
+<title render="italic">The discovery of Australia : the charts and maps of the navigators and explorers</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Nelson</publisher>
+<date>1982</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000026.htm">
+<relationEntry localType="published">Book Section: Kennedy, Edmund Besley Court (1818-1848)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Beale, Edgar</name>
+<title render="quoted">Kennedy, Edmund Besley Court (1818-1848)</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Melbourne University Press</publisher>
+<date>1967</date>
+</imprint>
+<bibseries>
+<title render="italic">Australian Dictionary of Biography</title>
+<num type="volume">2</num>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/archives/A00000224.htm">
+<relationEntry localType="archival">Australia from surveys made by order of the British Government combined with those of d'Entrecasteaux, Baudin, Freycinet, etc</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Royal Geographical Society</repository>
+<unittitle>Australia from surveys made by order of the British Government combined with those of d'Entrecasteaux, Baudin, Freycinet, etc</unittitle>
+<unitid>mr Australia G.39</unitid>
+<unitdate>1856</unitdate>
+<physdesc>
+<extent/>
+</physdesc>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/archives/A00000212.htm">
+<relationEntry localType="archival">Australia from surveys made by order of the British Government combined with those of D'Entrecasteaux, Baudin, Freycinet &amp;c.&amp;c [cartographic material] / by John Arrowsmith</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia Map Collection</repository>
+<unittitle>Australia from surveys made by order of the British Government combined with those of D'Entrecasteaux, Baudin, Freycinet &amp;c.&amp;c [cartographic material] / by John Arrowsmith</unittitle>
+<unitid>MAP RM 3277</unitid>
+<physdesc>
+<extent/>
+</physdesc>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/objects/D00000086.htm">
+<relationEntry localType="digitalObject">Australia from surveys</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Australia from surveys</unittitle>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>
