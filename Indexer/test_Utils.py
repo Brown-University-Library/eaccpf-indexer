@@ -132,9 +132,9 @@ class TestUtils(unittest.TestCase):
             ("thisfilehasnoextension", "")
         ]
         for case in cases:
-            name, ext = case
-            x = Utils.getFileNameExtension(name)
-            self.assertEquals(ext, x)
+            filename, expected = case
+            result = Utils.getFileNameExtension(filename)
+            self.assertEquals(expected, result)
 
     def test_getFileNameWithAlternateExtension(self):
         """
@@ -215,6 +215,24 @@ class TestUtils(unittest.TestCase):
 
     def test_loadFileHashIndex(self):
         pass
+
+    def test_map_url_to_local_path(self):
+        """
+        It should return a local file system path, given the local file system
+        path to the root of a web site and a web URL.
+        """
+        cases = [
+            ("/var/www/TEST","http://www.example.com/image.jpg","/var/www/TEST/image.jpg"),
+            ("/var/www/TEST","http://www.example.com/","/var/www/TEST"),
+            ("/var/www/TEST","http://www.example.com/../","/var/www/TEST"),
+            ("/var/www/TEST","http://www.example.com/path/to/subdirectory/","/var/www/TEST/path/to/subdirectory"),
+            ("/var/www/TEST","http://www.example.com/path/to/subdirectory","/var/www/TEST/path/to/subdirectory"),
+        ]
+        for case in cases:
+            site_path, resource_url, expected = case
+            result = Utils.map_url_to_local_path(resource_url, site_path)
+            self.assertNotEqual(result, None)
+            self.assertEqual(result, expected)
 
     def test_parseUnitDate(self):
         """

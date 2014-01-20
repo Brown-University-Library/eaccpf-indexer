@@ -74,7 +74,7 @@ Revision History
 
 1.5.1
 
- * Revised test cases to use local data in the package rather than on the web
+ * Added partial copy of FCNS data to enable local testing of modules
  * Added Cfg module to carry globals
 
 1.5.0

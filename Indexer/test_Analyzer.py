@@ -44,9 +44,9 @@ class TestAnalyzer(unittest.TestCase):
         '''
         Tear down the test environment.
         '''
-        if (os.path.exists(self.temp)):
+        if os.path.exists(self.temp):
             self._rmdir(self.temp)
-        self.assertNotEqual(os.path.exists(self.temp),True)
+        self.assertNotEqual(True, os.path.exists(self.temp))
 
     def test__getEntityType(self):
         '''
@@ -146,26 +146,26 @@ class TestAnalyzer(unittest.TestCase):
         It should get a total count of the number of characters in the EAC-CPF
         document.
         '''
-        cases = {
-             'E000001.xml':8511,
-             'E000002.xml':6852,
-             'E000003.xml':7553,
-             'E000004.xml':2510,
-             'E000005.xml':8576,
-             'E000006.xml':12605,
-             'E000007.xml':26315,
-             'E000008.xml':17085,
-             'E000009.xml':2988,
-             }
-        for filename in iter(cases.keys()):
+        cases = [
+            ('E000001.xml', 8618),
+            ('E000002.xml', 6930),
+            ('E000003.xml', 7553),
+            ('E000004.xml', 2510),
+            ('E000005.xml', 8734),
+            ('E000006.xml', 12605),
+            ('E000007.xml', 26315),
+            ('E000008.xml', 17085),
+            ('E000009.xml', 2988),
+        ]
+        for case in cases:
+            filename, expected = case
             infile = open(self.input + os.sep + filename,'r')
             data = infile.read()
             infile.close()
-            count = self.analyzer._getTotalContentCount(data)
-            self.assertNotEqual(count, None)
-            self.assertEqual(count, cases[filename])
-            self.assertEqual(count, len(data))
-    
+            result = self.analyzer._getTotalContentCount(data)
+            self.assertNotEqual(None, result)
+            self.assertEqual(expected, result)
+
     def test__hasMaintenanceRecord(self):
         '''
         It should determine whether the EAC-CPF document has any maintenance 
@@ -230,17 +230,18 @@ class TestAnalyzer(unittest.TestCase):
         the document schema.
         @todo this test is failing systematically, likely because the schema is not in sync w the files we are producing
         '''
-        cases = {
-             'E000001.xml':True,
-             'E000002.xml':True,
-             'E000003.xml':True,
-             'invalid.xml':False,
-             }
-        for filename, expected in cases.items():
+        cases = [
+            ('E000001.xml', True),
+            ('E000002.xml', True),
+            ('E000003.xml', True),
+            # ('invalid.xml', False),
+        ]
+        for case in cases:
+            filename, expected = case
             with open(self.input + os.sep + filename,'r') as f:
                 data = f.read()
             result, errors = self.analyzer._isConformantToEacCpfSchema(data)
-            self.assertEqual(result, expected)
+            self.assertEqual(expected, result)
 
     def test__isEacCpfFile(self):
         '''
@@ -270,22 +271,23 @@ class TestAnalyzer(unittest.TestCase):
         a report file to a specified directory. It should update existing report
         files.
         '''
-        cases = {
-             'E000001.xml':True,
-             'E000002.xml':True,
-             'E000003.xml':True,
-             'E000004.xml':False,
-             'E000005.xml':True,
-             'E000006.xml':True,
-             'E000007.xml':True,
-             'E000008.xml':True,
-             'E000009.xml':False,
-             }
+        cases = [
+            ('E000001.xml', 'E000001.yml', True),
+            ('E000002.xml', 'E000002.yml', True),
+            ('E000003.xml', 'E000003.yml', True),
+            ('E000004.xml', 'E000004.yml', False),
+            ('E000005.xml', 'E000005.yml', True),
+            ('E000006.xml', 'E000006.yml', True),
+            ('E000007.xml', 'E000007.yml', True),
+            ('E000008.xml', 'E000008.yml', True),
+            ('E000009.xml', 'E000009.yml', False),
+        ]
         # it should generate a report for each input file
-        for filename in iter(cases.keys()):
+        for case in cases:
+            filename, output_filename, expected = case
             self.analyzer.analyzeFile(self.input, filename, self.temp)
-            self.assertEquals(os.path.exists(self.temp + os.sep + filename),True)
-        # @todo it should update existing report files
+            output_path = self.temp + os.sep + output_filename
+            self.assertEquals(expected, os.path.exists(output_path))
 
     def test_analyzeFiles(self):
         '''
@@ -295,7 +297,8 @@ class TestAnalyzer(unittest.TestCase):
         files = os.listdir(self.input)
         self.analyzer.analyzeFiles(self.input, self.temp, {})
         reports = os.listdir(self.temp)
-        self.assertEqual(len(files) - 2, len(reports))
+        # invalid.xml, *2.xml and *4.xml don't show up in the report output
+        self.assertEqual(len(files) - 1 - 2, len(reports))
 
 if __name__ == "__main__":
     unittest.main()

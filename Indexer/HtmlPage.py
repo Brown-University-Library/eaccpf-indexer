@@ -4,7 +4,7 @@ LICENSE file, which is part of this source code package.
 """
 
 import Cfg
-
+import Utils
 import codecs
 import hashlib
 import logging
@@ -20,21 +20,25 @@ class HtmlPage(object):
     HTML document pages contain metadata and references to external entities
     that are the subject of indexing. This class wraps the HTML document and
     provides convenience methods for extracting required metadata.
+
+    The physical file system needs to mirror the public URLs, otherwise this
+    module will provide erroneous URLs.
+
+    @todo consider deferred loading of HTML content
     """
 
     def __init__(self, Source, BaseUrl=None):
         """
-        Source is a file system path or URL to the document. URL is an 
+        Source is a file system path or URL to the document. BaseUrl is an
         optional argument specified when the document is being indexed from a 
         file system, and is used to determine what the file's public URL should
-        be. If the document contains absolute URLs, then the URL parameter is 
-        ignored.
-        @todo We need to get rid of self.data and work only off the tree representation
+        be. If the document contains absolute URLs, then the BaseUrl parameter
+        is ignored.
         """
         self.log = logging.getLogger()
         self.base = BaseUrl
         self.data = self._load(Source)
-        self.filename = self._getFileName(Source)
+        self.filename = Utils.getFileName(Source)
         self.source = Source
         self.tree = lxml.html.parse(Source)
         self.url = self._getUrl()
@@ -52,16 +56,6 @@ class HtmlPage(object):
         """
         i = Path.rfind('/')
         return Path[:i+1]
-
-    def _getDocumentParentUri(self, Uri):
-        """
-        Get the parent directory of the file in the specified URL.  Non / 
-        terminated URLs are treated as representing files.
-        """
-        uri = self.getUrl()
-        i = uri.rfind('/')
-        url = uri[:i+1]
-        return str(url.replace(' ','%20'))
 
     def _getFileName(self, Url):
         """
@@ -182,8 +176,7 @@ class HtmlPage(object):
         """
         Get the filename.
         """
-        url = self.getUrl()
-        return self._getFileName(url)
+        return self.filename
 
     def getHash(self):
         """
@@ -212,13 +205,12 @@ class HtmlPage(object):
     
     def getRecordId(self):
         """
-        Older HTML record pages do not have EAC-CPF alternate representations,
-        and have no consistently identifying metadata attributes. Consequently,
-        we will always return a page record id as the filename without the
-        extension.
+        Return a record identifier for the page if the page represents an
+        EAC-CPF entity. Return None otherwise.
         """
-        name = self.filename.split('.')
-        return name[0]
+        if self.hasEacCpfAlternate():
+            return Utils.getRecordIdFromFilename(self.filename)
+        return None
 
     def getText(self):
         """
@@ -248,25 +240,27 @@ class HtmlPage(object):
         """
         Get the document URI.
         """
+        if self.base:
+            parsed = urlparse.urlparse(self.url)
+            base = urlparse.urlparse(self.base)
+            path = "{0}/{1}".format(base.path, parsed.path)
+            path = re.sub("///", "/", path)
+            path = re.sub("//", "/", path)
+            return urlparse.urljoin(self.base, path)
         return self.url
 
     def hasEacCpfAlternate(self):
         """
         Determine if this page has an EAC-CPF alternate representation.
         """
-        try:
-            return True if self.getEacCpfUrl() else False
-        except:
-            return False
+        return True if self.getEacCpfUrl() else False
 
     def hasRecord(self):
         """
         Determine if the HTML page has a record.
         """
-        if self.getRecordId():
-            return True
-        return False
-    
+        return True if self.getRecordId() else False
+
     def write(self, Path):
         """
         Write document to the specified path.
@@ -274,5 +268,4 @@ class HtmlPage(object):
         outfile = codecs.open(Path + os.sep + self.getFilename(), 'w', 'utf-8')
         outfile.write(self.data)
         outfile.close()
-        msg = "Stored HTML document {0}".format(self.filename)
-        self.log.info(msg)
+        self.log.info("Stored HTML document {0}".format(self.filename))

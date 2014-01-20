@@ -85,7 +85,7 @@ class Crawler(object):
                                     thumbnail_record = eaccpf.getThumbnail()
                                     if thumbnail_record:
                                         self.log.debug("Thumbnail found for {0}".format(filename))
-                                        cache_record = self.cache.put(thumbnail_record.dobj_source)
+                                        cache_record = self.cache.put(thumbnail_record.getSourceUrl())
                                         eaccpf_id = eaccpf.getRecordId()
                                         thumbnail_record.write(Output, Id=eaccpf_id, CacheRecord=cache_record)
                                 except:
@@ -95,7 +95,7 @@ class Crawler(object):
                                 try:
                                     for dobject in dobjects:
                                         self.log.debug("Digital object found for {0}".format(filename))
-                                        cache_record = self.cache.put(dobject.dobj_source)
+                                        cache_record = self.cache.put(dobject.getSourceUrl())
                                         dobj_id = dobject.getObjectId()
                                         dobject.write(Output, Id=dobj_id, CacheRecord=cache_record)
                                 except:

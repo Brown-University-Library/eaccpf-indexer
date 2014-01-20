@@ -1,0 +1,352 @@
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://www.esrc.unimelb.edu.au" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd" ns0:metadata="http://www.findandconnect.gov.au/qld/eac/QE00003.xml" ns0:presentation="http://www.findandconnect.gov.au/qld/biogs/QE00003b.htm" ns0:source="/srv/ha/web/FCQD/LIVE/eac/QE00003.xml">
+<control>
+<recordId>QE00003</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-VU:FCQD</agencyCode>
+<agencyName>Find &amp; Connect - Queensland</agencyName>
+<descriptiveNote>
+<p/>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2011-02-01">2011-02-01</eventDateTime>
+<agentType>human</agentType>
+<agent>Lee Butterworth</agent>
+<eventDescription/>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2014-01-13">2014-01-13</eventDateTime>
+<agentType>human</agentType>
+<agent/>
+<eventDescription/>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/qld/biogs/QE00003b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>BoysTown</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+<nameEntry localType=""><part>BoysTown, Beaudesert</part>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="1961-01-01">1961</fromDate>
+<toDate standardDate="2001-12-31">2001</toDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Children's Home</term>
+</function>
+<function>
+<term>School</term>
+</function>
+<function>
+<term>Care Provider</term>
+</function>
+<function>
+<term>Catholic</term>
+</function>
+<function>
+<term>Home</term>
+</function>
+</functions>
+<biogHist>
+<abstract>BoysTown, run by the De La Salle Brothers, was established in 1961. It was situated in Telemon Road, Beaudesert. BoysTown accommodated boys aged between 12 and 16 in seven cottages. The Beaudesert residential accommodation closed in 2001. More than 1,000 boys passed through BoysTown during those 40 years.</abstract>
+<p>From <span style="font-style:italic">A piece of the story</span> (1999), p. 74 :</p>
+<p>At the invitation of, and in conjunction with, the Beaudesert Parish Priest, the De La Salle Brothers opened BoysTown in February 1961. Brothers Alban Dwyer and Kieran Rush<br/>
+arrived at the Beaudesert facility with ten boys. It operated as a residential arrangement, with 7 cottages that accommodate up to 12 boys in each. A fully registered secondary school was part of the complex. Emphasis was placed on the development of life skills, career planning, a wide variety of recreational pursuits and familiarisation with modern technology. Situated on a large farming property, boys had access to farming experiences.</p>
+<p><span style="font-weight:bold">Commission of inquiry into abuse of children in Queensland institutions</span></p>
+<p>In August 1998 in Queensland, the Minister for Families, Youth and Community Care established a Commission of Inquiry to examine whether there had been any abuse, mistreatment or neglect of children in Queensland institutions.</p>
+<p>This Inquiry is widely known as the Forde Inquiry, in reference to the Chairperson, Leneen Forde. The Committee reported on incidents of unsafe, improper and illegal treatment of children in Queensland institutions, including cases of sexual, physical, emotional and systems abuse. It is known as <span style="font-style:italic">The Report of the Commission of Inquiry into Abuse of Children in Queensland Institutions.</span></p>
+<p>Submissions from former residents of BoysTown were taken at the inquiry. The full report is a public document, available free of charge to anyone who requests it from the Queensland Government. Its findings are detailed and explicit.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1961-01-01">1961</fromDate>
+<toDate standardDate="1961-12-31">1961</toDate>
+</dateRange>
+<placeEntry>Beaudesert</placeEntry>
+<event>BoysTown is situated in Telemon Road, Beaudesert</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations>
+    <cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/biogs/QE00616b.htm">
+<relationEntry localType="Organisation">
+BoysTown (2002 - )
+</relationEntry>
+<descriptiveNote>
+<p>A registered company called BoysTown was created in 2002, after residential accommodation at BoysTown Beaudesert had ceased.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/biogs/QE00343b.htm">
+<relationEntry localType="Archival Collection">
+BoysTown Records (1961 - 2001)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/biogs/QE00002b.htm">
+<relationEntry localType="Organisation">
+De La Salle Brothers (1906 - )
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1961-01-01">1961</fromDate>
+<toDate standardDate="2001-12-31">2001</toDate>
+</dateRange>
+<descriptiveNote>
+<p>BoysTown ran Tarragindi Lodge, Logan Reserve Lodge and Albion Lodge in conjunction with the De La Salle Brothers</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/biogs/QE00112b.htm">
+<relationEntry localType="Organisation">
+Logan Reserve Lodge (1989 - 2001)
+</relationEntry>
+<descriptiveNote>
+<p>BoysTown ran Logan Reserve Lodge in conjunction with the De La Salle Brothers</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/biogs/QE00001b.htm">
+<relationEntry localType="Organisation">
+Albion Lodge (1965 - 1974)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1961-01-01">1961</fromDate>
+<toDate standardDate="1974-12-31">1974</toDate>
+</dateRange>
+<descriptiveNote>
+<p>BoysTown ran Albion Lodge in conjunction with the De La Salle Brothers.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/biogs/QE00165b.htm">
+<relationEntry localType="Organisation">
+Tarragindi Lodge (1974 - 1991)
+</relationEntry>
+<dateRange>
+<fromDate standardDate="1974-01-01">1974</fromDate>
+<toDate standardDate="1991-12-31">1991</toDate>
+</dateRange>
+<descriptiveNote>
+<p>BoysTown ran Tarragindi Lodge in conjunction with the De La Salle Brothers</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'BoysTown', in <span style="font-style:italic">Find &amp; Connect - Queensland</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">BoysTown</title>
+<bibseries>
+<title render="italic">Find &amp; Connect - Queensland</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/qld/biogs/QE00003b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000297.htm">
+<relationEntry localType="published">Resource Section: Our Heritage</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"/>
+<title render="quoted">Our Heritage</title>
+<imprint>
+<publisher>BoysTown</publisher>
+<date>2012</date>
+</imprint>
+<bibseries>
+<title render="italic">BoysTown</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.boystown.com.au/about/heritage.php"/>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000296.htm">
+<relationEntry localType="published">Resource Section: A BoysTown ex-pupil receives a settlement many years later</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"/>
+<title render="quoted">A BoysTown ex-pupil receives a settlement many years later</title>
+<imprint>
+<publisher>Broken Rites Australia</publisher>
+<date>2012</date>
+</imprint>
+<extptr linktype="simple" href="http://brokenrites.alphalink.com.au/nletter/page276-boystown-beaudesert.html"/>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000106.htm">
+<relationEntry localType="published">Newspaper Article: Old Boys Relive Days of BoysTown Beaudesert</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"/>
+<title render="quoted">Old Boys Relive Days of BoysTown Beaudesert</title>
+<imprint>
+<date>2012</date>
+</imprint>
+<bibseries>
+<title render="italic">Beaudesert Times</title>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000083.htm">
+<relationEntry localType="published">Book: Altars &amp; artillery : the life story of Monsignor Owen B. Steele, founder of Boys' Town as told to Bill Boyan and Ian Pedley</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Owen Beevor Steele 1898; Bill Boyan; Ian Pedley</name>
+<title render="italic">Altars &amp; artillery : the life story of Monsignor Owen B. Steele, founder of Boys' Town as told to Bill Boyan and Ian Pedley</title>
+<imprint>
+<place>Brisbane</place>
+<publisher>Boolarong Publications</publisher>
+<date>1980</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000082.htm">
+<relationEntry localType="published">Journal: Boys' Town calling</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Boys' Town (Beaudesert, Qld.)</name>
+<title render="italic">Boys' Town calling</title>
+<imprint>
+<place>Beaudesert</place>
+<publisher>Boys' Town</publisher>
+<date>1961-1995</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000081.htm">
+<relationEntry localType="published">Book: Hidden scars : a report to the trustees of the De La Salle Brothers from Boystown Linkup</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Boystown Link Up (Community group)</name>
+<title render="italic">Hidden scars : a report to the trustees of the De La Salle Brothers from Boystown Linkup</title>
+<imprint>
+<place>Kingston, Qld</place>
+<publisher>Boystown Link Up</publisher>
+<date>1999</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000002.htm">
+<relationEntry localType="published">Book: 'A Piece of the Story': National Directory of Records of Catholic Organisations Caring for Children Separated from Families</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author"/>
+<title render="italic">'A Piece of the Story': National Directory of Records of Catholic Organisations Caring for Children Separated from Families</title>
+<imprint>
+<publisher>Australian Catholic Social Welfare Commission &amp; Australian Conference of Leaders of Religious Institutes</publisher>
+<date>1999</date>
+</imprint>
+<extptr linktype="simple" href="http://www.cssa.org.au/storage/A%20Piece%20of%20the%20Story.pdf"/>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/bib/QP0000001.htm">
+<relationEntry localType="published">Resource: Missing pieces: information to assist former residents of children's institutions to access records</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Department of Families</name>
+<title render="italic">Missing pieces: information to assist former residents of children's institutions to access records</title>
+<imprint>
+<publisher>State of Queensland</publisher>
+<date>2001</date>
+</imprint>
+<extptr linktype="simple" href="http://www.communities.qld.gov.au/resources/childsafety/foster-care/missing-pieces.pdf"/>
+</bibref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Source used to compile entry</p>
+</descriptiveNote>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/objects/QD0000142.htm">
+<relationEntry localType="digitalObject">BoysTown Timeline</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>BoysTown Timeline</unittitle>
+<unitid>BoysTown Business Centre</unitid>
+<unitdate>2013</unitdate>
+<note label="rights">Reproduction rights owned by Historic Abuse Network</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/objects/QD0000034.htm">
+<relationEntry localType="digitalObject">Boys' Town Calling, Autumn Issue</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Boys' Town Calling, Autumn Issue</unittitle>
+<unitid>SLQ Record number: 690424</unitid>
+<unitdate>March 1984 - May 1984</unitdate>
+<abstract>This is a digital copy of an issue of <span style="font-style:italic">Boys' Town Calling</span>. This publication from BoysTown (Beaudesert) was published six times a year between 1961 and 1966, and then published quarterly from 1967 to 1995. Copies of this publication are held at the State Library of Queensland</abstract>
+<note label="rights">Digital copy kindly supplied by Sandy Turner</note>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/qld/objects/QD0000033.htm">
+<relationEntry localType="digitalObject">Boys' Town Calling, December 1983, Summer issue</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Boys' Town Calling, December 1983, Summer issue</unittitle>
+<unitid>SLQ Record number: 690424</unitid>
+<unitdate>December 1983 - February 1984</unitdate>
+<abstract>This is a digital copy of an issue of <span style="font-style:italic">Boys' Town Calling</span>. This publication from BoysTown (Beaudesert) was published six times a year between 1961 and 1966, and then published quarterly from 1967 to 1995. Copies of this publication are held at the State Library of Queensland</abstract>
+<note label="rights">Digital copy kindly supplied by Sandy Turner</note>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

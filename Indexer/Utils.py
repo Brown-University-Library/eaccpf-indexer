@@ -106,17 +106,15 @@ def getFileNameExtension(Filename):
     """
     Get the filename extension. If an extension is not found, return ''.
     """
-    if "." in Filename:
-        parts = Filename.split(".")
-        return parts[-1]
-    return ''
+    _, ext = os.path.splitext(Filename)
+    return ext.replace('.', '')
 
 def getFilenameWithAlternateExtension(Filename, Extension):
     """
     Returns the file name with the specified replacement extension.
     """
     name, _ = os.path.splitext(Filename)
-    return name + "." + Extension
+    return "{0}.{1}".format(name, Extension)
 
 def getRecordIdFromFilename(Filename):
     """
@@ -207,6 +205,20 @@ def loadTransform(Path):
     xslt_root = etree.XML(xslt_data)
     xslt_file.close()
     return etree.XSLT(xslt_root)
+
+def map_url_to_local_path(url, site_root_path):
+    """
+    Determine the local file system path to a file, given a local path to the
+    root of a web site and a URL to the file resource in question.
+    """
+    parsed = urlparse.urlparse(url)
+    path = site_root_path + os.sep + parsed.path
+    abs_path = os.path.abspath(path)
+    # if the abs_path is above the site_root_path, then return the
+    # site_root_path
+    if not os.path.commonprefix([site_root_path, abs_path]) == site_root_path:
+        return site_root_path
+    return abs_path
 
 def parseUnitDate(Date):
     """

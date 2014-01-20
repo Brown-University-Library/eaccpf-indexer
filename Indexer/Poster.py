@@ -7,7 +7,6 @@ from lxml import etree
 
 import Cfg
 import argparse
-import glob
 import logging
 import os
 import requests
@@ -71,7 +70,7 @@ class Poster(object):
 
     def post(self, Source, Url):
         """
-        Post Solr Input Documents in the Source directory to the Solr core if 
+        Post Solr Input Documents in the Source directory to the Solr core if
         they have all required fields.
         """
         # check state
@@ -79,13 +78,16 @@ class Poster(object):
         # ensure that the posting URL is correct
         url = Url + 'update' if Url.endswith('/') else Url + '/update'
         # post documents
-        for filename in glob.glob(Source + os.sep + "*.xml"):
+        files = os.listdir(Source)
+        for filename in files:
             try:
+                self.logger.debug("Reading {0}".format(filename))
                 # load the xml document and strip empty tags
                 xml = etree.parse(Source + os.sep + filename)
                 self.strip_empty_elements(xml)
                 data = etree.tostring(xml)
                 # post the document to the index
+                self.logger.debug("Posting {0}".format(filename))
                 resp = requests.post(url, data=data, headers=self.headers)
                 if resp.status_code == 200:
                     self.logger.info("Posted {0}".format(filename))
@@ -126,6 +128,7 @@ class Poster(object):
             if elem.text is None:
                 elem.getparent().remove(elem)
 
+
 if __name__ == '__main__':
     # parse console arguments
     parser = argparse.ArgumentParser(description=__description__)
@@ -137,6 +140,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # execute actions
     poster = Poster()
+    poster.logger.setLevel(logging.DEBUG)
     if args.commit:
         poster.commit(args.commit)
     elif args.flush:

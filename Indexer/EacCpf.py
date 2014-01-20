@@ -44,7 +44,8 @@ class EacCpf(object):
         self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS }
         self.presentation = PresentationUrl
         self.source = Source
-        self.xml = etree.fromstring(self._load(Source))
+        data = self._load(Source)
+        self.xml = etree.fromstring(data)
         # some documents may be missing the fully specified eac-cpf document
         # namespace attributes, which will result in failures during subsequent
         # operations. we'll check for the missing attribute here so that we can
@@ -58,18 +59,16 @@ class EacCpf(object):
         """
         Load the document content.
         """
-        try:
-            if 'http://' in Source or 'https://' in Source:
-                response = urllib2.urlopen(Source)
-                data = response.read()
-            else:
-                with open(Source, 'r') as f:
-                    data = f.read()
-            # lxml parser won't accept unicode encoded strings and throws an exception
-            # pass it a str instead
-            return str(data)
-        except:
-            return None
+        if 'http://' in Source or 'https://' in Source:
+            response = urllib2.urlopen(Source)
+            data = response.read()
+        else:
+            assert os.path.exists(Source), "Resource does not exist {0}".format(Source)
+            with open(Source, 'r') as f:
+                data = f.read()
+        # lxml parser won't accept unicode encoded strings and throws an
+        # exception. pass it a str instead
+        return str(data)
 
     def getAbstract(self):
         """
@@ -139,6 +138,7 @@ class EacCpf(object):
                             "doc": "urn:isbn:1-931666-33-4",
                             "obj": "urn:isbn:1-931666-22-9",
                         }
+                        # unit_title = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unittitle", namespaces=nz)
                         abstract = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
                         abstract = abstract[0].text if abstract else ''
                         localtype = self.getLocalType()

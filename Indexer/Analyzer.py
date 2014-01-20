@@ -8,13 +8,13 @@ from StringIO import StringIO
 from datetime import datetime
 from mako.template import Template
 from lxml import etree
+
+import Cfg
 import Utils
 import inspect
 import logging
 import os
 import shutil
-
-LOG_EXC_INFO = False
 
 
 class Analyzer(object):
@@ -36,15 +36,14 @@ class Analyzer(object):
         path = os.path.dirname(modpath)
         schema = path + os.sep + 'transform' + os.sep + 'eaccpf.xsd'
         try:
-            infile = open(schema, 'r')
-            schema_data = infile.read()
-            schema_root = etree.XML(schema_data)
-            xmlschema = etree.XMLSchema(schema_root)
-            infile.close()
-            self.logger.info("Loaded schema file " + schema)
+            with open(schema, 'r') as f:
+                schema_data = f.read()
+                schema_root = etree.XML(schema_data)
+                xmlschema = etree.XMLSchema(schema_root)
             self.parser = etree.XMLParser(schema=xmlschema)
+            self.logger.info("Loaded EAC-CPF schema {0}".format(schema))
         except Exception:
-            self.logger.error("Could not load schema file " + schema)
+            self.logger.error("Could not load schema file {0}".format(schema))
 
     def _getResourceRelations(self, Data):
         """
@@ -95,9 +94,11 @@ class Analyzer(object):
         Determine if the document is conformant to the EAC-CPF schema.
         """
         try:
-            etree.parse(StringIO(Data), self.parser)
+            # etree.parse(StringIO(Data), self.parser)
+            etree.parse(StringIO(Data))
             return True, []
         except:
+            logging.error("Could not parse source file", exc_info=True)
             errors = []
             for entry in self.parser.error_log:
                 error = str(entry.message)
@@ -170,9 +171,10 @@ class Analyzer(object):
             report['analysis'] = analysis
             output_filename = Filename.replace('xml','yml')
             Utils.writeYaml(Output, output_filename, report)
-            self.logger.info("Wrote analysis to " + output_filename)
+            self.logger.info("Wrote analysis to: {0}".format(output_filename))
         except:
-            self.logger.error("Could not complete analysis for " + Filename, exc_info=LOG_EXC_INFO)
+            # @todo write an output file for the failed input file, include the exception in the file
+            self.logger.error("Could not complete analysis for: {0}".format(Filename), exc_info=Cfg.LOG_EXC_INFO)
         
     def analyzeFiles(self, Source, Output, HashIndex, Update=False):
         """
@@ -187,7 +189,7 @@ class Analyzer(object):
                 fileHash = Utils.getFileHash(Source + os.sep + filename)
                 if Update:
                     if filename in HashIndex and HashIndex[filename] == fileHash:
-                        self.logger.info("No change since last update " + filename)
+                        self.logger.info("No change since last update: {0}".format(filename))
                         continue
                 # process the file
                 records.append(filename)
@@ -229,7 +231,7 @@ class Analyzer(object):
             Utils.write(Output, 'index.html', data)
             self.logger.info("Wrote HTML report file")
         except:
-            self.logger.error("Could not write HTML report file", exc_info=LOG_EXC_INFO)
+            self.logger.error("Could not write HTML report file", exc_info=Cfg.LOG_EXC_INFO)
 
     def run(self, Params, Update=False):
         """
@@ -244,8 +246,8 @@ class Analyzer(object):
         if not Update:
             Utils.cleanOutputFolder(output)
         # check state
-        assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
+        assert os.path.exists(source), self.logger.error("Source path does not exist: {0}".format(source))
+        assert os.path.exists(output), self.logger.error("Output path does not exist: {0}".format(output))
         # create an index of file hashes, so that we can track what has changed
         hashIndex = {}
         if Update:

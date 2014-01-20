@@ -21,13 +21,6 @@ class Transformer(object):
     def __init__(self):
         self.log = logging.getLogger()
 
-    def _getIdFromFilename(self,Filename):
-        """
-        Get the record ID from the filename.
-        """
-        recordId, _ = os.path.splitext(Filename)
-        return recordId
-
     def mergeDigitalObjectIntoSID(self, Source, Output):
         """
         Merge the digital object record into the Solr Input Document. Do not
@@ -95,7 +88,7 @@ class Transformer(object):
                 root.append(doc)
                 # add required records
                 recordId = etree.Element("field", name="id")
-                recordId.text = self._getIdFromFilename(filename)
+                recordId.text = Utils.getRecordIdFromFilename(filename)
                 doc.append(recordId)
             else:
                 # read output (Solr Input Document) data file
@@ -191,8 +184,8 @@ class Transformer(object):
         for source in Sources:
             for filename in os.listdir(source):
                 if Utils.isInferredYaml(source + os.sep + filename):
-                    outputFileName = self._getIdFromFilename(filename) + ".xml"
-                    self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + outputFileName)
+                    output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
+                    self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + output_filename)
     
     def run(self, Params, StackTrace=False):
         """
