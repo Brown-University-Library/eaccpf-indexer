@@ -12,7 +12,6 @@ from geopy.geocoders.osm import Nominatim
 
 import Cfg
 import Utils
-import glob
 import logging
 import os
 import time
@@ -32,7 +31,7 @@ class Facter(object):
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger()
 
-    def _addValueToDictionary(self,dic,key,value):
+    def _addValueToDictionary(self, dic, key, value):
         """
         For dictionaries that hold multiple values for each key.
         """
@@ -45,11 +44,12 @@ class Facter(object):
         """
         Parse a location record or address string into components.
         """
+        address = str(Address)
         street = city = region = postal = country = ''
         try:
             # split the address string into segments
-            segments = Address.split(',')
-            country = segments.pop().strip().encode('utf8')
+            segments = address.split(',')
+            country = segments.pop().strip()
             # a token is a postal code if it has numbers in it
             tokens = segments.pop().strip().split(' ')
             for token in reversed(tokens):
@@ -61,15 +61,15 @@ class Facter(object):
             # be the city
             for token in reversed(tokens):
                 if region == '':
-                    region = tokens.pop().strip().encode('utf8')
+                    region = tokens.pop().strip()
                 elif city == '':
-                    city = ' '.join(tokens).strip().encode('utf8')
+                    city = ' '.join(tokens).strip()
             if segments and city == '':
-                city = segments.pop().strip().encode('utf8')
+                city = segments.pop().strip()
             # the remaining segments should be part of the street
             # address
             if segments:
-                street = ','.join(segments).strip().encode('utf8')
+                street = ','.join(segments).strip()
         except:
             pass
         return street, city, region, postal, country
@@ -83,7 +83,6 @@ class Facter(object):
         try:
             for e in result.entities:
                 entity = {}
-                #entity['typeReference'] = self._cleanText(e['_typeReference'])
                 entity['type'] = Utils.cleanText(e['_type'])
                 entity['name'] = Utils.cleanText(e['name'])
                 self._addValueToDictionary(out, "entities", entity)
@@ -93,7 +92,6 @@ class Facter(object):
         try:
             for r in result.relations:
                 relation = {}
-                #relation['typeReference'] = self._cleanText(r['_typeReference'])
                 relation['type'] = Utils.cleanText(r['_type'])
                 self._addValueToDictionary(out, "relations", relation)
         except:
@@ -102,12 +100,60 @@ class Facter(object):
         try:
             for t in result.topics:
                 top = {}
-                #top['category'] = self._cleanText(t['category'])
                 top['categoryName'] = Utils.cleanText(t['categoryName'])
                 self._addValueToDictionary(out, "topics", top)
         except:
             pass
         return out
+
+    def infer(self, Update=False):
+        """
+        Infer data for each source file.
+        """
+        # the list of records that have been processed
+        records = []
+        # process files
+        files = os.listdir(self.source)
+        for filename in files:
+            if filename.endswith("xml"):
+                try:
+                    # record the name of the file so that we know we've processed it
+                    records.append(filename)
+                    doc = EacCpf(self.source + os.sep + filename)
+                    fileHash = doc.getHash()
+                    # if the file has not changed since the last run then skip it
+                    if Update and filename in self.hashIndex and self.hashIndex[filename] == fileHash:
+                        self.logger.info("No change since last update {0}".format(filename))
+                        continue
+                    # process the file
+                    self.hashIndex[filename] = fileHash
+                    # load the inferred data file if it already exists
+                    inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
+                    inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
+                    if 'locations' in self.actions:
+                        places = doc.getLocations()
+                        locations = self.inferLocations(places, sleep=self.sleep)
+                        inferred['locations'] = locations
+                    else:
+                        freeText = doc.getFreeText()
+                        if 'entities' in self.actions:
+                            entities = self.inferEntitiesWithCalais(freeText)
+                            inferred['entities'] = entities
+                        if 'named-entities' in self.actions:
+                            namedEntities = self.inferEntitiesWithAlchemy(freeText)
+                            inferred['named-entities'] = namedEntities
+                        if 'text-analysis' in self.actions:
+                            textAnalysis = self.inferEntitiesWithNLTK(freeText)
+                            inferred['text-analysis'] = textAnalysis
+                    # write inferred data to output file
+                    Utils.writeYaml(self.output, inferred_data_filename, inferred)
+                    self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
+                    # sleep between requests
+                    time.sleep(self.sleep)
+                except:
+                    self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+        # return list of processed records
+        return records
 
     def inferEntitiesWithAlchemy(self, Text):
         """
@@ -151,7 +197,7 @@ class Facter(object):
             if 'longitude' in place and 'latitude' in place:
                 locations.append(place)
                 self.logger.debug("Record has existing location data")
-            else:
+            elif 'placeentry' in place:
                 # ISSUE #5 the geocoder can return multiple locations when an address is
                 # not specific enough. Here we record each returned address, with the intent
                 # that an archivist review the inferred data at a later date and then
@@ -176,80 +222,31 @@ class Facter(object):
                     self.logger.warning("Geocoding error", exc_info=True)
         return locations
 
-    def infer(self, Source, Output, Actions, HashIndex, Sleep, Params, Update):
-        """
-        Infer data for each source file.
-        """
-        # the list of records that have been processed
-        records = []
-        # process files
-        files = os.listdir(Source)
-        for filename in files:
-            if filename.endswith("xml"):
-                try:
-                    # record the name of the file so that we know we've processed it
-                    records.append(filename)
-                    doc = EacCpf(Source + os.sep + filename)
-                    fileHash = doc.getHash()
-                    # if the file has not changed since the last run then skip it
-                    if Update and filename in HashIndex and HashIndex[filename] == fileHash:
-                        self.logger.info("No change since last update {0}".format(filename))
-                        continue
-                    # process the file
-                    HashIndex[filename] = fileHash
-                    # load the inferred data file if it already exists
-                    inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
-                    inferred = Utils.tryReadYaml(Output, inferred_data_filename)
-                    if 'locations' in Actions:
-                        places = doc.getLocations()
-                        locations = self.inferLocations(places, sleep=Sleep)
-                        inferred['locations'] = locations
-                    else:
-                        freeText = doc.getFreeText()
-                        if 'entities' in Actions:
-                            entities = self.inferEntitiesWithCalais(freeText)
-                            inferred['entities'] = entities
-                        if 'named-entities' in Actions:
-                            namedEntities = self.inferEntitiesWithAlchemy(freeText)
-                            inferred['named-entities'] = namedEntities
-                        if 'text-analysis' in Actions:
-                            textAnalysis = self.inferEntitiesWithNLTK(freeText)
-                            inferred['text-analysis'] = textAnalysis
-                    # write inferred data to output file
-                    Utils.writeYaml(Output, inferred_data_filename, inferred)
-                    self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
-                    # sleep between requests
-                    time.sleep(Sleep)
-                except:
-                    self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-        # return list of processed records
-        return records
-
-    def run(self, Params, Update=False, StackTrace=False):
+    def run(self, Params, Update=False):
         """
         Execute analysis using the specified parameters.
         """
         # get parameters
-        actions = Params.get("infer", "actions").split(",")
-        output = Params.get("infer", "output")
-        sleep = Params.getfloat("infer", "sleep")
-        source = Params.get("infer", "input")
+        self.actions = Params.get("infer", "actions").split(",")
+        self.output = Params.get("infer", "output")
+        self.sleep = Params.getfloat("infer", "sleep")
+        self.source = Params.get("infer", "input")
         # self.geocoder_api_key = Params.get("infer", "geocoder_api_key")
         # clear output folder
-        if not os.path.exists(output):
-            os.makedirs(output)
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
         if not Update:
-            Utils.cleanOutputFolder(output)
+            Utils.cleanOutputFolder(self.output)
         # exit if there are no actions to execute
-        if len(actions) < 1:
+        if len(self.actions) < 1:
             return
         # load api keys, services for specified operations
-        if 'named-entities' in actions:
+        if 'named-entities' in self.actions:
             try:
                 self.alchemy_api_key = Params.get("infer", "alchemy_api_key")
             except:
                 self.alchemy_api_key = ''
-        if 'entities' in actions:
+        if 'entities' in self.actions:
             try:
                 self.calais_api_key = Params.get("infer", "calais_api_key")
                 # create an OpenCalais object, load API key
@@ -260,21 +257,21 @@ class Facter(object):
                 self.calais_api_key = ''
                 self.calais = None
         # check state before running
-        assert os.path.exists(source), self.logger.error("Input path does not exist: {0}".format(source))
-        assert os.path.exists(output), self.logger.error("Output path does not exist: {0}".format(output))
+        assert os.path.exists(self.source), self.logger.error("Input path does not exist: {0}".format(self.source))
+        assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
         # create an index of file hashes, so that we can track what has changed
-        hashIndex = {}
+        self.hashIndex = {}
         if Update:
-            hashIndex = Utils.loadFileHashIndex(output)
+            hashIndex = Utils.loadFileHashIndex(self.output)
         # execute inference actions
-        records = self.infer(source, output, actions, hashIndex, sleep, Params, Update)
+        records = self.infer(Update)
         # remove records from the index that were deleted in the source
         if Update:
             self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, hashIndex)
+            Utils.purgeIndex(records, self.hashIndex)
         # remove files from the output folder that are not in the index
         if Update:
             self.logger.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(output, hashIndex)
+            Utils.purgeFolder(self.output, self.hashIndex)
         # write the updated file hash index
-        Utils.writeFileHashIndex(hashIndex, output)
+        Utils.writeFileHashIndex(self.hashIndex, self.output)

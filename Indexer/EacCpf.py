@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 from DigitalObject import DigitalObject
 from lxml import etree
 
+import Cfg
 import Utils
 import hashlib
 import logging
@@ -132,18 +133,26 @@ class EacCpf(object):
                         # then it is not a thumbnail for this record
                         if Thumbnail and len(descNote) > 0 and not "Include in Gallery" in descNote[0].text:
                             continue
-                        title = relEntry[0].text
-                        presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']
                         nz = {
                             "doc": "urn:isbn:1-931666-33-4",
                             "obj": "urn:isbn:1-931666-22-9",
                         }
-                        # unit_title = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unittitle", namespaces=nz)
+                        # ISSUE #30 in some cases, the title string contains
+                        # markup in it, which results in only a portion of the
+                        # title string being returned. Here we concat the text
+                        # content of all the child nodes together to create a
+                        # single title string
+                        title = ''
+                        title_elements_0 = rel.xpath("./doc:relationEntry", namespaces=self.ns)
+                        for t in title_elements_0.pop().itertext():
+                            title += t
                         abstract = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
                         abstract = abstract[0].text if abstract else ''
-                        localtype = self.getLocalType()
                         alternate_title = self.getTitle()
+                        localtype = self.getLocalType()
+                        presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']
                         unitdate = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:unitdate", namespaces=nz)
+                        # create the digital object
                         if unitdate and not hasattr(unitdate, 'lower'):
                             unitdate = unitdate[0].text
                             dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, UnitDate=unitdate, AlternateTitle=alternate_title)
@@ -152,7 +161,7 @@ class EacCpf(object):
                             dobj = DigitalObject(self.source, self.metadata, presentation, title, abstract, localtype, FromDate=fromDate, ToDate=toDate, AlternateTitle=alternate_title)
                         dobjects.append(dobj)
             except:
-                pass
+                self.log.error("Could not retrieve digital object {0}".format(self.source), exc_info=Cfg.LOG_EXC_INFO)
         return dobjects
 
     def getEntityId(self):
@@ -315,11 +324,10 @@ class EacCpf(object):
         names = []
         try:
             val = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part", namespaces=self.ns)
-            if val:
-                for part in val:
-                    if part.text is not None:
-                        names.append(part.text)
-                return names
+            for part in val:
+                for t in part.itertext():
+                    names.append(t)
+            return names
         except:
             pass
         return names

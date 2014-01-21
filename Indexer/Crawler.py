@@ -47,7 +47,7 @@ class Crawler(object):
             # construct an assumed public url for the file
             baseurl = Base + path.replace(Source, '')
             baseurl += '/' if not baseurl.endswith('/') else baseurl
-            self.log.info("Source {} ({})".format(path, baseurl))
+            self.log.debug("Visiting {} ({})".format(path, baseurl))
             # for each file in the current path
             for filename in files:
                 if filename.endswith(".htm") or filename.endswith(".html"):
