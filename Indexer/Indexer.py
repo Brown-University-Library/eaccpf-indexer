@@ -85,7 +85,7 @@ class Indexer(object):
         try:
             self.args = self.parser.parse_args()
             self.configureLogging()
-            self.logger.info('Started with ' + ' '.join(sys.argv[1:]))
+            self.logger.info("Started with {0}".format(' '.join(sys.argv[1:])))
         except Exception, e:
             self.parser.print_help()
             sys.exit(e)

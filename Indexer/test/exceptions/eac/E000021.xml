@@ -1,0 +1,275 @@
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://www.esrc.unimelb.edu.au" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd" ns0:metadata="http://www.asmp.esrc.unimelb.edu.au/eac/E000021.xml" ns0:presentation="http://www.asmp.esrc.unimelb.edu.au/biogs/biogs/E000021b.htm" ns0:source="/srv/ha/web/ASMP/LIVE/eac/E000021.xml">
+<control>
+<recordId>E000021</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>Insert EAC agentcode value here!</agencyCode>
+<agencyName>Arrowsmith's Australian Maps</agencyName>
+<descriptiveNote>
+<p/>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Map State</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2010-08-03">2010-08-03</eventDateTime>
+<agentType>human</agentType>
+<agent>Dorothy F. Prescott</agent>
+<eventDescription/>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-04-09">2013-04-09</eventDateTime>
+<agentType>human</agentType>
+<agent/>
+<eventDescription/>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.asmp.esrc.unimelb.edu.au/biogs/E000021b.htm</entityId>
+<entityType>culturalArtefact</entityType>
+<nameEntry><part>Discoveries in Western Australia, 1833/6 (1838/1)</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><places>
+</places>
+<biogHist>
+<abstract>Discoveries in Western Australia from documents furnished to the Colonial Office by J. S. Roe, Esqre. Surv. Genl. / compiled by John Arrowsmith [Pl.] 36. Scale [ca. 1:970 000 at S35&#176;]. S31&#176;00'--S35&#176;07'/E113 53'-E120&#176;15'. London, Pubd. by J. Arrowsmith, May 31st. 1838 by J. Arrowsmith, 35 Essex Street, Strand. O.120.Ordered by the House of Commons to be printed 1838.
+1 map : col. ; 50.0 x 61.5cm.
+Insets: Guildford, Augusta, Kelmscott, Perth, Fremantle
+Note: Remarks by His Excellency Sir Jas Stirling.
+Marginal title: Statistical Report on Western Australia 1837</abstract>
+<p>Shows</p>
+<h4>TITLE:</h4>
+<p>The dedication has been removed and a compilation statement supplied</p>
+<h4>IMPRINT:</h4>
+<p><span style="font-weight:bold">The imprint now reads  May 31st. 1838 by J. Arrowsmith, 35 Essex Street, Strand.</span><br/>
+<span style="font-weight:bold">An additional imprint reads: Ordered by the House of Commons to be printed 1838.</span></p>
+<h4>PAPER NO.</h4>
+<p>The code O.120 precedes the second imprint</p>
+<h4>INSETS:</h4>
+<h5>Guildford</h5>
+<p>North-east of Perth shows land holders W. Tanner and J. Stirling north of the Swan River and to the west of the Swan, W. Tanner, S. Dodds, F. H. Byrne, Capt. Picking and N. S. Talbot. The Helena River flows into the Swan from the east. Public buildings and streets named.</p>
+<h5>Augusta</h5>
+<p>Plan of the town at the mouth of the Blackwood River, land allotments shown fronting Flinders Bay.</p>
+<h5>Kelmscott</h5>
+<p>Plan of the settlement shown on the right bank of the Canning River with allotments laid out along the river bank.</p>
+<h5>Perth</h5>
+<p>Town plan shows allotments fronting the Swan River. St Georges Terrace named. Large areas of swamps behind the front streets overlie allotments. To the east along the right bank of the Swan are land holdings in the names of P. Brown, W. T. Graham, A. H. Stone, W. B. Andrews and P. Wicks. A burial ground is marked east of the town.</p>
+<h5>Fremantle</h5>
+<p>Town plan with streets and land allotments laid out and public areas designated.</p>
+<h4>NOTE</h4>
+<h5>Lower left: </h5>
+<p>Remarks by His Excellency Sir James Stirling relate to landscape description and the names of the districts none of which have been regularly surveyed or defined.</p>
+<h4>MARGINAL TITLE:</h4>
+<p>Top right: Title Statistical Report on Western Australia 1837</p>
+<h4>COUNTIES:</h4>
+<p>TWISS, PERTH, YORK, MURRAY, GRANTHAM, WELLINGTON, WICKLOW, SUSSEX, NELSON, GODERICH, HAY, LANARK, STIRLING, PLANTAGENET AND KENT</p>
+<h4>EXPLORERS' ROUTES:</h4>
+<p>Shows the routes of Lt. William Preston, Dr. Alexander Collie, Ens. Robert Dale, Lt. A. Erskine, Capt. Mark John Currie, James Stirling, John Septimus Roe, John Garrett Bussell, Capt. Thomas Bannister, Dr. Thomas Braidwood Wilson and convicts</p>
+<h4>REFERENCE:</h4>
+<p>F 2510<br/>
+Not in Tooley</p>
+<h4>NOTES</h4>
+<p>Shows the south-western tip of Western Australia from 31&#176;S to 35&#176;S and from the west coast inland to 120&#176;E. Coastal explorations shown include Lt. W. Preston in the Colonist north from Fremantle in Nov. 1830, and with Dr. A. Collie south to the Bay du Geographe in 1829.</p>
+<p>East and north of Perth are explorations by Ens. R. Dale in Oct. 1830 and 1831 of the Swan, Helena and Avon valleys. Lt. A. Erskine's route in 1830 is parallel and north of Ensign Dale's 1830 track from the Swan to the Avon valleys.</p>
+<p>Capt. M. J. Currie's [1829] track going south from Cockburn Sound to Peel Inlet and returning appears.</p>
+<p>Govr. James Stirling and J. S. Roe's [1830] tracks examining the Preston and Collie rivers flowing into Leschenault Inlet are marked.</p>
+<p>A supposed track of convicts from King Georges Sound going north-west to the Vasse Inlet in 1830 appears.<br/>
+In the south-west region the tracks of J.G. Bussell, from Vasse Inlet south to Augusta and back, in 1831 are shown.<br/>
+An overland route established by Capt. T. Bannister's explorations from Fremantle to the south coast at Albany in Feb. 1831 appears.</p>
+<p>Also in the vicinity of Albany the tracks of Dr. T. B. Wilson a naval surgeon, from Albany west as far as Wilson Inlet and north to the vicinity of present day Kendenup and back to Albany in 1829, are shown. In the same area Dr. A. Collie's track in April 1831 is sown as a circular route north and west of Wyndham.</p>
+<p>Govr. James Stirling and J. S. Roe's route northwest of Albany in 1831 is marked and their track in the H.M.S. Sulphur travelling east from Albany along the south coast to C. Knob (119&#176;15'E).</p>
+<p>Ensign Dale's route from Albany north to the ranges and back in 1832 is also marked.</p>
+<p>Lt. W. Preston's route is shown travelling west in 1831 along the south coast to Green Pt. by boat after disembarking from H.M.S. Sulphur just east of Rame Pt (Irwin Inlet) where his boat was wrecked. From this point the journey was overland via Augusta, Vasse Inlet and up the west coast to the Murray River (32&#176;25'S) and the north to Cockburn Sound.</p>
+<p><h3 id="changes" class="article-title">Changes AND ADDITIONS</h3></p>
+<h4>TITLE:</h4>
+<p>The title is adjusted by removing the dedication and substituting compiled by John Arrowsmith.</p>
+<h4>IMPRINTS:</h4>
+<p>The imprint has been changed to read May 31st. 1838 by J. Arrowsmith, 35 Essex Street, Strand.<br/>
+The second imprint reads: At the lower left outside the neat line, Ordered by the House of Commons to be printed 1838.</p>
+<h4>PAPER NO.</h4>
+<p>The code O.120 precedes the second imprint.</p>
+<h4>MARGINAL TITLE:</h4>
+<p>The addition of a marginal title Statistical Report on Western Australia 1837 appears in the top right hand margin of the map.</p>
+<h5>State 1833/6 (1838) occurs also in</h5>
+<p>Western Australia. Returns to two addresses of the Honourable The House of Commons, dated 26 June and 3 August 1838; for 1. Copies of, or Extracts from, a Statistical Report of the Colony of Western Australia, which accompanied Sir James Stirling's Despatch of the 15 October 1837; also 2. The Land Regulations contained in the Appendix, addressed to the Secretary of State for the Colonies. 3. Copy of a Despatch from the Governor of Western Australia to Lord Glenelg, dated 3 December, 1837 &#8230; Ordered, by the House of Commons to be Printed, 6 August 1838 &#8230; [687]. The map between pages 2 and 3. House of Commons Sessional Papers, vol. XL, 1837-38. F 2510</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1829-01-01">1829</fromDate>
+<toDate standardDate="1833-12-31">1833</toDate>
+</dateRange>
+<event>Situation date</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1838-05-31">31 May 1838</fromDate>
+<toDate standardDate="1838-05-31">31 May 1838</toDate>
+</dateRange>
+<event>Map Publication Date</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000020b.htm">
+<relationEntry localType="Map State">
+Discoveries in Western Australia, 1833/5 (1834)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000161b.htm">
+<relationEntry localType="Person">
+Stirling, James (1791 - 1865)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000151b.htm">
+<relationEntry localType="Person">
+Dale, Robert (1810 - 1853)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000158b.htm">
+<relationEntry localType="Person">
+Wilson, Thomas Braidwood (1792 - 1843)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000146b.htm">
+<relationEntry localType="Person">
+Bannister, Capt Thomas (1799 - 1874)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000171b.htm">
+<relationEntry localType="Person">
+Moore, George Fletcher (1798 - 1886)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000172b.htm">
+<relationEntry localType="Person">
+Erskine, Archibald
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000135b.htm">
+<relationEntry localType="Person">
+Barker, Collet (1786 - 1831)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000136b.htm">
+<relationEntry localType="Person">
+Roe, John Septimus (1797 - 1878)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000150b.htm">
+<relationEntry localType="Person">
+Currie, Mark John (1795 - 1874)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000160b.htm">
+<relationEntry localType="Person">
+Collie, Alexander (1793 - 1835)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000159b.htm">
+<relationEntry localType="Person">
+Bussell, John Garrett (1803 - 1875)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000015b.htm">
+<relationEntry localType="Map Summary">
+Discoveries in Western Australia
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000022b.htm">
+<relationEntry localType="Map State">
+Discoveries in Western Australia, 1833/7 (1838/2)
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Discoveries in Western Australia, 1833/6 (1838/1)', in Arrowsmith's Australian Maps, Dorothy Prescott</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Discoveries in Western Australia, 1833/6 (1838/1)</title>
+<imprint>
+<publisher/>
+</imprint>
+<bibseries>
+<title render="italic">Arrowsmith's Australian Maps</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000021b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000043.htm">
+<relationEntry localType="published">Book: Bibliography of Australia</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Ferguson, John Alexander</name>
+<title render="italic">Bibliography of Australia</title>
+<imprint>
+<place>Sydney</place>
+<publisher>Angus and Robertson</publisher>
+<date>1941-1969</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000022.htm">
+<relationEntry localType="published">Book: The mapping of Australia and Antarctica</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Tooley, Ronald Vere</name>
+<title render="italic">The mapping of Australia and Antarctica</title>
+<imprint>
+<place>London</place>
+<publisher>Holland Press</publisher>
+<date>1985</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/archives/A00000285.htm">
+<relationEntry localType="archival">Western Australia. Returns to two addresses of the Honourable the House of Commons, dated 26 June and 3 August 1838</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>The University of Melbourne Library, Special Collections</repository>
+<unittitle>Western Australia. Returns to two addresses of the Honourable the House of Commons, dated 26 June and 3 August 1838</unittitle>
+<unitid>SpC/AX f 994.1 E58</unitid>
+<abstract>for: 1, copies of, or extracts from, a statistical report of the colony of Western Australia, which accompanied Sir James Stirling's despatch of the 15 October 1837 ...</abstract>
+<physdesc>
+<extent/>
+</physdesc>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/objects/D00000116.htm">
+<relationEntry localType="digitalObject">Discoveries in Western Australia, 1833/6 (1838/1)</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Discoveries in Western Australia, 1833/6 (1838/1)</unittitle>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>

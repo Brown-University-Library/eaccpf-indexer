@@ -195,6 +195,12 @@ class DigitalObject(object):
         """
         return self.dobj_source
 
+    def getTitle(self):
+        """
+        Get the title.
+        """
+        return self.title
+
     @load_metadata_on_demand
     def getType(self):
         """

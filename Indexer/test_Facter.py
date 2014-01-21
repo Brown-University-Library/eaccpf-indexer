@@ -24,13 +24,16 @@ class TestFacter(unittest.TestCase):
         """
         pass
 
-    def test_init(self):
+    def test__init__(self):
         """
         It should return an instance of the class.
         """
         self.assertNotEqual(self.facter,None)
 
-    def test_getAddressParts(self):
+    def test__addValueToDictionary(self):
+        pass
+
+    def test__getAddressParts(self):
         """
         It should return the components of the address string.
         """
@@ -52,6 +55,38 @@ class TestFacter(unittest.TestCase):
             self.assertEqual(region,cases[case][2])
             self.assertEqual(postal,cases[case][3])
             self.assertEqual(country,cases[case][4])
+
+    def test__getCalaisResultAsDictionary(self):
+        """
+        """
+        pass
+
+    def test_inferEntitiesWithAlchemy(self):
+        """
+        """
+        pass
+
+    def test_inferEntitiesWithCalais(self):
+        """
+        """
+        pass
+
+    def test_inferEntitiesWithNLTK(self):
+        """
+        """
+        pass
+
+    def test_infer(self):
+        """
+        """
+        pass
+
+    def test_inferLocations(self):
+        """
+        It should infer
+        """
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()

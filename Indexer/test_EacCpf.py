@@ -225,10 +225,10 @@ class TestEacCpf(unittest.TestCase):
         for case in cases:
             source, expected = case
             doc = EacCpf.EacCpf(source, 'http://www.example.com')
-            self.assertNotEqual(doc, None)
+            self.assertNotEqual(None, doc)
             result = doc.getLocations()
-            self.assertNotEqual(result, None)
-            self.assertEqual(len(result), expected)
+            self.assertNotEqual(None, result)
+            self.assertEqual(expected, len(result))
 
     def test_getThumbnail(self):
         """
@@ -244,9 +244,29 @@ class TestEacCpf(unittest.TestCase):
         for case in cases:
             source, expected = case
             doc = EacCpf.EacCpf(source, 'http://www.findandconnect.gov.au')
-            self.assertNotEqual(doc, None)
+            self.assertNotEqual(None, doc)
             result = doc.getThumbnail()
-            self.assertEqual(result != None, expected)
+            self.assertEqual(expected, result != None)
+
+    def test_getTitle(self):
+        """
+        It should return the name for the record. Where the name comprises
+        multiple parts, it should return the concatenated title string.
+        See issue #30.
+        """
+        path = os.sep.join([self.module_path, "test", "eaccpf"])
+        cases = [
+            (path + os.sep + 'markup_in_title_1.xml', "Anglicare Victoria"),
+            (path + os.sep + 'markup_in_title_2.xml', "Anglicare Victoria -  Corporate Body"),
+            (path + os.sep + 'markup_in_title_3.xml', "Anglicare Victoria (1984/1)"),
+            (path + os.sep + 'markup_in_title_4.xml', "Anglicare Victoria (1984/1) -  Corporate Body"),
+        ]
+        for case in cases:
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.findandconnect.gov.au', 'http://www.findandconnect.gov.au')
+            self.assertNotEqual(None, doc)
+            result = doc.getTitle()
+            self.assertEqual(expected, result)
 
     def test_hasLocation(self):
         """

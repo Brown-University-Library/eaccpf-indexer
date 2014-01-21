@@ -224,8 +224,15 @@ class HtmlPage(object):
         """
         Get the document title.
         """
-        title = self.tree.findall('//title')
-        return title[0].text
+        # ISSUE #30 in some cases, the title string contains markup in it,
+        # which results in only a portion of the title string being
+        # returned. Here we concat the text content of all the child nodes
+        # together to create a single title string
+        title = ''
+        title_elements = self.tree.xpath("//title")
+        for t in title_elements.pop().itertext():
+            title += t
+        return title
 
     def getType(self):
         """

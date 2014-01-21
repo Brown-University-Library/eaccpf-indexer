@@ -210,7 +210,26 @@ class TestHtmlPage(unittest.TestCase):
             html = HtmlPage.HtmlPage(source)
             result = html.getRecordId()
             self.assertEqual(expected, result)
-            
+
+    def test_getTitle(self):
+        """
+        It should return the title value from the document HEAD. For titles
+        with markup, the markup should be removed. See issue #30.
+        """
+        cases = [
+            (self.test_html + 'markup_in_title_1.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
+            (self.test_html + 'markup_in_title_2.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
+            (self.test_html + 'markup_in_title_3.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
+            (self.test_html + 'markup_in_title_4.htm',"Anglicare Victoria (1978/1) - Organisation - Find & Connect - Victoria"),
+            (self.test_html + 'markup_in_title_5.htm',"Anglicare Victoria (1978/1) - Organisation - Find & Connect - Victoria"),
+        ]
+        for case in cases:
+            source, expected = case
+            doc = HtmlPage.HtmlPage(source)
+            self.assertNotEqual(None, doc)
+            result = doc.getTitle()
+            self.assertEqual(expected, result)
+
 if __name__ == '__main__':
     unittest.main()
 

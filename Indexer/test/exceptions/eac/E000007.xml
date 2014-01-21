@@ -1,0 +1,258 @@
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://www.esrc.unimelb.edu.au" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd" ns0:metadata="http://www.asmp.esrc.unimelb.edu.au/eac/E000007.xml" ns0:presentation="http://www.asmp.esrc.unimelb.edu.au/biogs/biogs/E000007b.htm" ns0:source="/srv/ha/web/ASMP/LIVE/eac/E000007.xml">
+<control>
+<recordId>E000007</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>Insert EAC agentcode value here!</agencyCode>
+<agencyName>Arrowsmith's Australian Maps</agencyName>
+<descriptiveNote>
+<p/>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Map State</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2010-07-29">2010-07-29</eventDateTime>
+<agentType>human</agentType>
+<agent>Dorothy F. Prescott</agent>
+<eventDescription/>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-05-31">2013-05-31</eventDateTime>
+<agentType>human</agentType>
+<agent/>
+<eventDescription/>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.asmp.esrc.unimelb.edu.au/biogs/E000007b.htm</entityId>
+<entityType>culturalArtefact</entityType>
+<nameEntry><part>Map of the Discoveries in Australia, 1834/1 (1832)</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><places>
+</places>
+<biogHist>
+<abstract>Map of the discoveries in Australia copied from the latest M.S. Surveys in the Colonial Office &#8230; by J. Arrowsmith. [Pl.] 35 Scale [ca. 1:3 000 000]. S 26&#176; 30'-S 38&#176; 30'/E 135&#176;-E 154&#176; 20'. London, Pubd. 15th.Feby. 1832 [sic] by J. Arrowsmith, 33 East Street, Red Lion Square.
+1 map : col. ; 49 x 52 cm.
+Insets: Top left. The Colony of Western Australia. -- Bottom left: [Australasia]
+Marginal notes: Top right margin: b) Note on the Karaula River by T. L. Mitchell. -- Bottom left margin: a) Three line description of the Murray River. -- Table: Reference to the tracks of the travellers and the number of miles explored by each.</abstract>
+<p>Shows</p>
+<h4>TITLE:</h4>
+<p>The title includes a dedication to Viscount Goderich as follows:<br/>
+By Permission dedicated to the Right Honble Viscount Goderich. H. M Principal Secretary of State for the Colonies and President of the Royal Geographical Society, by his Lordships obliged servant J. Arrowsmith.</p>
+<h4>EXTENT:</h4>
+<p>The map extends from Moreton Bay, in present day Queensland, to Spencers Gulf, South Australia. The principal feature is the Murray - Lachlan - Murrumbidgee river system as portrayed following Charles Sturt's journey down the Murray to its mouth at Encounter Bay.</p>
+<h4>IMPRINT:</h4>
+<p>London, Pubd. 15th. Feby. 1832 by J. Arrowsmith, 33 East Street, Red Lion Square.</p>
+<h4>PLATE NO:</h4>
+<p>35</p>
+<h4>COUNTIES:</h4>
+<p>The nineteen counties in New South Wales are outlined and named on the map.</p>
+<h4>TABLE: EXPLORERS</h4>
+<p>Reference to the tracks of the travellers and the number of miles explored by each<br/>
+Shows 12 routes being those of John Oxley 1817, 1818;[Mark John] Currie 1823; [Hamilton] Hume 1824; Allan Cunningham 1823, 1825, 1825, 1827, 1828, 1829 and [Charles] Sturt 1828, 1830.<br/>
+Additional routes not shown in the table are noted below. See Thomas Mitchell</p>
+<h4>INSET:</h4>
+<p>Inset map shows south-west of Western Australia from Cape Leschenault on the west coast to Mt Barren on the south coast 35&#176;12'S/120&#176;E, with the routes of Captain Bannister from Perth to Point Nuyts, and Ensign Dale from Perth east to Mt Stirling in 1830. The inset remains unchanged for the life of the map.</p>
+<h4>REFERENCE:</h4>
+<p>Not in Tooley.</p>
+<h4>NOTES:</h4>
+<h5>New South Wales</h5>
+<p>The westward internal flowing rivers of New South Wales are tentatively indicated from the discoveries of the various explorers. The eastern flowing rivers in New South Wales are mapped from Port Macquarie on the east coast south to Broulee. The Great Dividing Range appears in sections named as Australian Alps or White Mountains, the Blue Mountains, and north of these, the ranges are unnamed. Additionally and not shown in the table of routes are the tracks of Thomas Mitchell northwards to the Darling River along the a) Gwydir and b)Karaula Rivers in January and February 1832 from Bullabalakit 23rd Dec.1831 just south of Hardwickes Range in northern New South Wales. Allan Cunningham named the Dumaresque or Karuala River (Aboriginal name) and the Gwydir or Kindur (Aboriginal name). Contrary to what is stated in Tooley (1999), the tracks appearing on the map but not named in the table are those of Thomas Mitchell rather than Allan Cunningham who was in England at this period.</p>
+<chronList><chronItem>
+<dateRange><fromDate standardDate="1817-01-01">1817</fromDate>
+<toDate standardDate="1832-12-31">1832</toDate>
+</dateRange>
+<event>Situation date</event>
+</chronItem>
+<chronItem>
+<dateRange><fromDate standardDate="1834-02-15">15 February 1834</fromDate>
+<toDate standardDate="1834-02-15">15 February 1834</toDate>
+</dateRange>
+<event>Map Publication Date</event>
+</chronItem>
+</chronList>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000005b.htm">
+<relationEntry localType="Map State">
+Map of the Discoveries in Australia, 1832/1
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000157b.htm">
+<relationEntry localType="Person">
+Sturt, Charles (1795 - 1869)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000156b.htm">
+<relationEntry localType="Person">
+Oxley, John (1784 - 1828)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000155b.htm">
+<relationEntry localType="Person">
+Mitchell, Thomas Livingstone (1792 - 1855)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000154b.htm">
+<relationEntry localType="Person">
+Hume, Hamilton (1797 - 1873)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000153b.htm">
+<relationEntry localType="Person">
+Cunningham, Allan (1791 - 1839)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000135b.htm">
+<relationEntry localType="Person">
+Barker, Collet (1786 - 1831)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000004b.htm">
+<relationEntry localType="Map Summary">
+Map of the Discoveries in Australia
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000150b.htm">
+<relationEntry localType="Person">
+Currie, Mark John (1795 - 1874)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000152b.htm">
+<relationEntry localType="Person">
+Goderich, Viscount (1782 - 1859)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000151b.htm">
+<relationEntry localType="Person">
+Dale, Robert (1810 - 1853)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000146b.htm">
+<relationEntry localType="Person">
+Bannister, Capt Thomas (1799 - 1874)
+</relationEntry>
+</cpfRelation>
+<cpfRelation cpfRelationType="temporal-later" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000006b.htm">
+<relationEntry localType="Map State">
+Map of the Discoveries in Australia, 1834/2
+</relationEntry>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Map of the Discoveries in Australia, 1834/1 (1832)', in Arrowsmith's Australian Maps, Dorothy Prescott</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Map of the Discoveries in Australia, 1834/1 (1832)</title>
+<imprint>
+<publisher/>
+</imprint>
+<bibseries>
+<title render="italic">Arrowsmith's Australian Maps</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.asmp.esrc.unimelb.edu.au/biogs/E000007b.htm"/>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000022.htm">
+<relationEntry localType="published">Book: The mapping of Australia and Antarctica</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Tooley, Ronald Vere</name>
+<title render="italic">The mapping of Australia and Antarctica</title>
+<imprint>
+<place>London</place>
+<publisher>Holland Press</publisher>
+<date>1985</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/bib/P00000009.htm">
+<relationEntry localType="published">Book Section: Barker, Collet (1784 - 1831)</relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Bach, J.</name>
+<title render="quoted">Barker, Collet (1784 - 1831)</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Melbourne University Press</publisher>
+<date>1966</date>
+</imprint>
+<bibseries>
+<title render="italic">Australian Dictionary of Biography</title>
+<num type="volume">1</num>
+<num type="pages">57</num>
+</bibseries>
+</bibref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/archives/A00000054.htm">
+<relationEntry localType="archival">The London Atlas of Universal Geography, exhibiting the physical &amp; political divisions of the various countries of the world, constructed from original materials ... By ... John Arrowsmith.</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>British Library Map Library</repository>
+<unittitle>The London Atlas of Universal Geography, exhibiting the physical &amp; political divisions of the various countries of the world, constructed from original materials ... By ... John Arrowsmith.</unittitle>
+<unitid>Cartographic Items Maps 60.f.3</unitid>
+<unitdate>1834</unitdate>
+<physdesc>
+<extent/>
+</physdesc>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/archives/A00000003.htm">
+<relationEntry localType="archival">Map of the Discoveries in Australia [cartographic material] : copied from the latest M.S. surveys in the Colonial Office</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>National Library of Australia Map Collection</repository>
+<unittitle>Map of the Discoveries in Australia [cartographic material] : copied from the latest M.S. surveys in the Colonial Office</unittitle>
+<unitid>MAP RM 928</unitid>
+<abstract>By permission dedicated to the Right Honble. Viscount Goderich, H.M., principal Secretary of State for the Colonies, and President of the Royal Geographical Society, by his Lordship's obliged servant J. Arrowsmith</abstract>
+<physdesc>
+<extent/>
+</physdesc>
+</archref>
+</objectXMLWrap>
+
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.asmp.esrc.unimelb.edu.au/objects/D00000006.htm">
+<relationEntry localType="digitalObject">Map of the Discoveries in Australia, 1834/1 (1832)</relationEntry>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<unittitle>Map of the Discoveries in Australia, 1834/1 (1832)</unittitle>
+</archref>
+</objectXMLWrap>
+
+<descriptiveNote>
+<p>Include in Gallery</p>
+</descriptiveNote>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>
