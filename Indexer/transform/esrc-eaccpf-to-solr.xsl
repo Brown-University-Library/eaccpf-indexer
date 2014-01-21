@@ -41,16 +41,20 @@
                 <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function/doc:term">
                     <field name="function"><xsl:value-of select='.'/></field>
                 </xsl:for-each>
-                <!-- abstract: will appear in /biogHist or /biogHist/abstract -->
-                <xsl:choose>
-                    <xsl:when test="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:abstract">
-                        <field name="abstract"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:abstract" /></field>
-                    </xsl:when>
-                    <xsl:otherwise>
-	                    <field name="abstract"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist" /></field>
-                    </xsl:otherwise>
-                </xsl:choose>
+                <!-- abstract: include all content from the biogHist -->
+                <field name="abstract">
+                    <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:*">
+                        <xsl:value-of select="." />
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
+                </field>
 	        	<!-- relations -->
+                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation/doc:relationEntry">
+                    <field name="relation"><xsl:value-of select="." /></field>
+                </xsl:for-each>
+                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation/doc:relationEntry">
+                    <field name="relation"><xsl:value-of select="." /></field>
+                </xsl:for-each>
 	        </doc>
         </add>
     </xsl:template>    

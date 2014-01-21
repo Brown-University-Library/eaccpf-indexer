@@ -50,6 +50,12 @@
                     </xsl:for-each>
                 </field>
 	        	<!-- relations -->
+                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation/doc:relationEntry">
+                    <field name="relation"><xsl:value-of select="." /></field>
+                </xsl:for-each>
+                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation/doc:relationEntry">
+                    <field name="relation"><xsl:value-of select="." /></field>
+                </xsl:for-each>
 	        </doc>
         </add>
     </xsl:template>
