@@ -45,7 +45,7 @@ class EacCpf(object):
         self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS }
         self.presentation = PresentationUrl
         self.source = Source
-        data = self._load(Source)
+        data = Utils.load_from_source(Source)
         self.xml = etree.fromstring(data)
         # some documents may be missing the fully specified eac-cpf document
         # namespace attributes, which will result in failures during subsequent
@@ -55,21 +55,6 @@ class EacCpf(object):
         if len(root) == 0:
             self.log.error("Missing EAC-CPF namespace declaration in {0}".format(Source))
             raise Exception
-
-    def _load(self, Source):
-        """
-        Load the document content.
-        """
-        if 'http://' in Source or 'https://' in Source:
-            response = urllib2.urlopen(Source)
-            data = response.read()
-        else:
-            assert os.path.exists(Source), "Resource does not exist {0}".format(Source)
-            with open(Source, 'r') as f:
-                data = f.read()
-        # lxml parser won't accept unicode encoded strings and throws an
-        # exception. pass it a str instead
-        return str(data)
 
     def getAbstract(self):
         """

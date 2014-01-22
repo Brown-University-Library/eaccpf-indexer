@@ -3,6 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from lxml import etree
+
 import Cfg
 import Utils
 import codecs
@@ -11,133 +13,27 @@ import logging
 import lxml.html
 import os
 import re
-import urllib2
 import urlparse
 
 
 class HtmlPage(object):
     """
-    HTML document pages contain metadata and references to external entities
-    that are the subject of indexing. This class wraps the HTML document and
-    provides convenience methods for extracting required metadata.
-
-    The physical file system needs to mirror the public URLs, otherwise this
-    module will provide erroneous URLs.
-
-    @todo consider deferred loading of HTML content
+    An HTML document conforming to ESRC OHRM standards.
     """
 
     def __init__(self, Source, BaseUrl=None):
         """
-        Source is a file system path or URL to the document. BaseUrl is an
-        optional argument specified when the document is being indexed from a 
-        file system, and is used to determine what the file's public URL should
-        be. If the document contains absolute URLs, then the BaseUrl parameter
-        is ignored.
+        :param Source: file system path or URL to the HTML document
+        :param BaseUrl: override the document URL value by specifying the
+         base or root of the document's public URL. The document URL value then
+         becomes the concatenation of the base URL and the document file name.
         """
         self.log = logging.getLogger()
         self.base = BaseUrl
-        self.data = self._load(Source)
+        self.data = Utils.load_from_source(Source)
         self.filename = Utils.getFileName(Source)
         self.source = Source
-        self.tree = lxml.html.parse(Source)
-        self.url = self._getUrl()
-
-    def _getAbsoluteUrl(self,Base,Path):
-        """
-        Get the absolute URL for a path.
-        """
-        url = urlparse.urljoin(Base, Path)
-        return url.replace(' ','%20')
-        
-    def _getDocumentParentPath(self, Path):
-        """
-        Get the path to the parent of the specified directory.
-        """
-        i = Path.rfind('/')
-        return Path[:i+1]
-
-    def _getFileName(self, Url):
-        """
-        Get the filename from the specified URI or path.
-        """
-        if "/" in Url:
-            parts = Url.split("/")
-            return parts[-1]
-        return Url
-
-    def _getTagAttributeValueByName(self, Tags, Type, Attribute):
-        """l
-        Get the value of the specified digital object field name from a list of
-        tags. Return None if the field name can not be found.
-        """
-        for tag in Tags:
-            field = tag.find(Type)
-            if field:
-                val = field[Attribute]
-                return str(val)
-        return None
-
-    def _getTagContentByClass(self, Tags, Type, FieldName, Field='class'):
-        """
-        Get the value of the specified digital object field name from a list of
-        tags. Return None if the field name can not be found.
-        """
-        for tag in Tags:
-            field = tag.find(Type,{Field:FieldName})
-            if field:
-                return str(field.text)
-        return None
-
-    def _getUrl(self):
-        """
-        Determine the public document URL from the data that has been provided.
-        If a source URI has been assigned to the document, then use that as the
-        default. If not, attempt to extract the DC.Identifier value from the
-        HTML meta tag. If that is not available, use the base URL value plus
-        file name.
-        """
-        # if the source is a URL then use that
-        if 'http://' in self.source or 'https://' in self.source:
-            return self.source
-        # try to get the URL from the DC.Identifier value in the document
-        try:
-            tags = self.tree.findall('//meta')
-            for tag in tags:
-                if 'name' in tag.attrib and tag.attrib['name'] == 'DC.Identifier':
-                    uri = tag.attrib['content']
-                    return uri.replace(' ','%20')
-        except:
-            pass
-        # else, construct it from the base value + filename
-        if self.base and not self.base.endswith('/'):
-            return self.base + '/' + self.filename
-        if self.base:
-            return self.base + self.filename
-        # the fall back is the use the filename
-        return self.filename
-
-    def _getVisibleText(self, element):
-        """Remove all markup from the element text content and return the text.
-        """
-        if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
-            return ''
-        result = re.sub('<!--.*-->|\r|\n', '', str(element), flags=re.DOTALL)
-        result = re.sub('\s{2,}|&nbsp;', ' ', result)
-        return result
-
-    def _load(self, Source):
-        """
-        Load the document content.
-        """
-        if 'http://' in Source or 'https://' in Source:
-            response = urllib2.urlopen(Source)
-            data = response.read()
-            return unicode(data, errors='replace')
-        else:
-            with open(Source, 'r') as f:
-                data = f.read()
-                return unicode(data, errors='replace')
+        self.tree = lxml.html.parse(Source) # @todo should probably use self.data as input instead of parsing a path
 
     def getContent(self):
         """
@@ -151,17 +47,16 @@ class HtmlPage(object):
         """
         try:
             thumbnail = self.tree.findall("//img[@id='dothumb']")
-            url = thumbnail[0].attrib['src']
-            if 'http' in url:
+            thumbnail_url = thumbnail[0].attrib['src']
+            if 'http' in thumbnail_url:
                 # absolute url reference
-                return str(url)
+                return str(thumbnail_url)
             else:
                 # relative url reference
-                pageurl = self.getUrl()
-                return str(urlparse.urljoin(pageurl,url))
+                page_url = self.getUrl()
+                return str(urlparse.urljoin(page_url, thumbnail_url))
         except:
-            self.log.debug("Digital object not found in {0}".format(self.url), exc_info=Cfg.LOG_EXC_INFO)
-        return None
+            self.log.debug("Digital object not found in {0}".format(self.source), exc_info=Cfg.LOG_EXC_INFO)
 
     def getEacCpfUrl(self):
         """
@@ -188,16 +83,16 @@ class HtmlPage(object):
 
     def getHtmlIndexContent(self):
         """
-        Extract HTML metadata and content for indexing.
+        Extract HTML metadata and content for indexing. Downstream data
+        processing will break if any of the values are null.
         """
         data = {}
         _id = self.getRecordId()
-        _uri = self.getUrl()
         _title = self.getTitle()
         _type = self.getType()
         _text = self.getText()
-        data['id'] = '' if _id is None else _id
-        data['presentation_url'] = '' if _uri is None else _uri
+        data['id'] = _id if _id is not None else self.getFilename()
+        data['presentation_url'] = self.getUrl()
         data['title'] = '' if _title is None else _title
         data['type'] = '' if _type is None else _type
         data['abstract'] = '' if _text is None else _text
@@ -214,11 +109,29 @@ class HtmlPage(object):
 
     def getText(self):
         """
-        Get body text with tags stripped out.
+        Get body text with tags, comments and Javascript stripped out.
         """
-        text = re.sub('<[^<]+?>', '', self.data)
-        text = text.replace('\r\n', ' ')
-        return text.replace('\t', ' ')
+        # strip all script nodes from the document
+        for node in self.tree.xpath("//script"):
+            parent = node.getparent()
+            if parent is not None:
+                parent.remove(node)
+        # strip all comment nodes from the document
+        for node in self.tree.xpath("//comment()"):
+            parent = node.getparent()
+            if parent is not None:
+                parent.remove(node)
+        # strip all tags and control char from body content
+        text = etree.tostring(self.tree)
+        text = re.sub('<[^<]+?>', '', text)
+        text = re.sub('[\r|\n|\t]', ' ', text)
+        # replace encoded characters
+        text = re.sub('&#[0-9]*;', ' ', text)
+        text = re.sub('&(amp|nbsp|copy);', ' ', text)
+        # remove extraneous whitespace
+        tokens = text.split()
+        text = ' '.join(tokens)
+        return text
 
     def getTitle(self):
         """
@@ -245,16 +158,27 @@ class HtmlPage(object):
 
     def getUrl(self):
         """
-        Get the document URI.
+        Determine the public document URL from the data that has been provided.
         """
-        if self.base:
-            parsed = urlparse.urlparse(self.url)
-            base = urlparse.urlparse(self.base)
-            path = "{0}/{1}".format(base.path, parsed.path)
-            path = re.sub("///", "/", path)
-            path = re.sub("//", "/", path)
-            return urlparse.urljoin(self.base, path)
-        return self.url
+        # if the source is a URL then use that
+        if 'http://' in self.source or 'https://' in self.source:
+            return self.source
+        # else, if a base url has been specified, then construct the public URL
+        # from the combination of the base url and the document file name
+        elif self.base and not self.base.endswith('/'):
+            return self.base + '/' + self.filename
+        elif self.base:
+            return self.base + self.filename
+        else:
+            # else, get the URL from the DC.Identifier value in the document
+            try:
+                tags = self.tree.findall('//meta')
+                for tag in tags:
+                    if 'name' in tag.attrib and tag.attrib['name'] == 'DC.Identifier':
+                        uri = tag.attrib['content']
+                        return uri.replace(' ','%20')
+            except:
+                pass
 
     def hasEacCpfAlternate(self):
         """
@@ -272,7 +196,8 @@ class HtmlPage(object):
         """
         Write document to the specified path.
         """
-        outfile = codecs.open(Path + os.sep + self.getFilename(), 'w', 'utf-8')
-        outfile.write(self.data)
+        outfile = codecs.open(Path + os.sep + self.filename, 'w', 'utf-8')
+        data = unicode(self.data, errors='replace')
+        outfile.write(data)
         outfile.close()
         self.log.info("Stored HTML document {0}".format(self.filename))

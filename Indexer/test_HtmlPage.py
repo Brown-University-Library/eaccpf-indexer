@@ -164,41 +164,9 @@ class TestHtmlPage(unittest.TestCase):
             self.assertNotEqual(None, result)
             self.assertLess(0, result)
 
-    def test_getDocumentUrl(self):
-        """
-        It should return the HTML document URL.
-        @todo this is not functioning correctly for the case where a base url is provided!!!
-        """
-        cases = [
-            (self.test_site + "biogs" + os.sep + "NE00001b.htm", "http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm"),
-            (self.test_site + "objects" + os.sep + "ND0000005.htm", "http://www.findandconnect.gov.au/nsw/objects/ND0000005.htm"),
-            (self.test_site + "browse.htm", "http://www.findandconnect.gov.au/nsw/browse.htm"),
-        ]
-        for case in cases:
-            source, expected = case
-            html = HtmlPage.HtmlPage(source)
-            result = html.getUrl()
-            self.assertEqual(expected, result)
-
-    def test_getDocumentUrl_with_base(self):
-        """
-        test cases for where a base url is provided
-        """
-        cases = [
-            (self.test_html + "E000001b.htm","http://www.example.com","http://www.example.com/vic/biogs/E000001b.htm"),
-            (self.test_html + "E000001b.htm","http://www.example.com/","http://www.example.com/vic/biogs/E000001b.htm"),
-            (self.test_html + "E000001b.htm","http://www.example.com/path","http://www.example.com/path/vic/biogs/E000001b.htm"),
-            (self.test_html + "E000001b.htm","http://www.example.com/path/","http://www.example.com/path/vic/biogs/E000001b.htm"),
-        ]
-        for case in cases:
-            source, base, expected = case
-            html = HtmlPage.HtmlPage(source, base)
-            url = html.getUrl()
-            self.assertEqual(expected, url)
-
     def test_getRecordId(self):
         """
-        It should return a record id for cases that represent an entity.
+        It should return a record id for documents that represent an entity.
         """
         cases = [
             (self.test_site + "biogs" + os.sep + "NE00200b.htm", "NE00200b"),
@@ -210,6 +178,25 @@ class TestHtmlPage(unittest.TestCase):
             html = HtmlPage.HtmlPage(source)
             result = html.getRecordId()
             self.assertEqual(expected, result)
+
+    def test_getText(self):
+        """
+        It should return the BODY text with tags, comments and all Javascript
+        removed.
+        """
+        cases = [
+            self.test_html + "javascript_and_comments_in_body_1.html",
+            self.test_html + "javascript_and_comments_in_body_2.html",
+        ]
+        for source in cases:
+            html = HtmlPage.HtmlPage(source)
+            text = html.getText()
+            has_comment = True if '<!-- ' in text or '-->' in text else False
+            self.assertEqual(False, has_comment)
+            j1 = "document.createElement('script');"
+            j2 = "encodeURIComponent($(this).attr('title'));"
+            has_javascript = True if j1 in text or j2 in text else False
+            self.assertEqual(False, has_javascript)
 
     def test_getTitle(self):
         """
@@ -230,7 +217,41 @@ class TestHtmlPage(unittest.TestCase):
             result = doc.getTitle()
             self.assertEqual(expected, result)
 
+    def test_getUrl(self):
+        """
+        It should return the public document URL.
+        """
+        cases = [
+            (self.test_site + "biogs" + os.sep + "NE00001b.htm", "http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm"),
+            (self.test_site + "objects" + os.sep + "ND0000005.htm", "http://www.findandconnect.gov.au/nsw/objects/ND0000005.htm"),
+            (self.test_site + "browse.htm", "http://www.findandconnect.gov.au/nsw/browse.htm"),
+        ]
+        for case in cases:
+            source, expected = case
+            html = HtmlPage.HtmlPage(source)
+            result = html.getUrl()
+            self.assertEqual(expected, result)
+
+    def test_getUrl_with_base(self):
+        """
+        It should return the public document URL. In this case we provide a
+        base URL value, which will override the embedded document URL value.
+        """
+        cases = [
+            (self.test_html + "E000001b.htm", "http://www.example.com",  "http://www.example.com/E000001b.htm"),
+            (self.test_html + "E000001b.htm", "http://www.example.com/", "http://www.example.com/E000001b.htm"),
+            (self.test_html + "E000001b.htm", "http://www.example.com/path",  "http://www.example.com/path/E000001b.htm"),
+            (self.test_html + "E000001b.htm", "http://www.example.com/path/", "http://www.example.com/path/E000001b.htm"),
+            (self.test_html + "E000001b.htm", "http://www.example.com/path/to",  "http://www.example.com/path/to/E000001b.htm"),
+            (self.test_html + "E000001b.htm", "http://www.example.com/path/to/", "http://www.example.com/path/to/E000001b.htm"),
+        ]
+        for case in cases:
+            source, base, expected = case
+            html = HtmlPage.HtmlPage(source, base)
+            url = html.getUrl()
+            self.assertEqual(expected, url)
+
+
 if __name__ == '__main__':
     unittest.main()
 
-    
