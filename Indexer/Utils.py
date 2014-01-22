@@ -196,6 +196,23 @@ def loadFileHashIndex(Path):
             return index
     return {}
 
+def load_from_source(Source):
+    """
+    Load text data from the specified source.
+    """
+    if 'http://' in Source or 'https://' in Source:
+        response = urllib2.urlopen(Source)
+        data = response.read()
+        # data = unicode(data, errors='replace')
+    else:
+        assert os.path.exists(Source), "Resource does not exist {0}".format(Source)
+        with open(Source, 'r') as f:
+            data = f.read()
+            # data = unicode(data, errors='replace')
+    # the lxml parser won't accept unicode encoded strings and throws an
+    # exception. pass it a str instead
+    return str(data)
+
 def loadTransform(Path):
     """
     Load the specified XSLT file and return an LXML transformer.

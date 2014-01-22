@@ -362,17 +362,17 @@ class Transformer(object):
         data = Html.getHtmlIndexContent()
         filename = Html.getFilename()
         record_id = Html.getRecordId()
-        # create XML document
+        # create the SID document
         root = etree.Element("add")
         doc = etree.SubElement(root, "doc")
         for key in data:
             f = etree.SubElement(doc, "field")
             f.attrib['name'] = key
             f.text = data[key]
-        # write XML
-        with open(Output + os.sep + record_id + ".xml", 'w') as outfile:
+        # write SID document
+        with open(Output + os.sep + record_id + ".xml", 'w') as f:
             xml = etree.tostring(root, pretty_print=True)
-            outfile.write(xml)
+            f.write(xml)
         self.log.info("Transformed HTML to SID: {0}".format(filename))
 
     def transformHtmlsToSid(self, Sources, Output):

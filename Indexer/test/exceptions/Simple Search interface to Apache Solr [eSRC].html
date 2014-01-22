@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="no-js">
+<head>
+    <meta charset="utf-8" />
+    <title>Simple Search interface to Apache Solr [eSRC]</title>
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <meta name="generator" content="DokuWiki"/>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/lib/exe/opensearch.php" title="eSRC"/>
+<link rel="start" href="/wiki/"/>
+<link rel="contents" href="/wiki/doku.php?id=simplesearch&amp;do=index" title="Sitemap"/>
+<link rel="alternate" type="application/rss+xml" title="Recent changes" href="/wiki/feed.php"/>
+<link rel="alternate" type="application/rss+xml" title="Current namespace" href="/wiki/feed.php?mode=list&amp;ns="/>
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/doku.php?do=export_xhtml&amp;id=simplesearch"/>
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/doku.php?do=export_raw&amp;id=simplesearch"/>
+<link rel="stylesheet" type="text/css" href="/wiki/lib/exe/css.php?t=dokuwiki&amp;tseed=42618c5a3e067387087651499e874feb"/>
+<script type="text/javascript">/*<![CDATA[*/var NS='';var SIG=' --- //[[davis.marques@unimelb.edu.au|Davis Marques]] 2014/01/22 15:29//';var JSINFO = {"id":"simplesearch","namespace":"","isadmin":1,"isauth":1};
+/*!]]>*/</script>
+<script type="text/javascript" charset="utf-8" src="/wiki/lib/exe/js.php?tseed=42618c5a3e067387087651499e874feb"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="shortcut icon" href="/wiki/lib/tpl/dokuwiki/images/favicon.ico" />
+<link rel="apple-touch-icon" href="/wiki/lib/tpl/dokuwiki/images/apple-touch-icon.png" />
+    </head>
+
+<body>
+    <!--[if lte IE 7 ]><div id="IE7"><![endif]--><!--[if IE 8 ]><div id="IE8"><![endif]-->
+    <div id="dokuwiki__site"><div id="dokuwiki__top" class="site dokuwiki mode_edit tpl_dokuwiki loggedIn    ">
+
+        
+<!-- ********** HEADER ********** -->
+<div id="dokuwiki__header"><div class="pad group">
+
+    
+    <div class="headings group">
+        <ul class="a11y skip">
+            <li><a href="#dokuwiki__content">skip to content</a></li>
+        </ul>
+
+        <h1><a href="/wiki/doku.php?id=start"  accesskey="h" title="[H]"><img src="/wiki/lib/tpl/dokuwiki/images/logo.png" width="64" height="64" alt="" /> <span>eSRC</span></a></h1>
+            </div>
+
+    <div class="tools group">
+        <!-- USER TOOLS -->
+                    <div id="dokuwiki__usertools">
+                <h3 class="a11y">User Tools</h3>
+                <ul>
+                    <li class="user">Logged in as: <bdi>Davis Marques</bdi> (<bdi>dmarques</bdi>)</li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=admin"  class="action admin" rel="nofollow" title="Admin">Admin</a></li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=logout&amp;sectok=bf111d073f0855011b73ee1ae86635b3"  class="action logout" rel="nofollow" title="Logout">Logout</a></li>                </ul>
+            </div>
+        
+        <!-- SITE TOOLS -->
+        <div id="dokuwiki__sitetools">
+            <h3 class="a11y">Site Tools</h3>
+            <form action="/wiki/doku.php?id=start" accept-charset="utf-8" class="search" id="dw__search" method="get" role="search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>            <div class="mobileTools">
+                <form action="/wiki/doku.php" method="get" accept-charset="utf-8"><div class="no"><input type="hidden" name="id" value="simplesearch" /><input type="hidden" name="sectok" value="bf111d073f0855011b73ee1ae86635b3" /><select name="do" class="edit quickselect" title="Tools"><option value="">Tools</option><optgroup label="Page Tools"><option value="">Show page</option><option value="revisions">Old revisions</option><option value="backlink">Backlinks</option><option value="subscribe">Manage Subscriptions</option></optgroup><optgroup label="Site Tools"><option value="recent">Recent changes</option><option value="media">Media Manager</option><option value="index">Sitemap</option></optgroup><optgroup label="User Tools"><option value="logout">Logout</option><option value="admin">Admin</option></optgroup></select><input type="submit" value="&gt;" /></div></form>            </div>
+            <ul>
+                <li><a href="/wiki/doku.php?id=simplesearch&amp;do=recent"  class="action recent" accesskey="r" rel="nofollow" title="Recent changes [R]">Recent changes</a></li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=media&amp;ns="  class="action media" rel="nofollow" title="Media Manager">Media Manager</a></li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=index"  class="action index" accesskey="x" rel="nofollow" title="Sitemap [X]">Sitemap</a></li>            </ul>
+        </div>
+
+    </div>
+
+    <!-- BREADCRUMBS -->
+            <div class="breadcrumbs">
+                            <div class="youarehere"><span class="bchead">You are here: </span><span class="home"><bdi><a href="/wiki/doku.php?id=start" class="wikilink1" title="start">For Users</a></bdi></span> » <bdi><span class="curid"><a href="/wiki/doku.php?id=simplesearch" class="wikilink1" title="simplesearch">Simple Search interface to Apache Solr</a></span></bdi></div>
+                                </div>
+    
+    
+    <hr class="a11y" />
+</div></div><!-- /header -->
+
+        <div class="wrapper group">
+
+            
+            <!-- ********** CONTENT ********** -->
+            <div id="dokuwiki__content"><div class="pad group">
+
+                <div class="pageId"><span>simplesearch</span></div>
+
+                <div class="page group">
+                                                            <!-- wikipage start -->
+                    
+<p>
+Edit the page and hit <code>Save</code>. See <a href="/wiki/doku.php?id=wiki:syntax" class="wikilink1" title="wiki:syntax">syntax</a> for Wiki syntax. Please edit the page only if you can <strong>improve</strong> it. If you want to test some things, learn to make your first steps on the <a href="/wiki/doku.php?id=playground:playground" class="wikilink2" title="playground:playground" rel="nofollow">playground</a>.
+</p>
+<script type="text/javascript">/*<![CDATA[*/
+textChanged = false/*!]]>*/</script>
+    <div class="editBox" role="application">
+
+    <div class="toolbar group">
+        <div id="draft__status">Draft autosaved on 2014/01/22 15:29</div>
+        <div id="tool__bar"><a href="/wiki/lib/exe/mediamanager.php?ns="
+            target="_blank">Media Files</a></div>
+    </div>
+    <form id="dw__editform" method="post" action="" accept-charset="utf-8"><div class="no">
+<input type="hidden" name="sectok" value="bf111d073f0855011b73ee1ae86635b3" /><input type="hidden" name="id" value="simplesearch" /><input type="hidden" name="rev" value="0" /><input type="hidden" name="date" value="1381460115" /><input type="hidden" name="prefix" value="." /><input type="hidden" name="suffix" value="" /><input type="hidden" name="changecheck" value="62738cac0709a3f2a6c46c353509f195" /><input type="hidden" name="target" value="section" /><textarea name="wikitext" id="wiki__text" dir="auto" class="edit" cols="80" rows="10" tabindex="1">
+====== Simple Search interface to Apache Solr ======
+
+Simple Search is a Javascript component that allows you to add Apache Solr powered search to your web site, quickly and easily. It has two parts:
+
+  - A search box that provides auto-complete functionality, and
+  - A search results component for displaying document and image results
+
+These components can be styled using CSS, and the data presented in the search results can be customized. The following provides instructions on how to add this functionality to your site.
+
+
+===== Create a Search Page =====
+
+We will create a page called ''search.html'' where users can enter search queries and see the resultant document and image search results on your site.  The page will be made up of two parts: a search box that provides autocomplete functionality, and a DIV where search results and pagination controls will be presented. A completed [[https://bitbucket.org/esrc/simple-search/raw/production/app/search.html|example]] is available for you to use as a starting point.  Or, you can follow the steps below with an existing HTML page:
+
+  - Open your existing ''search.html'' using a text editor like SublimeText, NotePad or the like. Or, create a new file by this name and add your web site's standard HTML template content into it.
+  - Edit the top of the HTML page so that it looks like this:&lt;file&gt;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot; xmlns:ng=&quot;http://angularjs.org&quot; id=&quot;ng-app&quot; ng-app=&quot;simplesearch&quot;&gt;
+    ...&lt;/file&gt;
+  - Link the SimpleSearch CSS and Javascript files into your page by pasting the following lines into the HEAD section of the page:&lt;file&gt;&lt;!--[if lt IE 9]&gt;&lt;script src=&quot;http://html5shim.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;&lt;![endif]--&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://www.esrc.unimelb.edu.au/simplesearch.min.css&quot; media=&quot;screen&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.esrc.unimelb.edu.au/simplesearch.min.js&quot;&gt;&lt;/script&gt;&lt;/file&gt;
+  - Add the search box HTML to your page. Copy and paste the following code into the BODY section of your page. &lt;file&gt;
+&lt;!-- simplesearch search form --&gt;
+&lt;form ng-controller=&quot;SearchFormController&quot;
+    data-field=&quot;hints&quot;
+    data-redirect=&quot;search.html&quot;
+    data-source=&quot;http://data.esrc.unimelb.edu.au/solr/PROJ&quot;&gt;
+    &lt;input name=&quot;q&quot; type=&quot;text&quot; placeholder=&quot;Keyword or placename&quot; searchbox /&gt;
+    &lt;input name=&quot;submit&quot; type=&quot;submit&quot; value=&quot;search&quot; searchbutton /&gt;
+&lt;/form&gt;
+&lt;!-- /simplesearch search form --&gt;
+&lt;/file&gt;
+  - Configure the search box. The search box form tag has a number of attributes that control how the search box is configured. ''data-source'' is the URL to the Solr search index for your project. Change the ''data-source'' value so that ''PROJ'' is replaced with your four letter project code. ''data-redirect'' is the URL to the page that will render the search results when the user clicks the search button or hits enter. If the page you are editing is not called ''search.html'', then change the data-redirect value to match its name.
+  - Add the search results HTML to your page. Copy and paste the following code into the BODY section of your page.&lt;file&gt;&lt;!-- search results --&gt;
+&lt;div class=&quot;simplesearch-results&quot;
+     ng-controller=&quot;SearchResultsController&quot;
+     data-source=&quot;http://data.esrc.unimelb.edu.au/solr/PROJ&quot;&gt;
+    &lt;div class=&quot;summary&quot;&gt;
+        You searched for '{{userquery}}'. The query returned {{totalResults}} documents.
+        Showing page {{page + 1}} of {{totalPages}} pages.
+    &lt;/div&gt;
+    &lt;div class=&quot;document&quot; ng-repeat=&quot;doc in documents&quot;&gt;
+        &lt;div class=&quot;title&quot;&gt;&lt;a ng-href=&quot;{{doc.presentation_url}}&quot;&gt;{{doc.title}}&lt;/a&gt;&lt;/div&gt;
+        &lt;div class=&quot;url&quot;&gt;&lt;a ng-href=&quot;{{doc.presentation_url}}&quot;&gt;{{doc.presentation_url}}&lt;/a&gt;&lt;/div&gt;
+        &lt;div class=&quot;abstract&quot;&gt;{{doc.abstract | truncate:250 }}&lt;/div&gt;
+        &lt;div class=&quot;meta inline&quot;&gt;
+            &lt;span class=&quot;region&quot; ng-show=&quot;doc.region&quot;&gt;{{doc.region}}&lt;/span&gt;
+            &lt;span class=&quot;country&quot; ng-show=&quot;doc.country&quot;&gt;{{doc.country}}&lt;/span&gt;
+            &lt;div class=&quot;existdates&quot;&gt;
+                &lt;span&gt;{{doc.fromDate}}&lt;/span&gt;
+                &lt;span ng-show=&quot;doc.toDate&quot;&gt;&amp;ndash;&lt;/span&gt;
+                &lt;span&gt;{{doc.toDate}}&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;pagination&quot; ng-hide=&quot;error&quot;&gt;
+        &lt;ul&gt;
+            &lt;li ng-repeat=&quot;page in pages&quot; ng-cloak&gt;
+                &lt;a ng-class=&quot;{iscurrent:page.isCurrent}&quot; ng-click=&quot;$parent.handleSetPage(page.number)&quot;&gt;{{page.name}}&lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- search results --&gt;&lt;/file&gt;
+  - Configure the search results control. When the user has entered a search query, the search results control will render the list of matching documents. Like the search box, the outer DIV tag has a number of attributes that control how the search results controller is configured. ''data-source'' is the URL to the Solr search index for your project. Change the ''data-source'' value so that ''PROJ'' is replaced with your four letter project code.
+  - Test your new search page. Open the browser console (usually by pressing F12) and confirm that there are no red error messages. Enter a query term in the search box. Once you've entered three characters, a drop down box should appear containing matching terms from your search index. Select a term then hit the enter key or press the search button. The search results DIV should now contain 0 or more search results. Click a page number on the pagination control at the bottom of the search listing. The search results should update. 
+
+===== Add a Search Box to Another Page =====
+
+In many cases you will want to have search boxes on more than one page on your site, and have users redirected to the search page to see their search results. To accomplish this, edit each page where you want the search box to appear in a text editor, following steps 1 through 5 in the list above. On step give, set the ''data-redirect'' value as a URL that points to your search page. 
+
+For example, let's say that your site is ''www.example.com'', you want to add a search box to the home page, and have users redirected to the ''search.html'' page to see their search results.  You would edit the ''index.html'' file (ie. the home page), following steps 1 - 5. On step 5, you would set the search box's ''data-redirect'' value to ''http://www.example.com/search.html'', or ''/search.html''.
+
+{{ :simplesearch-sidebyside.png?nolink |}}
+
+===== Styling and Customisation =====
+
+  * To style the page numbers at the bottom of the search results to highlight current page, add something along the lines of the following to the css (example from ASMP):
+
+     #content li a.iscurrent
+     {
+     color: #C08584;
+     text-decoration: none;
+     }
+
+  * To change text in search box, in step 4 above, change the text &quot;Keyword or placename&quot; to required text.
+</textarea>
+<div id="wiki__editbar" class="editBar">
+<div id="size__ctl">
+</div>
+<div class="editButtons">
+<input name="do[save]" type="submit" value="Save" class="button" id="edbtn__save" accesskey="s" tabindex="4" title="Save [S]" />
+<input name="do[preview]" type="submit" value="Preview" class="button" id="edbtn__preview" accesskey="p" tabindex="5" title="Preview [P]" />
+<input name="do[draftdel]" type="submit" value="Cancel" class="button" tabindex="6" />
+</div>
+<div class="summary">
+<label class="nowrap" for="edit__summary"><span>Edit summary</span> <input type="text" id="edit__summary" name="summary" class="edit" size="50" tabindex="2" /></label>
+<label class="nowrap" for="minoredit"><input type="checkbox" id="minoredit" name="minor" value="1" tabindex="3" /> <span>Minor Changes</span></label>
+</div>
+</div>
+</div></form>
+</div>
+
+                    <!-- wikipage stop -->
+                                    </div>
+
+                <div class="docInfo"><bdi>simplesearch.txt</bdi> · Last modified: 2013/10/11 13:55 by <bdi>ailie</bdi></div>
+
+                            </div></div><!-- /content -->
+
+            <hr class="a11y" />
+
+            <!-- PAGE ACTIONS -->
+            <div id="dokuwiki__pagetools">
+                <h3 class="a11y">Page Tools</h3>
+                <div class="tools">
+                    <ul>
+                        <li><a href="/wiki/doku.php?id=simplesearch"  class="action show" accesskey="v" rel="nofollow" title="Show page [V]"><span>Show page</span></a></li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=revisions"  class="action revs" accesskey="o" rel="nofollow" title="Old revisions [O]"><span>Old revisions</span></a></li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=backlink"  class="action backlink" rel="nofollow" title="Backlinks"><span>Backlinks</span></a></li><li><a href="/wiki/doku.php?id=simplesearch&amp;do=subscribe"  class="action subscribe" rel="nofollow" title="Manage Subscriptions"><span>Manage Subscriptions</span></a></li><li><a href="#dokuwiki__top"  class="action top" accesskey="t" rel="nofollow" title="Back to top [T]"><span>Back to top</span></a></li>                    </ul>
+                </div>
+            </div>
+        </div><!-- /wrapper -->
+
+        
+<!-- ********** FOOTER ********** -->
+<div id="dokuwiki__footer"><div class="pad">
+    
+    <div class="buttons">
+                <a href="http://www.dokuwiki.org/donate" title="Donate" ><img
+            src="/wiki/lib/tpl/dokuwiki/images/button-donate.gif" width="80" height="15" alt="Donate" /></a>
+        <a href="http://www.php.net" title="Powered by PHP" ><img
+            src="/wiki/lib/tpl/dokuwiki/images/button-php.gif" width="80" height="15" alt="Powered by PHP" /></a>
+        <a href="http://validator.w3.org/check/referer" title="Valid HTML5" ><img
+            src="/wiki/lib/tpl/dokuwiki/images/button-html5.png" width="80" height="15" alt="Valid HTML5" /></a>
+        <a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3" title="Valid CSS" ><img
+            src="/wiki/lib/tpl/dokuwiki/images/button-css.png" width="80" height="15" alt="Valid CSS" /></a>
+        <a href="http://dokuwiki.org/" title="Driven by DokuWiki" ><img
+            src="/wiki/lib/tpl/dokuwiki/images/button-dw.png" width="80" height="15" alt="Driven by DokuWiki" /></a>
+    </div>
+</div></div><!-- /footer -->
+
+    </div></div><!-- /site -->
+
+    <div class="no"><img src="/wiki/lib/exe/indexer.php?id=simplesearch&amp;1390364962" width="2" height="1" alt="" /></div>
+    <div id="screen__mode" class="no"></div>    <!--[if ( lte IE 7 | IE 8 ) ]></div><![endif]-->
+</body>
+</html>

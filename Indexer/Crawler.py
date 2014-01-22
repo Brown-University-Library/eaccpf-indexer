@@ -45,15 +45,15 @@ class Crawler(object):
         # walk the file system and look for html files
         for path, _, files in os.walk(Source):
             # construct an assumed public url for the file
-            baseurl = Base + path.replace(Source, '')
-            baseurl += '/' if not baseurl.endswith('/') else baseurl
-            self.log.debug("Visiting {} ({})".format(path, baseurl))
+            base_url = Base + path.replace(Source, '')
+            base_url += '/' if not base_url.endswith('/') else ''
+            self.log.debug("Visiting {} ({})".format(path, base_url))
             # for each file in the current path
             for filename in files:
                 if filename.endswith(".htm") or filename.endswith(".html"):
-                    self.log.debug("Scanning {}".format(filename))
+                    self.log.debug("Reading {}".format(filename))
                     try:
-                        html = HtmlPage(path + os.sep + filename, baseurl)
+                        html = HtmlPage(path + os.sep + filename, base_url)
                         if 'html-all' in Actions:
                             html.write(Output)
                         elif html.hasEacCpfAlternate():
