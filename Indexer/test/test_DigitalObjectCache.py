@@ -3,10 +3,15 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from DigitalObjectCache import DigitalObjectCache
+from Indexer import DigitalObjectCache
+from Indexer import Utils
 
-import Image
-import Utils
+try:
+    from PIL import Image
+except:
+    import Image
+
+import logging
 import os
 import random
 import string
@@ -61,15 +66,15 @@ class TestDigitalObjectCache(unittest.TestCase):
         the image cache.
         """
         # no path/urlroot specified, no init
-        self.assertRaises(Exception, DigitalObjectCache(self.path))
+        self.assertRaises(Exception, DigitalObjectCache.DigitalObjectCache(self.path))
         # path specified, no url_root or init
-        cache = DigitalObjectCache(self.path)
+        cache = DigitalObjectCache.DigitalObjectCache(self.path)
         self.assertNotEqual(cache, None)
         self.assertEquals(cache.path, self.path)
         self.assertEquals(cache.url_root, '/')
         self.assertEquals(os.path.exists(self.path), True)
         # path, url_root, init specified
-        cache = DigitalObjectCache(self.path, UrlRoot=self.url_root, Init=True)
+        cache = DigitalObjectCache.DigitalObjectCache(self.path, UrlRoot=self.url_root, Init=True)
         self.assertNotEqual(cache, None)
         self.assertEquals(cache.path, self.path)
         self.assertEquals(cache.url_root, self.url_root)
@@ -109,19 +114,20 @@ class TestDigitalObjectCache(unittest.TestCase):
     def test_resizeImage(self):
         """
         It should resize the image to the specified dimensions.
+        @todo move test assets into the local testing folder
         """
-        cache = DigitalObjectCache(self.path)
+        cache = DigitalObjectCache.DigitalObjectCache(self.path)
         cases = [
-                  "http://www.findandconnect.gov.au/site/images/aus-logo.png",
-                  "http://www.findandconnect.gov.au/tas/site/images/logo-tasmania.png",
-                  "http://www.findandconnect.gov.au/tas/objects/images/barrington_lodge_exterior.jpg",
-                  "http://www.findandconnect.gov.au/vic/objects/thumbs/tn_TALLY%20HO%20VILLAGE%20-%20ADMINISTRATION%20BUILDING,%201980'S.png",
-                  "http://www.findandconnect.gov.au/vic/objects/images/BM1-12A%20(355bl).jpg",
-                  "http://www.findandconnect.gov.au/vic/objects/images/typing%20allambie.jpg",
-                  ]
+                  "http://www.findandconnect.gov.au/assets/img/social-twitter.png",
+                  "http://www.findandconnect.gov.au/assets/img/header-logo-narrow.png",
+                  "http://www.findandconnect.gov.au/assets/img/footer-logo.png"
+        ]
         for case in cases:
-            response = urllib2.urlopen(case)
-            data = response.read()
+            try:
+                response = urllib2.urlopen(case)
+                data = response.read()
+            except:
+                self.fail("Could not load resource {0}".format(case))
             ext = Utils.getFileNameExtension(case)
             temp = tempfile.mktemp(suffix="." + ext)
             # write downloaded file
@@ -149,15 +155,16 @@ class TestDigitalObjectCache(unittest.TestCase):
         """
         It should put the data obj and return an identifier. It should 
         return the source data when queried with the item key.
+        @todo move test assets into the local testing folder
         """
         cases = [
                   "http://www.findandconnect.gov.au/cache/fcwa/8d/9b/d9/b6/de/b3/5f/17/ca/32/f7/7c/ba/86/4d/e0/11/c3/94/ff/obj/medium.png",
                   "http://www.findandconnect.gov.au/cache/fcwa/41/32/f6/96/2c/09/f2/dd/74/23/8a/e9/71/b9/e4/c2/7b/65/63/11/obj/medium.png",
                   "http://www.findandconnect.gov.au/cache/fcwa/02/8a/26/f7/6f/22/f7/a3/05/b9/e6/40/2e/13/41/c4/41/b4/8a/5b/obj/medium.png",
-                  ]
+        ]
         baseurl = "http://www.findandconnect.gov.au/cache"
         records = {}
-        cache = DigitalObjectCache(self.path,baseurl)
+        cache = DigitalObjectCache.DigitalObjectCache(self.path,baseurl)
         # add files to cache
         for case in cases:
             # #26 Image files must be accessible on the local disk before they

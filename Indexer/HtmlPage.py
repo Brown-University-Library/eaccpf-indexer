@@ -21,19 +21,25 @@ class HtmlPage(object):
     An HTML document conforming to ESRC OHRM standards.
     """
 
-    def __init__(self, Source, BaseUrl=None):
+    def __init__(self, source, filename=None, base_url=None):
         """
-        :param Source: file system path or URL to the HTML document
-        :param BaseUrl: override the document URL value by specifying the
-         base or root of the document's public URL. The document URL value then
+        :param source: file system path to the document or its parent folder
+        :param filename: document filename
+        :param base_url: override the document URL value by specifying the
+         base of the document's public URL. The document URL value then
          becomes the concatenation of the base URL and the document file name.
         """
         self.log = logging.getLogger()
-        self.base = BaseUrl
-        self.data = Utils.load_from_source(Source)
-        self.filename = Utils.getFileName(Source)
-        self.source = Source
-        self.tree = lxml.html.parse(Source) # @todo should probably use self.data as input instead of parsing a path
+        self.base = base_url
+        if filename:
+            self.filename = filename
+            self.source = source + os.sep + filename
+        else:
+            self.filename = Utils.getFileName(source)
+            self.source = source
+        # load data
+        self.data = Utils.load_from_source(self.source)
+        self.tree = lxml.html.parse(self.source) # @todo should probably use self.data as input instead of parsing a path
 
     def getContent(self):
         """

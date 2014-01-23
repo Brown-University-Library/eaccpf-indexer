@@ -3,6 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+__description__ = "Global configuration values"
+
 import inspect
 import sys
 

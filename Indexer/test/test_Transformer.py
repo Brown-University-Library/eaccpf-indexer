@@ -3,12 +3,13 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from .. import Transformer
+
 import os
 import random
 import string
 import tempfile
 import unittest
-from Transformer import Transformer
 
 
 class TestTransformer(unittest.TestCase):
@@ -100,7 +101,7 @@ class TestTransformer(unittest.TestCase):
         self.inferred = self._writeInferredRecord(tempfile.mktemp(suffix=".yml"))
         self.solr = self._writeSolrInputDocument(tempfile.mktemp(suffix=".xml"))
         # the test class instance
-        self.transformer = Transformer()
+        self.transformer = Transformer.Transformer()
 
     def tearDown(self):
         """
@@ -138,7 +139,7 @@ class TestTransformer(unittest.TestCase):
         """
         It should create an instance of the Transformer class.
         """
-        self.assertNotEqual(self.transformer,None)
+        self.assertNotEqual(None, self.transformer)
 
     def test_mergeInferredRecordToSID(self):
         """

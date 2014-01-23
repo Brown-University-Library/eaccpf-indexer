@@ -3,7 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-import HtmlPage
+from Indexer import HtmlPage
+
 import inspect
 import logging
 import os
@@ -27,10 +28,10 @@ class TestHtmlPage(unittest.TestCase):
         Setup the test environment.
         """
         module = os.path.abspath(inspect.getfile(self.__class__))
-        module_path = os.path.dirname(module)
+        self.module_path = os.path.dirname(module)
         self.log = logging.getLogger()
-        self.test_html = os.sep.join([module_path, "test", "html", os.sep])
-        self.test_site = os.sep.join([module_path, "test", "test_site", os.sep])
+        self.test_html = os.sep.join([self.module_path, "html"])
+        self.test_site = os.sep.join([self.module_path, "test_site"])
         self.html = """<html>
             <head>
                 <title>TEST</title>
@@ -118,18 +119,16 @@ class TestHtmlPage(unittest.TestCase):
         """
         # create a list of cases to load and test
         cases = [
-                 "http://www.findandconnect.gov.au/nsw/",                       # region home case
-                 "http://www.findandconnect.gov.au/nsw/biogs/NE00200b.htm",     # organization case
-                 "http://www.findandconnect.gov.au/nsw/objects/ND0000021.htm"   # digital object
-                 ]
+            (self.test_site, "browse.htm"),
+            (self.test_site + os.sep + "biogs", "NE00500b.htm"),
+            (self.test_site + os.sep + "biogs", "NE00001b.htm"),
+            (self.test_site + os.sep + "objects", "ND0000001.htm"),
+         ]
         for case in cases:
-            html = HtmlPage.HtmlPage(case)
-            url = html.source
-            data = html.data
-            self.assertNotEqual(html, None)
-            self.assertEqual(case,url)
-            self.assertNotEqual(data, None)
-    
+            path, filename = case
+            html = HtmlPage.HtmlPage(path, filename=filename)
+            self.assertNotEqual(None, html)
+
     def test_hasEacCpfAlternate(self):
         """
         It should return true if there is an EAC-CPF alternate representation 
@@ -137,14 +136,14 @@ class TestHtmlPage(unittest.TestCase):
         specified. 
         """
         cases = [
-            (self.test_site + "browse.htm", False),
-            (self.test_site + "biogs" + os.sep + "NE00500b.htm", True),
-            (self.test_site + "biogs" + os.sep + "NE00001b.htm", True),
-            (self.test_site + "objects" + os.sep + "ND0000001.htm", False),
+            (self.test_site, "browse.htm", False),
+            (self.test_site + os.sep + "biogs", "NE00500b.htm", True),
+            (self.test_site + os.sep + "biogs", "NE00001b.htm", True),
+            (self.test_site + os.sep + "objects", "ND0000001.htm", False),
         ]
         for case in cases:
-            source, expected = case
-            html = HtmlPage.HtmlPage(source)
+            path, filename, expected = case
+            html = HtmlPage.HtmlPage(path, filename=filename)
             result = html.hasEacCpfAlternate()
             self.assertNotEqual(None, result)
             self.assertEqual(expected, result)
@@ -154,11 +153,12 @@ class TestHtmlPage(unittest.TestCase):
         It should return the HTML content.
         """
         cases = [
-            self.test_site + "objects" + os.sep + "ND0000001.htm",
-            self.test_site + "biogs" + os.sep + "NE00001b.htm",
+            (self.test_site + os.sep + "objects", "ND0000001.htm"),
+            (self.test_site + os.sep + "biogs", "NE00001b.htm"),
         ]
         for case in cases:
-            html = HtmlPage.HtmlPage(case)
+            path, filename = case
+            html = HtmlPage.HtmlPage(path, filename=filename)
             self.assertNotEqual(None, html)
             result = html.getContent()
             self.assertNotEqual(None, result)
@@ -169,13 +169,13 @@ class TestHtmlPage(unittest.TestCase):
         It should return a record id for documents that represent an entity.
         """
         cases = [
-            (self.test_site + "biogs" + os.sep + "NE00200b.htm", "NE00200b"),
-            (self.test_site + "objects" + os.sep + "ND0000171.htm", None),
-            (self.test_site + "browse.htm", None)
+            (self.test_site + os.sep + "biogs", "NE00200b.htm", "NE00200b"),
+            (self.test_site + os.sep + "objects", "ND0000171.htm", None),
+            (self.test_site, "browse.htm", None)
         ]
         for case in cases:
-            source, expected = case
-            html = HtmlPage.HtmlPage(source)
+            path, filename, expected = case
+            html = HtmlPage.HtmlPage(path, filename=filename)
             result = html.getRecordId()
             self.assertEqual(expected, result)
 
@@ -185,11 +185,12 @@ class TestHtmlPage(unittest.TestCase):
         removed.
         """
         cases = [
-            self.test_html + "javascript_and_comments_in_body_1.html",
-            self.test_html + "javascript_and_comments_in_body_2.html",
+            (self.test_html, "javascript_and_comments_in_body_1.html"),
+            (self.test_html, "javascript_and_comments_in_body_2.html"),
         ]
-        for source in cases:
-            html = HtmlPage.HtmlPage(source)
+        for case in cases:
+            path, filename = case
+            html = HtmlPage.HtmlPage(path, filename=filename)
             text = html.getText()
             has_comment = True if '<!-- ' in text or '-->' in text else False
             self.assertEqual(False, has_comment)
@@ -204,15 +205,15 @@ class TestHtmlPage(unittest.TestCase):
         with markup, the markup should be removed. See issue #30.
         """
         cases = [
-            (self.test_html + 'markup_in_title_1.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
-            (self.test_html + 'markup_in_title_2.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
-            (self.test_html + 'markup_in_title_3.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
-            (self.test_html + 'markup_in_title_4.htm',"Anglicare Victoria (1978/1) - Organisation - Find & Connect - Victoria"),
-            (self.test_html + 'markup_in_title_5.htm',"Anglicare Victoria (1978/1) - Organisation - Find & Connect - Victoria"),
+            (self.test_html, 'markup_in_title_1.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
+            (self.test_html, 'markup_in_title_2.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
+            (self.test_html, 'markup_in_title_3.htm',"Anglicare Victoria - Organisation - Find & Connect - Victoria"),
+            (self.test_html, 'markup_in_title_4.htm',"Anglicare Victoria (1978/1) - Organisation - Find & Connect - Victoria"),
+            (self.test_html, 'markup_in_title_5.htm',"Anglicare Victoria (1978/1) - Organisation - Find & Connect - Victoria"),
         ]
         for case in cases:
-            source, expected = case
-            doc = HtmlPage.HtmlPage(source)
+            path, filename, expected = case
+            doc = HtmlPage.HtmlPage(path, filename=filename)
             self.assertNotEqual(None, doc)
             result = doc.getTitle()
             self.assertEqual(expected, result)
@@ -222,13 +223,13 @@ class TestHtmlPage(unittest.TestCase):
         It should return the public document URL.
         """
         cases = [
-            (self.test_site + "biogs" + os.sep + "NE00001b.htm", "http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm"),
-            (self.test_site + "objects" + os.sep + "ND0000005.htm", "http://www.findandconnect.gov.au/nsw/objects/ND0000005.htm"),
-            (self.test_site + "browse.htm", "http://www.findandconnect.gov.au/nsw/browse.htm"),
+            (self.test_site + os.sep + "biogs", "NE00001b.htm", "http://www.findandconnect.gov.au/nsw/biogs/NE00001b.htm"),
+            (self.test_site + os.sep + "objects", "ND0000005.htm", "http://www.findandconnect.gov.au/nsw/objects/ND0000005.htm"),
+            (self.test_site, "browse.htm", "http://www.findandconnect.gov.au/nsw/browse.htm"),
         ]
         for case in cases:
-            source, expected = case
-            html = HtmlPage.HtmlPage(source)
+            path, filename, expected = case
+            html = HtmlPage.HtmlPage(path, filename=filename)
             result = html.getUrl()
             self.assertEqual(expected, result)
 
@@ -238,16 +239,16 @@ class TestHtmlPage(unittest.TestCase):
         base URL value, which will override the embedded document URL value.
         """
         cases = [
-            (self.test_html + "E000001b.htm", "http://www.example.com",  "http://www.example.com/E000001b.htm"),
-            (self.test_html + "E000001b.htm", "http://www.example.com/", "http://www.example.com/E000001b.htm"),
-            (self.test_html + "E000001b.htm", "http://www.example.com/path",  "http://www.example.com/path/E000001b.htm"),
-            (self.test_html + "E000001b.htm", "http://www.example.com/path/", "http://www.example.com/path/E000001b.htm"),
-            (self.test_html + "E000001b.htm", "http://www.example.com/path/to",  "http://www.example.com/path/to/E000001b.htm"),
-            (self.test_html + "E000001b.htm", "http://www.example.com/path/to/", "http://www.example.com/path/to/E000001b.htm"),
+            (self.test_html, "E000001b.htm", "http://www.example.com",  "http://www.example.com/E000001b.htm"),
+            (self.test_html, "E000001b.htm", "http://www.example.com/", "http://www.example.com/E000001b.htm"),
+            (self.test_html, "E000001b.htm", "http://www.example.com/path",  "http://www.example.com/path/E000001b.htm"),
+            (self.test_html, "E000001b.htm", "http://www.example.com/path/", "http://www.example.com/path/E000001b.htm"),
+            (self.test_html, "E000001b.htm", "http://www.example.com/path/to",  "http://www.example.com/path/to/E000001b.htm"),
+            (self.test_html, "E000001b.htm", "http://www.example.com/path/to/", "http://www.example.com/path/to/E000001b.htm"),
         ]
         for case in cases:
-            source, base, expected = case
-            html = HtmlPage.HtmlPage(source, base)
+            path, filename, base, expected = case
+            html = HtmlPage.HtmlPage(path, filename=filename, base_url=base)
             url = html.getUrl()
             self.assertEqual(expected, url)
 

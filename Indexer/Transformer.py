@@ -29,8 +29,8 @@ class Transformer(object):
         filename = ''
         try:
             # read the digital object metadata file
-            with open(Source, 'r') as infile:
-                data = infile.read()
+            with open(Source, 'r') as f:
+                data = f.read()
                 dobj = yaml.load(data)
             filename = Utils.getFileName(Source).replace('.yml', '.xml')
             # if there is an existing SID file, then read it
@@ -286,14 +286,14 @@ class Transformer(object):
                 except:
                     self.log.error("Could not set field in {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
 
-    def transformDigitalObjectToSID(self, Source, Output, Transform=None):
+    def transformDigitalObjectToSID(self, path, filename, Output, Transform=None):
         """
         Transform a single digital object YAML record to Solr Input Document
         format.
         """
         # read digital object data
-        with open(Source, 'r') as infile:
-            data = yaml.load(infile.read())
+        with open(path + os.sep + filename, 'r') as f:
+            data = yaml.load(f.read())
         # create SID document
         root = etree.Element("add")
         doc = etree.SubElement(root, "doc")
@@ -303,7 +303,6 @@ class Transformer(object):
             if data[key] and len(data[key]) > 0:
                 f.text = data[key]
         # write XML
-        filename = Utils.getFileName(Source)
         filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
         with open(Output + os.sep + filename,'w') as outfile:
             xml = etree.tostring(root, pretty_print=True, xml_declaration=True)
@@ -316,26 +315,22 @@ class Transformer(object):
         Input Document format.
         """
         for source in Sources:
-            files = os.listdir(source)
-            for filename in files:
-                path = source + os.sep + filename
-                if Utils.isDigitalObjectYaml(path):
-                    try:
-                        self.transformDigitalObjectToSID(path, Output)
-                    except:
-                        msg = "Could not transform DObject to SID: {0}".format(filename)
-                        self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
+            for filename in [f for f in os.listdir(source) if f.endswith("yml")]:
+                try:
+                    self.transformDigitalObjectToSID(source, filename, Output)
+                except:
+                    msg = "Could not transform digital object to SID: {0}".format(filename)
+                    self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
 
-    def transformEacCpfToSID(self, Source, Output, Transform):
+    def transformEacCpfToSID(self, path, filename, Output, Transform):
         """
         Transform EAC-CPF document to Solr Input Document format using the
         specified XSLT transform file.
         """
-        xml = etree.parse(Source)
+        xml = etree.parse(path + os.sep + filename)
         result = Transform(xml)
         data = etree.tostring(result, pretty_print=True, xml_declaration=True)
         # write the output file
-        filename = Utils.getFileName(Source)
         with open(Output + os.sep + filename, 'w') as outfile:
             outfile.write(data)
         self.log.info("Transformed EAC-CPF to SID: {0}".format(filename))
@@ -346,23 +341,19 @@ class Transformer(object):
         Document format.
         """
         for source in Sources:
-            files = os.listdir(source)
-            for filename in files:
-                if filename.endswith(".xml"):
-                    try:
-                        self.transformEacCpfToSID(source + os.sep + filename, Output, Transform)
-                    except Exception:
-                        msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
-                        self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
+            for filename in [f for f in os.listdir(source) if f.endswith("xml")]:
+                try:
+                    self.transformEacCpfToSID(source, filename, Output, Transform)
+                except Exception:
+                    msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
+                    self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
 
     def transformHtmlToSid(self, Html, Output):
         """
         Transform HTML document to Solr Input Document.
         """
+        # create SID document
         data = Html.getHtmlIndexContent()
-        filename = Html.getFilename()
-        record_id = Html.getRecordId()
-        # create the SID document
         root = etree.Element("add")
         doc = etree.SubElement(root, "doc")
         for key in data:
@@ -370,7 +361,8 @@ class Transformer(object):
             f.attrib['name'] = key
             f.text = data[key]
         # write SID document
-        with open(Output + os.sep + record_id + ".xml", 'w') as f:
+        filename = data['id'] + ".xml"
+        with open(Output + os.sep + filename, 'w') as f:
             xml = etree.tostring(root, pretty_print=True)
             f.write(xml)
         self.log.info("Transformed HTML to SID: {0}".format(filename))
@@ -380,13 +372,10 @@ class Transformer(object):
         Transform HTML documents to Solr Input Document format.
         """
         for source in Sources:
-            files = os.listdir(source)
-            for filename in files:
-                if filename.endswith('htm') or filename.endswith('html'):
-                    path = source + os.sep + filename
-                    html = HtmlPage.HtmlPage(path)
-                    try:
-                        self.transformHtmlToSid(html, Output)
-                    except:
-                        self.log.error("Could not transform HTML to SID: {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-
+            for filename in [f for f in os.listdir(source) if f.endswith('htm') or f.endswith('html')]:
+                html = HtmlPage.HtmlPage(source, filename=filename)
+                try:
+                    self.transformHtmlToSid(html, Output)
+                except:
+                    msg = "Could not transform HTML to SID: {0}".format(filename)
+                    self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)

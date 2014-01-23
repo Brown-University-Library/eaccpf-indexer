@@ -3,8 +3,9 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from Poster import Poster
+from Indexer import Poster
 from lxml import etree
+
 import os
 import unittest
 
@@ -18,7 +19,7 @@ class TestPoster(unittest.TestCase):
         """
         Set up the test environment.
         """
-        self.poster = Poster()
+        self.poster = Poster.Poster()
         self.url = "http://idx.internal:8080/solr/TEST"
 
     def tearDown(self):
@@ -27,7 +28,7 @@ class TestPoster(unittest.TestCase):
         """
         pass
     
-    def test_init(self):
+    def test__init__(self):
         """
         It should create an instance of the Poster class.
         """
@@ -76,9 +77,9 @@ class TestPoster(unittest.TestCase):
         It should remove any elements that have no content.
         """
         path = os.path.dirname(__file__)
-        case_0 = etree.parse(os.sep.join([path, 'test', 'poster', 'empty_tags_0.xml']))
-        case_1 = etree.parse(os.sep.join([path, 'test', 'poster', 'empty_tags_1.xml']))
-        case_2 = etree.parse(os.sep.join([path, 'test', 'poster', 'empty_tags_2.xml']))
+        case_0 = etree.parse(os.sep.join([path, 'poster', 'empty_tags_0.xml']))
+        case_1 = etree.parse(os.sep.join([path, 'poster', 'empty_tags_1.xml']))
+        case_2 = etree.parse(os.sep.join([path, 'poster', 'empty_tags_2.xml']))
         cases = [ case_0, case_1, case_2 ]
         for case in cases:
             self.poster.strip_empty_elements(case)

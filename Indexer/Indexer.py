@@ -103,8 +103,7 @@ class Indexer(object):
         # if crawl
         if (self.args.crawl):
             import Crawler
-            crawler = Crawler.Crawler()
-            crawler.run(self.config, self.update)
+            Crawler.crawl(self.config, self.update)
         # if clean
         if (self.args.clean):
             import Cleaner
