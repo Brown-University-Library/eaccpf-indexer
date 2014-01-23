@@ -22,92 +22,60 @@ class Crawler(object):
     file system image cache.
     """
 
-    def __init__(self):
+    def __init__(self, params, update=False):
         """
         Initialize the crawler.
         """
         self.cache = None
+        self.hashIndex = {}
         self.hashIndexFilename = ".index.yml"
         self.log = logging.getLogger()
+        self.records = [] # list of records that have been discovered
+        # parameters
+        self.actions = params.get("crawl", "actions").split(",")
+        self.base = params.get("crawl","base") if params.has_option("crawl","base") else None
+        self.cache = params.get("crawl", "cache")
+        self.cacheUrl = params.get("crawl", "cache-url")
+        self.source = params.get("crawl", "input")
+        self.output = params.get("crawl", "output")
+        self.sleep = params.getfloat("crawl", "sleep")
+        self.update = update
+        # make sure that paths have a trailing /
+        self.base = "{}/".format(self.base) if self.base and not self.base.endswith('/') else self.base
+        self.source = "{}/".format(self.source) if self.source and not self.source.endswith('/') else self.source
 
-    def crawlFileSystem(self, Source, Output, Actions, FileIndex, Base=None, Sleep=0.0, UpdateOnly=False):
+    def crawlFileSystem(self):
         """
         Crawl file system for HTML files. Execute the specified indexing 
         actions on each file. Store files in the Output path. Sleep for the
         specified number of seconds after fetching data. The Update parameter
         controls whether we should process the file only if it has changed.
         """
-        # list of records that have been discovered
-        records = []
-        # make sure that Base has a trailing /
-        Base = "{}/".format(Base) if Base and not Base.endswith('/') else Base
-        Source = "{}/".format(Source) if Source and not Source.endswith('/') else Source
         # walk the file system and look for html files
-        for path, _, files in os.walk(Source):
+        for path, _, files in os.walk(self.source):
             # construct an assumed public url for the file
-            base_url = Base + path.replace(Source, '')
+            base_url = self.base + path.replace(self.source, '')
             base_url += '/' if not base_url.endswith('/') else ''
-            self.log.debug("Visiting {} ({})".format(path, base_url))
+            self.log.debug("Scanning {} ({})".format(path, base_url))
             # for each file in the current path
-            for filename in files:
-                if filename.endswith(".htm") or filename.endswith(".html"):
-                    self.log.debug("Reading {}".format(filename))
-                    try:
-                        html = HtmlPage(path + os.sep + filename, base_url)
-                        if 'html-all' in Actions:
-                            html.write(Output)
-                        elif html.hasEacCpfAlternate():
-                            self.log.debug("Entity document found at {0}".format(path + os.sep + filename))
-                            if 'html' in Actions:
-                                html.write(Output)
-                                continue
-                            # get the eaccpf document
-                            metadata = html.getEacCpfUrl()
-                            presentation = html.getUrl()
-                            src = Source + metadata.replace(Base, '')
-                            if not Utils.resourceExists(src):
-                                self.log.warning("Resource not available {0}".format(src))
-                                continue
-                            eaccpf = EacCpf(src, metadata, presentation)
-                            # we will check the eaccpf document to see if its changed
-                            record_filename = eaccpf.getFileName()
-                            records.append(record_filename)
-                            fileHash = eaccpf.getHash()
-                            # if the file has not changed since the last run then skip it
-                            if UpdateOnly and record_filename in FileIndex and FileIndex[record_filename] == fileHash:
-                                self.log.info("No change since last update {0}".format(record_filename))
-                                continue
-                            FileIndex[record_filename] = fileHash
-                            if 'eaccpf' in Actions:
-                                eaccpf.write(Output)
-                            if 'eaccpf-thumbnail' in Actions:
-                                try:
-                                    thumbnail_record = eaccpf.getThumbnail()
-                                    if thumbnail_record:
-                                        self.log.debug("Thumbnail found for {0}".format(filename))
-                                        cache_record = self.cache.put(thumbnail_record.getSourceUrl())
-                                        eaccpf_id = eaccpf.getRecordId()
-                                        thumbnail_record.write(Output, Id=eaccpf_id, CacheRecord=cache_record)
-                                except:
-                                    self.log.error("Could not write thumbnail for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-                            if 'digitalobject' in Actions:
-                                dobjects = eaccpf.getDigitalObjects()
-                                try:
-                                    for dobject in dobjects:
-                                        self.log.debug("Digital object found for {0}".format(filename))
-                                        cache_record = self.cache.put(dobject.getSourceUrl())
-                                        dobj_id = dobject.getObjectId()
-                                        dobject.write(Output, Id=dobj_id, CacheRecord=cache_record)
-                                except:
-                                    self.log.error("Could not write digital object for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-                    except:
-                        self.log.error("Could not complete processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-                    finally:
-                        time.sleep(Sleep)
-        # return the list of processed records
-        return records
+            for filename in [f for f in files if f.endswith("htm") or f.endswith("html")]:
+                self.log.debug("Reading {}".format(filename))
+                try:
+                    html = HtmlPage(path, filename, base_url)
+                    if 'html-all' in self.actions:
+                        html.write(self.output)
+                    elif html.hasEacCpfAlternate():
+                        self.log.debug("Entity document found at {0}".format(path + os.sep + filename))
+                        if 'html' in self.actions:
+                            html.write(self.output)
+                        else:
+                            self.process_eaccpf(html)
+                except:
+                    self.log.error("Could not complete processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+                finally:
+                    time.sleep(self.sleep)
 
-    def crawlWebSite(self, Source, Output, Actions, FileIndex, Sleep=0.0, UpdateOnly=False):
+    def crawlWebSite(self):
         """
         Crawl web site for HTML entity pages. When such a page is found, 
         execute the specified indexing actions. Store files to the output path.
@@ -115,41 +83,91 @@ class Crawler(object):
         """
         self.log.error("Web site crawling is not implemented")
 
-    def run(self, Params, Update=False):
+    def process_eaccpf(self, html):
         """
-        Execute crawl operation using specified parameters.
+        Execute processing actions on the EAC-CPF document.
         """
-        # parameters
-        actions = Params.get("crawl", "actions").split(",")
-        cache = Params.get("crawl", "cache")
-        cacheUrl = Params.get("crawl", "cache-url")
-        source = Params.get("crawl", "input")
-        output = Params.get("crawl", "output")
-        sleep = Params.getfloat("crawl", "sleep")
+        # get the document
+        html_filename = html.getFilename()
+        metadata_url = html.getEacCpfUrl()
+        presentation_url = html.getUrl()
+        src = self.source + metadata_url.replace(self.base, '')
+        if not Utils.resourceExists(src):
+            self.log.warning("EAC-CPF resource not available at {0}".format(src))
+            return
+        eaccpf = EacCpf(src, metadata_url, presentation_url)
+        # record the document hash value
+        record_filename = eaccpf.getFileName()
+        self.records.append(record_filename)
+        file_hash = eaccpf.getHash()
+        # if the file has not changed since the last run then skip it
+        if self.update and record_filename in self.hashIndex and self.hashIndex[record_filename] == file_hash:
+            self.log.info("No change since last update {0}".format(record_filename))
+            return
+        self.hashIndex[record_filename] = file_hash
+        # execute processing actions
+        if 'eaccpf' in self.actions:
+            eaccpf.write(self.output)
+        if 'eaccpf-thumbnail' in self.actions:
+            try:
+                thumbnail_record = eaccpf.getThumbnail()
+                if thumbnail_record:
+                    self.log.debug("Thumbnail found for {0}".format(html_filename))
+                    cache_record = self.cache.put(thumbnail_record.getSourceUrl())
+                    eaccpf_id = eaccpf.getRecordId()
+                    thumbnail_record.write(self.output, Id=eaccpf_id, CacheRecord=cache_record)
+            except:
+                msg = "Could not write thumbnail for {0}".format(html_filename)
+                self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
+        if 'digitalobject' in self.actions:
+            try:
+                dobjects = eaccpf.getDigitalObjects()
+                for dobject in dobjects:
+                    self.log.debug("Digital object found for {0}".format(html_filename))
+                    cache_record = self.cache.put(dobject.getSourceUrl())
+                    dobj_id = dobject.getObjectId()
+                    dobject.write(self.output, Id=dobj_id, CacheRecord=cache_record)
+            except:
+                msg = "Could not write digital object for {0}".format(html_filename)
+                self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
+
+    def run(self):
+        """
+        Execute crawl operation.
+        """
         # check state before starting
-        assert os.path.exists(source), self.log.error("Input path does not exist: {0}".format(source))
-        if not os.path.exists(output):
-            os.makedirs(output)
-        Utils.cleanOutputFolder(output, Update=Update)
-        self.cache = DigitalObjectCache(cache, cacheUrl)
-        assert os.path.exists(output), self.log.error("Output path does not exist: {0}".format(output))
-        # create an index of file hashes, so that we can track what has changed
-        hashIndex = {}
-        if Update:
-            hashIndex = Utils.loadFileHashIndex(output)
+        assert os.path.exists(self.source), self.log.error("Input path does not exist: {0}".format(self.source))
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
+        Utils.cleanOutputFolder(self.output, Update=self.update)
+        assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
+        # digital object cache
+        self.cache = DigitalObjectCache(self.cache, self.cacheUrl)
+        # create an index of file hashes so that we can track which files have
+        # changed
+        self.records = []
+        if self.update:
+            self.hashIndex = Utils.loadFileHashIndex(self.output)
         # crawl the document source
-        if 'http://' in source or 'https://' in source:
-            records = self.crawlWebSite(source, output, actions, hashIndex, sleep, Update)
+        if 'http://' in self.source or 'https://' in self.source:
+            self.crawlWebSite()
         else:
-            base = Params.get("crawl", "base")
-            records = self.crawlFileSystem(source, output, actions, hashIndex, base, sleep, Update)
+            self.crawlFileSystem()
         # remove records from the index that were deleted in the source
-        if Update:
+        if self.update:
             self.log.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, hashIndex)
+            Utils.purgeIndex(self.records, self.hashIndex)
         # remove files from the output folder that are not in the index
-        if Update:
+        if self.update:
             self.log.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(output, hashIndex)
+            Utils.purgeFolder(self.output, self.hashIndex)
         # write the updated file index
-        Utils.writeFileHashIndex(hashIndex, output)
+        Utils.writeFileHashIndex(self.hashIndex, self.output)
+
+
+def crawl(params, update):
+    """
+    Execute crawl operation using the specified parameters.
+    """
+    crawler = Crawler(params, update)
+    crawler.run()

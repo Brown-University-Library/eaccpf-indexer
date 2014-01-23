@@ -3,10 +3,9 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from HtmlPage import HtmlPage
+from Indexer import EacCpf
 from lxml import etree
 
-import EacCpf
 import inspect
 import logging
 import os
@@ -28,7 +27,7 @@ class TestEacCpf(unittest.TestCase):
         self.module_path = os.path.dirname(self.module)
         self.log = logging.getLogger()
         self.temp = tempfile.mkdtemp()
-        self.test_site = os.sep.join([self.module_path, "test", "test_site"])
+        self.test_site = os.sep.join([self.module_path, "test_site"])
         self.test_eac = self.test_site + os.sep + 'eac' + os.sep
 
     def tearDown(self):
@@ -254,7 +253,7 @@ class TestEacCpf(unittest.TestCase):
         multiple parts, it should return the concatenated title string.
         See issue #30.
         """
-        path = os.sep.join([self.module_path, "test", "eaccpf"])
+        path = os.sep.join([self.module_path, "eaccpf"])
         cases = [
             (path + os.sep + 'markup_in_title_1.xml', "Anglicare Victoria"),
             (path + os.sep + 'markup_in_title_2.xml', "Anglicare Victoria -  Corporate Body"),

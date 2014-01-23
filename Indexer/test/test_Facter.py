@@ -3,8 +3,9 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from .. import Facter
+
 import unittest
-from Facter import Facter
 
 
 class TestFacter(unittest.TestCase):
@@ -16,7 +17,7 @@ class TestFacter(unittest.TestCase):
         """
         Setup the test environment.
         """
-        self.facter = Facter()
+        self.facter = Facter.Facter()
 
     def tearDown(self):
         """

@@ -78,8 +78,7 @@ class Poster(object):
         # ensure that the posting URL is correct
         url = Url + 'update' if Url.endswith('/') else Url + '/update'
         # post documents
-        files = os.listdir(Source)
-        for filename in files:
+        for filename in os.listdir(Source):
             try:
                 self.logger.debug("Reading {0}".format(filename))
                 # load the xml document and strip empty tags

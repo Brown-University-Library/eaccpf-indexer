@@ -5,8 +5,9 @@ LICENSE file, which is part of this source code package.
 
 from lxml import etree
 
-import EacCpf
-import HtmlPage
+from Indexer import EacCpf
+from Indexer import HtmlPage
+
 import inspect
 import logging
 import os
@@ -29,7 +30,7 @@ class TestDataExceptions(unittest.TestCase):
         self.module_path = os.path.dirname(self.module)
         self.log = logging.getLogger()
         self.temp = tempfile.mkdtemp()
-        self.test_site = os.sep.join([self.module_path, "test", "test_site"])
+        self.test_site = os.sep.join([self.module_path, "test_site"])
         self.test_eac = self.test_site + os.sep + 'eac' + os.sep
 
     def tearDown(self):
@@ -44,7 +45,7 @@ class TestDataExceptions(unittest.TestCase):
         For the set of special cases, get the list of digital objects.
         These cases are currently failing with the production indexer.
         """
-        test_data = os.sep.join([self.module_path, "test", "exceptions"])
+        test_data = os.sep.join([self.module_path, "exceptions"])
         cases = [
             (test_data + os.sep + "E000111.xml", 1),
             (test_data + os.sep + "QE00003.xml", 3) # has 3 DOs, but only
@@ -62,7 +63,7 @@ class TestDataExceptions(unittest.TestCase):
         titles. The function should return the title string without markup
         included.
         """
-        test_data = os.sep.join([self.module_path, "test", "exceptions", "eac"])
+        test_data = os.sep.join([self.module_path, "exceptions", "eac"])
         cases = [
             (test_data + os.sep + "E000007.xml",
              "http://www.asmp.esrc.unimelb.edu.au/eac/E000007.xml",
@@ -85,15 +86,15 @@ class TestDataExceptions(unittest.TestCase):
         Some HTML documents have title strings that include HTML markup. The
         function should return the title string without markup included.
         """
-        test_data = os.sep.join([self.module_path, "test", "exceptions"])
+        test_data = os.sep.join([self.module_path, "exceptions"])
         cases = [
-            (test_data + os.sep + "D0000813.htm", "Text - Melbourne and Mars : my mysterious life on two planets : extracts from the diary of a Melbourne merchant - Colonial Australian Popular Fiction"),
-            (test_data + os.sep + "D00000006.htm", "Map - Map of the Discoveries in Australia, 1834/1 (1832) - Arrowsmith's Australian Maps"),
-            (test_data + os.sep + "D0000116.htm", "Map - Discoveries in Western Australia, 1833/6 (1838/1) - Arrowsmith's Australian Maps"),
+            (test_data, "D0000813.htm", "Text - Melbourne and Mars : my mysterious life on two planets : extracts from the diary of a Melbourne merchant - Colonial Australian Popular Fiction"),
+            (test_data, "D00000006.htm", "Map - Map of the Discoveries in Australia, 1834/1 (1832) - Arrowsmith's Australian Maps"),
+            (test_data, "D0000116.htm", "Map - Discoveries in Western Australia, 1833/6 (1838/1) - Arrowsmith's Australian Maps"),
         ]
         for case in cases:
-            source, expected = case
-            doc = HtmlPage.HtmlPage(source)
+            path, filename, expected = case
+            doc = HtmlPage.HtmlPage(path, filename=filename)
             self.assertNotEqual(None, doc)
             result = doc.getTitle()
             self.assertEqual(expected, result)

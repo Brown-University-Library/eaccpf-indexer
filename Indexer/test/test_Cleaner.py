@@ -3,8 +3,9 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from Indexer import Cleaner
+
 import unittest
-from Cleaner import Cleaner
 
 
 class TestCleaner(unittest.TestCase):
@@ -28,7 +29,7 @@ class TestCleaner(unittest.TestCase):
         '''
         It should create an object instance.
         '''
-        cleaner = Cleaner()
+        cleaner = Cleaner.Cleaner()
         self.assertNotEqual(cleaner, None)
         
     def test_clean_eaccpf(self):

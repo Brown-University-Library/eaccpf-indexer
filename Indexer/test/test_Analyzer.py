@@ -3,11 +3,12 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 '''
 
+from Indexer import Analyzer
+
 import inspect
 import os
 import tempfile
 import unittest
-from Analyzer import Analyzer
 
 
 class TestAnalyzer(unittest.TestCase):
@@ -35,10 +36,10 @@ class TestAnalyzer(unittest.TestCase):
         # folder with test files
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         parentpath = os.path.dirname(modpath)
-        self.input = parentpath + os.sep + "test" + os.sep + "analyzer"
+        self.input = parentpath + os.sep + "analyzer"
         # temporary directory for report files
         self.temp = tempfile.mkdtemp()
-        self.analyzer = Analyzer()
+        self.analyzer = Analyzer.Analyzer()
 
     def tearDown(self):
         '''

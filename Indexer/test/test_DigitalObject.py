@@ -3,7 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-import DigitalObject
+from Indexer import DigitalObject
+
 import logging
 import inspect
 import os
@@ -22,7 +23,7 @@ class TestDigitalObject(unittest.TestCase):
         module = os.path.abspath(inspect.getfile(self.__class__))
         module_path = os.path.dirname(module)
         self.log = logging.getLogger()
-        self.test_site = os.sep.join([module_path, "test", "test_site"])
+        self.test_site = os.sep.join([module_path, "test_site"])
         self.test_eac = self.test_site + os.sep + 'eac' + os.sep
         # sample metadata for digital object
         self.sample_do_1 = {
