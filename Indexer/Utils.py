@@ -111,7 +111,8 @@ def getFileNameExtension(Filename):
 
 def getFilenameWithAlternateExtension(Filename, Extension):
     """
-    Returns the file name with the specified replacement extension.
+    Returns the file name with the specified replacement extension. The
+    file extension should specified without leading period character.
     """
     name, _ = os.path.splitext(Filename)
     return "{0}.{1}".format(name, Extension)
