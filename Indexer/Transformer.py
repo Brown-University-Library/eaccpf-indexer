@@ -64,7 +64,7 @@ class Transformer(object):
                         dobjfield.text = dobj[field_name]
                         doc.append(dobjfield)
             # write the updated file
-            output_filename = Utils.getFilenameWithAlternateExtension(filename, '.xml')
+            output_filename = Utils.getFilenameWithAlternateExtension(filename, 'xml')
             with open(output_path + os.sep + output_filename,'w') as outfile:
                 xml.write(outfile, pretty_print=True, xml_declaration=True)
             self.log.info("Merged digital object into {0}".format(output_filename))
@@ -297,7 +297,7 @@ class Transformer(object):
             if data[key] and len(data[key]) > 0:
                 f.text = data[key]
         # write XML
-        filename = Utils.getFilenameWithAlternateExtension(filename, ".xml")
+        filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
         with open(Output + os.sep + filename,'w') as outfile:
             xml = etree.tostring(root, pretty_print=True, xml_declaration=True)
             outfile.write(xml)
