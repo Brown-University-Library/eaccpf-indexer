@@ -34,7 +34,7 @@ xslt=/srv/ha/web/FACP/etc/esrc-eaccpf-to-sid.xsl
 
 [post]
 actions=flush.post,commit,optimize
-index=http://index.example.com/PROJ/
+index=http://solr.example.com:8080/solr/PROJ/
 input=/var/lib/indexer/PROJ/post
 
 [analyze]

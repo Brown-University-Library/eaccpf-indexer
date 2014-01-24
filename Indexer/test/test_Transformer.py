@@ -3,7 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from .. import Transformer
+from Indexer import Transformer
 
 import os
 import random
@@ -100,8 +100,6 @@ class TestTransformer(unittest.TestCase):
         self.eaccpf = self._writeEACCPF(tempfile.mktemp(suffix=".xml"))
         self.inferred = self._writeInferredRecord(tempfile.mktemp(suffix=".yml"))
         self.solr = self._writeSolrInputDocument(tempfile.mktemp(suffix=".xml"))
-        # the test class instance
-        self.transformer = Transformer.Transformer()
 
     def tearDown(self):
         """
@@ -139,14 +137,20 @@ class TestTransformer(unittest.TestCase):
         """
         It should create an instance of the Transformer class.
         """
-        self.assertNotEqual(None, self.transformer)
+        pass
 
     def test_mergeInferredRecordToSID(self):
         """
         Merge inferred data into Solr Input Document record.
         """
         pass
-    
+
+    def test_setBoosts(self):
+        """
+        It should set boost values on the specified fields.
+        """
+        pass
+
     def test_transformDigitalObjectToSID(self):
         """
         It should transform a path with digital object YAML records to Solr 
@@ -160,6 +164,12 @@ class TestTransformer(unittest.TestCase):
         format.
         """
         pass
+
+    def test_missing_source_folders(self):
+        """
+        It should not throw an exception when the source folders are missing,
+        but it should generate a log entry to note the absent folder.
+        """
     
 if __name__ == "__main__":
     unittest.main()

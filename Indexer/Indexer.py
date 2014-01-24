@@ -107,13 +107,11 @@ class Indexer(object):
         # if clean
         if (self.args.clean):
             import Cleaner
-            cleaner = Cleaner.Cleaner()
-            cleaner.run(self.config, self.update)
+            Cleaner.clean(self.config, self.update)
         # if infer
         if (self.args.infer):
             import Facter
-            factor = Facter.Facter()
-            factor.run(self.config, self.update)
+            Facter.infer(self.config, self.update)
         # if graph
         if (self.args.graph):
             import Grapher
@@ -122,18 +120,15 @@ class Indexer(object):
         # if transform
         if (self.args.transform):
             import Transformer
-            transformer = Transformer.Transformer()
-            transformer.run(self.config)
+            Transformer.transform(self.config)
         # if post
         if (self.args.post):
             import Poster
-            poster = Poster.Poster()
-            poster.run(self.config)
+            Poster.post(self.config)
         # if analyze
         if (self.args.analyze):
             import Analyzer
-            analyzer = Analyzer.Analyzer()
-            analyzer.run(self.config, self.update)
+            Analyzer.analyze(self.config, self.update)
         # stop clock
         delta = datetime.datetime.now() - start
         s = delta.seconds

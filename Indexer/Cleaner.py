@@ -20,12 +20,14 @@ class Cleaner(object):
     external schema.
     """
 
-    def __init__(self):
-        """
-        Initialize
-        """
+    def __init__(self, output, source, update=False):
+        self.hashIndex = {}
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger()
+        # set parameters
+        self.output = output
+        self.source = source
+        self.update = update
         
     def _fixAttributeURLEncoding(self, Xml):
         """
@@ -121,7 +123,7 @@ class Cleaner(object):
         finally:
             return Text
 
-    def clean(self, Source, Output, HashIndex, Update):
+    def clean(self):
         """
         Read all files from source directory, apply fixes to common errors in 
         documents. Write cleaned files to the output directory.
@@ -129,23 +131,23 @@ class Cleaner(object):
         # list of records that have been discovered
         records = []
         # for each file in the source folder
-        for filename in os.listdir(Source):
+        for filename in os.listdir(self.source):
             try:
                 if filename.startswith('.'):
                     continue
                 else:
                     records.append(filename)
                 # read data
-                data = Utils.read(Source, filename)
+                data = Utils.read(self.source, filename)
                 fileHash = hashlib.sha1(data).hexdigest()
                 # if we are doing an update and the file has not changed then
                 # skip it
-                if Update:
-                    if filename in HashIndex and HashIndex[filename] == fileHash:
+                if self.update:
+                    if filename in self.hashIndex and self.hashIndex[filename] == fileHash:
                         self.logger.info("No change since last update " + filename)
                         continue
                 # record the file hash
-                HashIndex[filename] = fileHash
+                self.hashIndex[filename] = fileHash
                 # fix problems
                 if filename.endswith(".xml"):
                     data = self.fixEacCpf(data)
@@ -154,7 +156,7 @@ class Cleaner(object):
                 else:
                     pass
                 # write data to specified file in the output directory.
-                outfile_path = Output + os.sep + filename
+                outfile_path = self.output + os.sep + filename
                 with open(outfile_path,'w') as outfile:
                     outfile.write(data)
                 self.logger.info("Stored document " + filename)
@@ -187,35 +189,41 @@ class Cleaner(object):
         data = data.replace('&', 'and')
         return data
     
-    def run(self, Params, Update=False, StackTrace=False):
+    def run(self):
         """
         Execute the clean operation using specified parameters.
         @todo this needs to be cleaned up and simplified
         """
-        # get parameters
-        source = Params.get("clean","input")
-        output = Params.get("clean","output")
         # create an index of file hashes, so that we can track what has changed
-        hashIndex = {}
-        if Update:
-            hashIndex = Utils.loadFileHashIndex(output)
+        if self.update:
+            self.hashIndex = Utils.loadFileHashIndex(self.output)
         # clear output folder
-        if not os.path.exists(output):
-            os.makedirs(output)
-        if not Update:
-            Utils.cleanOutputFolder(output)
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
+        if not self.update:
+            Utils.cleanOutputFolder(self.output)
         # check state
-        assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
+        assert os.path.exists(self.source), self.logger.error("Source path does not exist: " + self.source)
+        assert os.path.exists(self.output), self.logger.error("Output path does not exist: " + self.output)
         # clean data
-        records = self.clean(source, output, hashIndex, Update)
+        records = self.clean()
         # remove records from the index that were deleted in the source
-        if Update:
+        if self.update:
             self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, hashIndex)
+            Utils.purgeIndex(records, self.hashIndex)
         # remove files from the output that are not in the index
-        if Update:
+        if self.update:
             self.logger.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(output, hashIndex)
+            Utils.purgeFolder(self.output, self.hashIndex)
         # write the updated file hash index
-        Utils.writeFileHashIndex(hashIndex, output)
+        Utils.writeFileHashIndex(self.hashIndex, self.output)
+
+
+def clean(params, update=False):
+    """
+    Execute cleaning operations with specified parameters.
+    """
+    output = params.get("clean","output")
+    source = params.get("clean","input")
+    cleaner = Cleaner(output, source, update)
+    cleaner.run()

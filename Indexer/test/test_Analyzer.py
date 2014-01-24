@@ -6,7 +6,9 @@ LICENSE file, which is part of this source code package.
 from Indexer import Analyzer
 
 import inspect
+import logging
 import os
+import shutil
 import tempfile
 import unittest
 
@@ -16,37 +18,24 @@ class TestAnalyzer(unittest.TestCase):
     Unit tests for Analyzer module.
     '''
 
-    def _rmdir(self, d):
-        '''
-        Recursively delete a directory.
-        @author ActiveState
-        @see http://code.activestate.com/recipes/552732-remove-directories-recursively/
-        '''
-        for path in (os.path.join(d,f) for f in os.listdir(d)):
-            if os.path.isdir(path):
-                self._rmdir(path)
-            else:
-                os.unlink(path)
-        os.rmdir(d)
-
     def setUp(self):
         '''
         Setup the test.
         '''
+        self.log = logging.getLogger()
         # folder with test files
         modpath = os.path.abspath(inspect.getfile(self.__class__))
         parentpath = os.path.dirname(modpath)
-        self.input = parentpath + os.sep + "analyzer"
-        # temporary directory for report files
+        self.source = parentpath + os.sep + "analyzer"
         self.temp = tempfile.mkdtemp()
-        self.analyzer = Analyzer.Analyzer()
+        self.analyzer = Analyzer.Analyzer(self.source, self.temp)
 
     def tearDown(self):
         '''
         Tear down the test environment.
         '''
         if os.path.exists(self.temp):
-            self._rmdir(self.temp)
+            shutil.rmtree(self.temp)
         self.assertNotEqual(True, os.path.exists(self.temp))
 
     def test__getEntityType(self):
@@ -135,7 +124,7 @@ class TestAnalyzer(unittest.TestCase):
              'E000009.xml':{'control': 1151, 'relations': 0, 'description': 1150, 'identity': 216},
              }
         for filename in iter(cases.keys()):
-            infile = open(self.input + os.sep + filename,'r')
+            infile = open(self.source + os.sep + filename,'r')
             data = infile.read()
             infile.close()
             count = self.analyzer._getSectionContentCounts(data)
@@ -160,7 +149,7 @@ class TestAnalyzer(unittest.TestCase):
         ]
         for case in cases:
             filename, expected = case
-            infile = open(self.input + os.sep + filename,'r')
+            infile = open(self.source + os.sep + filename,'r')
             data = infile.read()
             infile.close()
             result = self.analyzer._getTotalContentCount(data)
@@ -239,7 +228,7 @@ class TestAnalyzer(unittest.TestCase):
         ]
         for case in cases:
             filename, expected = case
-            with open(self.input + os.sep + filename,'r') as f:
+            with open(self.source + os.sep + filename,'r') as f:
                 data = f.read()
             result, errors = self.analyzer._isConformantToEacCpfSchema(data)
             self.assertEqual(expected, result)
@@ -285,21 +274,27 @@ class TestAnalyzer(unittest.TestCase):
         ]
         # it should generate a report for each input file
         for case in cases:
-            filename, output_filename, expected = case
-            self.analyzer.analyzeFile(self.input, filename, self.temp)
-            output_path = self.temp + os.sep + output_filename
-            self.assertEquals(expected, os.path.exists(output_path))
+            try:
+                filename, output_filename, expected = case
+                self.analyzer.analyzeFile(self.source, filename, self.temp)
+                output_path = self.temp + os.sep + output_filename
+                self.assertEquals(expected, os.path.exists(output_path))
+            except:
+                self.log.error("Analysis process failed", exc_info=True)
+                self.fail("Analysis process failed")
 
     def test_analyzeFiles(self):
         '''
         It should execute tests on a collection of input files and then write a
         report file for each.
         '''
-        files = os.listdir(self.input)
-        self.analyzer.analyzeFiles(self.input, self.temp, {})
-        reports = os.listdir(self.temp)
-        # invalid.xml, *2.xml and *4.xml don't show up in the report output
-        self.assertEqual(len(files) - 1 - 2, len(reports))
+        try:
+            self.analyzer.analyzeFiles()
+            reports = os.listdir(self.temp)
+            self.assertGreater(len(reports), 0)
+        except:
+            self.log.error("Analysis process failed", exc_info=True)
+            self.fail("Analysis process failed")
 
 if __name__ == "__main__":
     unittest.main()

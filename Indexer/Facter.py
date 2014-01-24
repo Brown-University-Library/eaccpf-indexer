@@ -24,12 +24,16 @@ class Facter(object):
     structured fields.
     """
 
-    def __init__(self):
-        """
-        Initialize class
-        """
+    def __init__(self, actions, output, sleep, source, update=False):
+        self.hashIndex = {}
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger()
+        # set parameters
+        self.actions = actions
+        self.output = output
+        self.sleep = sleep
+        self.source = source
+        self.update = update
 
     def _addValueToDictionary(self, dic, key, value):
         """
@@ -106,7 +110,7 @@ class Facter(object):
             pass
         return out
 
-    def infer(self, Update=False):
+    def infer(self):
         """
         Infer data for each source file.
         """
@@ -122,7 +126,7 @@ class Facter(object):
                     doc = EacCpf(self.source + os.sep + filename)
                     fileHash = doc.getHash()
                     # if the file has not changed since the last run then skip it
-                    if Update and filename in self.hashIndex and self.hashIndex[filename] == fileHash:
+                    if self.update and filename in self.hashIndex and self.hashIndex[filename] == fileHash:
                         self.logger.info("No change since last update {0}".format(filename))
                         continue
                     # process the file
@@ -222,34 +226,24 @@ class Facter(object):
                     self.logger.warning("Geocoding error", exc_info=True)
         return locations
 
-    def run(self, Params, Update=False):
+    def run(self):
         """
         Execute analysis using the specified parameters.
         """
-        # get parameters
-        self.actions = Params.get("infer", "actions").split(",")
-        self.output = Params.get("infer", "output")
-        self.sleep = Params.getfloat("infer", "sleep")
-        self.source = Params.get("infer", "input")
-        # self.geocoder_api_key = Params.get("infer", "geocoder_api_key")
         # clear output folder
         if not os.path.exists(self.output):
             os.makedirs(self.output)
-        if not Update:
+        if not self.update:
             Utils.cleanOutputFolder(self.output)
         # exit if there are no actions to execute
         if len(self.actions) < 1:
             return
         # load api keys, services for specified operations
         if 'named-entities' in self.actions:
-            try:
-                self.alchemy_api_key = Params.get("infer", "alchemy_api_key")
-            except:
-                self.alchemy_api_key = ''
+            # configure alchemy
+            pass
         if 'entities' in self.actions:
             try:
-                self.calais_api_key = Params.get("infer", "calais_api_key")
-                # create an OpenCalais object, load API key
                 from pythoncalais import Calais
                 self.calais = Calais.Calais(self.calais_api_key, submitter="University of Melbourne, eScholarship Research Centre")
                 self.calais.user_directives["allowDistribution"] = "false"
@@ -260,18 +254,28 @@ class Facter(object):
         assert os.path.exists(self.source), self.logger.error("Input path does not exist: {0}".format(self.source))
         assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
         # create an index of file hashes, so that we can track what has changed
-        self.hashIndex = {}
-        if Update:
-            hashIndex = Utils.loadFileHashIndex(self.output)
+        if self.update:
+            self.hashIndex = Utils.loadFileHashIndex(self.output)
         # execute inference actions
-        records = self.infer(Update)
+        records = self.infer()
         # remove records from the index that were deleted in the source
-        if Update:
+        if self.update:
             self.logger.info("Clearing orphaned records from the file hash index")
             Utils.purgeIndex(records, self.hashIndex)
         # remove files from the output folder that are not in the index
-        if Update:
+        if self.update:
             self.logger.info("Clearing orphaned files from the output folder")
             Utils.purgeFolder(self.output, self.hashIndex)
         # write the updated file hash index
         Utils.writeFileHashIndex(self.hashIndex, self.output)
+
+def infer(params, update=False):
+    """
+    Execute processing actions with the specified parameters.
+    """
+    actions = params.get("infer", "actions").split(",")
+    output = params.get("infer", "output")
+    sleep = params.getfloat("infer", "sleep")
+    source = params.get("infer", "input")
+    facter = Facter(actions, output, sleep, source, update)
+    facter.run()

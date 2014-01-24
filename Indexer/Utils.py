@@ -276,14 +276,17 @@ def parseUnitDate(Date):
             pass
     return None, None
 
-def purgeFolder(Folder, HashIndex):
+def purgeFolder(path, file_index):
     """
-    Purge all files in folder not represented in the index.
+    Purge all files in path not represented in the file index.
     """
-    files = os.listdir(Folder)
-    for filename in files:
-        if not filename in HashIndex.keys():
-            os.remove(Folder + os.sep + filename)
+    keys = file_index.keys()
+    for filename in [f for f in os.listdir(path) if f not in keys]:
+        file_path = path + os.sep + filename
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path, ignore_errors=True)
 
 def purgeIndex(Records, HashIndex):
     """

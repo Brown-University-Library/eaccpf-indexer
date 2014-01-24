@@ -22,7 +22,7 @@ class Crawler(object):
     file system image cache.
     """
 
-    def __init__(self, params, update=False):
+    def __init__(self, actions, base, cache, cache_url, source, output, sleep=1.0, update=False):
         """
         Initialize the crawler.
         """
@@ -32,13 +32,13 @@ class Crawler(object):
         self.log = logging.getLogger()
         self.records = [] # list of records that have been discovered
         # parameters
-        self.actions = params.get("crawl", "actions").split(",")
-        self.base = params.get("crawl","base") if params.has_option("crawl","base") else None
-        self.cache = params.get("crawl", "cache")
-        self.cacheUrl = params.get("crawl", "cache-url")
-        self.source = params.get("crawl", "input")
-        self.output = params.get("crawl", "output")
-        self.sleep = params.getfloat("crawl", "sleep")
+        self.actions = actions
+        self.base = base if base else None
+        self.cache = cache
+        self.cacheUrl = cache_url
+        self.source = source
+        self.output = output
+        self.sleep = sleep
         self.update = update
         # make sure that paths have a trailing /
         self.base = "{}/".format(self.base) if self.base and not self.base.endswith('/') else self.base
@@ -169,5 +169,13 @@ def crawl(params, update):
     """
     Execute crawl operation using the specified parameters.
     """
-    crawler = Crawler(params, update)
+    actions = params.get("crawl", "actions").split(",")
+    base = params.get("crawl","base") if params.has_option("crawl","base") else None
+    cache = params.get("crawl", "cache")
+    cache_url = params.get("crawl", "cache-url")
+    source = params.get("crawl", "input")
+    output = params.get("crawl", "output")
+    sleep = params.getfloat("crawl", "sleep")
+    # execute
+    crawler = Crawler(actions, base,  cache, cache_url, source, output, sleep, update)
     crawler.run()
