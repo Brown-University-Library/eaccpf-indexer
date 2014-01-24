@@ -28,11 +28,11 @@ class Grapher(object):
     http://www.findandconnect.gov.au/nsw/eac/NE00459.xml
     """
 
-    def __init__(self):
-        """
-        Constructor
-        """
+    def __init__(self, source, output, gexf):
         self.logger = logging.getLogger()
+        self.source = source
+        self.output = output
+        self.gexf = gexf
 
     def graph(self, Source, Output):
         """
@@ -70,25 +70,18 @@ class Grapher(object):
         """
         pass
 
-    def run(self, Params, Update=False, StackTrace=False):
+    def run(self):
         """
         Execute analysis operations using specified parameters.
         """
-        # get parameters
-        source = Params.get("graph","input")
-        output = Params.get("graph","output")
-        try:
-            gexf = Params.get("graph","graphmodel")
-        except:
-            gexf = None
         # make output folder
-        Utils.cleanOutputFolder(output)
+        Utils.cleanOutputFolder(self.output)
         # check state
-        assert os.path.exists(source), self.logger.error("Source path does not exist: " + source)
-        assert os.path.exists(output), self.logger.error("Output path does not exist: " + output)
+        assert os.path.exists(self.source), self.logger.error("Source path does not exist: " + self.source)
+        assert os.path.exists(self.output), self.logger.error("Output path does not exist: " + self.output)
         # execute actions
-        self.summarize(source, output)
-        self.graph(output, gexf)
+        self.summarize(self.source, self.output)
+        self.graph(self.output, self.gexf)
 
     def summarize(self, Source, Output):
         """
@@ -114,3 +107,18 @@ class Grapher(object):
             with open(Output + os.sep + outfile_name, 'w') as outfile:
                 yaml.dump(metadata,outfile)
             self.logger.info("Wrote graph data to {0}".format(outfile_name))
+
+
+def graph(params, update):
+    """
+    Execute processing actions with the specified parameters.
+    """
+    # get parameters
+    source = params.get("graph","input")
+    output = params.get("graph","output")
+    try:
+        gexf = params.get("graph","graphmodel")
+    except:
+        gexf = None
+    grapher = Grapher(source, output, gexf)
+    grapher.run()

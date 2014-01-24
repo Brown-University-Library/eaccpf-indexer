@@ -25,23 +25,24 @@ class Analyzer(object):
     state or quality of a single document in relation to a whole collection.
     """
 
-    def __init__(self):
-        """
-        Constructor
-        """
-        self.logger = logging.getLogger()
+    def __init__(self, source, output, update=False):
         self.coordinates = {} # dictionary for geocoordinates
+        self.hashIndex = {}
+        self.logger = logging.getLogger()
+        # set parameters
+        self.output = output
+        self.source = source
+        self.update = update
         # load validation schema
         modpath = os.path.abspath(inspect.getfile(self.__class__))
-        path = os.path.dirname(modpath)
-        schema = path + os.sep + 'transform' + os.sep + 'eaccpf.xsd'
+        schema = os.path.dirname(modpath) + os.sep + 'transform' + os.sep + 'eaccpf.xsd'
         try:
             with open(schema, 'r') as f:
                 schema_data = f.read()
                 schema_root = etree.XML(schema_data)
                 xmlschema = etree.XMLSchema(schema_root)
-            self.parser = etree.XMLParser(schema=xmlschema)
-            self.logger.info("Loaded EAC-CPF schema {0}".format(schema))
+                self.parser = etree.XMLParser(schema=xmlschema)
+                self.logger.info("Loaded EAC-CPF schema {0}".format(schema))
         except Exception:
             self.logger.error("Could not load schema file {0}".format(schema))
 
@@ -81,14 +82,6 @@ class Analyzer(object):
         """
         return len(Data)
 
-    def _isAnalysisFile(self,Path):
-        """
-        Determine if the file at the specified path is an analysis file.
-        """
-        if Path.endswith("yml"):
-            return True
-        return False
-
     def _isConformantToEacCpfSchema(self, Data):
         """
         Determine if the document is conformant to the EAC-CPF schema.
@@ -105,20 +98,7 @@ class Analyzer(object):
                 errors.append(error)
             return False, errors
 
-    def _makeCache(self, Path):
-        """
-        Create a folder at the specified path if none exists.
-        If the path already exists, delete all files within it.
-        """
-        if not os.path.exists(Path):
-            os.makedirs(Path)
-            self.logger.info("Created output folder at " + Path)
-        else:
-            shutil.rmtree(Path)
-            os.makedirs(Path)
-            self.logger.info("Cleared output folder at " + Path)
-
-    def analyzeFile(self, Source, Filename, Output):    
+    def analyzeFile(self, Source, Filename, Output):
         """
         Analyze EAC-CPF file for quality indicators and changes. Write a YAML
         file with analysis data to the output path.
@@ -176,25 +156,23 @@ class Analyzer(object):
             # @todo write an output file for the failed input file, include the exception in the file
             self.logger.error("Could not complete analysis for: {0}".format(Filename), exc_info=Cfg.LOG_EXC_INFO)
         
-    def analyzeFiles(self, Source, Output, HashIndex, Update=False):
+    def analyzeFiles(self):
         """
         Analyze EAC-CPF files in the specified source paths. Write a YML file
         with analysis data to the output path.
         """
         records = []
-        files = os.listdir(Source)
-        for filename in files:
-            if filename.endswith(".xml"):
-                # if the file has not changed since the last run then skip it
-                fileHash = Utils.getFileHash(Source + os.sep + filename)
-                if Update:
-                    if filename in HashIndex and HashIndex[filename] == fileHash:
-                        self.logger.info("No change since last update: {0}".format(filename))
-                        continue
-                # process the file
-                records.append(filename)
-                HashIndex[filename] = fileHash
-                self.analyzeFile(Source, filename, Output)
+        for filename in [f for f in os.listdir(self.source) if f.endswith(".xml")]:
+            # if the file has not changed since the last run then skip it
+            fileHash = Utils.getFileHash(self.source + os.sep + filename)
+            if self.update:
+                if filename in self.hashIndex and self.hashIndex[filename] == fileHash:
+                    self.logger.info("No change since last update: {0}".format(filename))
+                    continue
+            # process the file
+            records.append(filename)
+            self.hashIndex[filename] = fileHash
+            self.analyzeFile(self.source, filename, self.output)
         return records
 
     def buildHtmlReport(self, Source, Output, Update):
@@ -218,10 +196,9 @@ class Analyzer(object):
         files = os.listdir(Source)
         files.sort()
         # load analysis data 
-        for filename in files:
-            if filename.endswith(".yml"):
-                record = Utils.readYaml(Source, filename)
-                records.append(record)
+        for filename in [f for f in files if f.endswith(".yml")]:
+            record = Utils.readYaml(Source, filename)
+            records.append(record)
         # load the template and update contents
         try:
             template = Template(filename=templateFile)
@@ -233,36 +210,42 @@ class Analyzer(object):
         except:
             self.logger.error("Could not write HTML report file", exc_info=Cfg.LOG_EXC_INFO)
 
-    def run(self, Params, Update=False):
+    def run(self):
         """
         Execute analysis operations using specified parameters.
         """
-        # get parameters
-        source = Params.get("analyze", "input")
-        output = Params.get("analyze", "output")
         # make output folder
-        if not os.path.exists(output):
-            os.makedirs(output)
-        if not Update:
-            Utils.cleanOutputFolder(output)
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
+        if not self.update:
+            Utils.cleanOutputFolder(self.output)
         # check state
-        assert os.path.exists(source), self.logger.error("Source path does not exist: {0}".format(source))
-        assert os.path.exists(output), self.logger.error("Output path does not exist: {0}".format(output))
+        assert os.path.exists(self.source), self.logger.error("Source path does not exist: {0}".format(self.source))
+        assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
         # create an index of file hashes, so that we can track what has changed
-        hashIndex = {}
-        if Update:
-            hashIndex = Utils.loadFileHashIndex(output)
+        if self.update:
+            self.hashIndex = Utils.loadFileHashIndex(self.output)
         # analyze files
-        records = self.analyzeFiles(source, output, hashIndex, Update)
+        records = self.analyzeFiles()
         # remove records from the index that were deleted in the source
-        if Update:
+        if self.update:
             self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, hashIndex)
+            Utils.purgeIndex(records, self.hashIndex)
         # remove files from the output folder that are not in the index
-        if Update:
+        if self.update:
             self.logger.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(output, hashIndex)
+            Utils.purgeFolder(self.output, self.hashIndex)
         # build the HTML report
-        self.buildHtmlReport(output, output, Update)
+        self.buildHtmlReport(self.output, self.output, self.update)
         # write the updated file hash index
-        Utils.writeFileHashIndex(hashIndex, output)
+        Utils.writeFileHashIndex(self.hashIndex, self.output)
+
+
+def analyze(params, update=False):
+    """
+    Execute processing actions with the specified parameters.
+    """
+    source = params.get("analyze", "input")
+    output = params.get("analyze", "output")
+    analyzer = Analyzer(source, output, update)
+    analyzer.run()

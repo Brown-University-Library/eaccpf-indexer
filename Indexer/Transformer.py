@@ -18,42 +18,56 @@ class Transformer(object):
     Transform and merge source data to Solr Input Document format.
     """
 
-    def __init__(self):
+    def __init__(self, actions, boosts, fields, output, sources, transform=None):
         self.log = logging.getLogger()
+        # set parameters
+        self.actions = actions
+        self.boosts = boosts
+        self.fields = fields
+        self.output = output
+        self.sources = sources
+        if transform:
+            self.xslt = transform
+        else:
+            # use default transform
+            self.modpath = os.path.abspath(__file__)
+            self.xslt = os.path.dirname(self.modpath) + os.sep + "transform" + os.sep + 'esrc-eaccpf-to-solr.xsl'
 
-    def mergeDigitalObjectIntoSID(self, Source, Output):
+    def mergeDigitalObjectIntoSID(self, path, filename, output_path):
         """
         Merge the digital object record into the Solr Input Document. Do not
         overwrite existing id, presentation_url and metadata_url fields.
         """
-        filename = ''
         try:
             # read the digital object metadata file
-            with open(Source, 'r') as f:
+            with open(path + os.sep + filename, 'r') as f:
                 data = f.read()
                 dobj = yaml.load(data)
-            filename = Utils.getFileName(Source).replace('.yml', '.xml')
             # if there is an existing SID file, then read it
-            if os.path.exists(Output + os.sep + filename):
+            if os.path.exists(output_path + os.sep + filename):
                 parser = etree.XMLParser(remove_blank_text=True)
-                xml = etree.parse(Output + os.sep + filename, parser)
+                xml = etree.parse(output_path + os.sep + filename, parser)
                 root = xml.getroot()
                 doc = root.getchildren()[0]
-                # add fields that are not already present in the SID file
-                for fieldname in dobj.keys():
-                    if fieldname.startswith('dobj'):
-                        # if the field already exists then update it, otherwise add it
-                        node = doc.xpath("//field[@name='{0}']".format(fieldname))
-                        if node and len(node) > 0:
-                            node[0].text = dobj[fieldname]
-                        else:
-                            dobjfield = etree.Element("field", name=fieldname)
-                            dobjfield.text = dobj[fieldname]
-                            doc.append(dobjfield)
-                # write the updated file
-                with open(Output + os.sep + filename,'w') as outfile:
-                    xml.write(outfile, pretty_print=True, xml_declaration=True)
-                self.log.info("Merged digital object into {0}".format(filename))
+            else:
+                # @todo else create an empty SID document object; we won't likely hit this case
+                return
+            # add fields that are not already present in the SID file
+            for field_name in dobj.keys():
+                if field_name.startswith('dobj'):
+                    # if the field already exists then update it, otherwise add it
+                    node = doc.xpath("//field[@name='{0}']".format(field_name))
+                    if node and len(node) > 0:
+                        node[0].text = dobj[field_name]
+                    else:
+                        dobjfield = etree.Element("field", name=field_name)
+                        dobjfield.text = dobj[field_name]
+                        doc.append(dobjfield)
+            # write the updated file
+            output_filename = Utils.getFilenameWithAlternateExtension(filename, '.xml')
+            with open(output_path + os.sep + output_filename,'w') as outfile:
+                xml.write(outfile, pretty_print=True, xml_declaration=True)
+            self.log.info("Merged digital object into {0}".format(output_filename))
         except:
             self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
     
@@ -61,11 +75,9 @@ class Transformer(object):
         """
         Merge digital object records into Solr Input Documents.
         """
-        for source in Sources:
-            for filename in os.listdir(source):
-                if Utils.isDigitalObjectYaml(source + os.sep + filename):
-                    path = source + os.sep + filename
-                    self.mergeDigitalObjectIntoSID(path, Output)
+        for source in [s for s in Sources if os.path.exists(s)]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
+                self.mergeDigitalObjectIntoSID(source, filename, Output)
                     
     def mergeInferredRecordIntoSID(self, Source, Output):
         """
@@ -181,54 +193,39 @@ class Transformer(object):
         Transform zero or more paths with inferred object records to Solr Input 
         Document format.
         """
-        for source in Sources:
-            for filename in os.listdir(source):
-                if Utils.isInferredYaml(source + os.sep + filename):
-                    output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
-                    self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + output_filename)
+        for source in [s for s in Sources if os.path.exists(s)]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
+                output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml") # @todo is this right? it seems improper
+                self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + output_filename)
     
-    def run(self, Params, StackTrace=False):
+    def run(self):
         """
         Execute transformations on source documents as specified. Write results 
         to the output path.
         """
-        # get parameters
-        actions = Params.get("transform", "actions").split(',')
-        output = Params.get("transform", "output")
-        sources = Params.get("transform", "inputs").split(",")
         # create output folder
-        if not os.path.exists(output):
-            os.makedirs(output)
-        Utils.cleanOutputFolder(output)
-        # check state
-        assert os.path.exists(output), self.log.error("Output path does not exist: {0}".format(output))
-        for source in sources:
-            assert os.path.exists(source), self.log.error("Source path does not exist: {0}".format(source))
-        # execute actions in order
-        if "digitalobjects-to-sid" in actions:
-            self.transformDigitalObjectsToSID(sources, output)
-        if "eaccpf-to-sid" in actions:
-            if Params.has_option("transform", "xslt"):
-                xslt = Params.get("transform", "xslt")
-            else:
-                modpath = os.path.abspath(__file__)
-                xslt = os.path.dirname(modpath) + os.sep + "transform" + os.sep + 'esrc-eaccpf-to-solr.xsl'
-            transform = Utils.loadTransform(xslt)
-            self.transformEacCpfsToSID(sources, output, transform)
-        if "html-to-sid" in actions:
-            self.transformHtmlsToSid(sources, output)
-        if 'merge-digitalobjects' in actions:
-            self.mergeDigitalObjectsIntoSID(sources, output)
-        if "merge-inferred" in actions:
-            self.mergeInferredRecordsIntoSID(sources, output)
-        if "set-fields" in actions:
-            fields = Params.get("transform", "set-fields").split(",")
-            if not ('' in fields):
-                self.setFieldValue(output, fields)
-        if 'boost' in actions:
-            boosts = Params.get("transform", "boost").split(',')
-            self.setBoosts(output, boosts)
-        if "validate" in actions:
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
+        Utils.cleanOutputFolder(self.output)
+        assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
+        # execute processing actions
+        if "digitalobjects-to-sid" in self.actions:
+            self.transformDigitalObjectsToSID(self.sources, self.output)
+        if "eaccpf-to-sid" in self.actions:
+            transform = Utils.loadTransform(self.xslt)
+            self.transformEacCpfsToSID(self.sources, self.output, transform)
+        if "html-to-sid" in self.actions:
+            self.transformHtmlsToSid(self.sources, self.output)
+        if 'merge-digitalobjects' in self.actions:
+            self.mergeDigitalObjectsIntoSID(self.sources, self.output)
+        if "merge-inferred" in self.actions:
+            self.mergeInferredRecordsIntoSID(self.sources, self.output)
+        if "set-fields" in self.actions:
+            if not ('' in self.fields):
+                self.setFieldValue(self.output, self.fields)
+        if 'boost' in self.actions:
+            self.setBoosts(self.output, self.boosts)
+        if "validate" in self.actions:
             pass
             # schema = Params.get("transform","schema")
 
@@ -236,55 +233,52 @@ class Transformer(object):
         """
         Boost the specified field for all Solr Input Documents.
         """
-        for filename in os.listdir(Source):
-            path = Source + os.sep + filename
-            if Utils.isSolrInputDocument(path):
-                try:
-                    # parse the document
-                    xml = etree.parse(path)
-                    for fieldname, boostval in [boost.split(':') for boost in Boosts]:
-                        fields = xml.findall('//field[@name="' + fieldname + '"]')
-                        for field in fields:
-                            field.attrib['boost'] = boostval
-                    # save the document
-                    with open(path, 'w') as outfile:
-                        data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
-                        outfile.write(data)
-                    self.log.info("Set boosts: {0}".format(filename))
-                except:
-                    self.log.error("Could not set boosts: {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+        for filename in [f for f in os.listdir(Source) if f.endswith(".xml")]:
+            try:
+                # update the document
+                xml = etree.parse(Source + os.sep + filename)
+                for fieldname, boostval in [boost.split(':') for boost in Boosts]:
+                    fields = xml.findall('//field[@name="' + fieldname + '"]')
+                    for field in fields:
+                        field.attrib['boost'] = boostval
+                # save the document
+                with open(Source + os.sep + filename, 'w') as outfile:
+                    data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
+                    outfile.write(data)
+                self.log.info("Set boosts: {0}".format(filename))
+            except:
+                self.log.error("Could not set boosts: {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
 
     def setFieldValue(self, Source, Values):
         """
         Set the specified field value for all Solr Input Documents.
         """
         parser = etree.XMLParser(remove_blank_text=True)
-        for filename in os.listdir(Source):
-            if Utils.isSolrInputDocument(Source + os.sep + filename):
-                try:
-                    # load the document
-                    xml = etree.parse(Source + os.sep + filename, parser)
-                    root = xml.getroot()
-                    doc = root.getchildren()[0]
-                    # set the field values
-                    for fieldvalue in Values:
-                        fieldname, value = fieldvalue.split(":")
-                        fields = doc.findall('field[@name="' + fieldname + '"]')
-                        # if the field exists, change its value
-                        if len(fields) > 0:
-                            for field in fields:
-                                field.text = value
-                        else:
-                            newfield = etree.Element("field", name=fieldname)
-                            newfield.text = value
-                            doc.append(newfield)
-                    # save the updated document
-                    with open(Source + os.sep + filename,'w') as outfile:
-                        data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
-                        outfile.write(data)
-                    self.log.info("Set fields in {0}".format(filename))
-                except:
-                    self.log.error("Could not set field in {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+        for filename in [f for f in os.listdir(Source) if f.endswith(".xml")]:
+            try:
+                # load the document
+                xml = etree.parse(Source + os.sep + filename, parser)
+                root = xml.getroot()
+                doc = root.getchildren()[0]
+                # set the field values
+                for fieldvalue in Values:
+                    fieldname, value = fieldvalue.split(":")
+                    fields = doc.findall('field[@name="' + fieldname + '"]')
+                    # if the field exists, change its value
+                    if len(fields) > 0:
+                        for field in fields:
+                            field.text = value
+                    else:
+                        newfield = etree.Element("field", name=fieldname)
+                        newfield.text = value
+                        doc.append(newfield)
+                # save the updated document
+                with open(Source + os.sep + filename,'w') as outfile:
+                    data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
+                    outfile.write(data)
+                self.log.info("Set fields in {0}".format(filename))
+            except:
+                self.log.error("Could not set field in {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
 
     def transformDigitalObjectToSID(self, path, filename, Output, Transform=None):
         """
@@ -303,7 +297,7 @@ class Transformer(object):
             if data[key] and len(data[key]) > 0:
                 f.text = data[key]
         # write XML
-        filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
+        filename = Utils.getFilenameWithAlternateExtension(filename, ".xml")
         with open(Output + os.sep + filename,'w') as outfile:
             xml = etree.tostring(root, pretty_print=True, xml_declaration=True)
             outfile.write(xml)
@@ -314,8 +308,8 @@ class Transformer(object):
         Transform zero or more paths with digital object YAML records to Solr 
         Input Document format.
         """
-        for source in Sources:
-            for filename in [f for f in os.listdir(source) if f.endswith("yml")]:
+        for source in [s for s in Sources if os.path.exists(s)]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
                 try:
                     self.transformDigitalObjectToSID(source, filename, Output)
                 except:
@@ -340,8 +334,8 @@ class Transformer(object):
         Transform zero or more paths containing EAC-CPF documents to Solr Input
         Document format.
         """
-        for source in Sources:
-            for filename in [f for f in os.listdir(source) if f.endswith("xml")]:
+        for source in [s for s in Sources if os.path.exists(s)]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".xml")]:
                 try:
                     self.transformEacCpfToSID(source, filename, Output, Transform)
                 except Exception:
@@ -371,11 +365,28 @@ class Transformer(object):
         """
         Transform HTML documents to Solr Input Document format.
         """
-        for source in Sources:
-            for filename in [f for f in os.listdir(source) if f.endswith('htm') or f.endswith('html')]:
+        for source in [s for s in Sources if os.path.exists(s)]:
+            for filename in [f for f in os.listdir(source) if f.endswith('.htm') or f.endswith('.html')]:
                 html = HtmlPage.HtmlPage(source, filename=filename)
                 try:
                     self.transformHtmlToSid(html, Output)
                 except:
                     msg = "Could not transform HTML to SID: {0}".format(filename)
                     self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
+
+
+def transform(params):
+    """
+    Execute transform operation with the specified parameters.
+    """
+    actions = params.get("transform", "actions").split(',')
+    boosts = params.get("transform", "boost").split(',')
+    fields = params.get("transform", "set-fields").split(",")
+    output = params.get("transform", "output")
+    sources = params.get("transform", "inputs").split(",")
+    if params.has_option("transform", "xslt"):
+        xslt = params.get("transform", "xslt")
+    else:
+        xslt=None
+    transformer = Transformer(actions, boosts, fields, output, sources, transform=xslt)
+    transformer.run()

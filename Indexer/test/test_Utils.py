@@ -3,9 +3,12 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from .. import Utils
+from Indexer import Utils
 
+import inspect
+import logging
 import os
+import shutil
 import tempfile
 import unittest
 
@@ -14,10 +17,14 @@ class TestUtils(unittest.TestCase):
     pass
 
     def setUp(self):
-        pass
+        self.log = logging.getLogger()
+        self.module = os.path.abspath(inspect.getfile(self.__class__))
+        self.module_path = os.path.dirname(self.module)
+        self.temp = tempfile.mkdtemp()
+        self.tests = os.sep.join([self.module_path, "utils"])
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.temp)
 
     def test_cleanList(self):
         pass
@@ -257,7 +264,35 @@ class TestUtils(unittest.TestCase):
             self.assertEquals(toDate, r_toDate)
 
     def test_purgeFolder(self):
-        pass
+        """
+        It should recursively delete the contents of the specified folder.
+        """
+        cases = [
+            (self.tests + os.sep + "purge", "1", [], 0),
+            (self.tests + os.sep + "purge", "2", ['file1','file2'], 2),
+            (self.tests + os.sep + "purge", "3", ['file0','file3'], 1),
+        ]
+        for case in cases:
+            source_path, folder_name, keep_files, expected_count = case
+            file_index = {}
+            for f in keep_files:
+                file_index[f] = "file hash"
+            source = source_path + os.sep + folder_name
+            dest = self.temp + os.sep + folder_name
+            try:
+                shutil.copytree(source, dest)
+            except:
+                msg = "Could not copy testing files {0} to temp folder {1}".format(source, dest)
+                self.fail(msg)
+            try:
+                Utils.purgeFolder(dest, file_index)
+            except:
+                msg = "Could not purge folder {}".format(self.temp)
+                self.log.error(msg, exc_info=True)
+                self.fail(msg)
+            # the file count should be equal to expected
+            files = os.listdir(dest)
+            self.assertEqual(expected_count, len(files))
 
     def test_purgeIndex(self):
         pass
