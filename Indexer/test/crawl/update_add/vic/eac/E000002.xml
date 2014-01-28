@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="shared/cpf.rng" type="xml"?>
+<eac-cpf xmlns="urn:isbn:1-931666-33-4" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+<control>
+<recordId>E000002</recordId>
+<maintenanceStatus>revised</maintenanceStatus>
+<maintenanceAgency>
+<agencyCode>AU-FCVC</agencyCode>
+<agencyName>Find &amp;amp; Connect - Victoria</agencyName>
+<descriptiveNote>
+<p></p>
+</descriptiveNote>
+</maintenanceAgency>
+<languageDeclaration>
+<language languageCode="eng">English</language>
+<script scriptCode="Latn">Latin</script>
+</languageDeclaration>
+<conventionDeclaration>
+<abbreviation>AACR2</abbreviation>
+<citation>Anglo-American Cataloguing Rules</citation>
+</conventionDeclaration>
+<localControl localType="typeOfEntity">
+<term>Organisation</term>
+</localControl>
+<maintenanceHistory>
+<maintenanceEvent>
+<eventType>created</eventType>
+<eventDateTime standardDateTime="2009-01-21">2009-01-21</eventDateTime>
+<agentType>human</agentType>
+<agent>Cate O'Neill</agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2012-05-29">2012-05-29</eventDateTime>
+<agentType>human</agentType>
+<agent></agent>
+<eventDescription></eventDescription>
+</maintenanceEvent>
+</maintenanceHistory>
+</control>
+<cpfDescription>
+<identity><entityId>http://www.findandconnect.gov.au/vic/biogs/E000002b.htm</entityId>
+<entityType>corporateBody</entityType>
+<nameEntry><part>Centre for Excellence in Child and Family Welfare</part>
+<authorizedForm>AACR2</authorizedForm>
+</nameEntry>
+</identity>
+<description><existDates>
+<dateRange>
+<fromDate standardDate="2003-01-01">2003</fromDate>
+</dateRange>
+</existDates>
+<places>
+</places>
+<functions>
+<function>
+<term>Peak body</term>
+</function>
+</functions>
+<biogHist>
+<abstract>The Centre for Excellence in Child and Family Welfare, established in 2003, is a peak body for community service organisations in the child, youth and family services sector of Victoria, established in 2003. The organisation began as the Children's Welfare Association of Victoria, a peak body set up in 1912.</abstract>
+<p>The Centre for Excellence in Child and Family Welfare was established in 2003. The Centre is a peak body, providing representation, professional development, research, policy and program advice, publications and resources for 96 community service organisations in the child, youth and family services sector of Victoria.</p>
+<p>The Centre for Excellence began as the Children's Welfare Association of Victoria, a peak body set up in 1912.</p>
+<p>The Centre represents small, medium and large community service organisations spread across the State in metropolitan and country areas. Its members provide services including residential care, family support, counselling, parenting support, day programs, alternative education, financial counselling, foster care, respite care, support for families with children with a disability, unemployment services, drug and alcohol counselling, sexual abuse counselling, women's refuges, domestic violence services, supported accommodation, youth support services, school support and assistance for families in crisis.</p>
+
+</biogHist>
+</description>
+<relations><cpfRelation cpfRelationType="temporal-earlier" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000024b.htm">
+<relationEntry localType="Organisation">
+Children's Welfare Association of Victoria (1912 - 2003)
+</relationEntry>
+<descriptiveNote>
+<p>In 2003, the Children's Welfare Association of Victoria changed its name to the Centre for Excellence in Child and Family Welfare.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000220b.htm">
+<relationEntry localType="Glossary Term">
+Community Service Organisation
+</relationEntry>
+<descriptiveNote>
+<p>The Centre for Excellence in Child and Family Welfare is a peak body for community services organisations in Victoria.</p>
+</descriptiveNote>
+</cpfRelation>
+<cpfRelation cpfRelationType="associative" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/biogs/E000123b.htm">
+<relationEntry localType="Organisation">
+The Who Am I? Project (2009 - 2012)
+</relationEntry>
+<descriptiveNote>
+<p>The Centre for Excellence in Child and Family Welfare is a Linkage Partner to the Who Am I? project.</p>
+</descriptiveNote>
+</cpfRelation>
+<resourceRelation resourceRelationType="subjectOf">
+<relationEntry localType="published">'Centre for Excellence in Child and Family Welfare', in <span style="font-style:italic">Find &amp;amp;amp; Connect - Victoria</span>, </relationEntry>
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<title render="italic">Centre for Excellence in Child and Family Welfare</title>
+<bibseries>
+<title render="italic">Find &amp;amp;amp; Connect - Victoria</title>
+</bibseries>
+<extptr linktype="simple" href="http://www.findandconnect.gov.au/vic/biogs/E000002b.htm"></extptr>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/bib/P00000011.htm">
+<relationEntry localType="published">Report: It's Not Too Late To Care: report on the research into life outcomes for people brought up in institutional care in Victoria</relationEntry>
+
+
+<objectXMLWrap>
+<bibref xmlns="urn:isbn:1-931666-22-9">
+<name type="author">Raman, Sunitha; Forbes, Catherine</name>
+<title render="italic">It's Not Too Late To Care: report on the research into life outcomes for people brought up in institutional care in Victoria</title>
+<imprint>
+<place>Melbourne</place>
+<publisher>Centre for Excellence in Child and Family Welfare Inc.</publisher>
+<date>2008</date>
+</imprint>
+</bibref>
+</objectXMLWrap>
+</resourceRelation>
+
+<resourceRelation resourceRelationType="other" xlink:type="simple" xlink:href="http://www.findandconnect.gov.au/vic/objects/D00000013.htm">
+    <relationEntry localType="digitalObject">CRISSP Forum for Senior Sector Managers and DHS, Notes</relationEntry>
+    <descriptiveNote><p>Include in Gallery</p></descriptiveNote>
+
+<objectXMLWrap>
+<archref xmlns="urn:isbn:1-931666-22-9">
+<repository>Centre for Excellence in Child and Family Welfare website</repository>
+<unittitle>CRISSP Forum for Senior Sector Managers and DHS, Notes</unittitle>
+<unitdate>22 September 2008</unitdate>
+<abstract>Notes of a Meeting on Monday 22 September 2008 relating to the roll-out of CRISSP.</abstract>
+</archref>
+</objectXMLWrap>
+</resourceRelation>
+</relations>
+</cpfDescription>
+</eac-cpf>
