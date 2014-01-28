@@ -37,6 +37,13 @@
 <agent></agent>
 <eventDescription></eventDescription>
 </maintenanceEvent>
+<maintenanceEvent>
+<eventType>updated</eventType>
+<eventDateTime standardDateTime="2013-03-11">2013-03-11</eventDateTime>
+<agentType>human</agentType>
+<agent>User</agent>
+<eventDescription>changed something in the file</eventDescription>
+</maintenanceEvent>
 </maintenanceHistory>
 </control>
 <cpfDescription>

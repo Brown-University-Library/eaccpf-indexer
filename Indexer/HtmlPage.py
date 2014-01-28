@@ -33,9 +33,11 @@ class HtmlPage(object):
         self.base = base_url
         if filename:
             self.filename = filename
+            self.parent_path = source
             self.source = source + os.sep + filename
         else:
             self.filename = Utils.getFileName(source)
+            self.parent_path = os.path.dirname(source)
             self.source = source
         # load data
         self.data = Utils.load_from_source(self.source)

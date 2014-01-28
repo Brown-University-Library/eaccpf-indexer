@@ -24,7 +24,7 @@ class Facter(object):
     structured fields.
     """
 
-    def __init__(self, actions, output, sleep, source, update=False):
+    def __init__(self, actions, source, output, sleep=1.0, update=False):
         self.hashIndex = {}
         self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger()
@@ -122,13 +122,13 @@ class Facter(object):
                 # record the name of the file so that we know we've processed it
                 records.append(filename)
                 doc = EacCpf(self.source + os.sep + filename)
-                fileHash = doc.getHash()
+                file_hash = doc.getHash()
                 # if the file has not changed since the last run then skip it
-                if self.update and filename in self.hashIndex and self.hashIndex[filename] == fileHash:
+                if self.update and filename in self.hashIndex and self.hashIndex[filename] == file_hash:
                     self.logger.info("No change since last update {0}".format(filename))
                     continue
                 # process the file
-                self.hashIndex[filename] = fileHash
+                self.hashIndex[filename] = file_hash
                 # load the inferred data file if it already exists
                 inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
                 inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
@@ -275,5 +275,5 @@ def infer(params, update=False):
     output = params.get("infer", "output")
     sleep = params.getfloat("infer", "sleep")
     source = params.get("infer", "input")
-    facter = Facter(actions, output, sleep, source, update)
+    facter = Facter(actions, source, output, sleep, update)
     facter.run()
