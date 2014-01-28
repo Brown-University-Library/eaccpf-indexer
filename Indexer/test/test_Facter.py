@@ -3,8 +3,12 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from .. import Facter
+from Indexer import Facter
 
+import inspect
+import os
+import shutil
+import tempfile
 import unittest
 
 
@@ -17,19 +21,32 @@ class TestFacter(unittest.TestCase):
         """
         Setup the test environment.
         """
-        self.facter = Facter.Facter()
+        self.module = os.path.abspath(inspect.getfile(self.__class__))
+        self.module_path = os.path.dirname(self.module)
+        self.source = self.module_path + os.sep + "facter"
+        self.temp = tempfile.mkdtemp()
 
     def tearDown(self):
         """
         Tear down the test environment.
         """
-        pass
+        if os.path.exists(self.temp):
+            shutil.rmtree(self.temp, ignore_errors=True)
 
     def test__init__(self):
         """
         It should return an instance of the class.
         """
-        self.assertNotEqual(self.facter,None)
+        cases = [
+            (['location'], self.source, self.temp, 1.0),
+        ]
+        for case in cases:
+            actions, source, output, sleep = case
+            try:
+                facter = Facter.Facter(actions, source, output, sleep)
+                self.assertNotEqual(None, facter)
+            except:
+                self.fail("Could not create instance of Facter")
 
     def test__addValueToDictionary(self):
         pass
@@ -38,6 +55,7 @@ class TestFacter(unittest.TestCase):
         """
         It should return the components of the address string.
         """
+        facter = Facter.Facter([], None, 1.0, None)
         cases = {
                  "Rapid Creek NT, Australia" : ['',"Rapid Creek","NT",'',"Australia"],
                  "Mulgowie QLD 4341, Australia" : ['',"Mulgowie","QLD","4341","Australia"],
@@ -50,7 +68,7 @@ class TestFacter(unittest.TestCase):
                  "Gore Hill, Sandford, Wareham, Dorset BH20 7AL, UK" : ["Gore Hill, Sandford","Wareham","Dorset","BH20 7AL","UK"],
                  }
         for case in cases:
-            address,city,region,postal,country = self.facter._getAddressParts(case)
+            address,city,region,postal,country = facter._getAddressParts(case)
             self.assertEqual(address,cases[case][0])
             self.assertEqual(city,cases[case][1])
             self.assertEqual(region,cases[case][2])

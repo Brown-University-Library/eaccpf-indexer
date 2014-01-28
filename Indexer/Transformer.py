@@ -15,7 +15,9 @@ import yaml
 
 class Transformer(object):
     """
-    Transform and merge source data to Solr Input Document format.
+    Transform and merge source data to Solr Input Document format. Transform
+    does not use the --update flag because the operation is purely local and
+    should take an insignificant amount of time to complete.
     """
 
     def __init__(self, actions, boosts, fields, output, sources, transform=None):
@@ -195,7 +197,7 @@ class Transformer(object):
         """
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
-                output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml") # @todo is this right? it seems improper
+                output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
                 self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + output_filename)
     
     def run(self):
@@ -227,7 +229,6 @@ class Transformer(object):
             self.setBoosts(self.output, self.boosts)
         if "validate" in self.actions:
             pass
-            # schema = Params.get("transform","schema")
 
     def setBoosts(self, Source, Boosts):
         """

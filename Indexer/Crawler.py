@@ -11,7 +11,6 @@ import Cfg
 import Utils
 import logging
 import os
-import time
 
 
 class Crawler(object):
@@ -32,9 +31,9 @@ class Crawler(object):
         self.base = base if base else None
         self.cache = cache
         self.cacheUrl = cache_url
-        self.source = source
         self.output = output
         self.sleep = sleep
+        self.source = source
         self.update = update
         # make sure that paths have a trailing /
         self.base = "{}/".format(self.base) if self.base and not self.base.endswith('/') else self.base
@@ -47,29 +46,24 @@ class Crawler(object):
         specified number of seconds after fetching data. The Update parameter
         controls whether we should process the file only if it has changed.
         """
-        # walk the file system and look for html files
         for path, _, files in os.walk(self.source):
-            # construct an assumed public url for the file
+            # construct an assumed public url for the path
             base_url = self.base + path.replace(self.source, '')
             base_url += '/' if not base_url.endswith('/') else ''
+            # scan the current path
             self.log.debug("Scanning {} ({})".format(path, base_url))
-            # for each file in the current path
             for filename in [f for f in files if f.endswith("htm") or f.endswith("html")]:
                 self.log.debug("Reading {}".format(filename))
                 try:
                     html = HtmlPage(path, filename, base_url)
                     if 'html-all' in self.actions:
-                        html.write(self.output)
+                        self.process_html(html)
+                    elif 'html' in self.actions and html.hasEacCpfAlternate():
+                        self.process_html(html)
                     elif html.hasEacCpfAlternate():
-                        self.log.debug("Entity document found at {0}".format(path + os.sep + filename))
-                        if 'html' in self.actions:
-                            html.write(self.output)
-                        else:
-                            self.process_eaccpf(html)
+                        self.process_eaccpf(html)
                 except:
                     self.log.error("Could not complete processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-                finally:
-                    time.sleep(self.sleep)
 
     def crawlWebSite(self):
         """
@@ -83,7 +77,6 @@ class Crawler(object):
         """
         Execute processing actions on the EAC-CPF document.
         """
-        # get the document
         html_filename = html.getFilename()
         metadata_url = html.getEacCpfUrl()
         presentation_url = html.getUrl()
@@ -128,6 +121,21 @@ class Crawler(object):
             except:
                 msg = "Could not write digital object for {0}".format(html_filename)
                 self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
+
+    def process_html(self, html):
+        """
+        Store the HTML page content in the output folder.
+        """
+        # if the file has not changed since the last run then
+        # skip it
+        file_hash = Utils.getFileHash(html.source)
+        if self.update and html.filename in self.hashIndex and self.hashIndex[html.filename] == file_hash:
+            self.log.info("No change since last update {0}".format(html.filename))
+            return
+        # record the new or updated file hash
+        self.hashIndex[html.filename] = file_hash
+        # store the document in the output folder
+        html.write(self.output)
 
     def run(self):
         """

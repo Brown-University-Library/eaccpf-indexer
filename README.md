@@ -76,7 +76,7 @@ Revision History
 
  * Additional unit tests throughout
  * Refactoring of modules to simplify testing
- * Added partial copy of FCNS data to enable local testing of modules
+ * Added local testing data, removed web based testing sources
  * Added Cfg module to carry globals
 
 1.5.0
