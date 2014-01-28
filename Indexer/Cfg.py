@@ -6,7 +6,6 @@ LICENSE file, which is part of this source code package.
 __description__ = "Global configuration values"
 
 import inspect
-import sys
 
 def is_debugging():
   for frame in inspect.stack():
@@ -15,4 +14,5 @@ def is_debugging():
   return False
 
 ## Globals
+HASH_INDEX_FILENAME = ".index.yml"
 LOG_EXC_INFO = True if is_debugging() else False

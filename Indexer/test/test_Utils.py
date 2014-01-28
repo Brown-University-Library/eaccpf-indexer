@@ -188,9 +188,9 @@ class TestUtils(unittest.TestCase):
 
         ]
         for case in cases:
-            path, isdobj = case
-            is_dobj = Utils.isDigitalObjectYaml(path)
-            self.assertEquals(isdobj, is_dobj)
+            path, expected = case
+            result = Utils.isDigitalObjectYaml(path)
+            self.assertEquals(expected, result)
 
     def test_isInferredYaml(self):
         """
@@ -216,12 +216,24 @@ class TestUtils(unittest.TestCase):
             ("/path/to/my/file", False)
         ]
         for case in cases:
-            url, isurl = case
-            is_url = Utils.isUrl(url)
-            self.assertEquals(isurl, is_url)
+            url, expected = case
+            result = Utils.isUrl(url)
+            self.assertEquals(expected, result)
 
     def test_loadFileHashIndex(self):
-        pass
+        """
+        It should load the file hash index from a YAML file.
+        """
+        source = self.tests + os.sep + "hash_index"
+        cases = [
+            (source + os.sep + "1", 3),
+            (source + os.sep + "2", 4),
+        ]
+        for case in cases:
+            path, expected = case
+            hash_index = Utils.loadFileHashIndex(path)
+            self.assertNotEqual(None, hash_index)
+            self.assertEqual(expected, len(hash_index))
 
     def test_map_url_to_local_path(self):
         """
@@ -295,7 +307,18 @@ class TestUtils(unittest.TestCase):
             self.assertEqual(expected_count, len(files))
 
     def test_purgeIndex(self):
-        pass
+        """
+        It should remove all entries in the index that are not represented in
+        the file list.
+        """
+        cases = [
+            (['ABC','DEF'],{"ABC":"hash","DEF":"hash","GHI":"hash"}, 2),
+        ]
+        for case in cases:
+            records, index, expected = case
+            index = Utils.purgeIndex(records, index)
+            self.assertNotEqual(None, index)
+            self.assertEqual(expected, len(index))
 
     def test_read(self):
         pass
@@ -346,6 +369,14 @@ class TestUtils(unittest.TestCase):
 
     def test_write(self):
         pass
+
+    def test_writeFileHashIndex(self):
+        """
+        It should write a file hash index in YAML format.
+        """
+        cases = []
+        for case in cases:
+            data, expected = case
 
     def test_writeYaml(self):
         pass

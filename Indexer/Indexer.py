@@ -3,6 +3,7 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+import Cfg
 import ConfigParser
 import argparse
 import datetime
@@ -18,10 +19,6 @@ class Indexer(object):
     """
 
     def __init__(self):
-        """
-        Set logging options, create a configuration file parser, command line
-        argument parser.
-        """
         # configuration file parser
         self.config = ConfigParser.SafeConfigParser()
         # configure command line options
@@ -55,7 +52,11 @@ class Indexer(object):
                                  help="set the logging level",
                                  choices=['DEBUG','INFO','ERROR'],
                                  )
+        self.parser.add_argument('--stacktrace', help="display stack trace when an error occurs", action='store_true', dest='trace')
+        self.parser.add_argument('--no-stacktrace', help="do not display stack trace when an error occurs", action='store_false', dest='trace')
         # defaults
+        self.parser.set_defaults(trace=False)
+        self.parser.set_defaults(update=False)
         self.update = False
 
     def configureLogging(self):
@@ -81,7 +82,7 @@ class Indexer(object):
         """
         Start processing.
         """
-        # parse the command line arguments and set logging
+        # parse the command line arguments and set logging options
         try:
             self.args = self.parser.parse_args()
             self.configureLogging()
@@ -91,51 +92,43 @@ class Indexer(object):
             sys.exit(e)
         # load the configuration file
         try:
-            self.config.readfp(open(self.args.config))
+            with open(self.args.config) as f:
+                self.config.readfp(f)
         except Exception, e:
             self.logger.critical("Could not load the specified configuration file")
             sys.exit(e)
-        # set the update option
-        if self.args.update:
-            self.update = self.args.update
+        # set options
+        Cfg.LOG_EXC_INFO = self.args.trace
         # start clock
         start = datetime.datetime.now()
-        # if crawl
+        # execute commands
         if (self.args.crawl):
             import Crawler
-            Crawler.crawl(self.config, self.update)
-        # if clean
+            Crawler.crawl(self.config, self.args.update)
         if (self.args.clean):
             import Cleaner
-            Cleaner.clean(self.config, self.update)
-        # if infer
+            Cleaner.clean(self.config, self.args.update)
         if (self.args.infer):
             import Facter
-            Facter.infer(self.config, self.update)
-        # if graph
+            Facter.infer(self.config, self.args.update)
         if (self.args.graph):
             import Grapher
-            grapher = Grapher.Grapher()
-            grapher.run(self.config, self.update)
-        # if transform
+            Grapher.graph(self.config, self.args.update)
         if (self.args.transform):
             import Transformer
             Transformer.transform(self.config)
-        # if post
         if (self.args.post):
             import Poster
             Poster.post(self.config)
-        # if analyze
         if (self.args.analyze):
             import Analyzer
-            Analyzer.analyze(self.config, self.update)
+            Analyzer.analyze(self.config, self.args.update)
         # stop clock
         delta = datetime.datetime.now() - start
         s = delta.seconds
         hours, remainder = divmod(s, 3600)
         minutes, seconds = divmod(remainder, 60)
-        msg = 'Job finished in %s:%s:%s' % (hours, minutes, seconds)
-        self.logger.info(msg)    
+        self.logger.info("Job finished in {0}:{1}:{2}".format(hours, minutes, seconds))
 
 # entry point
 if __name__ == '__main__':

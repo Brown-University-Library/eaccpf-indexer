@@ -5,6 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from lxml import etree
 
+import Cfg
 import calendar
 import datetime
 import hashlib
@@ -18,8 +19,6 @@ import yaml
 
 
 log = logging.getLogger()
-
-HASH_INDEX_FILENAME = '.index.yaml'
 
 
 def cleanList(L):
@@ -39,8 +38,7 @@ def cleanOutputFolder(Path, Update=False):
         os.makedirs(Path)
         return
     if not Update:
-        files = os.listdir(Path)
-        for filename in files:
+        for filename in os.listdir(Path):
             path = Path + os.sep + filename
             if os.path.isdir(path):
                 shutil.rmtree(path)
@@ -84,9 +82,8 @@ def getFileHash(Path):
     """
     Get SHA1 hash of the specified file.
     """
-    infile = open(Path,'r')
-    data = infile.read()
-    infile.close()
+    with open(Path,'r') as f:
+        data = f.read()
     return hashlib.sha1(data).hexdigest()
 
 def getFileName(Url):
@@ -147,9 +144,8 @@ def isDigitalObjectYaml(Path):
     YAML format.
     """
     if Path.endswith("yml"):
-        infile = open(Path,'r')
-        data = infile.read()
-        infile.close()
+        with open(Path,'r') as f:
+            data = f.read()
         if "cache_id" in data:
             return True
     return False
@@ -169,9 +165,8 @@ def isSolrInputDocument(Path):
     Document.
     """
     if Path.endswith("xml"):
-        infile = open(Path, 'r')
-        data = infile.read()
-        infile.close()
+        with open(Path, 'r') as f:
+            data = f.read()
         if "<doc>" in data and "</doc>" in data:
             return True
     return False
@@ -184,15 +179,14 @@ def isUrl(Path):
         return True
     return False
 
-def loadFileHashIndex(Path):
+def loadFileHashIndex(Path, Filename=Cfg.HASH_INDEX_FILENAME):
     """
     Load the file hash index from the specified path.
     """
-    if os.path.exists(Path + os.sep + HASH_INDEX_FILENAME):
-        infile = open(Path + os.sep + HASH_INDEX_FILENAME,'r')
-        data = infile.read()
-        index = yaml.load(data)
-        infile.close()
+    if os.path.exists(Path + os.sep + Filename):
+        with open(Path + os.sep + Filename,'r') as f:
+            data = f.read()
+            index = yaml.load(data)
         if index != None:
             return index
     return {}
@@ -218,10 +212,9 @@ def loadTransform(Path):
     """
     Load the specified XSLT file and return an LXML transformer.
     """
-    xslt_file = open(Path, 'r')
-    xslt_data = xslt_file.read()
+    with open(Path, 'r') as f:
+        xslt_data = f.read()
     xslt_root = etree.XML(xslt_data)
-    xslt_file.close()
     return etree.XSLT(xslt_root)
 
 def map_url_to_local_path(url, site_root_path):
@@ -289,34 +282,28 @@ def purgeFolder(path, file_index):
         elif os.path.isdir(file_path):
             shutil.rmtree(file_path, ignore_errors=True)
 
-def purgeIndex(Records, HashIndex):
+def purgeIndex(file_list, file_hash_index):
     """
-    Purge all index entries not represented in the record list.
+    Purge all file hash entries not represented in the file list.
     """
-    rtd = []
-    for filename in HashIndex.keys():
-        if filename not in Records:
-            rtd.append(filename)
-        for filename in rtd:
-            del HashIndex[filename]
-    return HashIndex
+    for key in [key for key in file_hash_index.keys() if key not in file_list]:
+        del file_hash_index[key]
+    return file_hash_index
 
 def read(Path, Filename):
     """
     Read string data from file.
     """
-    infile = open(Path + os.sep + Filename,'r')
-    data = infile.read()
-    infile.close()
+    with open(Path + os.sep + Filename,'r') as f:
+        data = f.read()
     return data
 
 def readYaml(Path, Filename):
     """
     Load the specified YAML data file.
     """
-    infile = open(Path + os.sep + Filename, 'r')
-    yml = yaml.load(infile)
-    infile.close()
+    with open(Path + os.sep + Filename, 'r') as f:
+        yml = yaml.load(f)
     return yml
 
 def resourceExists(Resource):
@@ -349,9 +336,8 @@ def tryReadYaml(Path, Filename):
     dictionary.
     """
     try:
-        infile = open(Path + os.sep + Filename, 'r')
-        record = yaml.load(infile)
-        infile.close()
+        with open(Path + os.sep + Filename, 'r') as f:
+            record = yaml.load(f)
         if record != None:
             return record
     except:
@@ -386,9 +372,8 @@ def validate(Source, Schema):
         # validate files against schema
         files = os.listdir(Source)
         for filename in files:
-            infile = open(Source + os.sep + filename,'r')
-            data = infile.read()
-            infile.close()
+            with open(Source + os.sep + filename,'r') as f:
+                data = f.read()
             try:
                 etree.fromstring(data, parser)
             except:
@@ -400,23 +385,18 @@ def write(Path, Filename, Data):
     """
     Write the string to the file in the specified path.
     """
-    outfile = open(Path + os.sep + Filename, 'w')
-    outfile.write(Data)
-    outfile.close()
+    with open(Path + os.sep + Filename, 'w') as f:
+        f.write(Data)
 
-def writeFileHashIndex(Data, Path):
+def writeFileHashIndex(Data, Path, Filename=Cfg.HASH_INDEX_FILENAME):
     """
     Write the file hash index to the specified path.
     """
-    writeYaml(Path, HASH_INDEX_FILENAME, Data)
+    writeYaml(Path, Filename, Data)
 
 def writeYaml(Path, Filename, Data):
     """
-    Write data in Yaml format to the filename in path.
+    Write data in YAML format to the specified path.
     """
-    try:
-        outfile = open(Path + os.sep + Filename, 'w')
-        yaml.dump(Data, outfile)
-        outfile.close()
-    except:
-        pass # need to log error
+    with open(Path + os.sep + Filename, 'w') as f:
+        yaml.dump(Data, f, default_flow_style=False)

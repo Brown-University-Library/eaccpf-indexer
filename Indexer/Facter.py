@@ -117,45 +117,43 @@ class Facter(object):
         # the list of records that have been processed
         records = []
         # process files
-        files = os.listdir(self.source)
-        for filename in files:
-            if filename.endswith("xml"):
-                try:
-                    # record the name of the file so that we know we've processed it
-                    records.append(filename)
-                    doc = EacCpf(self.source + os.sep + filename)
-                    fileHash = doc.getHash()
-                    # if the file has not changed since the last run then skip it
-                    if self.update and filename in self.hashIndex and self.hashIndex[filename] == fileHash:
-                        self.logger.info("No change since last update {0}".format(filename))
-                        continue
-                    # process the file
-                    self.hashIndex[filename] = fileHash
-                    # load the inferred data file if it already exists
-                    inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
-                    inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
-                    if 'locations' in self.actions:
-                        places = doc.getLocations()
-                        locations = self.inferLocations(places, sleep=self.sleep)
-                        inferred['locations'] = locations
-                    else:
-                        freeText = doc.getFreeText()
-                        if 'entities' in self.actions:
-                            entities = self.inferEntitiesWithCalais(freeText)
-                            inferred['entities'] = entities
-                        if 'named-entities' in self.actions:
-                            namedEntities = self.inferEntitiesWithAlchemy(freeText)
-                            inferred['named-entities'] = namedEntities
-                        if 'text-analysis' in self.actions:
-                            textAnalysis = self.inferEntitiesWithNLTK(freeText)
-                            inferred['text-analysis'] = textAnalysis
-                    # write inferred data to output file
-                    Utils.writeYaml(self.output, inferred_data_filename, inferred)
-                    self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
-                    # sleep between requests
-                    time.sleep(self.sleep)
-                except:
-                    self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+        for filename in [f for f in os.listdir(self.source) if f.endswith(".xml")]:
+            try:
+                # record the name of the file so that we know we've processed it
+                records.append(filename)
+                doc = EacCpf(self.source + os.sep + filename)
+                fileHash = doc.getHash()
+                # if the file has not changed since the last run then skip it
+                if self.update and filename in self.hashIndex and self.hashIndex[filename] == fileHash:
+                    self.logger.info("No change since last update {0}".format(filename))
+                    continue
+                # process the file
+                self.hashIndex[filename] = fileHash
+                # load the inferred data file if it already exists
+                inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
+                inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
+                if 'locations' in self.actions:
+                    places = doc.getLocations()
+                    locations = self.inferLocations(places, sleep=self.sleep)
+                    inferred['locations'] = locations
+                else:
+                    freeText = doc.getFreeText()
+                    if 'entities' in self.actions:
+                        entities = self.inferEntitiesWithCalais(freeText)
+                        inferred['entities'] = entities
+                    if 'named-entities' in self.actions:
+                        namedEntities = self.inferEntitiesWithAlchemy(freeText)
+                        inferred['named-entities'] = namedEntities
+                    if 'text-analysis' in self.actions:
+                        textAnalysis = self.inferEntitiesWithNLTK(freeText)
+                        inferred['text-analysis'] = textAnalysis
+                # write inferred data to output file
+                Utils.writeYaml(self.output, inferred_data_filename, inferred)
+                self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
+                # sleep between requests
+                time.sleep(self.sleep)
+            except:
+                self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
         # return list of processed records
         return records
 

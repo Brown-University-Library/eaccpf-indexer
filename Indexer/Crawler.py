@@ -23,12 +23,8 @@ class Crawler(object):
     """
 
     def __init__(self, actions, base, cache, cache_url, source, output, sleep=1.0, update=False):
-        """
-        Initialize the crawler.
-        """
         self.cache = None
         self.hashIndex = {}
-        self.hashIndexFilename = ".index.yml"
         self.log = logging.getLogger()
         self.records = [] # list of records that have been discovered
         # parameters
@@ -91,20 +87,22 @@ class Crawler(object):
         html_filename = html.getFilename()
         metadata_url = html.getEacCpfUrl()
         presentation_url = html.getUrl()
-        src = self.source + metadata_url.replace(self.base, '')
-        if not Utils.resourceExists(src):
-            self.log.warning("EAC-CPF resource not available at {0}".format(src))
+        eaccpf_src = self.source + metadata_url.replace(self.base, '')
+        if not Utils.resourceExists(eaccpf_src):
+            self.log.warning("EAC-CPF resource not available at {0}".format(eaccpf_src))
             return
-        eaccpf = EacCpf(src, metadata_url, presentation_url)
+        eaccpf = EacCpf(eaccpf_src, metadata_url, presentation_url)
         # record the document hash value
         record_filename = eaccpf.getFileName()
         self.records.append(record_filename)
         file_hash = eaccpf.getHash()
-        # if the file has not changed since the last run then skip it
+        # if the file has not changed since the last run then skip it or is not
+        # already present then record the new file hash
         if self.update and record_filename in self.hashIndex and self.hashIndex[record_filename] == file_hash:
             self.log.info("No change since last update {0}".format(record_filename))
             return
         self.hashIndex[record_filename] = file_hash
+        self.log.debug("Added file hash {0} {1}".format(record_filename, file_hash))
         # execute processing actions
         if 'eaccpf' in self.actions:
             eaccpf.write(self.output)
@@ -167,10 +165,10 @@ class Crawler(object):
 
 def crawl(params, update):
     """
-    Execute crawl operation using the specified parameters.
+    Execute crawl operations using the specified parameters.
     """
     actions = params.get("crawl", "actions").split(",")
-    base = params.get("crawl","base") if params.has_option("crawl","base") else None
+    base = params.get("crawl","base") if params.has_option("crawl","base") else ''
     cache = params.get("crawl", "cache")
     cache_url = params.get("crawl", "cache-url")
     source = params.get("crawl", "input")
