@@ -8,6 +8,8 @@ from Indexer import HtmlPage
 import inspect
 import logging
 import os
+import shutil
+import tempfile
 import unittest
 
 
@@ -30,6 +32,7 @@ class TestHtmlPage(unittest.TestCase):
         module = os.path.abspath(inspect.getfile(self.__class__))
         self.module_path = os.path.dirname(module)
         self.log = logging.getLogger()
+        self.temp = tempfile.mkdtemp()
         self.test_html = os.sep.join([self.module_path, "html"])
         self.test_site = os.sep.join([self.module_path, "test_site"])
         self.html = """<html>
@@ -110,7 +113,8 @@ class TestHtmlPage(unittest.TestCase):
         """
         Tear down the test environment.
         """
-        pass
+        if os.path.exists(self.temp):
+            shutil.rmtree(self.temp, ignore_errors=True)
 
     def test_init(self):
         """
@@ -251,6 +255,22 @@ class TestHtmlPage(unittest.TestCase):
             html = HtmlPage.HtmlPage(path, filename=filename, base_url=base)
             url = html.getUrl()
             self.assertEqual(expected, url)
+
+    def test_write(self):
+        """
+        It should write the HTML document to the specified path.
+        """
+        cases = [
+            (self.test_html, "E000001b.htm", "http://www.example.com",  "http://www.example.com/E000001b.htm"),
+            (self.test_html, "E000002b.htm", "http://www.example.com/", "http://www.example.com/E000001b.htm"),
+            (self.test_html + os.sep, "E000003b.htm", "http://www.example.com/path",  "http://www.example.com/path/E000001b.htm"),
+            (self.test_html + os.sep, "E000004b.htm", "http://www.example.com/path/", "http://www.example.com/path/E000001b.htm"),
+        ]
+        for case in cases:
+            path, filename, base, expected = case
+            html = HtmlPage.HtmlPage(path, filename=filename, base_url=base)
+            html.write(self.temp)
+            self.assertEqual(True, os.path.exists(self.temp + os.sep + filename))
 
 
 if __name__ == '__main__':
