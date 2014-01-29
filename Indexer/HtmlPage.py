@@ -200,12 +200,14 @@ class HtmlPage(object):
         """
         return True if self.getRecordId() else False
 
-    def write(self, Path):
+    def write(self, Path, Filename=None):
         """
         Write document to the specified path.
         """
-        outfile = codecs.open(Path + os.sep + self.filename, 'w', 'utf-8')
-        data = unicode(self.data, errors='replace')
-        outfile.write(data)
-        outfile.close()
-        self.log.info("Stored HTML document {0}".format(self.filename))
+        filename = Filename if Filename else self.filename
+        output_path = Path + filename if Path.endswith('/') else Path + os.sep + filename
+        #outfile = codecs.open(output_path, 'w', 'utf-8')
+        with open(output_path, 'w') as f:
+            data = unicode(self.data, errors='replace')
+            f.write(data)
+        self.log.info("Stored HTML document {0}".format(output_path))

@@ -89,7 +89,7 @@ class TestCrawler(unittest.TestCase):
             # the image cache folder should exist
             self.assertEqual(True, os.path.exists(self.temp_cache))
 
-    def test_crawl_eaccpf_update_add(self):
+    def test_crawl_eaccpf_then_update_additions(self):
         """
         It should index a source folder and create an index of the stored
         files. When a subsequent index is executed, it should add any new
@@ -118,7 +118,7 @@ class TestCrawler(unittest.TestCase):
         hash_index = Utils.loadFileHashIndex(output)
         self.assertEqual(expected_count, len(hash_index))
 
-    def test_crawl_eaccpf_update_change(self):
+    def test_crawl_eaccpf_then_update_changed(self):
         """
         It should index a source
         """
@@ -146,7 +146,7 @@ class TestCrawler(unittest.TestCase):
         updated_index_hash = Utils.getFileHash(output + os.sep + Cfg.HASH_INDEX_FILENAME)
         self.assertNotEqual(original_index_hash, updated_index_hash)
 
-    def test_crawl_eaccpf_update_delete(self):
+    def test_crawl_eaccpf_then_update_deleted(self):
         """
         It should index a source folder and create an index of the stored
         files. When a subsequent index is executed, it should delete any
@@ -175,6 +175,28 @@ class TestCrawler(unittest.TestCase):
         # the hash index should now contain four records
         hash_index = Utils.loadFileHashIndex(output)
         self.assertEqual(expected_count, len(hash_index))
+
+    def test_crawl_eaccpf_with_update_on_first_run(self):
+        """
+        When the crawler is invoked to index a new site for the first time and
+        it given the --update option, it should add all discovered content to the
+        cache in the first pass.
+        """
+        actions = ['eaccpf']
+        base = 'http://www.findandconnect.gov.au'
+        cache = self.temp_cache
+        cache_url = "http://www.findandconnect.gov.au/cache"
+        output = self.temp
+        source_original = self.source + os.sep + "update_original"
+        expected_count = 3
+        # crawl the source_original folder to establish the baseline
+        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output, update=True)
+        crawler.run()
+        # the cache folder should have content in it now
+        result_count = 0
+        for filename in [f for f in os.listdir(output) if f.endswith(".xml")]:
+            result_count += 1
+        self.assertEqual(expected_count, result_count)
 
     def test_crawl_html(self):
         """
@@ -237,6 +259,27 @@ class TestCrawler(unittest.TestCase):
             # the image cache folder should exist
             self.assertEqual(True, os.path.exists(self.temp_cache))
 
+    def test_crawl_html_all_with_update_on_first_run(self):
+        """
+        When the crawler is invoked to index a new site for the first time and
+        it given the --update option, it should add all discovered content to the
+        cache in the first pass.
+        """
+        actions = ['html-all']
+        base = 'http://www.findandconnect.gov.au'
+        cache = self.temp_cache
+        cache_url = "http://www.findandconnect.gov.au/cache"
+        output = self.temp
+        source_original = self.source + os.sep + "update_original"
+        expected_count = 3
+        # crawl the source_original folder to establish the baseline
+        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output, update=True)
+        crawler.run()
+        # the cache folder should have content in it now
+        result_count = 0
+        for filename in [f for f in os.listdir(output) if f.endswith(".htm") or f.endswith(".html")]:
+            result_count += 1
+        self.assertEqual(expected_count, result_count)
 
 if __name__ == '__main__':
     unittest.main()

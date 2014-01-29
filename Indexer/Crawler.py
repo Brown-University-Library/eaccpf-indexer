@@ -126,6 +126,7 @@ class Crawler(object):
         """
         Store the HTML page content in the output folder.
         """
+        self.records.append(html.filename)
         # if the file has not changed since the last run then
         # skip it
         file_hash = Utils.getFileHash(html.source)
@@ -169,7 +170,6 @@ class Crawler(object):
             Utils.purgeFolder(self.output, self.hashIndex)
         # write the updated file index
         Utils.writeFileHashIndex(self.hashIndex, self.output)
-
 
 def crawl(params, update):
     """
