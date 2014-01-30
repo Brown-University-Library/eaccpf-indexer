@@ -23,16 +23,14 @@ class Crawler(object):
     file system image cache.
     """
 
-    def __init__(self, actions, base, cache_path, cache_url, source, output, exclude=None, sleep=1.0, update=False):
-        self.cache = None
+    def __init__(self, actions, base, source, output, cache=None, exclude=None, sleep=1.0, update=False):
         self.hashIndex = {}
         self.log = logging.getLogger()
         self.records = [] # list of records that have been discovered
         # parameters
         self.actions = actions
         self.base = base if base else None
-        self.cache_path = cache_path
-        self.cache_url = cache_url
+        self.cache = cache
         self.exclude = exclude if exclude else []
         self.output = output
         self.sleep = sleep
@@ -168,11 +166,6 @@ class Crawler(object):
                 os.makedirs(self.output)
             Utils.cleanOutputFolder(self.output, Update=self.update)
             assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
-            # digital object cache
-            if self.cache_path:
-                self.cache = DigitalObjectCache(self.cache_path, self.cache_url)
-            else:
-                self.log.warning("Digital object cache was not created because the cache path was not specified")
             # create an index of file hashes so that we can track which files have
             # changed
             self.records = []
@@ -202,13 +195,19 @@ def crawl(params, update):
     """
     actions = params.get("crawl", "actions").split(",")
     base = params.get("crawl", "base") if params.has_option("crawl", "base") else ''
-    cache_path = params.get("crawl", "cache") if params.has_option("crawl", "cache") else None
-    cache_url = params.get("crawl", "cache-url") if params.has_option("crawl", "cache_url") else None
     exclude = params.get("crawl","exclude").split(',') if params.has_option("crawl","exclude") else []
     source = params.get("crawl", "input")
     output = params.get("crawl", "output")
     sleep = params.getfloat("crawl", "sleep") if params.has_option("crawl","sleep") else 0.0
+    # if we need a digital object cache, then get the configuration values
+    # from the config file, create the cache object and pass it to the crawler
+    if 'eaccpf' in actions:
+        cache_path = params.get("crawl", "cache") if params.has_option("crawl", "cache") else None
+        cache_url = params.get("crawl", "cache-url") if params.has_option("crawl", "cache_url") else None
+        cache = DigitalObjectCache(cache_path, cache_url)
+    else:
+        cache = None
     # execute
-    crawler = Crawler(actions, base,  cache_path, cache_url, source, output, sleep=sleep, exclude=exclude, update=update)
+    crawler = Crawler(actions, base, source, output, cache=cache, sleep=sleep, exclude=exclude, update=update)
     crawler.run()
 
