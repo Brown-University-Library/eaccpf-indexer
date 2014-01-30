@@ -4,14 +4,15 @@ LICENSE file, which is part of this source code package.
 """
 
 from lxml import etree
+
+import Cfg
+import Timer
 import Utils
 import hashlib
 import htmlentitydefs
 import logging
 import os
 import re
-
-LOG_EXC_INFO = False
 
 
 class Cleaner(object):
@@ -22,8 +23,7 @@ class Cleaner(object):
 
     def __init__(self, output, source, update=False):
         self.hashIndex = {}
-        self.hashIndexFilename = ".index.yml"
-        self.logger = logging.getLogger()
+        self.log = logging.getLogger()
         # set parameters
         self.output = output
         self.source = source
@@ -86,7 +86,7 @@ class Cleaner(object):
                     item.getparent().remove(item)
             return etree.tostring(xml,pretty_print=True)
         except:
-            self.logger.error("Could not remove empty date fields")
+            self.log.error("Could not remove empty date fields")
             return Text
     
     def _removeEmptyStandardDateFields(self, Text):
@@ -104,7 +104,7 @@ class Cleaner(object):
                     item.attrib.pop('standardDate')
             return etree.tostring(xml,pretty_print=True)
         except:
-            self.logger.error("Could not remove empty standardDate fields")
+            self.log.error("Could not remove empty standardDate fields")
             return Text
     
     def _removeSpanTags(self, Text):
@@ -119,7 +119,7 @@ class Cleaner(object):
             for span in re.findall("<span \w*=\".*\">",Text):
                 Text = Text.replace(span,'')
         except:
-            self.logger.error("Could not remove span tags")
+            self.log.error("Could not remove span tags")
         finally:
             return Text
 
@@ -144,7 +144,7 @@ class Cleaner(object):
                 # skip it
                 if self.update:
                     if filename in self.hashIndex and self.hashIndex[filename] == fileHash:
-                        self.logger.info("No change since last update " + filename)
+                        self.log.info("No change since last update " + filename)
                         continue
                 # record the file hash
                 self.hashIndex[filename] = fileHash
@@ -159,9 +159,9 @@ class Cleaner(object):
                 outfile_path = self.output + os.sep + filename
                 with open(outfile_path,'w') as outfile:
                     outfile.write(data)
-                self.logger.info("Stored document " + filename)
+                self.log.info("Stored document " + filename)
             except Exception:
-                self.logger.error("Could not complete processing on " + filename, exc_info=LOG_EXC_INFO)
+                self.log.error("Could not complete processing on " + filename, exc_info=Cfg.LOG_EXC_INFO)
         # return the list of processed records
         return records
 
@@ -194,29 +194,32 @@ class Cleaner(object):
         Execute the clean operation using specified parameters.
         @todo this needs to be cleaned up and simplified
         """
-        # create an index of file hashes, so that we can track what has changed
-        if self.update:
-            self.hashIndex = Utils.loadFileHashIndex(self.output)
-        # clear output folder
-        if not os.path.exists(self.output):
-            os.makedirs(self.output)
-        if not self.update:
-            Utils.cleanOutputFolder(self.output)
-        # check state
-        assert os.path.exists(self.source), self.logger.error("Source path does not exist: " + self.source)
-        assert os.path.exists(self.output), self.logger.error("Output path does not exist: " + self.output)
-        # clean data
-        records = self.clean()
-        # remove records from the index that were deleted in the source
-        if self.update:
-            self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, self.hashIndex)
-        # remove files from the output that are not in the index
-        if self.update:
-            self.logger.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(self.output, self.hashIndex)
-        # write the updated file hash index
-        Utils.writeFileHashIndex(self.hashIndex, self.output)
+        with Timer.Timer() as t:
+            # create an index of file hashes, so that we can track what has changed
+            if self.update:
+                self.hashIndex = Utils.loadFileHashIndex(self.output)
+            # clear output folder
+            if not os.path.exists(self.output):
+                os.makedirs(self.output)
+            if not self.update:
+                Utils.cleanOutputFolder(self.output)
+            # check state
+            assert os.path.exists(self.source), self.log.error("Source path does not exist: " + self.source)
+            assert os.path.exists(self.output), self.log.error("Output path does not exist: " + self.output)
+            # clean data
+            records = self.clean()
+            # remove records from the index that were deleted in the source
+            if self.update:
+                self.log.info("Clearing orphaned records from the file hash index")
+                Utils.purgeIndex(records, self.hashIndex)
+            # remove files from the output that are not in the index
+            if self.update:
+                self.log.info("Clearing orphaned files from the output folder")
+                Utils.purgeFolder(self.output, self.hashIndex)
+            # write the updated file hash index
+            Utils.writeFileHashIndex(self.hashIndex, self.output)
+        # log execution time
+        self.log.info("Cleaner finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
 
 def clean(params, update=False):

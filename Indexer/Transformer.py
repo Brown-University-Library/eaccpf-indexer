@@ -7,6 +7,7 @@ from lxml import etree
 
 import Cfg
 import HtmlPage
+import Timer
 import Utils
 import logging
 import os
@@ -78,7 +79,7 @@ class Transformer(object):
         Merge digital object records into Solr Input Documents.
         """
         for source in [s for s in Sources if os.path.exists(s)]:
-            for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
                 self.mergeDigitalObjectIntoSID(source, filename, Output)
                     
     def mergeInferredRecordIntoSID(self, Source, Output):
@@ -196,7 +197,7 @@ class Transformer(object):
         Document format.
         """
         for source in [s for s in Sources if os.path.exists(s)]:
-            for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
                 output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
                 self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + output_filename)
     
@@ -205,30 +206,33 @@ class Transformer(object):
         Execute transformations on source documents as specified. Write results 
         to the output path.
         """
-        # create output folder
-        if not os.path.exists(self.output):
-            os.makedirs(self.output)
-        Utils.cleanOutputFolder(self.output)
-        assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
-        # execute processing actions
-        if "digitalobjects-to-sid" in self.actions:
-            self.transformDigitalObjectsToSID(self.sources, self.output)
-        if "eaccpf-to-sid" in self.actions:
-            transform = Utils.loadTransform(self.xslt)
-            self.transformEacCpfsToSID(self.sources, self.output, transform)
-        if "html-to-sid" in self.actions:
-            self.transformHtmlsToSid(self.sources, self.output)
-        if 'merge-digitalobjects' in self.actions:
-            self.mergeDigitalObjectsIntoSID(self.sources, self.output)
-        if "merge-inferred" in self.actions:
-            self.mergeInferredRecordsIntoSID(self.sources, self.output)
-        if "set-fields" in self.actions:
-            if not ('' in self.fields):
-                self.setFieldValue(self.output, self.fields)
-        if 'boost' in self.actions:
-            self.setBoosts(self.output, self.boosts)
-        if "validate" in self.actions:
-            pass
+        with Timer.Timer() as t:
+            # create output folder
+            if not os.path.exists(self.output):
+                os.makedirs(self.output)
+            Utils.cleanOutputFolder(self.output)
+            assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
+            # execute processing actions
+            if "digitalobjects-to-sid" in self.actions:
+                self.transformDigitalObjectsToSID(self.sources, self.output)
+            if "eaccpf-to-sid" in self.actions:
+                transform = Utils.loadTransform(self.xslt)
+                self.transformEacCpfsToSID(self.sources, self.output, transform)
+            if "html-to-sid" in self.actions:
+                self.transformHtmlsToSid(self.sources, self.output)
+            if 'merge-digitalobjects' in self.actions:
+                self.mergeDigitalObjectsIntoSID(self.sources, self.output)
+            if "merge-inferred" in self.actions:
+                self.mergeInferredRecordsIntoSID(self.sources, self.output)
+            if "set-fields" in self.actions:
+                if not ('' in self.fields):
+                    self.setFieldValue(self.output, self.fields)
+            if 'boost' in self.actions:
+                self.setBoosts(self.output, self.boosts)
+            if "validate" in self.actions:
+                pass
+        # log execution time
+        self.log.info("Transformer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
     def setBoosts(self, Source, Boosts):
         """
@@ -310,7 +314,7 @@ class Transformer(object):
         Input Document format.
         """
         for source in [s for s in Sources if os.path.exists(s)]:
-            for filename in [f for f in os.listdir(source) if f.endswith(".yml")]:
+            for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
                 try:
                     self.transformDigitalObjectToSID(source, filename, Output)
                 except:

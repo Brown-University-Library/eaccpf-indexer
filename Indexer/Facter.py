@@ -11,6 +11,7 @@ from geopy.geocoders.mapquest import MapQuest
 from geopy.geocoders.osm import Nominatim
 
 import Cfg
+import Timer
 import Utils
 import logging
 import os
@@ -26,7 +27,6 @@ class Facter(object):
 
     def __init__(self, actions, source, output, sleep=1.0, update=False):
         self.hashIndex = {}
-        self.hashIndexFilename = ".index.yml"
         self.logger = logging.getLogger()
         # set parameters
         self.actions = actions
@@ -228,44 +228,47 @@ class Facter(object):
         """
         Execute analysis using the specified parameters.
         """
-        # clear output folder
-        if not os.path.exists(self.output):
-            os.makedirs(self.output)
-        if not self.update:
-            Utils.cleanOutputFolder(self.output)
-        # exit if there are no actions to execute
-        if len(self.actions) < 1:
-            return
-        # load api keys, services for specified operations
-        if 'named-entities' in self.actions:
-            # configure alchemy
-            pass
-        if 'entities' in self.actions:
-            try:
-                from pythoncalais import Calais
-                self.calais = Calais.Calais(self.calais_api_key, submitter="University of Melbourne, eScholarship Research Centre")
-                self.calais.user_directives["allowDistribution"] = "false"
-            except:
-                self.calais_api_key = ''
-                self.calais = None
-        # check state before running
-        assert os.path.exists(self.source), self.logger.error("Input path does not exist: {0}".format(self.source))
-        assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
-        # create an index of file hashes, so that we can track what has changed
-        if self.update:
-            self.hashIndex = Utils.loadFileHashIndex(self.output)
-        # execute inference actions
-        records = self.infer()
-        # remove records from the index that were deleted in the source
-        if self.update:
-            self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, self.hashIndex)
-        # remove files from the output folder that are not in the index
-        if self.update:
-            self.logger.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(self.output, self.hashIndex)
-        # write the updated file hash index
-        Utils.writeFileHashIndex(self.hashIndex, self.output)
+        with Timer.Timer() as t:
+            # clear output folder
+            if not os.path.exists(self.output):
+                os.makedirs(self.output)
+            if not self.update:
+                Utils.cleanOutputFolder(self.output)
+            # exit if there are no actions to execute
+            if len(self.actions) < 1:
+                return
+            # load api keys, services for specified operations
+            if 'named-entities' in self.actions:
+                # configure alchemy
+                pass
+            if 'entities' in self.actions:
+                try:
+                    from pythoncalais import Calais
+                    self.calais = Calais.Calais(self.calais_api_key, submitter="University of Melbourne, eScholarship Research Centre")
+                    self.calais.user_directives["allowDistribution"] = "false"
+                except:
+                    self.calais_api_key = ''
+                    self.calais = None
+            # check state before running
+            assert os.path.exists(self.source), self.logger.error("Input path does not exist: {0}".format(self.source))
+            assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
+            # create an index of file hashes, so that we can track what has changed
+            if self.update:
+                self.hashIndex = Utils.loadFileHashIndex(self.output)
+            # execute inference actions
+            records = self.infer()
+            # remove records from the index that were deleted in the source
+            if self.update:
+                self.logger.info("Clearing orphaned records from the file hash index")
+                Utils.purgeIndex(records, self.hashIndex)
+            # remove files from the output folder that are not in the index
+            if self.update:
+                self.logger.info("Clearing orphaned files from the output folder")
+                Utils.purgeFolder(self.output, self.hashIndex)
+            # write the updated file hash index
+            Utils.writeFileHashIndex(self.hashIndex, self.output)
+        # log execution time
+        self.logger.info("Facter finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
 def infer(params, update=False):
     """

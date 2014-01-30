@@ -5,6 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from Indexer import Transformer
 
+import inspect
 import os
 import random
 import string
@@ -80,6 +81,12 @@ class TestTransformer(unittest.TestCase):
         """
         Set test environment.
         """
+        self.module = os.path.abspath(inspect.getfile(self.__class__))
+        self.module_path = os.path.dirname(self.module)
+        self.source = self.module_path + os.sep + "crawl"
+        self.temp = tempfile.mkdtemp()
+
+
         # a junk file
         self.junk = tempfile.mktemp()
         outfile = open(self.junk,'w')

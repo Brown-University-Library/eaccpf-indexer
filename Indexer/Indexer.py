@@ -5,8 +5,8 @@ LICENSE file, which is part of this source code package.
 
 import Cfg
 import ConfigParser
+import Timer
 import argparse
-import datetime
 import logging
 import sys
 
@@ -100,51 +100,30 @@ class Indexer(object):
         # set options
         Cfg.LOG_EXC_INFO = self.args.trace
         # execute commands
-        with Timer() as t:
+        with Timer.Timer() as t:
             if self.args.crawl:
                 import Crawler
-                with Timer() as p:
-                    Crawler.crawl(self.config, self.args.update)
+                Crawler.crawl(self.config, self.args.update)
             if self.args.clean:
                 import Cleaner
-                with Timer() as p:
-                    Cleaner.clean(self.config, self.args.update)
+                Cleaner.clean(self.config, self.args.update)
             if self.args.infer:
                 import Facter
-                with Timer() as p:
-                    Facter.infer(self.config, self.args.update)
+                Facter.infer(self.config, self.args.update)
             if self.args.graph:
                 import Grapher
-                with Timer() as p:
-                    Grapher.graph(self.config, self.args.update)
+                Grapher.graph(self.config, self.args.update)
             if self.args.transform:
                 import Transformer
-                with Timer() as p:
-                    Transformer.transform(self.config)
+                Transformer.transform(self.config)
             if self.args.post:
                 import Poster
-                with Timer() as p:
-                    Poster.post(self.config)
+                Poster.post(self.config)
             if self.args.analyze:
                 import Analyzer
-                with Timer() as p:
-                    Analyzer.analyze(self.config, self.args.update)
-        self.logger.info("Job finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
+                Analyzer.analyze(self.config, self.args.update)
+        self.logger.info("Indexer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
-
-class Timer:
-    """
-    Time a procedure.
-    """
-    def __enter__(self):
-        self.start = datetime.datetime.now()
-        return self
-
-    def __exit__(self, *args):
-        self.interval = datetime.datetime.now() - self.start
-        s = self.interval.seconds
-        self.hours, remainder = divmod(s, 3600)
-        self.minutes, self.seconds = divmod(remainder, 60)
 
 # entry point
 if __name__ == '__main__':

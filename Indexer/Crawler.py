@@ -8,6 +8,7 @@ from EacCpf import EacCpf
 from HtmlPage import HtmlPage
 
 import Cfg
+import Timer
 import Utils
 import fnmatch
 import logging
@@ -22,7 +23,7 @@ class Crawler(object):
     file system image cache.
     """
 
-    def __init__(self, actions, base, cache, cache_url, source, output, exclude=None, sleep=1.0, update=False):
+    def __init__(self, actions, base, cache_path, cache_url, source, output, exclude=None, sleep=1.0, update=False):
         self.cache = None
         self.hashIndex = {}
         self.log = logging.getLogger()
@@ -30,8 +31,8 @@ class Crawler(object):
         # parameters
         self.actions = actions
         self.base = base if base else None
-        self.cache = cache
-        self.cacheUrl = cache_url
+        self.cache_path = cache_path
+        self.cache_url = cache_url
         self.exclude = exclude if exclude else []
         self.output = output
         self.sleep = sleep
@@ -160,47 +161,54 @@ class Crawler(object):
         """
         Execute crawl operation.
         """
-        # check state before starting
-        assert os.path.exists(self.source), self.log.error("Input path does not exist: {0}".format(self.source))
-        if not os.path.exists(self.output):
-            os.makedirs(self.output)
-        Utils.cleanOutputFolder(self.output, Update=self.update)
-        assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
-        # digital object cache
-        self.cache = DigitalObjectCache(self.cache, self.cacheUrl)
-        # create an index of file hashes so that we can track which files have
-        # changed
-        self.records = []
-        if self.update:
-            self.hashIndex = Utils.loadFileHashIndex(self.output)
-        # crawl the document source
-        if 'http://' in self.source or 'https://' in self.source:
-            self.crawlWebSite()
-        else:
-            self.crawlFileSystem()
-        # remove records from the index that were deleted in the source
-        if self.update:
-            self.log.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(self.records, self.hashIndex)
-        # remove files from the output folder that are not in the index
-        if self.update:
-            self.log.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(self.output, self.hashIndex)
-        # write the updated file index
-        Utils.writeFileHashIndex(self.hashIndex, self.output)
+        with Timer.Timer() as t:
+            # check state before starting
+            assert os.path.exists(self.source), self.log.error("Input path does not exist: {0}".format(self.source))
+            if not os.path.exists(self.output):
+                os.makedirs(self.output)
+            Utils.cleanOutputFolder(self.output, Update=self.update)
+            assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
+            # digital object cache
+            if self.cache_path:
+                self.cache = DigitalObjectCache(self.cache_path, self.cache_url)
+            else:
+                self.log.warning("Digital object cache was not created because the cache path was not specified")
+            # create an index of file hashes so that we can track which files have
+            # changed
+            self.records = []
+            if self.update:
+                self.hashIndex = Utils.loadFileHashIndex(self.output)
+            # crawl the document source
+            if 'http://' in self.source or 'https://' in self.source:
+                self.crawlWebSite()
+            else:
+                self.crawlFileSystem()
+            # remove records from the index that were deleted in the source
+            if self.update:
+                self.log.info("Clearing orphaned records from the file hash index")
+                Utils.purgeIndex(self.records, self.hashIndex)
+            # remove files from the output folder that are not in the index
+            if self.update:
+                self.log.info("Clearing orphaned files from the output folder")
+                Utils.purgeFolder(self.output, self.hashIndex)
+            # write the updated file index
+            Utils.writeFileHashIndex(self.hashIndex, self.output)
+        # log execution time
+        self.log.info("Crawler finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
 def crawl(params, update):
     """
     Execute crawl operations using the specified parameters.
     """
     actions = params.get("crawl", "actions").split(",")
-    base = params.get("crawl","base") if params.has_option("crawl","base") else ''
-    cache = params.get("crawl", "cache")
-    cache_url = params.get("crawl", "cache-url")
+    base = params.get("crawl", "base") if params.has_option("crawl", "base") else ''
+    cache_path = params.get("crawl", "cache") if params.has_option("crawl", "cache") else None
+    cache_url = params.get("crawl", "cache-url") if params.has_option("crawl", "cache_url") else None
     exclude = params.get("crawl","exclude").split(',') if params.has_option("crawl","exclude") else []
     source = params.get("crawl", "input")
     output = params.get("crawl", "output")
     sleep = params.getfloat("crawl", "sleep") if params.has_option("crawl","sleep") else 0.0
     # execute
-    crawler = Crawler(actions, base,  cache, cache_url, source, output, sleep=sleep, exclude=exclude, update=update)
+    crawler = Crawler(actions, base,  cache_path, cache_url, source, output, sleep=sleep, exclude=exclude, update=update)
     crawler.run()
+

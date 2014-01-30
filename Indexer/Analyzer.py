@@ -10,6 +10,7 @@ from mako.template import Template
 from lxml import etree
 
 import Cfg
+import Timer
 import Utils
 import inspect
 import logging
@@ -214,31 +215,34 @@ class Analyzer(object):
         """
         Execute analysis operations using specified parameters.
         """
-        # make output folder
-        if not os.path.exists(self.output):
-            os.makedirs(self.output)
-        if not self.update:
-            Utils.cleanOutputFolder(self.output)
-        # check state
-        assert os.path.exists(self.source), self.logger.error("Source path does not exist: {0}".format(self.source))
-        assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
-        # create an index of file hashes, so that we can track what has changed
-        if self.update:
-            self.hashIndex = Utils.loadFileHashIndex(self.output)
-        # analyze files
-        records = self.analyzeFiles()
-        # remove records from the index that were deleted in the source
-        if self.update:
-            self.logger.info("Clearing orphaned records from the file hash index")
-            Utils.purgeIndex(records, self.hashIndex)
-        # remove files from the output folder that are not in the index
-        if self.update:
-            self.logger.info("Clearing orphaned files from the output folder")
-            Utils.purgeFolder(self.output, self.hashIndex)
-        # build the HTML report
-        self.buildHtmlReport(self.output, self.output, self.update)
-        # write the updated file hash index
-        Utils.writeFileHashIndex(self.hashIndex, self.output)
+        with Timer.Timer() as t:
+            # make output folder
+            if not os.path.exists(self.output):
+                os.makedirs(self.output)
+            if not self.update:
+                Utils.cleanOutputFolder(self.output)
+            # check state
+            assert os.path.exists(self.source), self.logger.error("Source path does not exist: {0}".format(self.source))
+            assert os.path.exists(self.output), self.logger.error("Output path does not exist: {0}".format(self.output))
+            # create an index of file hashes, so that we can track what has changed
+            if self.update:
+                self.hashIndex = Utils.loadFileHashIndex(self.output)
+            # analyze files
+            records = self.analyzeFiles()
+            # remove records from the index that were deleted in the source
+            if self.update:
+                self.logger.info("Clearing orphaned records from the file hash index")
+                Utils.purgeIndex(records, self.hashIndex)
+            # remove files from the output folder that are not in the index
+            if self.update:
+                self.logger.info("Clearing orphaned files from the output folder")
+                Utils.purgeFolder(self.output, self.hashIndex)
+            # build the HTML report
+            self.buildHtmlReport(self.output, self.output, self.update)
+            # write the updated file hash index
+            Utils.writeFileHashIndex(self.hashIndex, self.output)
+        # log execution time
+        self.logger.info("Analyzer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
 
 def analyze(params, update=False):

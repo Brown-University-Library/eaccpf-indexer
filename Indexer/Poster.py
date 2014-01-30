@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 from lxml import etree
 
 import Cfg
+import Timer
 import argparse
 import logging
 import os
@@ -105,9 +106,11 @@ class Poster(object):
         """
         Execute processing actions.
         """
-        for action in self.actions:
-            f = getattr(self, action)
-            f()
+        with Timer.Timer() as t:
+            for action in self.actions:
+                f = getattr(self, action)
+                f()
+        self.log.info("Poster finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
     def strip_empty_elements(self, doc):
         """Remove empty elements from the document.
