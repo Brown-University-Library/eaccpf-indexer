@@ -9,6 +9,7 @@ from HtmlPage import HtmlPage
 
 import Cfg
 import Utils
+import fnmatch
 import logging
 import os
 
@@ -21,7 +22,7 @@ class Crawler(object):
     file system image cache.
     """
 
-    def __init__(self, actions, base, cache, cache_url, source, output, sleep=1.0, update=False):
+    def __init__(self, actions, base, cache, cache_url, source, output, exclude=None, sleep=1.0, update=False):
         self.cache = None
         self.hashIndex = {}
         self.log = logging.getLogger()
@@ -31,6 +32,7 @@ class Crawler(object):
         self.base = base if base else None
         self.cache = cache
         self.cacheUrl = cache_url
+        self.exclude = exclude if exclude else []
         self.output = output
         self.sleep = sleep
         self.source = source
@@ -38,6 +40,17 @@ class Crawler(object):
         # make sure that paths have a trailing /
         self.base = "{}/".format(self.base) if self.base and not self.base.endswith('/') else self.base
         self.source = "{}/".format(self.source) if self.source and not self.source.endswith('/') else self.source
+
+    def _excluded(self, filename):
+        """
+        Return True if the file should be excluded based on whether it matches
+        a pattern specified as part of the exclude list. Return false
+        otherwise.
+        """
+        for pattern in self.exclude:
+            if fnmatch.fnmatch(filename, pattern):
+                return True
+        return False
 
     def crawlFileSystem(self):
         """
@@ -52,7 +65,7 @@ class Crawler(object):
             base_url += '/' if not base_url.endswith('/') else ''
             # scan the current path
             self.log.debug("Scanning {} ({})".format(path, base_url))
-            for filename in [f for f in files if f.endswith("htm") or f.endswith("html")]:
+            for filename in [f for f in files if f.endswith(".htm") or f.endswith(".html")]:
                 self.log.debug("Reading {}".format(filename))
                 try:
                     html = HtmlPage(path, filename, base_url)
@@ -75,7 +88,8 @@ class Crawler(object):
 
     def process_eaccpf(self, html):
         """
-        Execute processing actions on the EAC-CPF document.
+        Execute processing actions on the EAC-CPF document that is referenced
+        inside the presentation HTML document.
         """
         html_filename = html.getFilename()
         metadata_url = html.getEacCpfUrl()
@@ -85,8 +99,11 @@ class Crawler(object):
             self.log.warning("EAC-CPF resource not available at {0}".format(eaccpf_src))
             return
         eaccpf = EacCpf(eaccpf_src, metadata_url, presentation_url)
-        # record the document hash value
+        # if the document file name is in the exclude list, then don't process it
         record_filename = eaccpf.getFileName()
+        if self._excluded(record_filename):
+            return
+        # record the document hash value
         self.records.append(record_filename)
         file_hash = eaccpf.getHash()
         # if the file has not changed since the last run then skip it or is not
@@ -126,9 +143,10 @@ class Crawler(object):
         """
         Store the HTML page content in the output folder.
         """
+        if self._excluded(html.filename):
+            return
         self.records.append(html.filename)
-        # if the file has not changed since the last run then
-        # skip it
+        # if the file has not changed since the last run then skip it
         file_hash = Utils.getFileHash(html.source)
         if self.update and html.filename in self.hashIndex and self.hashIndex[html.filename] == file_hash:
             self.log.info("No change since last update {0}".format(html.filename))
@@ -179,9 +197,10 @@ def crawl(params, update):
     base = params.get("crawl","base") if params.has_option("crawl","base") else ''
     cache = params.get("crawl", "cache")
     cache_url = params.get("crawl", "cache-url")
+    exclude = params.get("crawl","exclude").split(',') if params.has_option("crawl","exclude") else []
     source = params.get("crawl", "input")
     output = params.get("crawl", "output")
-    sleep = params.getfloat("crawl", "sleep")
+    sleep = params.getfloat("crawl", "sleep") if params.has_option("crawl","sleep") else 0.0
     # execute
-    crawler = Crawler(actions, base,  cache, cache_url, source, output, sleep, update)
+    crawler = Crawler(actions, base,  cache, cache_url, source, output, sleep=sleep, exclude=exclude, update=update)
     crawler.run()

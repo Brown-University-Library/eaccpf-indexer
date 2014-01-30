@@ -57,16 +57,16 @@ class TestFacter(unittest.TestCase):
         """
         facter = Facter.Facter([], None, 1.0, None)
         cases = {
-                 "Rapid Creek NT, Australia" : ['',"Rapid Creek","NT",'',"Australia"],
-                 "Mulgowie QLD 4341, Australia" : ['',"Mulgowie","QLD","4341","Australia"],
-                 "Brinsley Road, Camberwell VIC 3124, Australia" : ["Brinsley Road","Camberwell","VIC","3124","Australia"],
-                 "Boys Home Road, Phillip Island VIC 3925, Australia" : ["Boys Home Road","Phillip Island","VIC","3925","Australia"],
-                 "William Road, Carrum Downs VIC 3201, Australia" : ["William Road","Carrum Downs","VIC","3201","Australia"],
-                 "Lawson, University of Southern Queensland Education City Drive, Springfield Central QLD 4300, Australia" : ["Lawson, University of Southern Queensland Education City Drive","Springfield Central","QLD","4300","Australia"],
-                 "Gore Hill, Montana 59404, USA" : ['',"Gore Hill","Montana","59404","USA"],
-                 "Gore Hill, Amersham, Buckinghamshire HP7, UK" : ["Gore Hill","Amersham","Buckinghamshire","HP7","UK"],
-                 "Gore Hill, Sandford, Wareham, Dorset BH20 7AL, UK" : ["Gore Hill, Sandford","Wareham","Dorset","BH20 7AL","UK"],
-                 }
+            "Rapid Creek NT, Australia" : ['',"Rapid Creek","NT",'',"Australia"],
+            "Mulgowie QLD 4341, Australia" : ['',"Mulgowie","QLD","4341","Australia"],
+            "Brinsley Road, Camberwell VIC 3124, Australia" : ["Brinsley Road","Camberwell","VIC","3124","Australia"],
+            "Boys Home Road, Phillip Island VIC 3925, Australia" : ["Boys Home Road","Phillip Island","VIC","3925","Australia"],
+            "William Road, Carrum Downs VIC 3201, Australia" : ["William Road","Carrum Downs","VIC","3201","Australia"],
+            "Lawson, University of Southern Queensland Education City Drive, Springfield Central QLD 4300, Australia" : ["Lawson, University of Southern Queensland Education City Drive","Springfield Central","QLD","4300","Australia"],
+            "Gore Hill, Montana 59404, USA" : ['',"Gore Hill","Montana","59404","USA"],
+            "Gore Hill, Amersham, Buckinghamshire HP7, UK" : ["Gore Hill","Amersham","Buckinghamshire","HP7","UK"],
+            "Gore Hill, Sandford, Wareham, Dorset BH20 7AL, UK" : ["Gore Hill, Sandford","Wareham","Dorset","BH20 7AL","UK"],
+        }
         for case in cases:
             address,city,region,postal,country = facter._getAddressParts(case)
             self.assertEqual(address,cases[case][0])

@@ -78,6 +78,8 @@ class Poster(object):
         # check state
         assert os.path.exists(self.source), self.log.error("Source path does not exist: {0}".format(self.source))
         # post documents
+        posted = 0
+        errors = 0
         for filename in [f for f in os.listdir(self.source) if f.endswith(".xml")]:
             try:
                 self.log.debug("Reading {0}".format(filename))
@@ -89,11 +91,15 @@ class Poster(object):
                 self.log.debug("Posting {0}".format(filename))
                 resp = requests.post(self.url, data=data, headers=self.headers)
                 if resp.status_code == 200:
+                    posted += 1
                     self.log.info("Posted {0}".format(filename))
                 else:
+                    errors += 1
                     self.log.error("Post failed for {0}\n{1}".format(filename, resp.content))
             except:
                 self.log.error("Post failed for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+        # report on the number of documents posted, failed
+        self.log.info("Posted {0} documents. {1} errors.".format(posted, errors))
 
     def run(self):
         """
@@ -157,7 +163,7 @@ if __name__ == '__main__':
     source = args.source if args.source else None
     # configure logging
     logger = logging.getLogger()
-    formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(Cfg.LOG_FORMAT)
     sh = logging.StreamHandler(sys.stdout)
     sh.setFormatter(formatter)
     logger.addHandler(sh)

@@ -6,15 +6,12 @@
 
 # Absolute path to this script. /home/user/bin/foo.sh
 SCRIPT=$(readlink -f $0)
-echo 'script ' . $SCRIPT
 
 # Absolute path this script is in. /home/user/bin
 SCRIPTPATH=`dirname $SCRIPT`
-echo 'script path ' . $SCRIPTPATH
 
 # absolute path to the project folder
 PROJECT=`dirname $SCRIPTPATH`
-echo 'project path ' . $PROJECT
 
 # set the python path so that python knows where to find our application 
 # modules

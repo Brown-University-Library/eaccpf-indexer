@@ -64,7 +64,7 @@ class Indexer(object):
         Configure logging with console stream handler.
         """
         self.logger = logging.getLogger()
-        formatter = logging.Formatter('%(asctime)s - %(filename)s %(lineno)03d - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(Cfg.LOG_FORMAT)
         sh = logging.StreamHandler(sys.stdout)
         sh.setFormatter(formatter)
         # set the logging level on both the logger and the handler

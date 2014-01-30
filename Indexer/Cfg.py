@@ -16,3 +16,4 @@ def is_debugging():
 ## Globals
 HASH_INDEX_FILENAME = ".index.yml"
 LOG_EXC_INFO = True if is_debugging() else False
+LOG_FORMAT = "%(asctime)s - %(filename)-10.10s %(lineno)03d - %(levelname)-5s - %(message)s"
