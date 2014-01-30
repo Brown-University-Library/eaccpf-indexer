@@ -202,8 +202,8 @@ def crawl(params, update):
     # if we need a digital object cache, then get the configuration values
     # from the config file, create the cache object and pass it to the crawler
     if 'eaccpf' in actions:
-        cache_path = params.get("crawl", "cache") if params.has_option("crawl", "cache") else None
-        cache_url = params.get("crawl", "cache-url") if params.has_option("crawl", "cache_url") else None
+        cache_path = params.get("crawl", "cache") if params.has_option("crawl", "cache") else ''
+        cache_url = params.get("crawl", "cache-url") if params.has_option("crawl", "cache-url") else ''
         cache = DigitalObjectCache(cache_path, cache_url)
     else:
         cache = None
