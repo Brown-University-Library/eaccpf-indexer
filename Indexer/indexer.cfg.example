@@ -5,6 +5,7 @@ cache=/srv/ha/web/ECOM/LIVE/facp_cache
 cache-url=http://www.example.com/PROJ/cache/
 input=/srv/ha/web/PROJ/
 output=/var/lib/indexer/PROJ/crawl
+exclude=home.htm?,browse_*.htm?,
 
 [clean]
 input=/var/lib/indexer/PROJ/crawl

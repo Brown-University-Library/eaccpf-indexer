@@ -309,6 +309,7 @@ class TestCrawler(unittest.TestCase):
             (['E000001b.htm','E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
             (['E*.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
             (['E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
+            (['E*.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
             (['E000001.xml','E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
         ]
         for case in cases:
