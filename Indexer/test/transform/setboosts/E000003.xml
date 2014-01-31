@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ASCII'?>
+<add xmlns:doc="urn:isbn:1-931666-33-4" xmlns:ns0="http://www.esrc.unimelb.edu.au">
+  <doc>
+    <field name="metadata_url">http://www.asmp.esrc.unimelb.edu.au/eac/E000003.xml</field>
+    <field name="presentation_url">http://www.asmp.esrc.unimelb.edu.au/biogs/E000003b.htm</field>
+    <field name="source">/srv/ha/web/ASMP/LIVE/eac/E000003.xml</field>
+    <field name="id">E000003</field>
+    <field name="localtype">Atlas</field>
+    <field name="entityId">http://www.asmp.esrc.unimelb.edu.au/biogs/E000003b.htm</field>
+    <field name="type">culturalartefact</field>
+    <field name="title">The London Atlas of Universal Geography </field>
+    <field name="abstract">John Arrowsmith produced his great atlas in 1834 although intending to have completed it by 1832.</field>
+    <field name="relation">Discoveries in Western Australia</field>
+    <field name="relation">The Colony of Western Australia</field>
+    <field name="relation">Van Diemens Land</field>
+    <field name="relation">King Georges Sound</field>
+  </doc>
+</add>

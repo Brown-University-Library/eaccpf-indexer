@@ -4,10 +4,13 @@ LICENSE file, which is part of this source code package.
 """
 
 from Indexer import Transformer
+from lxml import etree
 
 import inspect
 import os
 import random
+import re
+import shutil
 import string
 import tempfile
 import unittest
@@ -15,7 +18,7 @@ import unittest
 
 class TestTransformer(unittest.TestCase):
     """
-    Executes unit tests against the transformer module.
+    Executes unit tests against the Transformer module.
     """
 
     def _generate(self, size=6, chars=string.ascii_uppercase + string.digits):
@@ -24,114 +27,21 @@ class TestTransformer(unittest.TestCase):
         """
         return ''.join(random.choice(chars) for _ in range(size))
 
-    def _writeDigitalObject(self, Path):
-        """
-        Write a minimal digital object record to a file for testing.
-        """    
-        outfile = open(Path,'w')
-        outfile.write('comment: DIGITAL OBJECT record from ????????.xml\n')
-        outfile.write('url: http://www.example.com/path/to/source/image.jpg\n')
-        outfile.write('path: /path/to/object/0000111100001111.jpg\n')
-        outfile.write('cache_id: 00001111000011110000111100001111\n')
-        outfile.close()
-        return Path
-    
-    def _writeEACCPF(self, Path):
-        """
-        Write a minimal EAC-CPF document for testing.
-        """
-        outfile = open(Path,'w')
-        outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        outfile.write('<eac-cpf>\n')
-        outfile.write('<control></control>\n')
-        outfile.write('<identity></identity>\n')
-        outfile.write('<description></description>\n')
-        outfile.write('</eac-cpf>\n')
-        outfile.write('<!-- @source=http://www.example.com/NE00054.xml @referrer=http://www.example.com/NE00054b.htm -->')
-        outfile.close()
-        return Path
-
-    def _writeInferredRecord(self,Path):
-        """
-        Write a minimal inferred record for testing.
-        """
-        outfile = open(Path,'w')
-        outfile.write('comment: INFERRED DATA record for SOURCE\n')
-        outfile.write('locations: \n')
-        outfile.write('entities: \n')
-        outfile.write('topics: \n')
-        outfile.close()
-        return Path
-
-    def _writeSolrInputDocument(self,Path):
-        """
-        Write a minimal Solr Input Document for testing.
-        """
-        outfile = open(Path,'w')
-        outfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        outfile.write('<add>\n')
-        outfile.write('<doc>\n')
-        outfile.write('<field/>\n')
-        outfile.write('</doc></description>\n')
-        outfile.write('</add>\n')
-        outfile.close()
-        return Path
-
     def setUp(self):
         """
         Set test environment.
         """
         self.module = os.path.abspath(inspect.getfile(self.__class__))
         self.module_path = os.path.dirname(self.module)
-        self.source = self.module_path + os.sep + "crawl"
+        self.source = self.module_path + os.sep + "transform"
         self.temp = tempfile.mkdtemp()
-
-
-        # a junk file
-        self.junk = tempfile.mktemp()
-        outfile = open(self.junk,'w')
-        outfile.write(self._generate(128))
-        outfile.close()
-        # a junk yml file
-        self.yml = tempfile.mktemp(suffix=".yml")
-        outfile = open(self.yml,'w')
-        outfile.write(self._generate(128))
-        outfile.close()
-        # a junk xml file
-        self.xml = tempfile.mktemp(suffix=".xml")
-        outfile = open(self.xml,'w')
-        outfile.write(self._generate(128))
-        outfile.close()
-        # some valid files
-        self.digitalObject = self._writeDigitalObject(tempfile.mktemp(suffix=".yml"))
-        self.eaccpf = self._writeEACCPF(tempfile.mktemp(suffix=".xml"))
-        self.inferred = self._writeInferredRecord(tempfile.mktemp(suffix=".yml"))
-        self.solr = self._writeSolrInputDocument(tempfile.mktemp(suffix=".xml"))
 
     def tearDown(self):
         """
         Tear down test environment.
         """
-        os.remove(self.junk)
-        os.remove(self.yml)
-        os.remove(self.xml)
-        os.remove(self.digitalObject)
-        os.remove(self.eaccpf)
-        os.remove(self.inferred)
-        os.remove(self.solr)
-        self.assertEqual(os.path.exists(self.junk),False)
-        self.assertEqual(os.path.exists(self.yml),False)
-        self.assertEqual(os.path.exists(self.xml),False)
-        self.assertEqual(os.path.exists(self.digitalObject),False)
-        self.assertEqual(os.path.exists(self.eaccpf),False)
-        self.assertEqual(os.path.exists(self.inferred),False)
-        self.assertEqual(os.path.exists(self.solr),False)
-
-    def test_boostFields(self):
-        """
-        Boost the specified Solr Input Document fields.
-        """
-        pass
+        if os.path.exists(self.temp):
+            shutil.rmtree(self.temp, ignore_errors=True)
 
     def test_getSourceAndReferrerValues(self):
         """
@@ -140,11 +50,15 @@ class TestTransformer(unittest.TestCase):
         """
         pass
 
-    def test_init(self):
+    def test__init__(self):
         """
         It should create an instance of the Transformer class.
         """
-        pass
+        try:
+            t = Transformer.Transformer(self.temp, self.temp)
+            self.assertNotEqual(None, t)
+        except:
+            self.fail("Could not create instance of Transformer class")
 
     def test_mergeInferredRecordToSID(self):
         """
@@ -156,7 +70,58 @@ class TestTransformer(unittest.TestCase):
         """
         It should set boost values on the specified fields.
         """
-        pass
+        source = self.source + os.sep + "setboosts"
+        cases = [
+            (['title:1000'], 3),
+            (['relation:1000'], 15),
+            (['title:1000','relation:1000'], 18),
+        ]
+        for case in cases:
+            boosts, expected_count = case
+            t = Transformer.Transformer(self.temp, self.temp, boosts=boosts)
+            # copy the test files into the temp folder
+            for filename in os.listdir(source):
+                shutil.copy(source + os.sep + filename, self.temp)
+            # boost the values
+            t.setBoosts(self.temp)
+            # count the number of instances of boost="value" in the files
+            actual_count = 0
+            pattern = 'boost="[0-9]*"'
+            for filename in os.listdir(self.temp):
+                with open(self.temp + os.sep + filename, 'r') as f:
+                    data = f.read()
+                    matches = re.findall(pattern, data)
+                    actual_count += len(matches)
+            self.assertEqual(expected_count, actual_count)
+
+    def test_setFields(self):
+        """
+        It should set the field to the specified value.
+        """
+        source = self.source + os.sep + "setfields"
+        expected = self._generate(size=24)
+        cases = [
+            (['title:{0}'.format(expected)], ['title']),
+            (['relation:{0}'.format(expected)], ['relation']),
+            (['relation:{0}'.format(expected),'type:{0}'.format(expected)], ['relation','type']),
+        ]
+        for case in cases:
+            set_fields, fields = case
+            t = Transformer.Transformer(self.temp, self.temp, set_fields=set_fields)
+            # copy the test files into the temp folder
+            for filename in os.listdir(source):
+                shutil.copy(source + os.sep + filename, self.temp)
+            # boost the field values
+            t.setFieldValue(self.temp)
+            # ensure that the fields have been set
+            for filename in os.listdir(self.temp):
+                xml = etree.parse(self.temp + os.sep + filename)
+                root = xml.getroot()
+                doc = root.getchildren()[0]
+                for fieldname in fields:
+                    nodes = doc.findall('field[@name="' + fieldname + '"]')
+                    for node in nodes:
+                        self.assertEqual(expected, node.text)
 
     def test_transformDigitalObjectToSID(self):
         """

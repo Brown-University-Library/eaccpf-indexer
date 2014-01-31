@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ASCII'?>
+<add xmlns:doc="urn:isbn:1-931666-33-4" xmlns:ns0="http://www.esrc.unimelb.edu.au">
+  <doc>
+    <field name="metadata_url">http://www.asmp.esrc.unimelb.edu.au/eac/E000001.xml</field>
+    <field name="presentation_url">http://www.asmp.esrc.unimelb.edu.au/biogs/E000001b.htm</field>
+    <field name="source">/srv/ha/web/ASMP/LIVE/eac/E000001.xml</field>
+    <field name="id">E000001</field>
+    <field name="localtype">Person</field>
+    <field name="entityId">http://www.asmp.esrc.unimelb.edu.au/biogs/E000001b.htm</field>
+    <field name="type">person</field>
+    <field name="title">Arrowsmith John </field>
+    <field name="abstract">John Arrowsmith was an English cartographer of great standing in the nineteenth century. </field>
+    <field name="relation">The London Atlas of Universal Geography (1832 - 1861)</field>
+    <field name="relation">'Arrowsmith, John', in Arrowsmith's Australian Maps, Dorothy Prescott</field>
+    <field name="relation">Book: Tooley's dictionary of mapmakers</field>
+    <field name="relation">Book: British map engravers</field>
+    <field name="relation">Journal Article: The Arrowsmith Firm and the cartography of Canada</field>
+    <field name="relation">Resource: Trove</field>
+  </doc>
+</add>

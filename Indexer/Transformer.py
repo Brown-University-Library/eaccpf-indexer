@@ -21,13 +21,13 @@ class Transformer(object):
     should take an insignificant amount of time to complete.
     """
 
-    def __init__(self, actions, boosts, fields, output, sources, transform=None):
+    def __init__(self, sources, output, actions=None, boosts=None, set_fields=None, transform=None):
         self.log = logging.getLogger()
         # set parameters
-        self.actions = actions
-        self.boosts = boosts
-        self.fields = fields
+        self.actions = actions if actions else []
+        self.boosts = boosts if boosts else []
         self.output = output
+        self.set_fields = set_fields if set_fields else []
         self.sources = sources
         if transform:
             self.xslt = transform
@@ -224,50 +224,49 @@ class Transformer(object):
                 self.mergeDigitalObjectsIntoSID(self.sources, self.output)
             if "merge-inferred" in self.actions:
                 self.mergeInferredRecordsIntoSID(self.sources, self.output)
-            if "set-fields" in self.actions:
-                if not ('' in self.fields):
-                    self.setFieldValue(self.output, self.fields)
+            if "set-fields" in self.actions and not '' in self.set_fields:
+                self.setFieldValue(self.output)
             if 'boost' in self.actions:
-                self.setBoosts(self.output, self.boosts)
+                self.setBoosts(self.output)
             if "validate" in self.actions:
                 pass
         # log execution time
         self.log.info("Transformer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
-    def setBoosts(self, Source, Boosts):
+    def setBoosts(self, Source):
         """
-        Boost the specified field for all Solr Input Documents.
+        Boost the specified fields for all Solr Input Documents in the source
+        folder.
         """
-        for filename in [f for f in os.listdir(Source) if f.endswith(".xml")]:
-            try:
-                # update the document
-                xml = etree.parse(Source + os.sep + filename)
-                for fieldname, boostval in [boost.split(':') for boost in Boosts]:
-                    fields = xml.findall('//field[@name="' + fieldname + '"]')
+        for field_name, boost_value in [boost.split(':') for boost in self.boosts]:
+            for filename in [f for f in os.listdir(Source) if f.endswith(".xml")]:
+                try:
+                    # set field boost values
+                    xml = etree.parse(Source + os.sep + filename)
+                    fields = xml.findall('//field[@name="' + field_name + '"]')
                     for field in fields:
-                        field.attrib['boost'] = boostval
-                # save the document
-                with open(Source + os.sep + filename, 'w') as outfile:
-                    data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
-                    outfile.write(data)
-                self.log.info("Set boosts: {0}".format(filename))
-            except:
-                self.log.error("Could not set boosts: {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+                        field.attrib['boost'] = boost_value
+                    # save the updated document
+                    with open(Source + os.sep + filename, 'w') as outfile:
+                        data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
+                        outfile.write(data)
+                    self.log.info("Set boosts: {0}".format(filename))
+                except:
+                    self.log.error("Could not set boosts: {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
 
-    def setFieldValue(self, Source, Values):
+    def setFieldValue(self, Source):
         """
         Set the specified field value for all Solr Input Documents.
         """
         parser = etree.XMLParser(remove_blank_text=True)
-        for filename in [f for f in os.listdir(Source) if f.endswith(".xml")]:
-            try:
-                # load the document
-                xml = etree.parse(Source + os.sep + filename, parser)
-                root = xml.getroot()
-                doc = root.getchildren()[0]
-                # set the field values
-                for fieldvalue in Values:
-                    fieldname, value = fieldvalue.split(":")
+        # set the field values
+        for fieldname, value in [val.split(":") for val in self.set_fields]:
+            for filename in [f for f in os.listdir(Source) if f.endswith(".xml")]:
+                try:
+                    # load the document
+                    xml = etree.parse(Source + os.sep + filename, parser)
+                    root = xml.getroot()
+                    doc = root.getchildren()[0]
                     fields = doc.findall('field[@name="' + fieldname + '"]')
                     # if the field exists, change its value
                     if len(fields) > 0:
@@ -277,13 +276,13 @@ class Transformer(object):
                         newfield = etree.Element("field", name=fieldname)
                         newfield.text = value
                         doc.append(newfield)
-                # save the updated document
-                with open(Source + os.sep + filename,'w') as outfile:
-                    data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
-                    outfile.write(data)
-                self.log.info("Set fields in {0}".format(filename))
-            except:
-                self.log.error("Could not set field in {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+                    # save the updated document
+                    with open(Source + os.sep + filename,'w') as outfile:
+                        data = etree.tostring(xml, pretty_print=True, xml_declaration=True)
+                        outfile.write(data)
+                    self.log.info("Set fields in {0}".format(filename))
+                except:
+                    self.log.error("Could not set field in {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
 
     def transformDigitalObjectToSID(self, path, filename, Output, Transform=None):
         """
@@ -386,12 +385,12 @@ def transform(params):
     """
     actions = params.get("transform", "actions").split(',')
     boosts = params.get("transform", "boost").split(',')
-    fields = params.get("transform", "set-fields").split(",")
+    setfields = params.get("transform", "set-fields").split(",")
     output = params.get("transform", "output")
     sources = params.get("transform", "inputs").split(",")
     if params.has_option("transform", "xslt"):
         xslt = params.get("transform", "xslt")
     else:
         xslt=None
-    transformer = Transformer(actions, boosts, fields, output, sources, transform=xslt)
+    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=setfields, transform=xslt)
     transformer.run()

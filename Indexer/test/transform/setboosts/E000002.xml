@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ASCII'?>
+<add xmlns:doc="urn:isbn:1-931666-33-4" xmlns:ns0="http://www.esrc.unimelb.edu.au">
+  <doc>
+    <field name="metadata_url">http://www.asmp.esrc.unimelb.edu.au/eac/E000002.xml</field>
+    <field name="presentation_url">http://www.asmp.esrc.unimelb.edu.au/biogs/E000002b.htm</field>
+    <field name="source">/srv/ha/web/ASMP/LIVE/eac/E000002.xml</field>
+    <field name="id">E000002</field>
+    <field name="localtype">Person</field>
+    <field name="entityId">http://www.asmp.esrc.unimelb.edu.au/biogs/E000002b.htm</field>
+    <field name="type">person</field>
+    <field name="title">Prescott Dorothy Francis </field>
+    <field name="abstract">Dorothy Prescott's career has been as a Map Curator working in libraries.</field>
+    <field name="relation">'Prescott, Dorothy Francis', in Arrowsmith's Australian Maps, Dorothy Prescott</field>
+    <field name="relation">Journal Article: Arrowsmith's Australian Maps</field>
+    <field name="relation">Journal Article: Australia as depicted by John Arrowsmith in his London Atlas</field>
+    <field name="relation">Journal Article: The John Arrowsmith Australian Maps Project</field>
+    <field name="relation">Resource: Trove</field>
+  </doc>
+</add>

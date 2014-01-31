@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ASCII'?>
+<add xmlns:doc="urn:isbn:1-931666-33-4" xmlns:ns0="http://www.esrc.unimelb.edu.au">
+  <doc>
+    <field name="metadata_url">http://www.asmp.esrc.unimelb.edu.au/eac/E000002.xml</field>
+    <field name="presentation_url">http://www.asmp.esrc.unimelb.edu.au/biogs/E000002b.htm</field>
+    <field name="source">/srv/ha/web/ASMP/LIVE/eac/E000002.xml</field>
+    <field name="id">E000002</field>
+    <field name="localtype">-</field>
+    <field name="entityId">http://www.asmp.esrc.unimelb.edu.au/biogs/E000002b.htm</field>
+    <field name="type">-</field>
+    <field name="title">-</field>
+    <field name="abstract">This is an abstract.</field>
+    <field name="relation">This is relation #1.</field>
+    <field name="relation">This is relation #2.</field>
+    <field name="relation">This is relation #3.</field>
+    <field name="relation">This is relation #4.</field>
+    <field name="relation">This is relation #5.</field>
+  </doc>
+</add>
