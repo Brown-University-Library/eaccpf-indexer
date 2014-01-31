@@ -24,8 +24,7 @@ of Melbourne. For more information about the project, please contact us at:
 Authors:
 
  * Davis Marques <davis.marques@unimelb.edu.au>
- * Marco La Rosa <marco@larosa.org.au>
-  
+
 Thanks:
 
  * GeoPy - http://code.google.com/p/geopy

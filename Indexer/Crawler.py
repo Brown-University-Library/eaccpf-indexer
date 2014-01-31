@@ -51,6 +51,11 @@ class Crawler(object):
                 return True
         return False
 
+    def _excluded_path(self, path):
+        """
+        """
+        pass
+
     def crawlFileSystem(self):
         """
         Crawl file system for HTML files. Execute the specified indexing 
@@ -63,9 +68,9 @@ class Crawler(object):
             base_url = self.base + path.replace(self.source, '')
             base_url += '/' if not base_url.endswith('/') else ''
             # scan the current path
-            self.log.debug("Scanning {} ({})".format(path, base_url))
+            self.log.debug("Scanning {0} ({1})".format(path, base_url))
             for filename in [f for f in files if f.endswith(".htm") or f.endswith(".html")]:
-                self.log.debug("Reading {}".format(filename))
+                self.log.debug("Reading {0}".format(filename))
                 try:
                     html = HtmlPage(path, filename, base_url)
                     if 'html-all' in self.actions:
