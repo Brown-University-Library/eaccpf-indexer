@@ -128,11 +128,15 @@ class EacCpf(object):
                         # content of all the child nodes together to create a
                         # single title string
                         title = ''
-                        title_elements_0 = rel.xpath("./doc:relationEntry", namespaces=self.ns)
-                        for t in title_elements_0.pop().itertext():
-                            title += t
-                        abstract = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
-                        abstract = abstract[0].text if abstract else ''
+                        title_elements = rel.xpath("./doc:relationEntry", namespaces=self.ns)
+                        for e in title_elements.pop().itertext():
+                            title += e
+                        # ISSUE #30: abstract may contain markup. concat all
+                        # the child elements on to the abstract value.
+                        abstract = ''
+                        abstract_elements = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
+                        for e in abstract_elements.pop().itertext():
+                            abstract += e
                         alternate_title = self.getTitle()
                         localtype = self.getLocalType()
                         presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']

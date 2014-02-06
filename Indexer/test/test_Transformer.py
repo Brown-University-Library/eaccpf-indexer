@@ -43,13 +43,6 @@ class TestTransformer(unittest.TestCase):
         if os.path.exists(self.temp):
             shutil.rmtree(self.temp, ignore_errors=True)
 
-    def test_getSourceAndReferrerValues(self):
-        """
-        Get source and referrer values from the embedded comment in an EAC-CPF 
-        document.
-        """
-        pass
-
     def test__init__(self):
         """
         It should create an instance of the Transformer class.
@@ -59,6 +52,13 @@ class TestTransformer(unittest.TestCase):
             self.assertNotEqual(None, t)
         except:
             self.fail("Could not create instance of Transformer class")
+
+    def test_getSourceAndReferrerValues(self):
+        """
+        Get source and referrer values from the embedded comment in an EAC-CPF 
+        document.
+        """
+        pass
 
     def test_mergeInferredRecordToSID(self):
         """

@@ -29,6 +29,7 @@ class Transformer(object):
         self.output = output
         self.set_fields = set_fields if set_fields else []
         self.sources = sources
+        self.transform = transform
         if transform:
             self.xslt = transform
         else:
@@ -385,12 +386,12 @@ def transform(params):
     """
     actions = params.get("transform", "actions").split(',')
     boosts = params.get("transform", "boost").split(',')
-    setfields = params.get("transform", "set-fields").split(",")
+    set_fields = params.get("transform", "set-fields").split(",")
     output = params.get("transform", "output")
     sources = params.get("transform", "inputs").split(",")
     if params.has_option("transform", "xslt"):
         xslt = params.get("transform", "xslt")
     else:
         xslt=None
-    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=setfields, transform=xslt)
+    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=set_fields, transform=xslt)
     transformer.run()

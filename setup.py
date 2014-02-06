@@ -14,5 +14,5 @@ setup(name='Indexer',
       url='http://www.esrc.unimelb.edu.au',
       version='1.5.1',
       packages=find_packages(),
-      install_requires=['beautifulsoup','lxml','pairtree','pyyaml','simplejson'],
+      install_requires=['lxml','pairtree','pyyaml','simplejson'],
 )

@@ -73,6 +73,7 @@ Revision History
 
 1.5.1
 
+ * Indexer args to display, not display stack traces
  * Additional unit tests throughout
  * Refactoring of modules to simplify testing
  * Added local testing data, removed web based testing sources
