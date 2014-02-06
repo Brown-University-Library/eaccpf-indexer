@@ -129,14 +129,16 @@ class EacCpf(object):
                         # single title string
                         title = ''
                         title_elements = rel.xpath("./doc:relationEntry", namespaces=self.ns)
-                        for e in title_elements.pop().itertext():
-                            title += e
+                        if title_elements:
+                            for e in title_elements.pop().itertext():
+                                title += e
                         # ISSUE #30: abstract may contain markup. concat all
                         # the child elements on to the abstract value.
                         abstract = ''
                         abstract_elements = rel.xpath("./doc:objectXMLWrap/obj:archref/obj:abstract", namespaces=nz)
-                        for e in abstract_elements.pop().itertext():
-                            abstract += e
+                        if abstract_elements:
+                            for e in abstract_elements.pop().itertext():
+                                abstract += e
                         alternate_title = self.getTitle()
                         localtype = self.getLocalType()
                         presentation = rel.attrib['{http://www.w3.org/1999/xlink}href']
