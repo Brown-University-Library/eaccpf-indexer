@@ -64,7 +64,7 @@ class HtmlPage(object):
                 page_url = self.getUrl()
                 return str(urlparse.urljoin(page_url, thumbnail_url))
         except:
-            self.log.debug("Digital object not found in {0}".format(self.source), exc_info=Cfg.LOG_EXC_INFO)
+            self.log.debug("Digital object URL not found in {0}".format(self.filename), exc_info=Cfg.LOG_EXC_INFO)
 
     def getEacCpfUrl(self):
         """

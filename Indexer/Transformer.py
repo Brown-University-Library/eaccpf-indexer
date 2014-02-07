@@ -83,15 +83,14 @@ class Transformer(object):
             for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
                 self.mergeDigitalObjectIntoSID(source, filename, Output)
                     
-    def mergeInferredRecordIntoSID(self, Source, Output):
+    def mergeInferredRecordIntoSID(self, path, filename, Output):
         """
         Merge inferred data into Solr Input Document. Write merged data to 
         output.
         """
-        filename = ''
         try:
             # read input (inferred) data file
-            with open(Source, 'r') as infile:
+            with open(path + os.sep + filename, 'r') as infile:
                 data = infile.read()
                 inferred = yaml.load(data)
             filename = Utils.getFileName(Output)
@@ -200,7 +199,7 @@ class Transformer(object):
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
                 output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
-                self.mergeInferredRecordIntoSID(source + os.sep + filename, Output + os.sep + output_filename)
+                self.mergeInferredRecordIntoSID(source, filename, Output + os.sep + output_filename)
     
     def run(self):
         """
@@ -314,7 +313,7 @@ class Transformer(object):
         Input Document format.
         """
         for source in [s for s in Sources if os.path.exists(s)]:
-            for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
+            for filename in [f for f in os.listdir(source) if Utils.isDigitalObjectYaml(source, f)]:
                 try:
                     self.transformDigitalObjectToSID(source, filename, Output)
                 except:

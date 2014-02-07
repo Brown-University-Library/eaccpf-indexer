@@ -113,10 +113,12 @@ class Crawler(object):
         # if the file has not changed since the last run then skip it or is not
         # already present then record the new file hash
         if self.update and record_filename in self.hashIndex and self.hashIndex[record_filename] == file_hash:
-            self.log.info("No change since last update {0}".format(record_filename))
+            self.log.debug("File has not changed since last update")
             return
+        else:
+            self.log.debug("File has changed since last update")
         self.hashIndex[record_filename] = file_hash
-        self.log.debug("Added file hash {0} {1}".format(record_filename, file_hash))
+        self.log.debug("Stored file hash {0}".format(file_hash))
         # execute processing actions
         if 'eaccpf' in self.actions:
             eaccpf.write(self.output)
@@ -124,7 +126,7 @@ class Crawler(object):
             try:
                 thumbnail_record = eaccpf.getThumbnail()
                 if thumbnail_record:
-                    self.log.debug("Thumbnail found for {0}".format(html_filename))
+                    self.log.debug("Found thumbnail record")
                     cache_record = self.cache.put(thumbnail_record.getSourceUrl())
                     eaccpf_id = eaccpf.getRecordId()
                     thumbnail_record.write(self.output, Id=eaccpf_id, CacheRecord=cache_record)
@@ -135,7 +137,7 @@ class Crawler(object):
             try:
                 dobjects = eaccpf.getDigitalObjects()
                 for dobject in dobjects:
-                    self.log.debug("Digital object found for {0}".format(html_filename))
+                    self.log.debug("Found digital object record")
                     cache_record = self.cache.put(dobject.getSourceUrl())
                     dobj_id = dobject.getObjectId()
                     dobject.write(self.output, Id=dobj_id, CacheRecord=cache_record)

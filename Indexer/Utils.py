@@ -138,16 +138,17 @@ def getTemporaryFileFromResource(source):
         shutil.copy(source, temp)
     return temp
 
-def isDigitalObjectYaml(Path):
+def isDigitalObjectYaml(Path, Filename=None):
     """
     Determines if the file at the specified path is an image record in
     YAML format.
     """
-    if Path.endswith("yml"):
-        with open(Path,'r') as f:
+    path = Path + os.sep + Filename if Filename else Path
+    if path.endswith(".yml"):
+        with open(path,'r') as f:
             data = f.read()
-        if "cache_id" in data:
-            return True
+            if "cache_id" in data:
+                return True
     return False
 
 def isInferredYaml(Path):
