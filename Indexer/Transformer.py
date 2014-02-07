@@ -88,109 +88,106 @@ class Transformer(object):
         Merge inferred data into Solr Input Document. Write merged data to 
         output.
         """
-        try:
-            # read input (inferred) data file
-            with open(path + os.sep + filename, 'r') as infile:
-                data = infile.read()
-                inferred = yaml.load(data)
-            filename = Utils.getFileName(Output)
-            # if there is an existing SID file, then read it into memory, 
-            # otherwise create an XML tree to 
-            if not os.path.exists(Output):
-                root = etree.Element("add")
-                xml = etree.ElementTree(root)
-                doc = etree.Element("doc")
-                root.append(doc)
-                # add required records
-                recordId = etree.Element("field", name="id")
-                recordId.text = Utils.getRecordIdFromFilename(filename)
-                doc.append(recordId)
-            else:
-                # read output (Solr Input Document) data file
-                parser = etree.XMLParser(remove_blank_text=True)
-                xml = etree.parse(Output, parser)
-                root = xml.getroot()
-                doc = root.getchildren()[0]
-            # add inferred locations
-            # ISSUE #5 the geocoder can return multiple locations when an address is
-            # not specific enough. Or, in some cases, a record has multiple events and
-            # associated locations.  The Solr index allows for one location field entry, 
-            # and multiple geohash entries.  Here, we use the first location as the 
-            # primary record location, then make all subsequent locations geohashes.
-            if 'locations' in inferred:
-                count = 0
-                for location in inferred['locations']:
-                    # the first location in the list will become the 
-                    # primary entity locaion
-                    if count == 0:
-                        # address
-                        address = etree.Element('field', name='address')
-                        address.text = location['address']
-                        doc.append(address)
-                        # city
-                        city = etree.Element('field', name='city')
-                        city.text = location['city']
-                        doc.append(city)
-                        # state
-                        region = etree.Element('field', name='region')
-                        region.text = location['region']
-                        doc.append(region)
-                        # region
-                        country = etree.Element('field', name='country')
-                        country.text = location['country']
-                        doc.append(country)
-                        # coordinates
-                        lat = location['coordinates'][0]
-                        lng = location['coordinates'][1]
-                        latlng = str(lat) + "," + str(lng)
-                        coordinates = etree.Element('field', name='location')
-                        coordinates.text = latlng
-                        doc.append(coordinates)
-                        # latitude
-                        location_0 = etree.Element('field', name='location_0_coordinate')
-                        location_0.text = str(lat)
-                        # longitude
-                        doc.append(location_0)
-                        location_1 = etree.Element('field', name='location_1_coordinate')
-                        location_1.text = str(lng)
-                        doc.append(location_1)
-                    else:
-                        # all subsequent locations will be added to the loocation_geohash field
-                        lat = location['coordinates'][0]
-                        lng = location['coordinates'][1]
-                        latlng = str(lat) + "," + str(lng)
-                        coordinates = etree.Element('field', name='location_geohash')
-                        coordinates.text = latlng
-                        doc.append(coordinates)
-                    # increment count
-                    count = count + 1
-                # @todo: add inferred entities
-                if 'entities' in inferred:
-                    for entity in inferred['entities']:
-                        if entity['type'] == 'City':
-                            pass
-                        elif entity['type'] == 'Concept':
-                            pass
-                        elif entity['type'] == 'Organization':
-                            pass
-                        elif entity['type'] == 'Person':
-                            pass
-                        elif entity['type'] == 'Region':
-                            pass
-                # @todo: add inferred relationships
-                if 'relationship' in inferred:
-                    pass
-                # @todo: add inferred topics
-                if 'topic' in inferred:
-                    pass
-                # write the updated file
-                outfile = open(Output,'w')
-                xml.write(outfile, pretty_print=True, xml_declaration=True)
-                outfile.close()
-                self.log.info("Merged inferred data into {0}".format(filename))
-        except Exception:
-            self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
-    
+        # read input (inferred) data file
+        with open(path + os.sep + filename, 'r') as infile:
+            data = infile.read()
+            inferred = yaml.load(data)
+        filename = Utils.getFileName(Output)
+        # if there is an existing SID file, then read it into memory,
+        # otherwise create an XML tree to
+        if not os.path.exists(Output):
+            root = etree.Element("add")
+            xml = etree.ElementTree(root)
+            doc = etree.Element("doc")
+            root.append(doc)
+            # add required records
+            recordId = etree.Element("field", name="id")
+            recordId.text = Utils.getRecordIdFromFilename(filename)
+            doc.append(recordId)
+        else:
+            # read output (Solr Input Document) data file
+            parser = etree.XMLParser(remove_blank_text=True)
+            xml = etree.parse(Output, parser)
+            root = xml.getroot()
+            doc = root.getchildren()[0]
+        # add inferred locations
+        # ISSUE #5 the geocoder can return multiple locations when an address is
+        # not specific enough. Or, in some cases, a record has multiple events and
+        # associated locations.  The Solr index allows for one location field entry,
+        # and multiple geohash entries.  Here, we use the first location as the
+        # primary record location, then make all subsequent locations geohashes.
+        if 'locations' in inferred:
+            count = 0
+            for location in inferred['locations']:
+                # the first location in the list will become the
+                # primary entity locaion
+                if count == 0:
+                    # address
+                    address = etree.Element('field', name='address')
+                    address.text = location['address']
+                    doc.append(address)
+                    # city
+                    city = etree.Element('field', name='city')
+                    city.text = location['city']
+                    doc.append(city)
+                    # state
+                    region = etree.Element('field', name='region')
+                    region.text = location['region']
+                    doc.append(region)
+                    # region
+                    country = etree.Element('field', name='country')
+                    country.text = location['country']
+                    doc.append(country)
+                    # coordinates
+                    lat = location['coordinates'][0]
+                    lng = location['coordinates'][1]
+                    latlng = str(lat) + "," + str(lng)
+                    coordinates = etree.Element('field', name='location')
+                    coordinates.text = latlng
+                    doc.append(coordinates)
+                    # latitude
+                    location_0 = etree.Element('field', name='location_0_coordinate')
+                    location_0.text = str(lat)
+                    # longitude
+                    doc.append(location_0)
+                    location_1 = etree.Element('field', name='location_1_coordinate')
+                    location_1.text = str(lng)
+                    doc.append(location_1)
+                else:
+                    # all subsequent locations will be added to the loocation_geohash field
+                    lat = location['coordinates'][0]
+                    lng = location['coordinates'][1]
+                    latlng = str(lat) + "," + str(lng)
+                    coordinates = etree.Element('field', name='location_geohash')
+                    coordinates.text = latlng
+                    doc.append(coordinates)
+                # increment count
+                count = count + 1
+            # @todo: add inferred entities
+            if 'entities' in inferred:
+                for entity in inferred['entities']:
+                    if entity['type'] == 'City':
+                        pass
+                    elif entity['type'] == 'Concept':
+                        pass
+                    elif entity['type'] == 'Organization':
+                        pass
+                    elif entity['type'] == 'Person':
+                        pass
+                    elif entity['type'] == 'Region':
+                        pass
+            # @todo: add inferred relationships
+            if 'relationship' in inferred:
+                pass
+            # @todo: add inferred topics
+            if 'topic' in inferred:
+                pass
+            # write the updated file
+            outfile = open(Output,'w')
+            xml.write(outfile, pretty_print=True, xml_declaration=True)
+            outfile.close()
+            self.log.info("Merged inferred data from {0}".format(filename))
+
     def mergeInferredRecordsIntoSID(self, Sources, Output):
         """
         Transform zero or more paths with inferred object records to Solr Input 
@@ -198,9 +195,13 @@ class Transformer(object):
         """
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
-                output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
-                self.mergeInferredRecordIntoSID(source, filename, Output + os.sep + output_filename)
-    
+                path = source + os.sep + filename
+                try:
+                    output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
+                    self.mergeInferredRecordIntoSID(source, filename, Output + os.sep + output_filename)
+                except Exception:
+                    self.log.error("Could not complete merge for {0}".format(path), exc_info=Cfg.LOG_EXC_INFO)
+
     def run(self):
         """
         Execute transformations on source documents as specified. Write results 
@@ -314,10 +315,11 @@ class Transformer(object):
         """
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if Utils.isDigitalObjectYaml(source, f)]:
+                path = source + os.sep + filename
                 try:
                     self.transformDigitalObjectToSID(source, filename, Output)
                 except:
-                    msg = "Could not transform digital object to SID: {0}".format(filename)
+                    msg = "Could not transform digital object to SID: {0}".format(path)
                     self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
 
     def transformEacCpfToSID(self, path, filename, Output, Transform):
@@ -340,10 +342,11 @@ class Transformer(object):
         """
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if f.endswith(".xml")]:
+                path = source + os.sep + filename
                 try:
                     self.transformEacCpfToSID(source, filename, Output, Transform)
                 except Exception:
-                    msg = "Could not transform EAC-CPF to SID: {0}".format(filename)
+                    msg = "Could not transform EAC-CPF to SID: {0}".format(path)
                     self.log.error(msg, exc_info=Cfg.LOG_EXC_INFO)
 
     def transformHtmlToSid(self, Html, Output):
