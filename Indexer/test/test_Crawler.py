@@ -24,21 +24,18 @@ class TestCrawler(unittest.TestCase):
         """
         Setup the test environment.
         """
+        self.cache = tempfile.mkdtemp()
         self.module = os.path.abspath(inspect.getfile(self.__class__))
         self.module_path = os.path.dirname(self.module)
         self.source = self.module_path + os.sep + "crawl"
         self.temp = tempfile.mkdtemp()
-        self.temp_cache_parent = tempfile.mkdtemp()
-        self.temp_cache = self.temp_cache_parent + os.sep + "image_cache"
 
     def tearDown(self):
         """
         Tear down the test environment.
         """
-        if os.path.exists(self.temp):
-            shutil.rmtree(self.temp, ignore_errors=True)
-        if os.path.exists(self.temp_cache_parent):
-            shutil.rmtree(self.temp_cache_parent, ignore_errors=True)
+        shutil.rmtree(self.temp, ignore_errors=True)
+        shutil.rmtree(self.cache, ignore_errors=True)
 
     def test__init__(self):
         """
@@ -46,13 +43,13 @@ class TestCrawler(unittest.TestCase):
         """
         source = self.source + os.sep + "update_original"
         cases = [
-            (['eaccpf'], 'http://www.example.com', self.temp_cache, "http://www.example.com/cache", source, self.temp),
-            ([], 'http://www.example.com', self.temp_cache, "http://www.example.com/cache", source, self.temp),
+            (['eaccpf'], 'http://www.example.com', self.cache, "http://www.example.com/cache", source, self.temp),
+            ([], 'http://www.example.com', self.cache, "http://www.example.com/cache", source, self.temp),
         ]
         for case in cases:
-            actions, base, cache, cache_url, source, output = case
+            actions, base, cache_path, cache_url, source, output = case
             try:
-                crawler = Crawler.Crawler(actions, base, cache, cache_url, source, output)
+                crawler = Crawler.Crawler(actions, base, source, output, cache_path, cache_url)
             except:
                 logging.error("Could not create Crawler instance", exc_info=True)
                 self.fail("Could not create Crawler instance")
@@ -60,7 +57,7 @@ class TestCrawler(unittest.TestCase):
     def test__excluded(self):
         """
         It should return True when the filename matches a specified exclude
-        filename pattern.  It should return False otherwise.
+        filename pattern. It should return False otherwise.
         """
         cases = [
             (['browse_*.htm'],'browse_a.htm', True),
@@ -68,9 +65,14 @@ class TestCrawler(unittest.TestCase):
             (['browse_*.htm','browse.htm'],'browse.htm', True),
         ]
         for case in cases:
+            actions = []
+            base = '/'
+            source = self.temp
+            output = self.temp
+            cache_url = '/'
             excluded, filename, expected = case
-            crawler = Crawler.Crawler([], '', '/tmp', '', '/tmp', '/tmp', exclude=excluded)
-            result = crawler._excluded(filename)
+            crawler = Crawler.Crawler(actions, base, source, output, self.cache, cache_url, exclude=excluded)
+            result = crawler._is_excluded(filename)
             self.assertNotEqual(None, result)
             self.assertEqual(expected, result)
 
@@ -82,12 +84,12 @@ class TestCrawler(unittest.TestCase):
         """
         source = self.source + os.sep + "update_original"
         cases = [
-            (['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 3),
+            (['eaccpf'], 'http://www.findandconnect.gov.au', "http://www.findandconnect.gov.au/cache", source, self.temp, 3),
         ]
         for case in cases:
-            actions, base, cache, cache_url, source, output, expected_count = case
+            actions, base, cache_url, source, output, expected_count = case
             try:
-                crawler = Crawler.Crawler(actions, base, cache, cache_url, source, output)
+                crawler = Crawler.Crawler(actions, base, source, output, self.cache, cache_url)
                 crawler.run()
             except:
                 logging.error("Could not complete crawl job", exc_info=True)
@@ -104,7 +106,16 @@ class TestCrawler(unittest.TestCase):
             hash_index = Utils.loadFileHashIndex(output)
             self.assertEqual(expected_count, len(hash_index))
             # the image cache folder should exist
-            self.assertEqual(True, os.path.exists(self.temp_cache))
+            self.assertEqual(True, os.path.exists(self.cache))
+
+    def test_crawl_digitalobjects_then_update_additions(self):
+        pass
+
+    def test_crawl_digitalobjects_then_update_changed(self):
+        pass
+
+    def test_crawl_digitalobjects_then_update_deleted(self):
+        pass
 
     def test_crawl_eaccpf_then_update_additions(self):
         """
@@ -114,17 +125,17 @@ class TestCrawler(unittest.TestCase):
         """
         actions = ['eaccpf']
         base = 'http://www.findandconnect.gov.au'
-        cache = self.temp_cache
+        cache = self.cache
         cache_url = "http://www.findandconnect.gov.au/cache"
         output = self.temp
         source_add = self.source + os.sep + "update_add"
         source_original = self.source + os.sep + "update_original"
         expected_count = 4
         # crawl the source_original folder to establish the baseline
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output)
+        crawler = Crawler.Crawler(actions, base, source_original, output, cache, cache_url)
         crawler.run()
         # crawl the source_add folder to process the changes
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_add, output, update=True)
+        crawler = Crawler.Crawler(actions, base, source_add, output, cache, cache_url, update=True)
         crawler.run()
         # the output folder should now contain four eac-cpf documents
         result_count = 0
@@ -141,19 +152,19 @@ class TestCrawler(unittest.TestCase):
         """
         actions = ['eaccpf']
         base = 'http://www.findandconnect.gov.au'
-        cache = self.temp_cache
+        cache = self.cache
         cache_url = "http://www.findandconnect.gov.au/cache"
         output = self.temp
-        source_add = self.source + os.sep + "update_change"
+        source_changed = self.source + os.sep + "update_change"
         source_original = self.source + os.sep + "update_original"
         # crawl the source_original folder to establish the baseline
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output)
+        crawler = Crawler.Crawler(actions, base, source_original, output, cache, cache_url)
         crawler.run()
         # record the output file count and index file hash
         original_file_count = len(os.listdir(output))
         original_index_hash = Utils.getFileHash(output + os.sep + Cfg.HASH_INDEX_FILENAME)
         # crawl the source_add folder to process the changes
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_add, output, update=True)
+        crawler = Crawler.Crawler(actions, base, source_changed, output, cache, cache_url, update=True)
         crawler.run()
         # the output file count should be equal to the new output file count
         updated_file_count = len(os.listdir(output))
@@ -172,17 +183,17 @@ class TestCrawler(unittest.TestCase):
         """
         actions = ['eaccpf']
         base = 'http://www.findandconnect.gov.au'
-        cache = self.temp_cache
+        cache = self.cache
         cache_url = "http://www.findandconnect.gov.au/cache"
         output = self.temp
-        source_add = self.source + os.sep + "update_delete"
+        source_delete = self.source + os.sep + "update_delete"
         source_original = self.source + os.sep + "update_original"
         expected_count = 2
         # crawl the source_original folder to establish the baseline
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output)
+        crawler = Crawler.Crawler(actions, base, source_original, output, cache, cache_url)
         crawler.run()
         # crawl the source_add folder to process the changes
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_add, output, update=True)
+        crawler = Crawler.Crawler(actions, base, source_delete, output, cache, cache_url, update=True)
         crawler.run()
         # the output folder should now contain four eac-cpf documents
         result_count = 0
@@ -201,19 +212,55 @@ class TestCrawler(unittest.TestCase):
         """
         actions = ['eaccpf']
         base = 'http://www.findandconnect.gov.au'
-        cache = self.temp_cache
+        cache = self.cache
         cache_url = "http://www.findandconnect.gov.au/cache"
         output = self.temp
         source_original = self.source + os.sep + "update_original"
         expected_count = 3
         # crawl the source_original folder to establish the baseline
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output, update=True)
+        crawler = Crawler.Crawler(actions, base, source_original, output, cache, cache_url, update=True)
         crawler.run()
         # the cache folder should have content in it now
         result_count = 0
         for filename in [f for f in os.listdir(output) if f.endswith(".xml")]:
             result_count += 1
         self.assertEqual(expected_count, result_count)
+
+    def test_crawl_eaccpf_thumbnail_then_update_additions(self):
+        pass
+
+    def test_crawl_eaccpf_thumbnail_then_update_changed(self):
+        pass
+
+    def test_crawl_eaccpf_thumbnail_then_update_deletions(self):
+        """
+        It should index a source folder and create an index of the stored
+        files. When a subsequent index is executed, it should delete any
+        files that have been removed from the source, update the output
+        folder and file index.
+        """
+        actions = ['eaccpf','eaccpf-thumbnail']
+        base = 'http://www.findandconnect.gov.au'
+        cache = self.cache
+        cache_url = "http://www.findandconnect.gov.au/cache"
+        output = self.temp
+        source_delete = self.source + os.sep + "update_delete"
+        source_original = self.source + os.sep + "update_original"
+        expected_count = 2
+        # crawl the source_original folder to establish the baseline
+        crawler = Crawler.Crawler(actions, base, source_original, output, cache, cache_url)
+        crawler.run()
+        # crawl the source_add folder to process the changes
+        crawler = Crawler.Crawler(actions, base, source_delete, output, cache, cache_url, update=True)
+        crawler.run()
+        # the output folder should now contain four eac-cpf documents and ????
+        result_count = 0
+        for filename in [f for f in os.listdir(output) if f.endswith(".xml")]:
+            result_count += 1
+        self.assertEqual(expected_count, result_count)
+        # the hash index should now contain four records
+        hash_index = Utils.loadFileHashIndex(output)
+        self.assertEqual(expected_count, len(hash_index))
 
     def test_crawl_html(self):
         """
@@ -222,12 +269,12 @@ class TestCrawler(unittest.TestCase):
         """
         source = self.module_path + os.sep + "test_site"
         cases = [
-            (['html'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 33),
+            (['html'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 33),
         ]
         for case in cases:
             actions, base, cache, cache_url, source, output, expected_count = case
             try:
-                crawler = Crawler.Crawler(actions, base, cache, cache_url, source, output)
+                crawler = Crawler.Crawler(actions, base, source, output, cache, cache_url)
                 crawler.run()
             except:
                 logging.error("Could not complete crawl job", exc_info=True)
@@ -244,7 +291,7 @@ class TestCrawler(unittest.TestCase):
             hash_index = Utils.loadFileHashIndex(output)
             self.assertEqual(expected_count, len(hash_index))
             # the image cache folder should exist
-            self.assertEqual(True, os.path.exists(self.temp_cache))
+            self.assertEqual(True, os.path.exists(self.cache))
 
     def test_crawl_html_all(self):
         """
@@ -252,12 +299,12 @@ class TestCrawler(unittest.TestCase):
         """
         source = self.module_path + os.sep + "test_site"
         cases = [
-            (['html-all'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 512),
+            (['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 512),
         ]
         for case in cases:
             actions, base, cache, cache_url, source, output, expected_count = case
             try:
-                crawler = Crawler.Crawler(actions, base, cache, cache_url, source, output)
+                crawler = Crawler.Crawler(actions, base, source, output, cache, cache_url)
                 crawler.run()
             except:
                 logging.error("Could not complete crawl job", exc_info=True)
@@ -274,7 +321,7 @@ class TestCrawler(unittest.TestCase):
             hash_index = Utils.loadFileHashIndex(output)
             self.assertEqual(expected_count, len(hash_index))
             # the image cache folder should exist
-            self.assertEqual(True, os.path.exists(self.temp_cache))
+            self.assertEqual(True, os.path.exists(self.cache))
 
     def test_crawl_html_all_with_update_on_first_run(self):
         """
@@ -284,13 +331,13 @@ class TestCrawler(unittest.TestCase):
         """
         actions = ['html-all']
         base = 'http://www.findandconnect.gov.au'
-        cache = self.temp_cache
+        cache = self.cache
         cache_url = "http://www.findandconnect.gov.au/cache"
         output = self.temp
         source_original = self.source + os.sep + "update_original"
         expected_count = 3
         # crawl the source_original folder to establish the baseline
-        crawler = Crawler.Crawler(actions, base, cache, cache_url, source_original, output, update=True)
+        crawler = Crawler.Crawler(actions, base, source_original, output, cache, cache_url, update=True)
         crawler.run()
         # the cache folder should have content in it now
         result_count = 0
@@ -305,17 +352,17 @@ class TestCrawler(unittest.TestCase):
         """
         source = self.module_path + os.sep + "crawl" + os.sep + "exclude"
         cases = [
-            (['E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
-            (['E000001b.htm','E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
-            (['E*.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
-            (['E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
-            (['E*.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
-            (['E000001.xml','E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.temp_cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
+            (['E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
+            (['E000001b.htm','E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
+            (['E*.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+            (['E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
+            (['E*.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+            (['E000001.xml','E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
         ]
         for case in cases:
             exclude, actions, base, cache, cache_url, source, output, expected_count = case
             try:
-                crawler = Crawler.Crawler(actions, base, cache, cache_url, source, output, exclude=exclude)
+                crawler = Crawler.Crawler(actions, base, source, output, cache, cache_url, exclude=exclude)
                 crawler.run()
             except:
                 logging.error("Could not complete crawl job", exc_info=True)

@@ -37,8 +37,7 @@ class TestDataExceptions(unittest.TestCase):
         """
         Tear down the test environment.
         """
-        if os.path.exists(self.temp):
-            shutil.rmtree(self.temp)
+        shutil.rmtree(self.temp, ignore_errors=True)
 
     def test_eaccpf_getDigitalObjects_exceptions(self):
         """
@@ -75,11 +74,10 @@ class TestDataExceptions(unittest.TestCase):
              "Discoveries in Western Australia, 1833/6 (1838/1)"),
         ]
         for case in cases:
-            source, metadata, presentation, expected = case
-            doc = EacCpf.EacCpf(source, metadata, presentation)
+            source, metadata_url, presentation_url, expected = case
+            doc = EacCpf.EacCpf(source, metadata_url, presentation_url)
             result = doc.getThumbnail()
             self.assertEqual(expected, result.getTitle())
-            result.write(self.temp)
 
     def test_htmlpage_get_title_with_markup(self):
         """

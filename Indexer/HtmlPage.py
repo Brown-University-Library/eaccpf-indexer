@@ -115,7 +115,7 @@ class HtmlPage(object):
             return Utils.getRecordIdFromFilename(self.filename)
         return None
 
-    def getText(self):
+    def getText(self, include_head_metadata=False):
         """
         Get body text with tags, comments and Javascript stripped out.
         """
@@ -129,8 +129,15 @@ class HtmlPage(object):
             parent = node.getparent()
             if parent is not None:
                 parent.remove(node)
-        # strip all tags and control char from body content
-        text = etree.tostring(self.tree)
+        # get the text content of the page
+        if include_head_metadata:
+            text = etree.tostring(self.tree)
+        else:
+            body = self.tree.xpath("//body/*")
+            text = ""
+            for t in body:
+                text += t.text_content()
+        # strip tags and control chars
         text = re.sub('<[^<]+?>', '', text)
         text = re.sub('[\r|\n|\t]', ' ', text)
         # replace encoded characters
@@ -178,7 +185,8 @@ class HtmlPage(object):
         elif self.base:
             return self.base + self.filename
         else:
-            # else, get the URL from the DC.Identifier value in the document
+            # if all else fails, try to get the URL from the DC.Identifier
+            # value in the document HEAD
             try:
                 tags = self.tree.findall('//meta')
                 for tag in tags:

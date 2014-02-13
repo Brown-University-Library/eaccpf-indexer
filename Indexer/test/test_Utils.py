@@ -110,7 +110,41 @@ class TestUtils(unittest.TestCase):
             self.assertEquals(result, common)
 
     def test_getFileHash(self):
-        pass
+        """
+        It should return an SHA1 hash for the specified file. If the file does
+        not exist, the function should throw an exception.
+        """
+        # create a file with known hash value
+        data = "This is a known value."
+        expected = "9cf7c71b1d4f1a6fe5a4f0dd078271a51d862f68"
+        test_file_path = tempfile.mktemp()
+        with open(test_file_path, 'w') as f:
+            f.write(data)
+        # get test file parent path and file name
+        test_file_parent_path = os.path.dirname(test_file_path)
+        test_file_name = os.path.basename(test_file_path)
+        # execute test cases
+        cases = [
+            (test_file_path, None, False),
+            (test_file_parent_path, test_file_name, False),
+            (test_file_path + "path_doesnt_exist", None, True),
+            (test_file_parent_path, test_file_name + "path_doesnt_exist", True)
+        ]
+        for case in cases:
+            path, filename, throws_exception = case
+            try:
+                if filename:
+                    result = Utils.getFileHash(path, filename)
+                else:
+                    result = Utils.getFileHash(path)
+                self.assertNotEqual(None, result)
+                self.assertEqual(expected, result)
+                self.assertEqual(False, throws_exception)
+            except:
+                self.assertEqual(True, throws_exception)
+        # clean up
+        if os.path.exists(test_file_path):
+            shutil.rmtree(test_file_path, ignore_errors=True)
 
     def test_getFileName(self):
         """

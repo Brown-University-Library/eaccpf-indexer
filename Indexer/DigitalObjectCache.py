@@ -4,156 +4,126 @@ LICENSE file, which is part of this source code package.
 """
 
 from PIL import Image
-from pairtree import PairtreeStorageFactory
 
 import Utils
 import logging
 import os
 import shutil
-import tempfile
+import yaml
+
+METADATA_FILENAME = "object.yml"
 
 
 class DigitalObjectCache(object):
     """
-    Storage for source and alternate sized representations of a digital 
-    object. The storage folder must either not exist when first creating
-    the cache, or it must already be initialized as a Pairtree storage
-    folder. If the folder exists and is not initialized, then it will
-    throw a pairtree.storage_exceptions.NotAPairtreeStoreException
+    Storage for source and alternate sized representations of a digital
+    object. The cache is implemented as a simple file system store. The
+    cache folder contains one subdirectory for each stored object. The
+    object/subdirectory name is the SHA1 hash for the object metadata
+    record. Inside the subdirectory, a YAML file named object.yml is
+    stored with the object metadata, along with small, medium and large
+    cached image files.
     """
 
-    def __init__(self, Path, UrlRoot='', Init=False):
-        """
-        Constructor
-        """
+    def __init__(self, Path, BaseURL):
         self.logger = logging.getLogger()
         self.path = Path
-        if UrlRoot.endswith('/'):
-            self.url_root = UrlRoot
-        else:
-            self.url_root = UrlRoot + '/'
-        if Init and os.path.exists(self.path):
-            shutil.rmtree(self.path)
-        # create the pairtree storage instance
-        factory = PairtreeStorageFactory()
-        try:
-            self.storage = factory.get_store(store_dir=self.path, uri_base="http://")
-        except:
-            self.logger.critical("Could not initialize the image cache " + self.path)
-            raise
+        self.url_root = BaseURL if BaseURL.endswith('/') else BaseURL + '/'
+        # create the cache folder if it doesn't already exist
+        if not os.path.exists(self.path):
+            os.mkdir(self.path)
 
-    def _getPathRelativeToCacheRoot(self, Path):
-        """
-        Get the path relative to the cache root.
-        """
-        Path = Path.replace(self.path, '')
-        return Path.replace('/pairtree_root/', '')
-    
-    def _resizeImageAndSaveToNewFile(self, Source, Width, Height):
+    def _resizeImageAndSaveToNewFile(self, Source, Destination, Width, Height):
         """
         Resize the image to the specified height and width and save the updated
         image to a new file. If the image's existing height and width are less 
         than those specified, then the original dimensions are maintained. 
         Return the new file path.
-        @todo check image format type
         """
-        # set output file
         ext = Utils.getFileNameExtension(Source)
-        filepath = tempfile.mktemp(suffix=".{0}".format(ext))
         # load the image
-        im = Image.open(Source)
+        img = Image.open(Source)
         # convert color mode
-        if im.mode != "RGB":
-            im = im.convert("RGB")
+        if img.mode != "RGB":
+            img = img.convert("RGB")
         # resize the image if required
-        existwidth, existheight = im.size
+        existwidth, existheight = img.size
         if (Width < existwidth or Height < existheight):
             size = Width, Height
-            im.thumbnail(size, Image.ANTIALIAS)
-        # save the image to the new file
+            img.thumbnail(size, Image.ANTIALIAS)
+        # save the image to the a file
         fmt = ext.upper()
-        if fmt == 'JPG':
-            fmt = "JPEG"
-        im.save(filepath, fmt)
-        # return new image path
-        return filepath
+        fmt = 'JPEG' if fmt == 'JPG' else fmt
+        img.save(Destination, fmt)
+
+    def delete(self, Id):
+        """
+        Delete the digital object matching the specified Id.
+        """
+        shutil.rmtree(self.path + os.sep + Id, ignore_errors=True)
 
     def get(self, Id):
         """
-        Get the source URI, source filename and file data as identified by
-        the specified key. If no object is found, return None.
+        Get the digital object metadata corresponding with the specified ID. If
+        no object is found, return None.
         """
-        try:
-            obj = self.storage.get_object(Id)
-            if obj:
-                record = {}
-                record['cache_id'] = Id
-                record['dobj_source'] = obj.get_bytestream("dobj_source")
-                record['dobj_file_name'] = obj.get_bytestream("dobj_file_name")
-                record['dobj_file_extension'] = obj.get_bytestream("dobj_file_extension")
-                record['dobj_proxy_large'] = obj.get_bytestream("dobj_proxy_large")
-                record['dobj_proxy_medium'] = obj.get_bytestream("dobj_proxy_medium")
-                record['dobj_proxy_small'] = obj.get_bytestream("dobj_proxy_small")
-                return record
-        except:
-            return None
+        with open(self.path + os.sep + Id + os.sep + METADATA_FILENAME) as f:
+            data = f.read()
+            return yaml.load(data)
+
+    def purge(self, Index=None):
+        """
+        Purge the cache. If a filename to hash value map is provided, only
+        purge those files from the cache that are not represented in the
+        file index.
+        """
+        for cache_id in os.listdir(self.path):
+            if not Index:
+                self.delete(cache_id)
+            elif Index and not cache_id in Index.values():
+                self.delete(cache_id)
 
     def put(self, Source):
         """
-        Store the digital object located at the specified file system source
-        location in the file storage. Generate alternate image representations
+        Store the digital object source file, located at the specified file
+        system path, in the cache. Generate alternate image representations
         of the digital object. Return a record with the cache identifier,
         object source URL, and URLs to the cached alternate representations.
         """
-        # generate an id for the object
-        cache_id = Utils.getFileHash(Source)
-        # determine the URL for the cache root
-        path = self.storage._id_to_dirpath(cache_id) + os.sep
-        path = self._getPathRelativeToCacheRoot(path)
-        if self.url_root:
-            url = self.url_root + path
-        else:
-            url = path
-        # create a new cache object
-        obj = self.storage.get_object(cache_id, create_if_doesnt_exist=True)
-        # set object source location, file name and extension
-        filename = Utils.getFileName(Source)
-        ext = Utils.getFileNameExtension(filename)
-        obj.add_bytestream("dobj_source", Source)
-        obj.add_bytestream("dobj_file_name", filename)
-        obj.add_bytestream("dobj_file_extension", ext)
-        # create alternate representations
-        large = Source # no change
-        medium = self._resizeImageAndSaveToNewFile(Source, 260, 180)
-        small = self._resizeImageAndSaveToNewFile(Source, 130, 90)
-        # create alternate representations for the object
-        large_filename = "large." + ext
-        medium_filename = "medium." + ext
-        small_filename = "small." + ext
-        with open(large,'rb') as stream:
-            obj.add_bytestream(large_filename, stream)
-        with open(medium,'rb') as stream:
-            obj.add_bytestream(medium_filename, stream)
-        with open(small,'rb') as stream:
-            obj.add_bytestream(small_filename, stream)
-        # store URLs to alternates
-        large_url = url + large_filename
-        medium_url = url + medium_filename
-        small_url = url + small_filename
-        obj.add_bytestream("dobj_proxy_large", large_url)
-        obj.add_bytestream("dobj_proxy_medium", medium_url)
-        obj.add_bytestream("dobj_proxy_small", small_url)
-        # delete the temporary files
-        # os.remove(large)
-        os.remove(medium)
-        os.remove(small)
-        # return the object record
+        source_hash = Utils.getFileHash(Source)
+        source_filename = Utils.getFileName(Source)
+        source_extension = Utils.getFileNameExtension(source_filename)
+        # determine the URL for the object cache folder
+        url = self.url_root + source_hash
+        # create the digital object folder
+        obj_cache_path = self.path + os.sep + source_hash
+        if not os.path.exists(obj_cache_path):
+            os.mkdir(obj_cache_path)
+        # create alternately sized image representations and write them into
+        # the object folder
+        large_filename = "large." + source_extension
+        medium_filename = "medium." + source_extension
+        small_filename = "small." + source_extension
+        large_url = url + "/" + large_filename
+        medium_url = url + "/" +  medium_filename
+        small_url = url + "/" + small_filename
+        self._resizeImageAndSaveToNewFile(Source, obj_cache_path + os.sep + large_filename, 320, 320)
+        self._resizeImageAndSaveToNewFile(Source, obj_cache_path + os.sep + medium_filename, 260, 180)
+        self._resizeImageAndSaveToNewFile(Source, obj_cache_path + os.sep + small_filename, 130, 90)
+        # create a record for the digital object that will be stored in the
+        # cache folder and returned to the caller
         record = {}
-        record['cache_id'] = cache_id
+        record['cache_id'] = source_hash
         record['dobj_source'] = Source
-        record['dobj_file_name'] = filename
-        record['dobj_file_extension'] = ext
+        record['dobj_file_name'] = source_filename
+        record['dobj_file_extension'] = source_extension
         record['dobj_proxy_large'] = large_url
         record['dobj_proxy_medium'] = medium_url
         record['dobj_proxy_small'] = small_url
+        record['dobj_proxy_source'] = small_url
+        # write the digital object record into the folder
+        with open(obj_cache_path + os.sep + METADATA_FILENAME, 'w') as f:
+            data = yaml.dump(record, default_flow_style=False, indent=4)
+            f.write(data)
+        # return the digital object record
         return record

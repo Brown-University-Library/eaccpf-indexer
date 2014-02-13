@@ -78,11 +78,12 @@ def getCommonStartString(A, B):
         i += 1
     return ''.join(common)
 
-def getFileHash(Path):
+def getFileHash(Path, Filename=None):
     """
-    Get SHA1 hash of the specified file.
+    Get a SHA1 hash of the specified file.
     """
-    with open(Path,'r') as f:
+    path = Path + os.sep + Filename if Filename else Path
+    with open(path,'r') as f:
         data = f.read()
     return hashlib.sha1(data).hexdigest()
 
@@ -282,13 +283,15 @@ def purgeFolder(path, file_index):
             os.remove(file_path)
         elif os.path.isdir(file_path):
             shutil.rmtree(file_path, ignore_errors=True)
+        log.debug("Purged {0} from cache folder".format(filename))
 
 def purgeIndex(file_list, file_hash_index):
     """
     Purge all file hash entries not represented in the file list.
     """
-    for key in [key for key in file_hash_index.keys() if key not in file_list]:
-        del file_hash_index[key]
+    for filename in [filename for filename in file_hash_index.keys() if filename not in file_list]:
+        del file_hash_index[filename]
+        log.debug("Purged {0} from cache index".format(filename))
     return file_hash_index
 
 def read(Path, Filename):

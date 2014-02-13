@@ -5,6 +5,7 @@ LICENSE file, which is part of this source code package.
 
 import HtmlPage
 import Utils
+import hashlib
 import logging
 import os
 import yaml
@@ -127,6 +128,14 @@ class DigitalObject(object):
         """
         return Utils.getFileName(self.metadata_url)
 
+    def getHash(self):
+        """
+        Get a hash of the digital object record.
+        """
+        record = self.getRecord()
+        data = yaml.dump(record, default_flow_style=False, indent=4)
+        return hashlib.sha1(data).hexdigest()
+
     def getLocalType(self):
         """
         Get the localtype.
@@ -209,20 +218,23 @@ class DigitalObject(object):
         return self.dobj_type
 
     @load_metadata_on_demand
-    def write(self, Path, Id=None, CacheRecord=None):
+    def write(self, Path, Filename=None, Id=None, CacheRecord=None):
         """
         Write a YML representation of the digital object to the specified path.
+        In some cases we need to override the source record Id with our own.
         """
-        filename = "{0}.yml".format(self.getObjectId())
         record = self.getRecord()
+        # override the source record identifier with our own
         if Id:
             record['id'] = Id
-            filename = "{0}.yml".format(record['id'])
+        # merge data from the cache record into the digital object record
         if CacheRecord:
             for key in CacheRecord:
                 record[key] = CacheRecord[key]
         # write the file
+        filename = Filename if Filename else "{0}.yml".format(self.getObjectId())
+        path = Path + os.sep + Filename if Filename else Path
         data = yaml.dump(record, default_flow_style=False, indent=4)
-        with open(Path + os.sep + filename, 'w') as outfile:
-            outfile.write(data)
+        with open(path, 'w') as f:
+            f.write(data)
         self.logger.info("Stored digital object {0}".format(filename))
