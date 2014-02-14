@@ -87,24 +87,17 @@ class Crawler(object):
         # make sure that paths have a trailing /
         self.base = "{}/".format(self.base) if self.base and not self.base.endswith('/') else self.base
         self.source = "{}/".format(self.source) if self.source and not self.source.endswith('/') else self.source
-        # create the digital object cache
-
 
     def _is_excluded(self, filename):
         """
         Return True if the file should be excluded based on whether it matches
-        a pattern specified as part of the exclude list. Return false
+        a pattern specified as part of the exclude list. Return False
         otherwise.
         """
         for pattern in self.exclude:
             if fnmatch.fnmatch(filename, pattern):
                 return True
         return False
-
-    def _excluded_path(self, path):
-        """
-        """
-        pass
 
     def crawlFileSystem(self):
         """
@@ -128,8 +121,9 @@ class Crawler(object):
                     elif 'html-entity' in self.actions and html.hasEacCpfAlternate():
                         self.process_html(html)
                     elif 'html' in self.actions and html.hasEacCpfAlternate():
-                        # this is for backward compatibility. 'html-entity' is
-                        # more descriptive and should be used instead
+                        # this action is for backward compatibility.
+                        # 'html-entity' is more descriptive and should be used
+                        # instead
                         self.process_html(html)
                     elif html.hasEacCpfAlternate():
                         metadata_url = html.getEacCpfUrl()
@@ -143,7 +137,12 @@ class Crawler(object):
                                 self.process_eaccpf(eaccpf)
                             if 'eaccpf-thumbnail' in self.actions:
                                 self.process_eaccpf_thumbnail(eaccpf)
+                            if 'eaccpf-digitalobject' in self.actions:
+                                self.process_eaccpf_digital_objects(eaccpf)
                             if 'digitalobject' in self.actions:
+                                # this action is for backward compatibility.
+                                # 'eaccpf-digitalobject' is more descriptive
+                                # and should be used instead
                                 self.process_eaccpf_digital_objects(eaccpf)
                 except:
                     self.log.error("Could not complete processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
@@ -208,7 +207,9 @@ class Crawler(object):
                 else:
                     self.log.debug("Digital object is new or changed since last run")
                     # put the source object in the digital object cache
-                    cache_record = self.cache.put(dobj_path)
+                    # the identifier for the cache record must match the key
+                    # used in the hashIndex below
+                    cache_record = self.cache.put(metadata_filename, dobj_path)
                     # store the digital object metadata in the cache
                     dobj.write(self.output, Filename=metadata_filename, Id=dobj_id, CacheRecord=cache_record)
                     # record the metadata hash so that we can track whether its
@@ -247,7 +248,9 @@ class Crawler(object):
                 else:
                     self.log.debug("Thumbnail is new or changed since last run")
                     # put the source object in the digital object cache
-                    cache_record = self.cache.put(dobj_path)
+                    # the identifier for the cache record must match the key
+                    # used in the hashIndex below
+                    cache_record = self.cache.put(metadata_filename, dobj_path)
                     # store the digital object metadata in the cache
                     dobj.write(self.output, Filename=metadata_filename, Id=eaccpf_id, CacheRecord=cache_record)
                     # record the metadata hash so that we can track whether its
@@ -308,7 +311,7 @@ class Crawler(object):
                 Utils.purgeFolder(self.output, self.hashIndex)
                 # remove files from the image cache that are not in the index
                 self.log.info("Clearing orphaned files from the image cache")
-                self.cache.purge(self.hashIndex)
+                self.cache.purge(self.hashIndex.keys())
             # write the updated file index
             Utils.writeFileHashIndex(self.hashIndex, self.output)
         # log execution time

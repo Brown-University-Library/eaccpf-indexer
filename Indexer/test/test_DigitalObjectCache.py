@@ -100,7 +100,7 @@ class TestDigitalObjectCache(unittest.TestCase):
         # add all test files to the cache
         for filename in cases:
             path = test_files_path + filename
-            cache.put(path)
+            cache.put(filename, path)
         # purge the cache
         cache.purge()
         # get the cached file count
@@ -118,21 +118,21 @@ class TestDigitalObjectCache(unittest.TestCase):
             "header-logo-narrow.png",
             "footer-logo.png"
         ]
-        # create a list of the test file hash values
-        file_index = {}
+        # create a filename to hash map of the test files
+        fn_hash_map = {}
         for filename in cases:
-            file_index[filename] = Utils.getFileHash(test_files_path, filename)
+            fn_hash_map[filename] = Utils.getFileHash(test_files_path, filename)
         # add all the test files to the cache
         for filename in cases:
             path = test_files_path + filename
-            cache.put(path)
-        # remove a random file from the index
-        keys = file_index.keys()
+            cache.put(fn_hash_map[filename], path)
+        # remove a random file from the filename to hash map
+        keys = fn_hash_map.keys()
         rand = random.Random()
         i = rand.randrange(0,len(keys)-1)
-        file_index.pop(keys[i])
+        fn_hash_map.pop(keys[i])
         # purge the index
-        cache.purge(file_index)
+        cache.purge(fn_hash_map.values())
         # count the number of files in the cache
         actual_count = len(os.listdir(cache.path))
         expected_count = len(cases) - 1
@@ -152,7 +152,7 @@ class TestDigitalObjectCache(unittest.TestCase):
         ]
         records = {}
         for filename in os.listdir(test_files_path):
-            record = cache.put(test_files_path + filename)
+            record = cache.put(filename, test_files_path + filename)
             self.assertNotEqual(record, None)
             self.assertNotEqual(record['cache_id'], None)
             cacheid = record['cache_id']

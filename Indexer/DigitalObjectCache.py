@@ -64,39 +64,44 @@ class DigitalObjectCache(object):
 
     def get(self, Id):
         """
-        Get the digital object metadata corresponding with the specified ID. If
+        Get the digital object record corresponding with the specified ID. If
         no object is found, return None.
         """
         with open(self.path + os.sep + Id + os.sep + METADATA_FILENAME) as f:
             data = f.read()
             return yaml.load(data)
 
-    def purge(self, Index=None):
+    def get_all(self):
         """
-        Purge the cache. If a filename to hash value map is provided, only
-        purge those files from the cache that are not represented in the
-        file index.
+        Get a list of all digital objects.
         """
-        for cache_id in os.listdir(self.path):
-            if not Index:
+        return [d for d in os.listdir(self.path) if os.path.isdir(self.path + os.sep + d)]
+
+    def purge(self, DoNotPurge=None):
+        """
+        Purge the cache of any digital object not present in the do not purge
+        list.
+        """
+        if DoNotPurge:
+            for cache_id in [o for o in os.listdir(self.path) if not o in DoNotPurge]:
                 self.delete(cache_id)
-            elif Index and not cache_id in Index.values():
+        else:
+            for cache_id in os.listdir(self.path):
                 self.delete(cache_id)
 
-    def put(self, Source):
+    def put(self, Id, Source):
         """
         Store the digital object source file, located at the specified file
         system path, in the cache. Generate alternate image representations
-        of the digital object. Return a record with the cache identifier,
-        object source URL, and URLs to the cached alternate representations.
+        of the digital object. Return the digital object record.
         """
         source_hash = Utils.getFileHash(Source)
         source_filename = Utils.getFileName(Source)
         source_extension = Utils.getFileNameExtension(source_filename)
         # determine the URL for the object cache folder
-        url = self.url_root + source_hash
+        url = self.url_root + Id
         # create the digital object folder
-        obj_cache_path = self.path + os.sep + source_hash
+        obj_cache_path = self.path + os.sep + Id
         if not os.path.exists(obj_cache_path):
             os.mkdir(obj_cache_path)
         # create alternately sized image representations and write them into
@@ -113,8 +118,9 @@ class DigitalObjectCache(object):
         # create a record for the digital object that will be stored in the
         # cache folder and returned to the caller
         record = {}
-        record['cache_id'] = source_hash
+        record['cache_id'] = Id
         record['dobj_source'] = Source
+        record['dobj_hash'] = source_hash
         record['dobj_file_name'] = source_filename
         record['dobj_file_extension'] = source_extension
         record['dobj_proxy_large'] = large_url
