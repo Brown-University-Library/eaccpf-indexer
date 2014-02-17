@@ -30,11 +30,9 @@ Thanks:
  * GeoPy - http://code.google.com/p/geopy
  * Google Maps API - http://maps.google.com
  * lxml - http://lxml.de
- * Pairtree - https://pypi.python.org/pypi/Pairtree
  * Python - http://www.python.org
  * Python Calais - http://code.google.com/p/python-calais
  * PyYAML - http://pyyaml.org
- * Simple JSON - https://github.com/simplejson/simplejson
 
 
 License
@@ -46,14 +44,13 @@ Please see the LICENSE file for license information.
 Installation
 ------------
 
-Requires Python 2.7.x with lxml, pyYAML, Pairtree, Simple JSON libraries.
+Requires Python 2.7.x, geopy, lxml, pyYAML, Simple JSON libraries.
 
+ * pip install geopy
  * pip install lxml
- * pip install pairtree
  * pip install pyyaml
- * pip install simplejson
 
-To infer data from EAC-CPF files, a free account and associated API key is 
+To infer data from EAC-CPF files, a free account and associated API key may be
 required for the following services:
 
  * Alchemy - http://www.alchemyapi.com/
@@ -64,8 +61,9 @@ required for the following services:
 Usage
 -----
 
-Run python Indexer.py -h for a list of options. Copy the indexer.cfg.example
-files to a new location edit it as needed.
+Run python Indexer.py -h for a list of options. A configuration file is
+required, to specify indexing options. You can copy the included
+indexer.cfg.example file to a new location and edit it as needed.
 
 
 Revision History
