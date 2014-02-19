@@ -10,9 +10,9 @@ from HtmlPage import HtmlPage
 import Cfg
 import Timer
 import Utils
-import fnmatch
 import logging
 import os
+import re
 
 
 class Crawler(object):
@@ -84,18 +84,23 @@ class Crawler(object):
         self.sleep = sleep
         self.source = source
         self.update = update
+        # compile exclude patterns
+        self.exclude_match = []
+        for pattern in self.exclude:
+            p = re.compile(pattern)
+            self.exclude_match.append(p)
         # make sure that paths have a trailing /
         self.base = "{}/".format(self.base) if self.base and not self.base.endswith('/') else self.base
         self.source = "{}/".format(self.source) if self.source and not self.source.endswith('/') else self.source
 
-    def _is_excluded(self, filename):
+    def _is_excluded(self, path):
         """
-        Return True if the file should be excluded based on whether it matches
-        a pattern specified as part of the exclude list. Return False
-        otherwise.
+        Return True if the file or directory should be excluded based on
+        whether its name matches a pattern specified as part of the exclude
+        list. Return False otherwise.
         """
-        for pattern in self.exclude:
-            if fnmatch.fnmatch(filename, pattern):
+        for pattern in self.exclude_match:
+            if pattern.match(path):
                 return True
         return False
 
@@ -106,7 +111,11 @@ class Crawler(object):
         specified number of seconds after fetching data. The Update parameter
         controls whether we should process the file only if it has changed.
         """
-        for path, _, files in os.walk(self.source):
+        for path, sub_dirs, files in os.walk(self.source):
+            # remove excluded subdirectories from the traversal list
+            for sub_dir in sub_dirs:
+                if self._is_excluded(sub_dir):
+                    sub_dirs.remove(sub_dir)
             # construct an assumed public url for the path
             base_url = self.base + path.replace(self.source, '')
             base_url += '/' if not base_url.endswith('/') else ''

@@ -60,9 +60,10 @@ class TestCrawler(unittest.TestCase):
         filename pattern. It should return False otherwise.
         """
         cases = [
-            (['browse_*.htm'],'browse_a.htm', True),
-            (['browse_*.htm'],'browse.htm', False),
-            (['browse_*.htm','browse.htm'],'browse.htm', True),
+            (['browse_(.*).htm'],'browse_a.htm', True),
+            (['browse_(.*).htm'],'browse.htm', False),
+            (['browse_(.*).htm','browse.htm'],'browse.htm', True),
+            (['browse_(.*).htm','browse.htm'],'browser.htm', False),
         ]
         for case in cases:
             actions = []
@@ -576,7 +577,40 @@ class TestCrawler(unittest.TestCase):
             result_count += 1
         self.assertEqual(expected_count, result_count)
 
-    def test_crawl_with_exclude(self):
+    def test_crawl_with_exclude_directories(self):
+        """
+        It should crawl the input folder for HTML files and skip those
+        directories identified in the exclude list.
+        """
+        source = self.module_path + os.sep + "crawl" + os.sep + "exclude"
+        cases = [
+            (['biogs'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+            (['eac','E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
+            (['E(.*)','b(.*)'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+            (['eac','E000001.xml','E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
+            (['vic'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+        ]
+        for case in cases:
+            exclude, actions, base, cache, cache_url, source, output, expected_count = case
+            try:
+                crawler = Crawler.Crawler(actions, base, source, output, cache, cache_url, exclude=exclude)
+                crawler.run()
+            except:
+                logging.error("Could not complete crawl job", exc_info=True)
+                self.fail("Could not complete crawl job")
+            # count the number of files in the output folder
+            result_count = 0
+            for filename in [f for f in os.listdir(output) if f != Cfg.HASH_INDEX_FILENAME]:
+                result_count += 1
+            self.assertEqual(expected_count, result_count)
+            # the file hash index should be present in the output folder
+            path = output + os.sep + Cfg.HASH_INDEX_FILENAME
+            self.assertEqual(True, os.path.exists(path))
+            # the number of entries in the index should be the same as the file count
+            hash_index = Utils.loadFileHashIndex(output)
+            self.assertEqual(expected_count, len(hash_index))
+
+    def test_crawl_with_exclude_files(self):
         """
         It should crawl the input folder for HTML files and skip those
         identified in the exclude list.
@@ -585,9 +619,9 @@ class TestCrawler(unittest.TestCase):
         cases = [
             (['E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
             (['E000001b.htm','E000003b.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
-            (['E*.htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+            (['E(.*).htm'], ['html-all'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
             (['E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 2),
-            (['E*.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
+            (['E(.*).xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 0),
             (['E000001.xml','E000003.xml'], ['eaccpf'], 'http://www.findandconnect.gov.au', self.cache, "http://www.findandconnect.gov.au/cache", source, self.temp, 1),
         ]
         for case in cases:
