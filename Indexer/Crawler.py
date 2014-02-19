@@ -113,9 +113,8 @@ class Crawler(object):
         """
         for path, sub_dirs, files in os.walk(self.source):
             # remove excluded subdirectories from the traversal list
-            for sub_dir in sub_dirs:
-                if self._is_excluded(sub_dir):
-                    sub_dirs.remove(sub_dir)
+            for sub_dir in [d for d in sub_dirs if self._is_excluded(d)]:
+                sub_dirs.remove(sub_dir)
             # construct an assumed public url for the path
             base_url = self.base + path.replace(self.source, '')
             base_url += '/' if not base_url.endswith('/') else ''
