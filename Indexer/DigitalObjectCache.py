@@ -78,6 +78,13 @@ class DigitalObjectCache(object):
         """
         return [d for d in os.listdir(self.path) if os.path.isdir(self.path + os.sep + d)]
 
+    def get_cache_identifier(self, filename):
+        """
+        Get the cache identifier for the corresponding record ID.
+        """
+        # return hashlib.sha1(filename).hexdigest()
+        return Utils.getRecordIdFromFilename(filename)
+
     def purge(self, keep_files=None):
         """
         Purge the cache of any digital object not present in the filename list.
@@ -86,7 +93,7 @@ class DigitalObjectCache(object):
             # transform the filenames into cache identifiers
             keep_ids = []
             for filename in keep_files:
-                keep_ids.append(hashlib.sha1(filename).hexdigest())
+                keep_ids.append(self.get_cache_identifier(filename))
             # remove all cache objects not represented in the keep_ids list
             cache_objects = os.listdir(self.path)
             for cache_id in [o for o in cache_objects if not o in keep_ids]:
@@ -104,14 +111,14 @@ class DigitalObjectCache(object):
         Cached data is stored in a subfolder of the cache directory. The
         folder name is a SHA1 hash of the record ID.
         """
-        record_id_hash = hashlib.sha1(record_id).hexdigest()
+        cache_id = self.get_cache_identifier(record_id)
         source_hash = Utils.getFileHash(source)
         source_filename = Utils.getFileName(source)
         source_extension = Utils.getFileNameExtension(source_filename)
         # determine the URL for the object cache folder
-        url = self.url_root + record_id_hash
+        url = self.url_root + cache_id
         # create the digital object folder
-        obj_cache_path = self.path + os.sep + record_id_hash
+        obj_cache_path = self.path + os.sep + cache_id
         if not os.path.exists(obj_cache_path):
             os.mkdir(obj_cache_path)
         # create alternately sized image representations and write them into
@@ -128,7 +135,9 @@ class DigitalObjectCache(object):
         # create a record for the digital object that will be stored in the
         # cache folder and returned to the caller
         record = {}
-        record['cache_id'] = record_id_hash
+        record['cache_id'] = cache_id
+        record['dobj_metadata_id'] = Utils.getRecordIdFromFilename(record_id)
+        record['dobj_metadata_filename'] = record_id
         record['dobj_source'] = source
         record['dobj_hash'] = source_hash
         record['dobj_file_name'] = source_filename
