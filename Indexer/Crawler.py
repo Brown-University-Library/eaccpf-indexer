@@ -106,7 +106,7 @@ class Crawler(object):
 
     def crawlFileSystem(self):
         """
-        Crawl file system for HTML files. Execute the specified indexing 
+        Crawl file system for HTML files. Execute the specified indexing
         actions on each file. Store files in the Output path. Sleep for the
         specified number of seconds after fetching data. The Update parameter
         controls whether we should process the file only if it has changed.
@@ -157,7 +157,7 @@ class Crawler(object):
 
     def crawlWebSite(self):
         """
-        Crawl web site for HTML entity pages. When such a page is found, 
+        Crawl web site for HTML entity pages. When such a page is found,
         execute the specified indexing actions. Store files to the output path.
         Sleep for the specified number of seconds after fetching data.
         """

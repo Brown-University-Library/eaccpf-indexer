@@ -118,24 +118,18 @@ class TestDigitalObjectCache(unittest.TestCase):
             "header-logo-narrow.png",
             "footer-logo.png"
         ]
-        # create a filename to hash map of the test files
-        fn_hash_map = {}
-        for filename in cases:
-            fn_hash_map[filename] = Utils.getFileHash(test_files_path, filename)
+        expected_count = 2
         # add all the test files to the cache
         for filename in cases:
-            path = test_files_path + filename
-            cache.put(fn_hash_map[filename], path)
-        # remove a random file from the filename to hash map
-        keys = fn_hash_map.keys()
+            cache.put(filename, test_files_path + filename)
+        # remove a random file from the list
         rand = random.Random()
-        i = rand.randrange(0,len(keys)-1)
-        fn_hash_map.pop(keys[i])
+        i = rand.randrange(0,len(cases)-1)
+        cases.pop(i)
         # purge the index
-        cache.purge(fn_hash_map.values())
+        cache.purge(cases)
         # count the number of files in the cache
         actual_count = len(os.listdir(cache.path))
-        expected_count = len(cases) - 1
         self.assertEqual(expected_count, actual_count)
 
     def test_put_and_get(self):
@@ -156,7 +150,7 @@ class TestDigitalObjectCache(unittest.TestCase):
             self.assertNotEqual(record, None)
             self.assertNotEqual(record['cache_id'], None)
             cacheid = record['cache_id']
-            records[cacheid]= record
+            records[cacheid] = record
         # fetch cases from the cache using the key
         for key in records.keys():
             obj = cache.get(key)

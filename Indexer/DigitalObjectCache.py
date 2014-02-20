@@ -6,6 +6,7 @@ LICENSE file, which is part of this source code package.
 from PIL import Image
 
 import Utils
+import hashlib
 import logging
 import os
 import shutil
@@ -77,31 +78,40 @@ class DigitalObjectCache(object):
         """
         return [d for d in os.listdir(self.path) if os.path.isdir(self.path + os.sep + d)]
 
-    def purge(self, DoNotPurge=None):
+    def purge(self, keep_files=None):
         """
-        Purge the cache of any digital object not present in the do not purge
-        list.
+        Purge the cache of any digital object not present in the filename list.
         """
-        if DoNotPurge:
-            for cache_id in [o for o in os.listdir(self.path) if not o in DoNotPurge]:
+        if keep_files:
+            # transform the filenames into cache identifiers
+            keep_ids = []
+            for filename in keep_files:
+                keep_ids.append(hashlib.sha1(filename).hexdigest())
+            # remove all cache objects not represented in the keep_ids list
+            cache_objects = os.listdir(self.path)
+            for cache_id in [o for o in cache_objects if not o in keep_ids]:
                 self.delete(cache_id)
         else:
             for cache_id in os.listdir(self.path):
                 self.delete(cache_id)
 
-    def put(self, Id, Source):
+    def put(self, record_id, source):
         """
         Store the digital object source file, located at the specified file
         system path, in the cache. Generate alternate image representations
         of the digital object. Return the digital object record.
+
+        Cached data is stored in a subfolder of the cache directory. The
+        folder name is a SHA1 hash of the record ID.
         """
-        source_hash = Utils.getFileHash(Source)
-        source_filename = Utils.getFileName(Source)
+        record_id_hash = hashlib.sha1(record_id).hexdigest()
+        source_hash = Utils.getFileHash(source)
+        source_filename = Utils.getFileName(source)
         source_extension = Utils.getFileNameExtension(source_filename)
         # determine the URL for the object cache folder
-        url = self.url_root + Id
+        url = self.url_root + record_id_hash
         # create the digital object folder
-        obj_cache_path = self.path + os.sep + Id
+        obj_cache_path = self.path + os.sep + record_id_hash
         if not os.path.exists(obj_cache_path):
             os.mkdir(obj_cache_path)
         # create alternately sized image representations and write them into
@@ -112,14 +122,14 @@ class DigitalObjectCache(object):
         large_url = url + "/" + large_filename
         medium_url = url + "/" +  medium_filename
         small_url = url + "/" + small_filename
-        self._resizeImageAndSaveToNewFile(Source, obj_cache_path + os.sep + large_filename, 320, 320)
-        self._resizeImageAndSaveToNewFile(Source, obj_cache_path + os.sep + medium_filename, 260, 180)
-        self._resizeImageAndSaveToNewFile(Source, obj_cache_path + os.sep + small_filename, 130, 90)
+        self._resizeImageAndSaveToNewFile(source, obj_cache_path + os.sep + large_filename, 320, 320)
+        self._resizeImageAndSaveToNewFile(source, obj_cache_path + os.sep + medium_filename, 260, 180)
+        self._resizeImageAndSaveToNewFile(source, obj_cache_path + os.sep + small_filename, 130, 90)
         # create a record for the digital object that will be stored in the
         # cache folder and returned to the caller
         record = {}
-        record['cache_id'] = Id
-        record['dobj_source'] = Source
+        record['cache_id'] = record_id_hash
+        record['dobj_source'] = source
         record['dobj_hash'] = source_hash
         record['dobj_file_name'] = source_filename
         record['dobj_file_extension'] = source_extension
