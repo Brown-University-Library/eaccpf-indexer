@@ -57,11 +57,15 @@ class DigitalObjectCache(object):
         fmt = 'JPEG' if fmt == 'JPG' else fmt
         img.save(Destination, fmt)
 
-    def delete(self, Id):
+    def delete(self, filename):
         """
         Delete the digital object matching the specified Id.
         """
-        shutil.rmtree(self.path + os.sep + Id, ignore_errors=True)
+        path = self.path + os.sep + filename
+        if os.path.isdir(path):
+            shutil.rmtree(path, ignore_errors=True)
+        else:
+            os.remove(path)
 
     def get(self, Id):
         """
