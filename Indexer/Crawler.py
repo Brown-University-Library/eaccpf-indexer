@@ -298,6 +298,9 @@ class Crawler(object):
                 os.makedirs(self.output)
             Utils.cleanOutputFolder(self.output, Update=self.update)
             assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
+            # purge the image cache
+            if not self.update:
+                self.cache.purge()
             # create an index of file hashes so that we can track which files
             # have changed since the last run
             self.records = []
