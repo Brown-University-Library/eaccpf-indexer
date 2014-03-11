@@ -11,7 +11,6 @@ import Utils
 import hashlib
 import logging
 import os
-import urllib2
 
 # namespaces
 DOC_KEY = "doc"
@@ -20,8 +19,11 @@ DOC_NS = "urn:isbn:1-931666-33-4"
 ESRC_KEY = "ns0"
 ESRC_NS = "http://www.esrc.unimelb.edu.au"
 
-XLINK = "http://www.w3.org/1999/xlink"
-XSI = "http://www.w3.org/2001/XMLSchema-instance"
+XLINK_KEY = "xlink"
+XLINK_NS = "http://www.w3.org/1999/xlink"
+
+XSI_KEY = "xsi"
+XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
 
 
 class EacCpf(object):
@@ -42,7 +44,7 @@ class EacCpf(object):
         """
         self.log = logging.getLogger()
         self.metadata = MetadataUrl
-        self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS }
+        self.ns = { DOC_KEY: DOC_NS, ESRC_KEY: ESRC_NS, XLINK_KEY: XLINK_NS }
         self.presentation = PresentationUrl
         self.source = Source
         data = Utils.load_from_source(Source)
@@ -93,6 +95,25 @@ class EacCpf(object):
         except:
             pass
         return rels
+
+    def getCpfRelationLinks(self):
+        """
+
+        """
+        links = []
+        target = "{{{0}}}href".format(XLINK_NS)
+        try:
+            rels = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation", namespaces=self.ns)
+            for rel in rels:
+                for attr in rel.attrib:
+                    if target in attr:
+                        url = rel.attrib[attr]
+                        relationEntry = rel.xpath("./doc:relationEntry[1]", namespaces=self.ns)
+                        if relationEntry and len(relationEntry) > 0:
+                            links.append((url, relationEntry[0].text))
+        except:
+            pass
+        return links
 
     def getData(self):
         """
@@ -356,6 +377,25 @@ class EacCpf(object):
         except:
             pass
         return rels
+
+    def getResourceRelationLinks(self):
+        """
+        Get links from resource relation entries to external documents.
+        """
+        links = []
+        target = "{{{0}}}href".format(XLINK_NS)
+        try:
+            rels = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation", namespaces=self.ns)
+            for rel in rels:
+                for attr in rel.attrib:
+                    if target in attr:
+                        url = rel.attrib[attr]
+                        relationEntry = rel.xpath("./doc:relationEntry[1]", namespaces=self.ns)
+                        if relationEntry and len(relationEntry) > 0:
+                            links.append((url, relationEntry[0].text))
+        except:
+            pass
+        return links
 
     def getTitle(self):
         """

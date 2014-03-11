@@ -68,6 +68,30 @@ class TestEacCpf(unittest.TestCase):
             abstract = doc.getAbstract()
             self.assertNotEqual(abstract, None)
 
+    def test_getCpfRelations(self):
+        """
+        It should return a list of CPF relations for the record.
+        """
+        pass
+
+    def test_getCpfRelationLinks(self):
+        """
+        It should return a list of CPF relations that contain links. Each list
+        element should be a tuple consisting of the relation URL and title.
+        """
+        cases = [
+            (self.test_eac + "NE00601.xml", 3),
+            (self.test_eac + "NE00100.xml", 6),
+            (self.test_eac + "NE00201.xml", 6),
+        ]
+        for case in cases:
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com')
+            self.assertNotEqual(None, doc)
+            result = doc.getCpfRelationLinks()
+            self.assertNotEqual(None, result)
+            self.assertEqual(expected, len(result))
+
     def test_getData(self):
         """
         It should return the raw XML source data for the document.
@@ -226,6 +250,32 @@ class TestEacCpf(unittest.TestCase):
             doc = EacCpf.EacCpf(source, 'http://www.example.com')
             self.assertNotEqual(None, doc)
             result = doc.getLocations()
+            self.assertNotEqual(None, result)
+            self.assertEqual(expected, len(result))
+
+    def test_getResourceRelations(self):
+        """
+        It should return a list of zero or more resource relations.
+        """
+        pass
+
+    def test_getResourceRelationLinks(self):
+        """
+        It should return a list of resource relations that contain links.
+        Each list element should be a tuple consisting of the relation URL and
+        title.
+        """
+        cases = [
+            (self.test_eac + "NE00601.xml", 1),
+            (self.test_eac + "NE00100.xml", 3),
+            (self.test_eac + "NE00201.xml", 4),
+            (self.test_eac + "NE01501.xml", 0),
+        ]
+        for case in cases:
+            source, expected = case
+            doc = EacCpf.EacCpf(source, 'http://www.example.com')
+            self.assertNotEqual(None, doc)
+            result = doc.getResourceRelationLinks()
             self.assertNotEqual(None, result)
             self.assertEqual(expected, len(result))
 

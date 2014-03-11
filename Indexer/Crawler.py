@@ -282,6 +282,10 @@ class Crawler(object):
             return
         else:
             self.log.debug("HTML is new or changed since last run")
+            # ISSUE #32 - if the document does not have a DC.Identifier value
+            # in the HEAD, then inject one with its public URL
+            if not html.getUrl():
+                pass
             # store the document in the output folder
             html.write(self.output)
             # record the new or updated file hash
@@ -301,7 +305,7 @@ class Crawler(object):
             # purge the image cache
             if not self.update:
                 self.cache.purge()
-            # create an index of file hashes so that we can track which files
+            # create an index of files hashes so that we can track which files
             # have changed since the last run
             self.records = []
             if self.update:

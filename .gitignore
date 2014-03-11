@@ -13,8 +13,10 @@
 feeder.cfg
 NOTES.txt
 
-bin
-data
-docs
-ref
+bin/
+build/
+data/
+dist/
+docs/
+ref/
 temp/

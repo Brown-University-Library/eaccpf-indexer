@@ -8,6 +8,8 @@ locations from free text or structured data fields. Source and processed data
 are written to disk for each stage of processing, to enable an open workflow
 and alternative uses.
 
+[![Build Status](https://drone.io/bitbucket.org/esrc/eaccpf-indexer/status.png)](https://drone.io/bitbucket.org/esrc/eaccpf-indexer/latest)
+
 
 Credits
 -------
@@ -68,6 +70,14 @@ indexer.cfg.example file to a new location and edit it as needed.
 
 Revision History
 ----------------
+
+1.6.0
+
+ * Basic graph model of HTML to EAC-CPF documents, EAC-CPF to functions and resources
+ - Graph of EAC-CPF to named-entities
+ - Color the graph by entity type
+ - Graph model output in a graph file format that can be imported to Neo4j, other
+ - Post graph model to a graph server
 
 1.5.1
 

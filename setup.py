@@ -3,16 +3,23 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
+from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
-# @todo pull description, version number, etc from the README.md file
+# read metadata
+with open('README.md', 'r') as f:
+    description = f.read()
+version = '1.5.1'
+
+# package requirements
+install_reqs = parse_requirements('requirements.txt')
+requirements = [str(ir.req) for ir in install_reqs]
+
 setup(name='Indexer',
-      description="""A utility for indexing EAC-CPF and related content from a
-      web site or file system, inferring data, post-processing and posting
-      that data to an Apache Solr search index.""",
-      author='(Davis Marques, Marco LaRosa) eScholarship Research Center, University of Melbourne',
+      description=description,
+      author='Davis Marques <dmarques@unimelb.edu.au> eScholarship Research Center, University of Melbourne',
       url='http://www.esrc.unimelb.edu.au',
-      version='1.5.1',
+      version=version,
       packages=find_packages(),
-      install_requires=['lxml','pyyaml','simplejson'],
+      install_requires=requirements,
 )
