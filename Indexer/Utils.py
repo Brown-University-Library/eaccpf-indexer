@@ -16,7 +16,7 @@ import tempfile
 import urllib2
 import urlparse
 import yaml
-
+import sys
 
 log = logging.getLogger()
 
@@ -217,7 +217,9 @@ def loadTransform(Path):
     with open(Path, 'r') as f:
         xslt_data = f.read()
     xslt_root = etree.XML(xslt_data)
-    return etree.XSLT(xslt_root)
+    outp = etree.XSLT(xslt_root)
+    return outp
+    
 
 def map_url_to_local_path(url, site_root_path):
     """

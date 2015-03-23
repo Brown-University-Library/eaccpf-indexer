@@ -13,15 +13,15 @@ import logging
 import os
 import yaml
 
-
 class Transformer(object):
     """
     Transform and merge source data to Solr Input Document format. Transform
     does not use the --update flag because the operation is purely local and
     should take an insignificant amount of time to complete.
+    
     """
 
-    def __init__(self, sources, output, actions=None, boosts=None, set_fields=None, transform=None):
+    def __init__(self, sources, output, actions=None, boosts=None, set_fields=None, transform=None, userparams=None):
         self.log = logging.getLogger()
         # set parameters
         self.actions = actions if actions else []
@@ -30,6 +30,13 @@ class Transformer(object):
         self.set_fields = set_fields if set_fields else []
         self.sources = sources
         self.transform = transform
+        
+        if userparams:
+            upmmod = userparams.lower()
+            upmclass = "{}_ParamMaker".format(userparams)
+            up = __import__('userparams.{}'.format(upmmod), globals(), locals(), [upmclass])
+            self.upm = getattr(up, upmclass)()
+        
         if transform:
             self.xslt = transform
         else:
@@ -233,6 +240,7 @@ class Transformer(object):
                 pass
         # log execution time
         self.log.info("Transformer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
+        print("Transformer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
     def setBoosts(self, Source):
         """
@@ -328,7 +336,14 @@ class Transformer(object):
         specified XSLT transform file.
         """
         xml = etree.parse(path + os.sep + filename)
-        result = Transform(xml)
+        
+        if self.upm:
+            params = self.upm.params(xml)
+        else: 
+            params = {}
+        
+        result = Transform(xml, **params)
+        
         data = etree.tostring(result, pretty_print=True, xml_declaration=True)
         # write the output file
         with open(Output + os.sep + filename, 'w') as outfile:
@@ -340,6 +355,8 @@ class Transformer(object):
         Transform zero or more paths containing EAC-CPF documents to Solr Input
         Document format.
         """
+        
+        
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if f.endswith(".xml")]:
                 path = source + os.sep + filename
@@ -395,5 +412,12 @@ def transform(params):
         xslt = params.get("transform", "xslt")
     else:
         xslt=None
-    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=set_fields, transform=xslt)
+        
+    if params.has_option("transform", "userparams"):
+        userparams = params.get("transform", "userparams")
+    else:
+        xslt=None
+        
+    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=set_fields, transform=xslt, userparams=userparams)
+    
     transformer.run()

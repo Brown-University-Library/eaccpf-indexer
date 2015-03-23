@@ -14,6 +14,8 @@ import logging
 import os
 import re
 
+import codecs
+import sys
 
 class Cleaner(object):
     """
@@ -29,14 +31,17 @@ class Cleaner(object):
         self.source = source
         self.update = update
         
-    def _fixAttributeURLEncoding(self, Xml):
-        """
-        Where an XML tag contains an attribute with a URL in it, any 
-        ampersand characters in the URL must be escaped.
-        @todo: finish implementing this method
-        @see http://priyadi.net/archives/2004/09/26/ampersand-is-not-allowed-within-xml-attributes-value/
-        """
-        return Xml
+    def _fixEncoding(self, Text):
+        try:
+            outp = codecs.encode(codecs.decode(Text, 'utf-16le'), 'utf-8')
+            return outp
+        except:
+            print(sys.exc_info())
+            
+        
+    def _fixAmpersands(self, Text):
+        outp = re.sub(r'&(?![A-Za-z]+[0-9]*;|#[0-9]+;|#x[0-9a-fA-F]+;)', r'&amp;', Text)
+        return outp
 
     def _fixDateFields(self, Xml):
         """
@@ -63,7 +68,7 @@ class Cleaner(object):
                 except ValueError:
                     pass
             else:
-                # named entity
+                # named entity  
                 try:
                     Text = unichr(htmlentitydefs.name2codepoint[Text[1:-1]])
                 except KeyError:
@@ -86,7 +91,7 @@ class Cleaner(object):
                     item.getparent().remove(item)
             return etree.tostring(xml,pretty_print=True)
         except:
-            self.log.error("Could not remove empty date fields")
+            self.log.error("Could not remove empty date fields: "+self.fn)
             return Text
     
     def _removeEmptyStandardDateFields(self, Text):
@@ -104,7 +109,7 @@ class Cleaner(object):
                     item.attrib.pop('standardDate')
             return etree.tostring(xml,pretty_print=True)
         except:
-            self.log.error("Could not remove empty standardDate fields")
+            self.log.error("Could not remove empty standardDate fields: "+self.fn)
             return Text
     
     def _removeSpanTags(self, Text):
@@ -119,9 +124,13 @@ class Cleaner(object):
             for span in re.findall("<span \w*=\".*\">",Text):
                 Text = Text.replace(span,'')
         except:
-            self.log.error("Could not remove span tags")
+            self.log.error("Could not remove span tags: "+self.fn)
         finally:
             return Text
+            
+    def _removePreHeaderGarbage(self, Text):
+        #Remove junk characters from the beginning of the XML file, before the <?xml> tag.
+        return re.sub('^(.*?)<', '<', Text)
 
     def clean(self):
         """
@@ -139,6 +148,7 @@ class Cleaner(object):
                     records.append(filename)
                 # read data
                 data = Utils.read(self.source, filename)
+                self.fn = filename
                 fileHash = hashlib.sha1(data).hexdigest()
                 # if we are doing an update and the file has not changed then
                 # skip it
@@ -170,7 +180,9 @@ class Cleaner(object):
         Clean problems that are typical of EAC-CPF files.
         """
         # data = self._fixEntityReferences(data)
-        data = self._fixAttributeURLEncoding(Data)
+        data = self._fixEncoding(Data)
+        data = self._fixAmpersands(data)
+        data = self._removePreHeaderGarbage(data)
         data = self._fixDateFields(data)
         data = self._removeSpanTags(data)
         data = self._removeEmptyDateFields(data)
@@ -220,6 +232,7 @@ class Cleaner(object):
             Utils.writeFileHashIndex(self.hashIndex, self.output)
         # log execution time
         self.log.info("Cleaner finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
+        print("Cleaner finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
 
 def clean(params, update=False):
