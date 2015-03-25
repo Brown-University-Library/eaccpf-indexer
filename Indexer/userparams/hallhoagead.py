@@ -35,16 +35,7 @@ class HallHoagEAD_ParamMaker(object):
         if c==None:
             return {}
         
-        def escape( str ):
-            str = str.replace("<", "&lt;")
-            str = str.replace(">", "&gt;")
-            str = str.replace("\"", "&quot;")
-            str = str.replace("'", "&#39;")
-            return "'"+str+"'"
-            
-        #TODO: Fix. Currently breaks encoding with unnecessary &amp;s. Probably need a custom escaping function.
         outp['raw_ead_c'] = quoteattr(etree.tostring(c))
-        #print(outp['raw_ead_c'])
         
         p1 = c.find("{*}did/{*}container[@label='PartI']")
         outp['container_part1'] = quoteattr(p1.text if p1 != None else '')
@@ -63,6 +54,4 @@ class HallHoagEAD_ParamMaker(object):
             outp['callno'] = "''"   
             outp['category'] = "''"
         
-        
-        #print(outp)
         return outp
