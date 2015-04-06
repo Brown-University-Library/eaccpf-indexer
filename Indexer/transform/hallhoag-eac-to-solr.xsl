@@ -6,6 +6,7 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:str="http://exslt.org/strings"
                 extension-element-prefixes="str uf"
+                exclude-result-prefixes="xlink"
                 version="1.0">
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
 

@@ -13,6 +13,8 @@ import os
 import requests
 import sys
 
+from time import sleep
+
 
 __description__ = """Posts Solr Input Documents to a Solr core. Performs flush, delete, commit and optimize commands."""
 
@@ -97,6 +99,12 @@ class Poster(object):
                 else:
                     errors += 1
                     self.log.error("Post failed for {0}\n{1}".format(filename, resp.content))
+                    
+                #TODO: Generalize.
+                if 0 == (posted % 500):
+                    self.commit()
+                    sleep(3)
+                
             except:
                 self.log.error("Post failed for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
         # report on the number of documents posted, failed
