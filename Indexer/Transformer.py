@@ -31,11 +31,14 @@ class Transformer(object):
         self.sources = sources
         self.transform = transform
         
+        
+        self.upms = []
         if userparams:
-            upmmod = userparams.lower()
-            upmclass = "{}_ParamMaker".format(userparams)
-            up = __import__('userparams.{}'.format(upmmod), globals(), locals(), [upmclass])
-            self.upm = getattr(up, upmclass)()
+            for upms in userparams.split():
+                upmmod = upms.lower()
+                upmclass = "{}_ParamMaker".format(upms)
+                up = __import__('userparams.{}'.format(upmmod), globals(), locals(), [upmclass])
+                self.upms.append(getattr(up, upmclass)())
         
         if transform:
             self.xslt = transform
@@ -337,10 +340,11 @@ class Transformer(object):
         """
         xml = etree.parse(path + os.sep + filename)
         
-        if self.upm:
-            params = self.upm.params(xml)
-        else: 
-            params = {}
+        params = {}
+        for upm in self.upms:
+            newparams = upm.params(xml)
+            params.update(newparams)
+            
         
         result = Transform(xml, **params)
         

@@ -13,6 +13,7 @@ from xml.sax.saxutils import quoteattr
 """
 class HallHoagEAD_ParamMaker(object):
     def __init__(self):
+        print "Initializing HallHoagEAD_ParamMaker"
         self.ead = etree.parse('hallhoag.ead.xml')
         self.subjects = self._makeSubjectDict(self.ead)
         
