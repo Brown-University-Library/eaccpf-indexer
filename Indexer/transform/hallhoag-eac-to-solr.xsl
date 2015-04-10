@@ -17,8 +17,7 @@
     <xsl:param name="subject"/>
     <xsl:param name="raw_ead_c"/>
     <xsl:param name="wikipedia-id"/>
-    <xsl:param name="bloglink"/>
-
+    
     <xsl:template match="/"><xsl:value-of select="$raw_ead_c"/>
         <add>
             <doc>
@@ -45,10 +44,6 @@
 	            	<field name="source"><xsl:value-of select="doc:sourceEntry" /></field>
 	            	<field name="source_link"><xsl:value-of select="@xlink:href"/></field>
                 </xsl:for-each>
-                
-                <xsl:if test="$bloglink != ''">
-                    <field name="info_link"><xsl:value-of select="$bloglink"/></field>
-                </xsl:if>
 
                 <xsl:if test="$wikipedia-id != ''">   
                     <field name="wiki_id"><xsl:value-of select="$wikipedia-id"/></field>
