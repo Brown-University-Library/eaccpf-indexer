@@ -5,10 +5,8 @@ LICENSE file, which is part of this source code package.
 
 # from AlchemyAPI import AlchemyAPI
 from EacCpf import EacCpf
-# from geopy.geocoders.bing import Bing
-from geopy.geocoders.googlev3 import GoogleV3
-from geopy.geocoders.mapquest import MapQuest
-from geopy.geocoders.osm import Nominatim
+
+
 
 import Cfg
 import Timer
@@ -118,6 +116,7 @@ class Facter(object):
         records = []
         # process files
         for filename in [f for f in os.listdir(self.source) if f.endswith(".xml")]:
+            self.needsleep = []
             try:
                 # record the name of the file so that we know we've processed it
                 records.append(filename)
@@ -132,26 +131,26 @@ class Facter(object):
                 # load the inferred data file if it already exists
                 inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
                 inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
+                freeText = doc.getFreeText()
                 if 'locations' in self.actions:
                     places = doc.getLocations()
                     locations = self.inferLocations(places, sleep=self.sleep)
-                    inferred['locations'] = locations
-                else:
-                    freeText = doc.getFreeText()
-                    if 'entities' in self.actions:
-                        entities = self.inferEntitiesWithCalais(freeText)
-                        inferred['entities'] = entities
-                    if 'named-entities' in self.actions:
-                        namedEntities = self.inferEntitiesWithAlchemy(freeText)
-                        inferred['named-entities'] = namedEntities
-                    if 'text-analysis' in self.actions:
-                        textAnalysis = self.inferEntitiesWithNLTK(freeText)
-                        inferred['text-analysis'] = textAnalysis
+                    inferred['locations'] = locations                    
+                if 'entities' in self.actions:
+                    entities = self.inferEntitiesWithCalais(freeText)
+                    inferred['entities'] = entities
+                if 'named-entities' in self.actions:
+                    namedEntities = self.inferEntitiesWithAlchemy(freeText)
+                    inferred['named-entities'] = namedEntities
+                if 'text-analysis' in self.actions:
+                    textAnalysis = self.inferEntitiesWithNLTK(freeText)
+                    inferred['text-analysis'] = textAnalysis
                 # write inferred data to output file
                 Utils.writeYaml(self.output, inferred_data_filename, inferred)
                 self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
                 # sleep between requests
-                time.sleep(self.sleep)
+                if self.needsleep: 
+                    time.sleep(self.sleep)
             except:
                 self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
         # return list of processed records
@@ -170,6 +169,7 @@ class Facter(object):
         Infer named entities from free text fields using OpenCalais web
         service.
         """
+        self.needsleep.append(True)
         calais_result = self.calais.analyze(Text)
         result = self._getCalaisResultAsDictionary(calais_result)
         return result
@@ -186,40 +186,41 @@ class Facter(object):
         For each EAC-CPF input file, extract the address from each cronitem and
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
-        @see https://github.com/geopy/geopy/blob/master/docs/google_v3_upgrade.md.
+        
+        TODO: This should probably cache responses from the geolocator, to avoid duplicate requests.
+        TODO: Choose the geolocator based on config options.
         """
-        # geolocator = Bing(api_key=self.geocoder_api_key)
-        # geolocator = MapQuest(api_key=self.geocoder_api_key)
-        # geolocator = Nominatim(country_bias='au')
-        geolocator = GoogleV3()
+        #from geopy.geocoders.bing import Bing
+        #from geopy.geocoders.googlev3 import GoogleV3
+        #from geopy.geocoders.mapquest import MapQuest
+        from geopy.geocoders.osm import Nominatim
+        
+        geolocator = Nominatim(country_bias='us', timeout=timeout, scheme='http', domain='open.mapquestapi.com/nominatim/v1')
         locations = []
         for place in places:
             # if there is an existing GIS attribute attached to the record then
             # don't process it
-            if 'longitude' in place and 'latitude' in place:
-                locations.append(place)
-                self.logger.debug("Record has existing location data")
-            elif 'placeentry' in place:
-                # ISSUE #5 the geocoder can return multiple locations when an address is
-                # not specific enough. Here we record each returned address, with the intent
-                # that an archivist review the inferred data at a later date and then
-                # manually select the appropriate address to retain for the record.
+            if 'placeentry' in place:
+                self.needsleep.append(True)
                 try:
-                    # for address, (lat, lng)  in geolocator.geocode(place['placeentry'], exactly_one=False, timeout=timeout):
-                    for address, (lat, lng) in geolocator.geocode(place['placeentry'], exactly_one=False, region='au', timeout=timeout):
-                        location = place.copy()
-                        location['address'] = Utils.cleanText(address)
-                        location['coordinates'] = [lat, lng]
-                        # split the address into parts
-                        street, city, region, postal_code, country = self._getAddressParts(address)
-                        location['country'] = country
-                        location['postal_code'] = postal_code
-                        location['region'] = region
-                        location['city'] = city
-                        location['street'] = street
-                        locations.append(location)
-                        self.logger.debug("Found location {} {} {} {}".format(street, city, region, country))
-                        time.sleep(sleep)
+                    loc = geolocator.geocode(place['placeentry'], addressdetails=True)
+                    address = loc.raw['address']
+                    location = place.copy()
+                    location['address'] = Utils.cleanText(address)
+                    location['coordinates'] = [loc.latitude, loc.longitude]
+                    # split the address into parts
+                    location['country'] = address['country']
+                    
+                    if 'region' in address:
+                        location['region'] = address['region']
+                    else:
+                        location['region'] = address['state']
+                    
+                    if 'city' in address:
+                        location['city'] = address['city']
+                    locations.append(location)
+                    
+                    time.sleep(sleep)
                 except Exception as e:
                     self.logger.warning("Geocoding error", exc_info=True)
         return locations

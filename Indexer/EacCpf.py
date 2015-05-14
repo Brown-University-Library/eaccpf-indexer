@@ -288,6 +288,27 @@ class EacCpf(object):
         """
         locations = []
         try:
+            places = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:places/doc:place", namespaces=self.ns)
+            for place in places:
+                location = {}
+                placeEntry = place.xpath("./doc:placeEntry", namespaces=self.ns)
+                if placeEntry:
+                    location['placeentry'] = placeEntry[0].text
+                    if 'latitude' in placeEntry[0].attrib:
+                        location['latitude'] = placeEntry[0].attrib['latitude']
+                    if 'longitude' in placeEntry[0].attrib:
+                        location['longitude'] = placeEntry[0].attrib['longitude']
+                locations.append(location)
+        except:
+            pass
+        return locations
+
+    def getChronLocations(self):
+        """
+        Get locations.
+        """
+        locations = []
+        try:
             chronItems = self.xml.xpath("//doc:eac-cpf/doc:cpfDescription/doc:description/doc:biogHist/doc:chronList/doc:chronItem", namespaces=self.ns)
             for chronItem in chronItems:
                 location = {}
