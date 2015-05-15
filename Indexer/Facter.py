@@ -6,8 +6,6 @@ LICENSE file, which is part of this source code package.
 # from AlchemyAPI import AlchemyAPI
 from EacCpf import EacCpf
 
-
-
 import Cfg
 import Timer
 import Utils
@@ -32,6 +30,14 @@ class Facter(object):
         self.sleep = sleep
         self.source = source
         self.update = update
+        
+        self.ufs = []
+        uflist = [ uf for uf in self.actions if uf.startswith('uf') ]
+        for uf in uflist:
+            ufmod = uf.lower()
+            ufclass = "{}_Inferrer".format(uf)
+            ufm = __import__('inferrers.{}'.format(ufmod), globals(), locals(), [ufclass])
+            self.ufs.append(getattr(ufm, ufclass)())
 
     def _addValueToDictionary(self, dic, key, value):
         """
@@ -145,6 +151,11 @@ class Facter(object):
                 if 'text-analysis' in self.actions:
                     textAnalysis = self.inferEntitiesWithNLTK(freeText)
                     inferred['text-analysis'] = textAnalysis
+                    
+                for uf in self.ufs:
+                    ufdat = uf.infer(doc.xml, self.needsleep)
+                    if ufdat:
+                        inferred[type(uf).__name__] = ufdat
                 # write inferred data to output file
                 Utils.writeYaml(self.output, inferred_data_filename, inferred)
                 self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
@@ -198,26 +209,29 @@ class Facter(object):
         geolocator = Nominatim(country_bias='us', timeout=timeout, scheme='http', domain='open.mapquestapi.com/nominatim/v1')
         locations = []
         for place in places:
-            # if there is an existing GIS attribute attached to the record then
-            # don't process it
+            
             if 'placeentry' in place:
                 self.needsleep.append(True)
                 try:
                     loc = geolocator.geocode(place['placeentry'], addressdetails=True)
                     address = loc.raw['address']
+                    newaddr = {}
+                    for x in address:
+                        newaddr[Utils.cleanText(x)] = Utils.cleanText(address[x])
+                    address = newaddr
                     location = place.copy()
-                    location['address'] = Utils.cleanText(address)
+                    location['address'] = address
                     location['coordinates'] = [loc.latitude, loc.longitude]
                     # split the address into parts
-                    location['country'] = address['country']
+                    location['country'] = Utils.cleanText(address['country'])
                     
                     if 'region' in address:
-                        location['region'] = address['region']
-                    else:
-                        location['region'] = address['state']
+                        location['region'] = Utils.cleanText(address['region'])
+                    elif 'state' in address:
+                        location['region'] = Utils.cleanText(address['state'])
                     
                     if 'city' in address:
-                        location['city'] = address['city']
+                        location['city'] = Utils.cleanText(address['city'])
                     locations.append(location)
                     
                     time.sleep(sleep)
