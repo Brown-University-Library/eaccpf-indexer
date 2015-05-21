@@ -21,7 +21,7 @@ class Transformer(object):
     
     """
 
-    def __init__(self, sources, output, actions=None, boosts=None, set_fields=None, transform=None, userparams=None):
+    def __init__(self, sources, output, actions=None, boosts=None, set_fields=None, transform=None):
         self.log = logging.getLogger()
         # set parameters
         self.actions = actions if actions else []
@@ -31,14 +31,13 @@ class Transformer(object):
         self.sources = sources
         self.transform = transform
         
-        
-        self.upms = []
-        if userparams:
-            for upms in userparams.split():
-                upmmod = upms.lower()
-                upmclass = "{}_ParamMaker".format(upms)
-                up = __import__('userparams.{}'.format(upmmod), globals(), locals(), [upmclass])
-                self.upms.append(getattr(up, upmclass)())
+        self.ufs = []
+        uflist = [ uf for uf in self.actions if uf.startswith('uf') ]
+        for uf in uflist:
+            ufmod = uf.lower()
+            ufclass = "{}_Inferrer".format(uf)
+            ufm = __import__('inferrers.{}'.format(ufmod), globals(), locals(), [ufclass])
+            self.ufs.append(getattr(ufm, ufclass)())
         
         if transform:
             self.xslt = transform
@@ -106,6 +105,8 @@ class Transformer(object):
         # if there is an existing SID file, then read it into memory,
         # otherwise create an XML tree to
         if not os.path.exists(Output):
+            #Actually, don't create a new file here.
+            return
             root = etree.Element("add")
             xml = etree.ElementTree(root)
             doc = etree.Element("doc")
@@ -132,37 +133,77 @@ class Transformer(object):
                 # the first location in the list will become the
                 # primary entity locaion
                 if count == 0:
-                    # address
-                    address = etree.Element('field', name='address')
-                    address.text = location['address']
-                    doc.append(address)
+                    #address
+                    #address = etree.Element('field', name='address')
+                    #address.text = location['address']
+                    #doc.append(address)
+                    if 'region' in location:
+                        #Thank you, OpenStreetMaps!
+                        if 'penna' == location['region']:
+                            location['region'] = 'Pennsylvania'
+                
+                    if 'address' in location:
+                        #Workaround for my own stupidity. TODO: Fix in Facter.py, then here. --atb
+                        if 'str' == type(location['address']).__name__:
+                            exec("location['address'] = "+location['address'])
+                        
+                        inus = etree.Element('field', name='in_us')
+                        inus.text = 'true' if 'us' == location['address']['country_code'] else 'false'
+                        doc.append(inus)
+                        # county
+                        if 'county' in location['address']:
+                            county = etree.Element('field', name='county')
+                            county.text = location['address']['county']
+                            doc.append(county)
+                            
+                            if 'region' in location:
+                                crc = etree.Element('field', name='countyregioncountry')
+                                crc.text = '%s, %s, %s' % (location['address']['county'], location['region'],
+                                                           location['address']['country'])
+                                doc.append(crc)
+
                     # city
-                    city = etree.Element('field', name='city')
-                    city.text = location['city']
-                    doc.append(city)
-                    # state
-                    region = etree.Element('field', name='region')
-                    region.text = location['region']
-                    doc.append(region)
-                    # region
-                    country = etree.Element('field', name='country')
-                    country.text = location['country']
-                    doc.append(country)
+                    if 'city' in location:
+                        city = etree.Element('field', name='city')
+                        city.text = location['city']
+                        doc.append(city)
+                        if 'region' in location:
+                            cyrc = etree.Element('field', name='cityregioncountry')
+                            cyrc.text = '%s, %s, %s' % (location['address']['city'], location['region'],
+                                                       location['address']['country'])
+                            doc.append(cyrc)
+                                
+                    # state/region
+                    if 'region' in location:
+                        region = etree.Element('field', name='region')
+                        region.text = location['region']
+                        doc.append(region)
+                        
+                        rc = etree.Element('field', name='regioncountry')
+                        rc.text = '%s, %s' % (location['region'],
+                                                  location['address']['country'])
+                        doc.append(rc)
+                    # country
+                    if 'country' in location:
+                        country = etree.Element('field', name='country')
+                        country.text = location['country']
+                        doc.append(country)
                     # coordinates
-                    lat = location['coordinates'][0]
-                    lng = location['coordinates'][1]
-                    latlng = str(lat) + "," + str(lng)
-                    coordinates = etree.Element('field', name='location')
-                    coordinates.text = latlng
-                    doc.append(coordinates)
-                    # latitude
-                    location_0 = etree.Element('field', name='location_0_coordinate')
-                    location_0.text = str(lat)
-                    # longitude
-                    doc.append(location_0)
-                    location_1 = etree.Element('field', name='location_1_coordinate')
-                    location_1.text = str(lng)
-                    doc.append(location_1)
+                    if 'coordinates' in location:
+                        lat = location['coordinates'][0]
+                        lng = location['coordinates'][1]
+                        latlng = str(lat) + "," + str(lng)
+                        coordinates = etree.Element('field', name='location')
+                        coordinates.text = latlng
+                        doc.append(coordinates)
+                        # latitude
+                        location_0 = etree.Element('field', name='location_0_coordinate')
+                        location_0.text = str(lat)
+                        # longitude
+                        doc.append(location_0)
+                        location_1 = etree.Element('field', name='location_1_coordinate')
+                        location_1.text = str(lng)
+                        doc.append(location_1)
                 else:
                     # all subsequent locations will be added to the loocation_geohash field
                     lat = location['coordinates'][0]
@@ -192,6 +233,10 @@ class Transformer(object):
             # @todo: add inferred topics
             if 'topic' in inferred:
                 pass
+            
+            for uf in self.ufs:
+                if type(uf).__name__ in inferred:
+                    uf.append(inferred[type(uf).__name__], xml)
             # write the updated file
             outfile = open(Output,'w')
             xml.write(outfile, pretty_print=True, xml_declaration=True)
@@ -205,12 +250,12 @@ class Transformer(object):
         """
         for source in [s for s in Sources if os.path.exists(s)]:
             for filename in [f for f in os.listdir(source) if f.endswith(".yml") and not f == Cfg.HASH_INDEX_FILENAME]:
-                path = source + os.sep + filename
-                try:
+                    path = source + os.sep + filename
+                #try:
                     output_filename = Utils.getFilenameWithAlternateExtension(filename, "xml")
                     self.mergeInferredRecordIntoSID(source, filename, Output + os.sep + output_filename)
-                except Exception:
-                    self.log.error("Could not complete merge for {0}".format(path), exc_info=Cfg.LOG_EXC_INFO)
+                #except Exception:
+                #    self.log.error("Could not complete merge for {0}".format(path), exc_info=Cfg.LOG_EXC_INFO)
 
     def run(self):
         """
@@ -221,7 +266,10 @@ class Transformer(object):
             # create output folder
             if not os.path.exists(self.output):
                 os.makedirs(self.output)
-            Utils.cleanOutputFolder(self.output)
+            
+            #TODO: Use the output flag instead.
+            if 'clear' in self.actions:
+                Utils.cleanOutputFolder(self.output)
             assert os.path.exists(self.output), self.log.error("Output path does not exist: {0}".format(self.output))
             # execute processing actions
             if "digitalobjects-to-sid" in self.actions:
@@ -241,10 +289,10 @@ class Transformer(object):
                 self.setBoosts(self.output)
             if "validate" in self.actions:
                 pass
+                
         # log execution time
         self.log.info("Transformer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
-        print("Transformer finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
-
+        
     def setBoosts(self, Source):
         """
         Boost the specified fields for all Solr Input Documents in the source
@@ -340,13 +388,7 @@ class Transformer(object):
         """
         xml = etree.parse(path + os.sep + filename)
         
-        params = {}
-        for upm in self.upms:
-            newparams = upm.params(xml)
-            params.update(newparams)
-            
-        
-        result = Transform(xml, **params)
+        result = Transform(xml)
         
         data = etree.tostring(result, pretty_print=True, xml_declaration=True)
         # write the output file
@@ -417,11 +459,5 @@ def transform(params):
     else:
         xslt=None
         
-    if params.has_option("transform", "userparams"):
-        userparams = params.get("transform", "userparams")
-    else:
-        xslt=None
-        
-    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=set_fields, transform=xslt, userparams=userparams)
-    
+    transformer = Transformer(sources, output, actions=actions, boosts=boosts, set_fields=set_fields, transform=xslt)
     transformer.run()

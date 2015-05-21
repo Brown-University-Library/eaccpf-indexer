@@ -21,7 +21,7 @@ class Facter(object):
     structured fields.
     """
 
-    def __init__(self, actions, source, output, sleep=1.0, update=False):
+    def __init__(self, actions, source, output, sleep=1.0, update=False, cachedir=None):
         self.hashIndex = {}
         self.logger = logging.getLogger()
         # set parameters
@@ -30,6 +30,23 @@ class Facter(object):
         self.sleep = sleep
         self.source = source
         self.update = update
+        self.cachedir = cachedir
+        self.locationCache = {}
+        
+        if cachedir:
+            self.locationCache = Utils.tryReadYaml(self.cachedir, '.location_cache.yml')
+        
+        """
+        #Workaround for "New York, United States"--Nominatim assumes I mean the city.
+        nys = {u'display_name': u'New York, United States of America', u'importance': 0.77784291474703, u'place_id': u'151141023', 
+                u'lon': u'-75.8449946', u'lat': u'43.1561681', u'osm_type': u'relation', 
+                u'licence': u'Data \xa9 OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright', 
+                u'osm_id': u'61320', u'boundingbox': [u'40.477399', u'45.0158611', u'-79.7623534', u'-71.7897328'], 
+                u'type': u'administrative', u'class': u'boundary', 
+                u'address': {u'country': u'United States of America', u'state': u'New York', u'country_code': u'us'}, 
+                u'icon': u'http://mq-open-search-ext-lm05.ihost.aol.com:8000/nominatim/v1/images/mapicons/poi_boundary_administrative.p.20.png'}
+        self.locationCache['New York, United States'] = nys
+        """
         
         self.ufs = []
         uflist = [ uf for uf in self.actions if uf.startswith('uf') ]
@@ -37,7 +54,9 @@ class Facter(object):
             ufmod = uf.lower()
             ufclass = "{}_Inferrer".format(uf)
             ufm = __import__('inferrers.{}'.format(ufmod), globals(), locals(), [ufclass])
-            self.ufs.append(getattr(ufm, ufclass)())
+            newuf = getattr(ufm, ufclass)()
+            newuf.cache = Utils.tryReadYaml(self.cachedir, "{}_cache".format(ufclass))
+            self.ufs.append(newuf)
 
     def _addValueToDictionary(self, dic, key, value):
         """
@@ -121,122 +140,142 @@ class Facter(object):
         # the list of records that have been processed
         records = []
         # process files
+        
+        #set up actions.
+        actions = {}
+        if 'locations' in self.actions:
+            actions['locations'] = self.inferLocations
+        if 'entities' in self.actions:
+            actions['entities'] =self.inferEntitiesWithCalais
+        if 'named-entities' in self.actions:
+            actions['named-entities'] = self.inferEntitiesWithAlchemy
+        if 'text-analysis' in self.actions:
+            actions['text-analysis'] = self.inferEntitiesWithNLTK
+        for uf in self.ufs:
+            actions[type(uf).__name__] = uf.infer
+            
+        
         for filename in [f for f in os.listdir(self.source) if f.endswith(".xml")]:
             self.needsleep = []
-            try:
-                # record the name of the file so that we know we've processed it
-                records.append(filename)
-                doc = EacCpf(self.source + os.sep + filename)
-                file_hash = doc.getHash()
-                # if the file has not changed since the last run then skip it
-                if self.update and filename in self.hashIndex and self.hashIndex[filename] == file_hash:
-                    self.logger.info("No change since last update {0}".format(filename))
-                    continue
-                # process the file
-                self.hashIndex[filename] = file_hash
-                # load the inferred data file if it already exists
-                inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
-                inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
-                freeText = doc.getFreeText()
-                if 'locations' in self.actions:
-                    places = doc.getLocations()
-                    locations = self.inferLocations(places, sleep=self.sleep)
-                    inferred['locations'] = locations                    
-                if 'entities' in self.actions:
-                    entities = self.inferEntitiesWithCalais(freeText)
-                    inferred['entities'] = entities
-                if 'named-entities' in self.actions:
-                    namedEntities = self.inferEntitiesWithAlchemy(freeText)
-                    inferred['named-entities'] = namedEntities
-                if 'text-analysis' in self.actions:
-                    textAnalysis = self.inferEntitiesWithNLTK(freeText)
-                    inferred['text-analysis'] = textAnalysis
+            records.append(filename)
+            
+            doAll = True
+            
+            doc = EacCpf(self.source + os.sep + filename)
+            # if the file has not changed don't redo successful inferences.
+            file_hash = doc.getHash()
+            if self.update and filename in self.hashIndex and self.hashIndex[filename] == file_hash:
+                self.logger.info("No change since last update {0}".format(filename))
+                doAll = False
+            
+            self.hashIndex[filename] = file_hash
+            
+            # load the inferred data file if it already exists
+            inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
+            inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
+            
+            for actname, action in actions.items():
+                if doAll or (actname not in inferred):
+                    try:
+                        inferred[actname] = action(doc, self.needsleep)
+                    except Exception as e:
+                        self.logger.error("Inference action {0} failed for file {1}. Exception: {2}".format(actname, filename, str(e)), exc_info=Cfg.LOG_EXC_INFO)
                     
-                for uf in self.ufs:
-                    ufdat = uf.infer(doc.xml, self.needsleep)
-                    if ufdat:
-                        inferred[type(uf).__name__] = ufdat
-                # write inferred data to output file
-                Utils.writeYaml(self.output, inferred_data_filename, inferred)
-                self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
-                # sleep between requests
-                if self.needsleep: 
-                    time.sleep(self.sleep)
-            except:
-                self.logger.error("Inference failed {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
+            
+            Utils.writeYaml(self.output, inferred_data_filename, inferred)
+            self.logger.info("Wrote inferred data to {0}".format(inferred_data_filename))
+            
+            # Sleep between requests if needed.
+            if self.needsleep: 
+                time.sleep(self.sleep)
         # return list of processed records
         return records
 
-    def inferEntitiesWithAlchemy(self, Text):
+    def inferEntitiesWithAlchemy(self, doc, sleep):
         """
         For each input file, attempt to extract people, things, concepts and 
         place names from free text fields. Sleep for the specified number of 
         seconds between requests.
         """
+        Text = doc.getFreeText()
         return {}
 
-    def inferEntitiesWithCalais(self, Text):
+    def inferEntitiesWithCalais(self, doc, sleep):
         """
         Infer named entities from free text fields using OpenCalais web
         service.
         """
-        self.needsleep.append(True)
+        sleep.append(True)
+        Text = doc.getFreeText()
         calais_result = self.calais.analyze(Text)
         result = self._getCalaisResultAsDictionary(calais_result)
         return result
 
-    def inferEntitiesWithNLTK(self, Text):
+    def inferEntitiesWithNLTK(self, doc, sleep):
         """
         Infer entities from free text using Natural Language Toolkit.
         Attempt to identify people and things.
         """
+        Text = doc.getFreeText()
         return {}
 
-    def inferLocations(self, places, sleep=1.0, timeout=2.0):
+    def inferLocations(self, doc, sleep, sleeptime=False, timeout=2.0):
         """
         For each EAC-CPF input file, extract the address from each cronitem and
         attempt to resolve its geographic coordinates. Sleep for the specified 
         number of seconds between requests.
         
-        TODO: This should probably cache responses from the geolocator, to avoid duplicate requests.
         TODO: Choose the geolocator based on config options.
         """
         #from geopy.geocoders.bing import Bing
         #from geopy.geocoders.googlev3 import GoogleV3
         #from geopy.geocoders.mapquest import MapQuest
+        if not sleeptime:
+            sleeptime = self.sleep
+        
         from geopy.geocoders.osm import Nominatim
         
-        geolocator = Nominatim(country_bias='us', timeout=timeout, scheme='http', domain='open.mapquestapi.com/nominatim/v1')
+        geolocator = Nominatim(timeout=timeout, scheme='http', domain='open.mapquestapi.com/nominatim/v1')
         locations = []
+        first = True
+        places = doc.getLocations()
+        
         for place in places:
-            
             if 'placeentry' in place:
-                self.needsleep.append(True)
-                try:
-                    loc = geolocator.geocode(place['placeentry'], addressdetails=True)
-                    address = loc.raw['address']
-                    newaddr = {}
-                    for x in address:
-                        newaddr[Utils.cleanText(x)] = Utils.cleanText(address[x])
-                    address = newaddr
-                    location = place.copy()
-                    location['address'] = address
-                    location['coordinates'] = [loc.latitude, loc.longitude]
-                    # split the address into parts
-                    location['country'] = Utils.cleanText(address['country'])
+                if place['placeentry'] not in self.locationCache:
+                    sleep.append(True)
+                    if not first:
+                        time.sleep(sleeptime)
+                    loc = geolocator.geocode(place['placeentry'], addressdetails=True, language="en")
                     
-                    if 'region' in address:
-                        location['region'] = Utils.cleanText(address['region'])
-                    elif 'state' in address:
-                        location['region'] = Utils.cleanText(address['state'])
+                    if loc:
+                        self.locationCache[place['placeentry']] = loc.raw
+                    else: 
+                        raise Exception("Geolocation error (location: '{0}')".format(place['placeentry']))
+                    first = False
+                
+                loc = self.locationCache[place['placeentry']]
+                
+                address = loc['address']
+                newaddr = {}
+                for x in address:
+                    newaddr[Utils.cleanText(x)] = Utils.cleanText(address[x])
+                address = newaddr
+                location = place.copy()
+                location['address'] = address
+                location['coordinates'] = [float(loc['lat']), float(loc['lon'])]
+                # split the address into parts
+                location['country'] = Utils.cleanText(address['country'])
+                
+                if 'region' in address:
+                    location['region'] = Utils.cleanText(address['region'])
+                elif 'state' in address:
+                    location['region'] = Utils.cleanText(address['state'])
+                
+                if 'city' in address:
+                    location['city'] = Utils.cleanText(address['city'])
+                locations.append(location)
                     
-                    if 'city' in address:
-                        location['city'] = Utils.cleanText(address['city'])
-                    locations.append(location)
-                    
-                    time.sleep(sleep)
-                except Exception as e:
-                    self.logger.warning("Geocoding error", exc_info=True)
         return locations
 
     def run(self):
@@ -272,16 +311,25 @@ class Facter(object):
                 self.hashIndex = Utils.loadFileHashIndex(self.output)
             # execute inference actions
             records = self.infer()
-            # remove records from the index that were deleted in the source
             if self.update:
+                # remove records from the index that were deleted in the source
                 self.logger.info("Clearing orphaned records from the file hash index")
                 Utils.purgeIndex(records, self.hashIndex)
-            # remove files from the output folder that are not in the index
-            if self.update:
+
+                # remove files from the output folder that are not in the index
                 self.logger.info("Clearing orphaned files from the output folder")
-                Utils.purgeFolder(self.output, self.hashIndex)
+                #Utils.purgeFolder(self.output, self.hashIndex)
+
             # write the updated file hash index
             Utils.writeFileHashIndex(self.hashIndex, self.output)
+            
+            #Write the location cache.
+            Utils.writeYaml(self.cachedir, '.location_cache.yml', self.locationCache)
+            
+            for uf in self.ufs:
+                if uf.cache:
+                    Utils.writeYaml(self.cachedir, "{}_cache".format(type(uf).__name__), uf.cache)
+            
         # log execution time
         self.logger.info("Facter finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
 
@@ -293,5 +341,6 @@ def infer(params, update=False):
     output = params.get("infer", "output")
     sleep = params.getfloat("infer", "sleep")
     source = params.get("infer", "input")
-    facter = Facter(actions, source, output, sleep, update)
+    cachedir = params.get("infer", "cachedir")
+    facter = Facter(actions, source, output, sleep, update, cachedir)
     facter.run()

@@ -20,7 +20,8 @@ class ufHallHoagEAD_Inferrer(Inferrer):
         subjects = filter(f, subjects)
         return dict(zip(map(callno, subjects), map(subj, subjects)))
 
-    def infer(self, xml, sleep):
+    def infer(self, doc, sleep):
+        xml = doc.xml
         media_type_dict = {
                             'PH': 'Photos',
                             'CL': 'Clippings',
@@ -45,7 +46,7 @@ class ufHallHoagEAD_Inferrer(Inferrer):
         
         ext = c.findtext("{*}did//{*}extent")
         if ext: 
-            outp['extent'] = int(ext.split(' ')[0])
+            outp['extent'] = ext.split(' ')[0]
         
         media_types = []
         p1 = c.find("{*}did/{*}container[@label='Part I']")
@@ -59,8 +60,11 @@ class ufHallHoagEAD_Inferrer(Inferrer):
                     if fcode in media_type_dict:
                         media_types.append(media_type_dict[fcode])
         
+        outp['container'] = []
+        
         if conts:
             outp['container_part1'] = list(set(conts))
+            outp['container'] += list(set(conts))
             
         p2 = c.find("{*}did/{*}container[@label='Part II']")
         conts = []
@@ -74,9 +78,10 @@ class ufHallHoagEAD_Inferrer(Inferrer):
     
         if conts:    
             outp['container_part2'] = conts
+            outp['container'] += list(set(conts))
         
         if media_types:
-            outp['media_types'] = list(set(media_types))
+            outp['media_type'] = list(set(media_types))
         
         subj = c.find('{*}controlaccess/{*}subject')
         
@@ -86,7 +91,9 @@ class ufHallHoagEAD_Inferrer(Inferrer):
         cn = c.find("{*}controlaccess/{*}note/{*}p")
         
         if cn != None:
-            outp['callno'] = cn.text
-            outp['category'] = self.subjects[cn.text]
+            outp['part1_call_number'] = cn.text
+            
+            if cn.text in self.subjects:
+                outp['part1_category'] = self.subjects[cn.text]
         
         return outp

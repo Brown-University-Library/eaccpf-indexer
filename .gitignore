@@ -21,3 +21,4 @@ docs/
 ref/
 temp/
 Indexer.egg-info/
+cache/

@@ -10,15 +10,7 @@
                 version="1.0">
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
 
-    <xsl:param name="category"/>
-    <xsl:param name="container_part1"/>
-    <xsl:param name="container_part2"/>
-    <xsl:param name="callno"/>
-    <xsl:param name="subject"/>
-    <xsl:param name="raw_ead_c"/>
-    <xsl:param name="wikipedia-id"/>
-    
-    <xsl:template match="/"><xsl:value-of select="$raw_ead_c"/>
+    <xsl:template match="/">
         <add>
             <doc>
 	        	<!-- metadata, presentation, source values -->
@@ -45,10 +37,6 @@
 	            	<field name="source_link"><xsl:value-of select="@xlink:href"/></field>
                 </xsl:for-each>
 
-                <xsl:if test="$wikipedia-id != ''">   
-                    <field name="wiki_id"><xsl:value-of select="$wikipedia-id"/></field>
-                </xsl:if>
-                
 	        	<!-- identity -->
 	            <field name="entityId"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityId" /></field>
 	            <field name="type"><xsl:value-of select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:entityType" /></field>
@@ -83,9 +71,9 @@
                         <xsl:text> </xsl:text>
                     </xsl:for-each>
                 </field>
+	        	
 	        	<!-- relations -->
-	        	<!--TODO: Need the descriptiveNote attached to each relationEntry. -->
-                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation">
+	        	<xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation">
                     <xsl:if test="./doc:relationEntry">
                         <field name="relation_entry"><xsl:value-of select="./doc:relationEntry" /></field>
                     </xsl:if>
@@ -100,7 +88,7 @@
                     </field>
                 </xsl:for-each>
                 <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation/doc:relationEntry">
-                    <field name="relation"><xsl:value-of select="." /></field>
+                    <field name="outside_resource"><xsl:value-of select="." /></field>
                 </xsl:for-each>
                 
                 <!--This text is stored as abstract, but it sometimes includes HTML.-->
@@ -110,44 +98,14 @@
                     <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
                 </field>
                 
-                
-                
                 <!--Place-->
                 <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:places/doc:place">
-                    <field name="place"><xsl:value-of select="concat(doc:placeEntry, ' (', doc:placeRole, ')')"/></field>
+                    <field name="place"><xsl:value-of select="doc:placeEntry"/></field>
                 </xsl:for-each>
                        
-                <!--Save parameters drawn from the EAD by Python. -->
-                <xsl:if test="$subject != ''">
-                    <field name="subject"><xsl:value-of select="$subject"/></field>
+                <xsl:if test="//doc:localDescriptions/doc:localDescription/doc:term[@vocabularySource='Broad']">
+                    <field name="broad_category"><xsl:value-of select="//doc:localDescriptions/doc:localDescription/doc:term[@vocabularySource='Broad']"/></field>
                 </xsl:if>
-                    
-                <xsl:if test="$callno != ''">
-                    <field name="part1_call_number"><xsl:value-of select="$callno"/></field>
-                    <field name="part1_category"><xsl:value-of select="$category"/></field>
-                </xsl:if>
-                
-                 <xsl:for-each select="str:split($container_part1, ', ')">
-                    <field name="container"><xsl:value-of select="."/></field>
-                    <field name="container_part1"><xsl:value-of select="."/></field>
-                </xsl:for-each>
-                
-                <xsl:if test="$container_part1!=''">
-                    <field name="collection_parts">Part I</field>
-                </xsl:if>
-                
-                <xsl:if test="$container_part2!=''">
-                    <field name="collection_parts">Part II</field>
-                </xsl:if>
-                
-                <xsl:for-each select="str:split($container_part2, ', ')">
-                    <field name="container"><xsl:value-of select="."/></field>
-                    <field name="container_part2"><xsl:value-of select="."/></field>
-                </xsl:for-each>
-                
-                <field name="raw_ead_c">
-                    <xsl:value-of disable-output-escaping="yes" select="$raw_ead_c" />
-                </field>
                 
                 <!--Save the whole record-->
                 <field name="raw_eac">
