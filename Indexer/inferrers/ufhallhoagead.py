@@ -7,6 +7,7 @@ from xml.sax.saxutils import quoteattr
 """
 class ufHallHoagEAD_Inferrer(Inferrer):
     def __init__(self):
+        self.cachedata = None
         self.ead = etree.parse('hallhoag.ead.xml')
         self.subjects = self._makeSubjectDict(self.ead)
         

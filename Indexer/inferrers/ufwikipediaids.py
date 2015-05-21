@@ -5,6 +5,7 @@ import urllib
 
 class ufWikipediaIDs_Inferrer(Inferrer):
     def __init__(self):
+        self.cachedata = None
         self.dbptempl = u'http://fragments.dbpedia.org/2014/en?subject=dbpedia:{}&predicate=dbpedia-owl:wikiPageID'
         self.dbpheaders = {'Accept':"application/ld+json"}
         
@@ -18,8 +19,37 @@ class ufWikipediaIDs_Inferrer(Inferrer):
         sources = xml.findall(".//{*}control/{*}sources/{*}source")
         
         wids = []
+        urls = []
+        depict=[]
         for source in sources: 
             href = source.get('{http://www.w3.org/1999/xlink}href')
+            
+            if href.startswith('http://wikidata.dbpedia.org/resource/'):
+                sleep.append(True)
+                
+                urltempl = 'http://wikidata.dbpedia.org/sparql?default-graph-uri=http://wikidata.dbpedia.org&query=DESCRIBE+%3C{}%3E&format=application/json'
+                rsurl = 'http://wikidata.dbpedia.org/resource/Q310694'
+                url = urltempl.format(rsurl)
+                
+                data = requests.get(url)
+                data = data.json()
+                
+                for k, v in data.items():
+                	if k == rsurl:
+                	    if 'http://www.w3.org/2000/01/rdf-schema#seeAlso' in v:
+                	        for sa in v['http://www.w3.org/2000/01/rdf-schema#seeAlso']:
+                	            urls.append( sa['value'] )
+                	    
+                	    if 'http://xmlns.com/foaf/0.1/depiction' in v:
+                	        for sa in v['http://xmlns.com/foaf/0.1/depiction']:
+                	            depict.append( sa['value'] )
+                	    
+                	    if 'http://www.w3.org/2002/07/owl#sameAs' in v:
+                	        for sa in v['http://www.w3.org/2002/07/owl#sameAs']:
+                	            if sa['value'].startswith('http://dbpedia.org/resource'):
+                	                href = sa['value']
+                	    
+            
             if href.startswith('http://dbpedia.org/page/'):
                 sleep.append(True)
                 dbname = href.replace('http://dbpedia.org/page/', '')
@@ -31,24 +61,19 @@ class ufWikipediaIDs_Inferrer(Inferrer):
                         wids.append(int(wid))
                 except Exception as e:
                     pass
-            elif href.startswith('http://wikidata.dbpedia.org/resource/'):
-                sleep.append(True)
-                #dbname = href.replace('http://wikidata.dbpedia.org/resource/', '')
-                dbname = href
-                query = self.wdtquery.format(dbname)
-                url = self.wdttempl.format(urllib.quote_plus(query))
-                try:
-                    resp = requests.get(url)
-                    wid = resp.json()['results']['bindings'][0]['pid']['value']
-                    if wid:
-                        wids.append(int(wid))
-                except Exception as e:
-                    pass
+                    
+            #http://wikidata.dbpedia.org/sparql?default-graph-uri=http://wikidata.dbpedia.org&query=DESCRIBE+%3Chttp://wikidata.dbpedia.org/resource/Q310694%3E&format=application/json
+       
+        outp = {}
        
         if wids:
-            return { 'wiki_id'  : wids }
-        else:
-            return {}
+            outp['wiki_id'] = wids 
+        if urls:
+            outp['inferred_url'] = urls
+        if depict:
+            outp['inferred_depiction'] = depict
+        
+        return outp if outp else None
             
     def append(self, inferred, xml):
         root = xml.getroot()

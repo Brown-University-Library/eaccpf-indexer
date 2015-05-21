@@ -5,6 +5,8 @@ class Inferrer(object):
     """
         This is an abstract class. Inferrers' class names must begin with 'uf' and end with '_Inferrer'
     """
+    def __init__(self):
+        self.cachedata = None
     
     def infer(self, doc, sleep):
         """
@@ -16,7 +18,6 @@ class Inferrer(object):
             
             The xml for the document is in doc.xml.
         """
-        self.cache = None
         pass
     
     def append(self, inferred, xml):
@@ -46,13 +47,13 @@ class Inferrer(object):
     
     @property
     def cache(self):
-        return self.cache
+        return self.cachedata
         
     @cache.setter
     def cache(self, value):
         if not isinstance(value, dict):
             raise Exception("Inferrer cache must be a dictionary.")
-        if self.cache & isinstance(self.cache, dict):
-            self.cache.update(value)
+        if bool(self.cachedata) & isinstance(self.cachedata, dict):
+            self.cachedata.update(value)
         else:
-            self.cache = value
+            self.cachedata = value
