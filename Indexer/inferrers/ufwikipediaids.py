@@ -46,9 +46,8 @@ class ufWikipediaIDs_Inferrer(Inferrer):
                 	    
                 	    if 'http://www.w3.org/2002/07/owl#sameAs' in v:
                 	        for sa in v['http://www.w3.org/2002/07/owl#sameAs']:
-                	            if sa['value'].startswith('http://dbpedia.org/resource'):
-                	                href = sa['value']
-                	    
+                	            if sa['value'].startswith('http://dbpedia.org/resource/'):
+                	                href = sa['value'].replace('http://dbpedia.org/resource/', 'http://dbpedia.org/page/')
             
             if href.startswith('http://dbpedia.org/page/'):
                 sleep.append(True)
@@ -73,21 +72,22 @@ class ufWikipediaIDs_Inferrer(Inferrer):
         if depict:
             outp['inferred_depiction'] = depict
         
-        return outp if outp else None
+        return outp
             
     def append(self, inferred, xml):
-        root = xml.getroot()
-        doc = root.getchildren()[0]
-        
-        #Legacy workaround. TODO: Remove.
-        if 'wids' in inferred:
-            wikiIds = inferred['wids']
-        elif 'wiki_id' in inferred:
-            wikiIds = inferred['wiki_id']
-        else:
-            return
-        
-        for wid in wikiIds:
-            newadd = etree.Element('field', name='wiki_id')
-            newadd.text = str(wid)
-            doc.append(newadd)
+        if inferred:
+            root = xml.getroot()
+            doc = root.getchildren()[0]
+            
+            #Legacy workaround. TODO: Remove.
+            if 'wids' in inferred:
+                wikiIds = inferred['wids']
+            elif 'wiki_id' in inferred:
+                wikiIds = inferred['wiki_id']
+            else:
+                return
+            
+            for wid in wikiIds:
+                newadd = etree.Element('field', name='wiki_id')
+                newadd.text = str(wid)
+                doc.append(newadd)
