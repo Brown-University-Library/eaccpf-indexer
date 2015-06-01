@@ -235,8 +235,12 @@ class Transformer(object):
                 pass
             
             for uf in self.ufs:
-                if type(uf).__name__ in inferred:
-                    uf.append(inferred[type(uf).__name__], xml)
+                try:
+                    if type(uf).__name__ in inferred:
+                        uf.append(inferred[type(uf).__name__], xml)
+                except Exception as e:
+                    #TODO: Something.
+                    pass
             # write the updated file
             outfile = open(Output,'w')
             xml.write(outfile, pretty_print=True, xml_declaration=True)

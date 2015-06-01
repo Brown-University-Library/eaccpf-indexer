@@ -23,14 +23,15 @@ class ufWikipediaIDs_Inferrer(Inferrer):
         depict=[]
         wikidata_id = False
         for source in sources: 
+            #TODO: Also get VIAF and LCNAF IDs.
             href = source.get('{http://www.w3.org/1999/xlink}href')
+            href = href.split('#')[0]
             
             if href.startswith('http://wikidata.dbpedia.org/page/'):
                 href = href.replace('http://wikidata.dbpedia.org/page/', 'http://wikidata.dbpedia.org/resource/')
             
             if href.startswith('http://wikidata.dbpedia.org/resource/'):
                 sleep.append(True)
-                
                 urltempl = 'http://wikidata.dbpedia.org/sparql?default-graph-uri=http://wikidata.dbpedia.org&query=DESCRIBE+%3C{}%3E&format=application/json'
                 wikidata_id = href.replace('http://wikidata.dbpedia.org/resource/', '')
                 url = urltempl.format(href)
@@ -53,6 +54,8 @@ class ufWikipediaIDs_Inferrer(Inferrer):
             	            if sa['value'].startswith('http://dbpedia.org/resource/'):
             	                href = sa['value'].replace('http://dbpedia.org/resource/', 'http://dbpedia.org/page/')
             
+            if href.startswith('http://dbpedia.org/resource/'):
+                href = href.replace('http://dbpedia.org/resource/', 'http://dbpedia.org/page/')
             if href.startswith('http://dbpedia.org/page/'):
                 sleep.append(True)
                 url = href.replace('http://dbpedia.org/page/', 'http://dbpedia.org/data/')+'.json'

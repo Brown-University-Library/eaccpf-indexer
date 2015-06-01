@@ -62,10 +62,12 @@ class ufHallHoagEAD_Inferrer(Inferrer):
                         media_types.append(media_type_dict[fcode])
         
         outp['container'] = []
+        outp['collection_parts'] = []
         
         if conts:
             outp['container_part1'] = list(set(conts))
             outp['container'] += list(set(conts))
+            outp['collection_parts'].append('Part I')
             
         p2 = c.find("{*}did/{*}container[@label='Part II']")
         conts = []
@@ -80,6 +82,7 @@ class ufHallHoagEAD_Inferrer(Inferrer):
         if conts:    
             outp['container_part2'] = conts
             outp['container'] += list(set(conts))
+            outp['collection_parts'].append('Part II')
         
         if media_types:
             outp['media_type'] = list(set(media_types))

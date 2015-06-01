@@ -265,15 +265,16 @@ class Facter(object):
                 location['address'] = address
                 location['coordinates'] = [float(loc['lat']), float(loc['lon'])]
                 # split the address into parts
-                location['country'] = Utils.cleanText(address['country'])
+                location['country'] = address['country'].strip()
                 
                 if 'region' in address:
-                    location['region'] = Utils.cleanText(address['region'])
+                    location['region'] = address['region'].strip()
                 elif 'state' in address:
-                    location['region'] = Utils.cleanText(address['state'])
+                    location['region'] = address['state'].strip()
                 
                 if 'city' in address:
-                    location['city'] = Utils.cleanText(address['city'])
+                    location['city'] = address['city'].strip()
+                
                 locations.append(location)
                     
         return locations

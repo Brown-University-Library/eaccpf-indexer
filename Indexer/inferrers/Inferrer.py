@@ -42,7 +42,7 @@ class Inferrer(object):
                 else:
                     for w in v:
                         newadd = etree.Element('field', name=k)
-                        newadd.text = w
+                        newadd.text = unicode(w)
                         doc.append(newadd)
     
     @property
