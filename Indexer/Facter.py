@@ -259,7 +259,7 @@ class Facter(object):
                 address = loc['address']
                 newaddr = {}
                 for x in address:
-                    newaddr[Utils.cleanText(x)] = Utils.cleanText(address[x])
+                    newaddr[Utils.cleanText(x)] = address[x]
                 address = newaddr
                 location = place.copy()
                 location['address'] = address
