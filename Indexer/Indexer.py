@@ -4,7 +4,7 @@ LICENSE file, which is part of this source code package.
 """
 
 import Cfg
-import ConfigParser
+from configparser import ConfigParser 
 import Timer
 import argparse
 import logging
@@ -20,7 +20,7 @@ class Indexer(object):
 
     def __init__(self):
         # configuration file parser
-        self.config = ConfigParser.SafeConfigParser()
+        self.config = ConfigParser()
         # configure command line options
         self.parser = argparse.ArgumentParser(description="Harvest, process, and post metadata to an Apache Solr index.")
         self.parser.add_argument('config', help="path to configuration file")
@@ -87,14 +87,14 @@ class Indexer(object):
             self.args = self.parser.parse_args()
             self.configureLogging()
             self.logger.info("Started with {0}".format(' '.join(sys.argv[1:])))
-        except Exception, e:
+        except Exception as e:
             self.parser.print_help()
             sys.exit(e)
         # load the configuration file
         try:
             with open(self.args.config) as f:
                 self.config.readfp(f)
-        except Exception, e:
+        except Exception as e:
             self.logger.critical("Could not load the specified configuration file")
             sys.exit(e)
         # set options
