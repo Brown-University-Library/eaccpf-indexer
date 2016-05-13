@@ -3,15 +3,15 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from EacCpf import EacCpf
-from StringIO import StringIO
+from .EacCpf import EacCpf
+from io import StringIO
 from datetime import datetime
 from mako.template import Template
 from lxml import etree
 
-import Cfg
-import Timer
-import Utils
+from . import Cfg
+from . import Timer
+from . import Utils
 import inspect
 import logging
 import os
@@ -126,7 +126,7 @@ class Analyzer(object):
             for location in locations:
                 if 'placeentry' in location:
                     place = location['placeentry']
-                    if place in entity_locations.keys():
+                    if place in list(entity_locations.keys()):
                         duplicate = True
                         errors.append("Location '" + place + "' duplicates record '" + entity_locations[place] + "'")
                     else:

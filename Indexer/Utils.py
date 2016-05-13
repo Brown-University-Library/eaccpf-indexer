@@ -13,8 +13,8 @@ import logging
 import os
 import shutil
 import tempfile
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import yaml
 import sys
 
@@ -131,7 +131,7 @@ def getTemporaryFileFromResource(source):
     ext = getFileNameExtension(source)
     temp = tempfile.mktemp(suffix=".{0}".format(ext))
     if 'http://' in source or 'https://' in source:
-        response = urllib2.urlopen(source)
+        response = urllib.request.urlopen(source)
         data = response.read()
         with open(temp, 'wb') as f:
             f.write(data)
@@ -198,7 +198,7 @@ def load_from_source(Source):
     Load text data from the specified source.
     """
     if 'http://' in Source or 'https://' in Source:
-        response = urllib2.urlopen(Source)
+        response = urllib.request.urlopen(Source)
         data = response.read()
         # data = unicode(data, errors='replace')
     else:
@@ -226,7 +226,7 @@ def map_url_to_local_path(url, site_root_path):
     Determine the local file system path to a file, given a local path to the
     root of a web site and a URL to the file resource in question.
     """
-    parsed = urlparse.urlparse(url)
+    parsed = urllib.parse.urlparse(url)
     path = site_root_path + os.sep + parsed.path
     abs_path = os.path.abspath(path)
     # if the abs_path is above the site_root_path, then return the
@@ -278,7 +278,7 @@ def purgeFolder(path, file_index):
     """
     Purge all files in path not represented in the file index.
     """
-    keys = file_index.keys()
+    keys = list(file_index.keys())
     for filename in [f for f in os.listdir(path) if f not in keys]:
         file_path = path + os.sep + filename
         if os.path.isfile(file_path):
@@ -291,7 +291,7 @@ def purgeIndex(file_list, file_hash_index):
     """
     Purge all file hash entries not represented in the file list.
     """
-    for filename in [filename for filename in file_hash_index.keys() if filename not in file_list]:
+    for filename in [filename for filename in list(file_hash_index.keys()) if filename not in file_list]:
         del file_hash_index[filename]
         log.debug("Purged {0} from cache index".format(filename))
     return file_hash_index
@@ -319,7 +319,7 @@ def resourceExists(Resource):
     """
     if 'http://' in Resource or 'https://' in Resource:
         try:
-            urllib2.urlopen(Resource)
+            urllib.request.urlopen(Resource)
             return True
         except:
             return False
@@ -357,7 +357,7 @@ def urlToFileSystemPath(Url, FileSystemBase):
     base corresponds with the root of the web site.
     """
     # remove the host and domain portion of the URL
-    parts = urlparse.urlparse(Url)
+    parts = urllib.parse.urlparse(Url)
     if FileSystemBase.endswith('/'):
         FileSystemBase = FileSystemBase[:-1]
     return "{0}{1}".format(FileSystemBase, parts.path)

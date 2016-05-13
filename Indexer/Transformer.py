@@ -66,7 +66,7 @@ class Transformer(object):
                 # @todo else create an empty SID document object; we won't likely hit this case
                 return
             # add fields that are not already present in the SID file
-            for field_name in dobj.keys():
+            for field_name in list(dobj.keys()):
                 if field_name.startswith('dobj'):
                     # if the field already exists then update it, otherwise add it
                     node = doc.xpath("//field[@name='{0}']".format(field_name))
@@ -79,7 +79,9 @@ class Transformer(object):
             # write the updated file
             output_filename = Utils.getFilenameWithAlternateExtension(filename, 'xml')
             with open(output_path + os.sep + output_filename,'w') as outfile:
-                xml.write(outfile, pretty_print=True, xml_declaration=True)
+                xml = etree.tostring(xml, pretty_print=True, xml_declaration=True).decode()
+                outfile.write(xml)
+                #xml.write(outfile, pretty_print=True, xml_declaration=True)
             self.log.info("Merged digital object into {0}".format(output_filename))
         except:
             self.log.error("Could not complete merge processing for {0}".format(filename), exc_info=Cfg.LOG_EXC_INFO)
@@ -243,7 +245,9 @@ class Transformer(object):
                     pass
             # write the updated file
             outfile = open(Output,'w')
-            xml.write(outfile, pretty_print=True, xml_declaration=True)
+            xml = etree.tostring(xml, pretty_print=True, xml_declaration=True).decode()
+            outfile.write(xml)
+            #xml.write(outfile, pretty_print=True, xml_declaration=True)
             outfile.close()
             self.log.info("Merged inferred data from {0}".format(filename))
 
@@ -394,7 +398,7 @@ class Transformer(object):
         
         result = Transform(xml)
         
-        data = etree.tostring(result, pretty_print=True, xml_declaration=True)
+        data = etree.tostring(result, pretty_print=True, xml_declaration=True).decode()
         # write the output file
         with open(Output + os.sep + filename, 'w') as outfile:
             outfile.write(data)

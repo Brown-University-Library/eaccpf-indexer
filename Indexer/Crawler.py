@@ -3,9 +3,9 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from DigitalObjectCache import DigitalObjectCache
-from EacCpf import EacCpf
-from HtmlPage import HtmlPage
+from .DigitalObjectCache import DigitalObjectCache
+from .EacCpf import EacCpf
+from .HtmlPage import HtmlPage
 
 import Cfg
 import Timer
@@ -326,7 +326,7 @@ class Crawler(object):
                 Utils.purgeFolder(self.output, self.hashIndex)
                 # remove files from the image cache that are not in the index
                 self.log.info("Clearing orphaned files from the image cache")
-                self.cache.purge(self.hashIndex.keys())
+                self.cache.purge(list(self.hashIndex.keys()))
             # write the updated file index
             Utils.writeFileHashIndex(self.hashIndex, self.output)
         # log execution time

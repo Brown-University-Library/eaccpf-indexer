@@ -12,6 +12,7 @@ import Utils
 import logging
 import os
 import time
+import sys
 
 
 class Facter(object):
@@ -62,7 +63,7 @@ class Facter(object):
         """
         For dictionaries that hold multiple values for each key.
         """
-        if not dic.has_key(key):
+        if key not in dic:
             dic[key] = []
         items = dic[key]
         items.append(value)
@@ -161,7 +162,11 @@ class Facter(object):
             
             doAll = True
             
-            doc = EacCpf(self.source + os.sep + filename)
+            try:
+                doc = EacCpf(self.source + os.sep + filename)
+            except:
+                self.logger.error("Could not load file "+filename)
+                continue
             # if the file has not changed don't redo successful inferences.
             file_hash = doc.getHash()
             if self.update and filename in self.hashIndex and self.hashIndex[filename] == file_hash:
@@ -174,7 +179,7 @@ class Facter(object):
             inferred_data_filename = Utils.getFilenameWithAlternateExtension(filename,'yml')
             inferred = Utils.tryReadYaml(self.output, inferred_data_filename)
             
-            for actname, action in actions.items():
+            for actname, action in list(actions.items()):
                 if doAll or (actname not in inferred):
                     try:
                         inferred[actname] = action(doc, self.needsleep)
@@ -235,7 +240,7 @@ class Facter(object):
         
         from geopy.geocoders.osm import Nominatim
         
-        geolocator = Nominatim(timeout=timeout, scheme='http', domain='open.mapquestapi.com/nominatim/v1')
+        geolocator = Nominatim(timeout=timeout)
         locations = []
         first = True
         places = doc.getLocations()
@@ -298,7 +303,7 @@ class Facter(object):
                 pass
             if 'entities' in self.actions:
                 try:
-                    from pythoncalais import Calais
+                    from .pythoncalais import Calais
                     self.calais = Calais.Calais(self.calais_api_key, submitter="University of Melbourne, eScholarship Research Centre")
                     self.calais.user_directives["allowDistribution"] = "false"
                 except:

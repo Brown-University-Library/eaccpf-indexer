@@ -13,7 +13,7 @@ import logging
 import lxml.html
 import os
 import re
-import urlparse
+import urllib.parse
 
 
 class HtmlPage(object):
@@ -62,7 +62,7 @@ class HtmlPage(object):
             else:
                 # relative url reference
                 page_url = self.getUrl()
-                return str(urlparse.urljoin(page_url, thumbnail_url))
+                return str(urllib.parse.urljoin(page_url, thumbnail_url))
         except:
             self.log.debug("Digital object URL not found in {0}".format(self.filename), exc_info=Cfg.LOG_EXC_INFO)
 

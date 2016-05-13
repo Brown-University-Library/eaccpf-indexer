@@ -3,8 +3,8 @@ This file is subject to the terms and conditions defined in the
 LICENSE file, which is part of this source code package.
 """
 
-from EacCpf import EacCpf
-from HtmlPage import HtmlPage
+from .EacCpf import EacCpf
+from .HtmlPage import HtmlPage
 from matplotlib import pylab
 
 import Cfg
@@ -153,8 +153,8 @@ class Grapher(object):
         nx.draw_networkx_labels(self.graph, pos)
 
         cut = 1.00
-        xmax = cut * max(xx for xx, yy in pos.values())
-        ymax = cut * max(yy for xx, yy in pos.values())
+        xmax = cut * max(xx for xx, yy in list(pos.values()))
+        ymax = cut * max(yy for xx, yy in list(pos.values()))
         plt.xlim(0, xmax)
         plt.ylim(0, ymax)
 

@@ -1,4 +1,4 @@
-from Inferrer import Inferrer
+from .Inferrer import Inferrer
 from lxml import etree
 from xml.sax.saxutils import quoteattr
 
@@ -18,8 +18,8 @@ class ufHallHoagEAD_Inferrer(Inferrer):
         def callno(x): return x.text.split('   Call No. ')[1].strip()
         
         subjects = ead.findall("//{*}arrangement/{*}list/{*}item")
-        subjects = filter(f, subjects)
-        return dict(zip(map(callno, subjects), map(subj, subjects)))
+        subjects = list(filter(f, subjects))
+        return dict(list(zip(list(map(callno, subjects)), list(map(subj, subjects)))))
 
     def infer(self, doc, sleep):
         xml = doc.xml
@@ -43,7 +43,7 @@ class ufHallHoagEAD_Inferrer(Inferrer):
         if c==None:
             return {}
         
-        outp['raw_ead_c'] = etree.tostring(c)
+        outp['raw_ead_c'] = etree.tostring(c).decode()
         
         ext = c.findtext("{*}did//{*}extent")
         if ext: 

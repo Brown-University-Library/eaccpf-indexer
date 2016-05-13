@@ -9,10 +9,11 @@ import Cfg
 import Timer
 import Utils
 import hashlib
-import htmlentitydefs
+import html.entities
 import logging
 import os
 import re
+import shutil
 
 import codecs
 import sys
@@ -36,7 +37,7 @@ class Cleaner(object):
             outp = codecs.encode(codecs.decode(Text, 'utf-16le'), 'utf-8')
             return outp
         except:
-            print(sys.exc_info())
+            print((sys.exc_info()))
             
         
     def _fixAmpersands(self, Text):
@@ -62,15 +63,15 @@ class Cleaner(object):
                 # character reference
                 try:
                     if Text[:3] == "&#x":
-                        return unichr(int(Text[3:-1], 16))
+                        return chr(int(Text[3:-1], 16))
                     else:
-                        return unichr(int(Text[2:-1]))
+                        return chr(int(Text[2:-1]))
                 except ValueError:
                     pass
             else:
                 # named entity  
                 try:
-                    Text = unichr(htmlentitydefs.name2codepoint[Text[1:-1]])
+                    Text = chr(html.entities.name2codepoint[Text[1:-1]])
                 except KeyError:
                     pass
             return Text
@@ -79,9 +80,9 @@ class Cleaner(object):
     def _removeEmptyDateFields(self, Text):
         """
         Remove any empty fromDate or toDate tags.
-        """
+        """    
         try:
-            xml = etree.XML(Text)
+            xml = etree.XML(Text.encode('utf-8'))
             tree = etree.ElementTree(xml)
             for item in tree.findall('//fromDate'):
                 if item.text is None:
@@ -89,7 +90,7 @@ class Cleaner(object):
             for item in tree.findall('//toDate'):
                 if item.text is None:
                     item.getparent().remove(item)
-            return etree.tostring(xml,pretty_print=True)
+            return etree.tostring(xml,pretty_print=True,encoding='unicode')
         except:
             self.log.error("Could not remove empty date fields: "+self.fn)
             return Text
@@ -107,7 +108,7 @@ class Cleaner(object):
             for item in tree.findall('//toDate'):
                 if 'standardDate' in item.attrib and item.attrib['standardDate'] is None:
                     item.attrib.pop('standardDate')
-            return etree.tostring(xml,pretty_print=True)
+            return etree.tostring(xml,pretty_print=True,encoding='unicode')
         except:
             self.log.error("Could not remove empty standardDate fields: "+self.fn)
             return Text
@@ -141,20 +142,25 @@ class Cleaner(object):
         records = []
         # for each file in the source folder
         for filename in os.listdir(self.source):
-            try:
+            #try:
                 if filename.startswith('.'):
                     continue
                 else:
                     records.append(filename)
                 # read data
-                data = Utils.read(self.source, filename)
+                #TODO: Add encoding param to Utils.read instead of copying this here.
+                with open(self.source + os.sep + filename, 'r', encoding='utf-16-le') as f:
+                    data = f.read().encode('utf-8').decode()
+                #data = Utils.read(self.source, filename)
+                #data.replace('\n', '').replace('\t', '')
+                
                 self.fn = filename
-                fileHash = hashlib.sha1(data).hexdigest()
+                fileHash = hashlib.sha1(data.encode('utf-8')).hexdigest()
                 # if we are doing an update and the file has not changed then
                 # skip it
                 if self.update:
                     if filename in self.hashIndex and self.hashIndex[filename] == fileHash:
-                        self.log.info("No change since last update " + filename)
+                        #self.log.info("No change since last update " + filename)
                         continue
                 # record the file hash
                 self.hashIndex[filename] = fileHash
@@ -167,11 +173,16 @@ class Cleaner(object):
                     pass
                 # write data to specified file in the output directory.
                 outfile_path = self.output + os.sep + filename
-                with open(outfile_path,'w') as outfile:
-                    outfile.write(data)
-                self.log.info("Stored document " + filename)
-            except Exception:
-                self.log.error("Could not complete processing on " + filename, exc_info=Cfg.LOG_EXC_INFO)
+                #print(outfile_path)
+                with open(outfile_path,'w', encoding='utf-8') as outfile:
+                    try:
+                        outfile.write(data)
+                    except:
+                        print("FAIL: " + outfile_path)
+                        shutil.copy(self.source + os.sep + filename, 'C:\\Users\\Adam_Bradley\\Projects\\eac.20160218.quar')
+                #self.log.info("Stored document " + filename)
+            #except Exception:
+            #    self.log.error("Could not complete processing on " + filename, exc_info=Cfg.LOG_EXC_INFO)
         # return the list of processed records
         return records
 
@@ -179,8 +190,11 @@ class Cleaner(object):
         """
         Clean problems that are typical of EAC-CPF files.
         """
+        #print(Data)
         # data = self._fixEntityReferences(data)
-        data = self._fixEncoding(Data)
+        #think I'm doing this in clean() now.
+        #data = self._fixEncoding(Data)
+        data = str(Data)
         data = self._fixAmpersands(data)
         data = self._removePreHeaderGarbage(data)
         data = self._fixDateFields(data)
@@ -232,7 +246,7 @@ class Cleaner(object):
             Utils.writeFileHashIndex(self.hashIndex, self.output)
         # log execution time
         self.log.info("Cleaner finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
-        print("Cleaner finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds))
+        print(("Cleaner finished in {0}:{1}:{2}".format(t.hours, t.minutes, t.seconds)))
 
 
 def clean(params, update=False):

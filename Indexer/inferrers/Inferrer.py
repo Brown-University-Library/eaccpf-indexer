@@ -29,7 +29,7 @@ class Inferrer(object):
         """
         root = xml.getroot()
         doc = root.getchildren()[0]
-        for k,v in inferred.items():
+        for k,v in list(inferred.items()):
             if v:
                 if type(v).__name__ in ['unicode', 'str']:
                     newadd = etree.Element('field', name=k)
@@ -42,7 +42,7 @@ class Inferrer(object):
                 else:
                     for w in v:
                         newadd = etree.Element('field', name=k)
-                        newadd.text = unicode(w)
+                        newadd.text = str(w)
                         doc.append(newadd)
     
     @property

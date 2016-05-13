@@ -5,7 +5,7 @@ LICENSE file, which is part of this source code package.
 
 from PIL import Image
 
-import Utils
+from . import Utils
 import hashlib
 import logging
 import os

@@ -1,12 +1,12 @@
-from Inferrer import Inferrer
+from .Inferrer import Inferrer
 from lxml import etree
 import requests
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 class ufWikipediaIDs_Inferrer(Inferrer):
     def __init__(self):
         self.cachedata = None
-        self.dbptempl = u'http://fragments.dbpedia.org/2014/en?subject=dbpedia:{}&predicate=dbpedia-owl:wikiPageID'
+        self.dbptempl = 'http://fragments.dbpedia.org/2014/en?subject=dbpedia:{}&predicate=dbpedia-owl:wikiPageID'
         self.dbpheaders = {'Accept':"application/json"}
         
         self.wdttempl = 'http://wikidata.dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fwikidata.dbpedia.org&query={}&format=application/json&timeout=30000'
@@ -41,19 +41,19 @@ class ufWikipediaIDs_Inferrer(Inferrer):
                 
                 if href in data:
                     v = data[href]
-            	    if 'http://www.w3.org/2000/01/rdf-schema#seeAlso' in v:
-            	        for sa in v['http://www.w3.org/2000/01/rdf-schema#seeAlso']:
-            	            urls.append( sa['value'] )
-            	    
-            	    if 'http://xmlns.com/foaf/0.1/depiction' in v:
-            	        for sa in v['http://xmlns.com/foaf/0.1/depiction']:
-            	            depict.append( sa['value'] )
-            	    
-            	    if 'http://www.w3.org/2002/07/owl#sameAs' in v:
-            	        for sa in v['http://www.w3.org/2002/07/owl#sameAs']:
-            	            if sa['value'].startswith('http://dbpedia.org/resource/'):
-            	                href = sa['value'].replace('http://dbpedia.org/resource/', 'http://dbpedia.org/page/')
-            
+                    if 'http://www.w3.org/2000/01/rdf-schema#seeAlso' in v:
+                        for sa in v['http://www.w3.org/2000/01/rdf-schema#seeAlso']:
+                            urls.append( sa['value'] )
+                    
+                    if 'http://xmlns.com/foaf/0.1/depiction' in v:
+                        for sa in v['http://xmlns.com/foaf/0.1/depiction']:
+                            depict.append( sa['value'] )
+                    
+                    if 'http://www.w3.org/2002/07/owl#sameAs' in v:
+                        for sa in v['http://www.w3.org/2002/07/owl#sameAs']:
+                            if sa['value'].startswith('http://dbpedia.org/resource/'):
+                                href = sa['value'].replace('http://dbpedia.org/resource/', 'http://dbpedia.org/page/')
+                
             if href.startswith('http://dbpedia.org/resource/'):
                 href = href.replace('http://dbpedia.org/resource/', 'http://dbpedia.org/page/')
             if href.startswith('http://dbpedia.org/page/'):
